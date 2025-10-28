@@ -1,12 +1,10 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <link rel="icon" href="/favicon.ico" sizes="any">
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <title>Trackrat</title>
-
-  <!-- Fonts -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Fugaz+One&display=swap" rel="stylesheet">
 
   <style>
@@ -15,50 +13,48 @@
     html, body { height:100%; }
     body { margin:0; background:var(--bg); color:var(--ink); overflow:hidden; }
 
-    /* Top labels are fixed so they always sit above the art */
-    .meta {
+    /* Top labels - fixed and above the art */
+    .meta{
       position:fixed; top:2.2vh; left:2.2vw; right:2.2vw;
       display:flex; justify-content:space-between; align-items:flex-start;
       font-family:"IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
       letter-spacing:-0.06em; line-height:0.82; z-index:20; user-select:none;
     }
-    .meta .left  { font-size:clamp(14px, 2.1vw, 32px); }
-    .meta .right { font-size:clamp(14px, 2.1vw, 32px); text-align:right; }
+    .meta .left{  font-size:clamp(14px,2.1vw,32px); }
+    .meta .right{ font-size:clamp(14px,2.1vw,32px); text-align:right; }
 
-    /* Center the track SVG */
-    .stage { position:fixed; inset:0; display:grid; place-items:center; z-index:5; }
-    svg { width:min(88vw, 1500px); height:auto; }
-    .ring rect { fill:transparent; stroke:var(--ink); stroke-width:2; }
-    .ring rect:first-of-type { fill:rgba(255,77,31,0.5); } /* subtle inner fill like your comp */
+    /* Track */
+    .stage{ position:fixed; inset:0; display:grid; place-items:center; z-index:5; }
+    svg{ width:min(88vw,1500px); height:auto; }
+    .ring rect{ fill:transparent; stroke:var(--ink); stroke-width:2; }
+    .ring rect:first-of-type{ fill:rgba(255,77,31,0.5); }
 
-    /* Giant word at the bottom */
-    .watermark {
-      position:fixed; left:0; right:0; bottom:-1.2vh;
+    /* Bottom wordmark - now height-capped and lifted above the bottom */
+    .watermark{
+      position:fixed; left:0; right:0;
+      bottom:calc(1.2vh + env(safe-area-inset-bottom, 0px));
       font-family:"Fugaz One", Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
-      font-size:clamp(180px, 34vw, 420px);
-      letter-spacing:-0.06em; line-height:0.8;
+      /* size limited by both vw and vh so it never overflows */
+      font-size:clamp(160px, min(30vw, 42vh), 400px);
+      letter-spacing:-0.06em; line-height:0.8; white-space:nowrap;
       text-align:center; color:#000; opacity:0.9;
       mix-blend-mode:multiply; pointer-events:none; z-index:10;
     }
 
-    /* Mobile tweaks */
-    @media (max-width:800px) {
-      svg { width:92vw; }
-      .watermark { font-size:38vw; bottom:-0.6vh; }
+    @media (max-width:800px){
+      svg{ width:92vw; }
+      .watermark{ font-size:clamp(120px, min(36vw, 38vh), 360px); }
     }
   </style>
 </head>
 <body>
 
-  <!-- Top left and top right labels -->
   <header class="meta">
     <div class="left">ON<br>SUNDAYS,<br>WE SPRINT</div>
     <div class="right">NOV&nbsp;2<br>4401<br>TILLEY</div>
   </header>
 
-  <!-- Track art -->
   <main class="stage" aria-label="Concentric track graphic">
-    <!-- Using your SVG, background rect removed since the page already has the orange bg -->
     <svg viewBox="0 0 1920 1080" aria-hidden="true" preserveAspectRatio="xMidYMid meet">
       <g class="ring">
         <rect x="311" y="241" width="1298" height="598" rx="299"></rect>
@@ -74,7 +70,6 @@
     </svg>
   </main>
 
-  <!-- Bottom wordmark -->
   <div class="watermark">TRACKRAT</div>
 
 </body>
