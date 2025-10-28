@@ -24,7 +24,7 @@ body {
     overflow: hidden;
 }
 
-/* Poster: fixed 1920×1080 artboard with orange background */
+/* Frame 3: Poster - fixed 1920×1080 artboard */
 .poster {
     position: relative;
     width: 1920px;
@@ -47,53 +47,105 @@ body {
     }
 }
 
-/* Top row: container for left and right text blocks */
-.top-row {
+/* Group 2 */
+.group-2 {
     position: absolute;
+    width: 1804px;
+    height: 490px;
     left: 42px;
     top: 73px;
+}
+
+/* Frame 2 */
+.frame-2 {
+    box-sizing: border-box;
+    position: absolute;
+    width: 424px;
+    height: 120px;
+    left: 732px;
+    top: 443px;
+    border-radius: 20px 33px;
+}
+
+/* Top row: container for left and right text blocks */
+.top-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0px;
+    gap: 111px;
+    position: absolute;
     width: 1804px;
     height: 116px;
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
+    left: 42px;
+    top: 73px;
 }
 
-/* Top left and top right text blocks */
-.tl, .tr {
-    font-family: "IBM Plex Mono", monospace;
+/* ON SUNDAYS, WE SPRINT */
+.tl {
+    margin: 0 auto;
+    width: 163px;
+    height: 48px;
+    font-family: 'IBM Plex Mono';
+    font-style: normal;
+    font-weight: 400;
     font-size: 32px;
-    line-height: 0.8;
+    line-height: 80%;
+    display: flex;
+    align-items: center;
     letter-spacing: -0.1em;
-    color: #000;
+    color: #000000;
+    flex: none;
+    order: 0;
+    flex-grow: 0;
 }
 
-/* Top right: right-aligned text */
+/* NOV 2 4401 TILLEY */
 .tr {
+    margin: 0 auto;
+    width: 125px;
+    height: 48px;
+    font-family: 'IBM Plex Mono';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 32px;
+    line-height: 80%;
+    display: flex;
+    align-items: center;
     text-align: right;
+    letter-spacing: -0.1em;
+    color: #000000;
+    flex: none;
+    order: 1;
+    flex-grow: 0;
 }
 
-/* Track: SVG positioned at exact coordinates */
+/* Group 1: Track container */
 .track {
     position: absolute;
+    width: 1460px;
+    height: 760px;
     left: 230px;
     top: 160px;
 }
 
-/* Wordmark: large TRACKRAT text overlapping track */
+/* TRACKRAT wordmark */
 .wordmark {
     position: absolute;
-    left: -2160px;
-    top: 201px;
     width: 4529px;
     height: 617px;
+    left: -2160px;
+    top: 201px;
+    font-family: 'Fugaz One';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 400px;
+    line-height: 80%;
     display: flex;
     align-items: center;
-    justify-content: center;
-    font-family: "Fugaz One", sans-serif;
-    font-size: 400px;
-    line-height: 0.8;
+    text-align: center;
     letter-spacing: -0.1em;
-    color: rgba(0, 0, 0, 0.9);
+    color: #000000;
     pointer-events: none;
 }
