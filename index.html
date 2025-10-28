@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TRACKRAT</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fugaz+One&family=IBM+Plex+Mono:wght@400&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'IBM Plex Mono', monospace;
+            background: #FFFFFF;
+            overflow-x: hidden;
+            position: relative;
+            min-height: 100vh;
+        }
+
+        .container {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Header Navigation - Frame 3 */
+        .header-nav {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0px;
+            gap: 111px;
+            position: absolute;
+            width: 1804px;
+            height: 116px;
+            left: 42px;
+            top: 73px;
+            z-index: 10;
+        }
+
+        .header-left {
+            width: 163px;
+            height: 48px;
+            font-family: 'IBM Plex Mono', monospace;
+            font-style: normal;
+            font-weight: 400;
+            font-size: 32px;
+            line-height: 80%;
+            display: flex;
+            align-items: center;
+            letter-spacing: -0.1em;
+            color: #000000;
+            flex: none;
+            order: 0;
+            flex-grow: 0;
+        }
+
+        .header-right {
+            width: 125px;
+            height: 48px;
+            font-family: 'IBM Plex Mono', monospace;
+            font-style: normal;
+            font-weight: 400;
+            font-size: 32px;
+            line-height: 80%;
+            display: flex;
+            align-items: center;
+            text-align: right;
+            letter-spacing: -0.1em;
+            color: #000000;
+            flex: none;
+            order: 1;
+            flex-grow: 0;
+        }
+
+        /* Concentric Circles - Group 1 */
+        .circles-group {
+            position: absolute;
+            width: 1460px;
+            height: 760px;
+            left: 230px;
+            top: 160px;
+        }
+
+        .circle {
+            box-sizing: border-box;
+            position: absolute;
+            border: 2px solid #000000;
+            border-radius: 100000px;
+        }
+
+        .circle-1 {
+            width: 1300px;
+            height: 600px;
+            left: calc(50% - 1300px/2);
+            top: calc(50% - 600px/2);
+            background: rgba(255, 77, 31, 0.5);
+            border-radius: 10000px;
+        }
+
+        .circle-2 {
+            width: 1320px;
+            height: 620px;
+            left: calc(50% - 1320px/2);
+            top: calc(50% - 620px/2);
+        }
+
+        .circle-3 {
+            width: 1340px;
+            height: 640px;
+            left: calc(50% - 1340px/2);
+            top: calc(50% - 640px/2);
+        }
+
+        .circle-4 {
+            width: 1360px;
+            height: 660px;
+            left: calc(50% - 1360px/2);
+            top: calc(50% - 660px/2);
+        }
+
+        .circle-5 {
+            width: 1380px;
+            height: 680px;
+            left: calc(50% - 1380px/2);
+            top: calc(50% - 680px/2);
+        }
+
+        .circle-6 {
+            width: 1400px;
+            height: 700px;
+            left: calc(50% - 1400px/2);
+            top: calc(50% - 700px/2);
+        }
+
+        .circle-7 {
+            width: 1420px;
+            height: 720px;
+            left: calc(50% - 1420px/2);
+            top: calc(50% - 720px/2);
+        }
+
+        .circle-8 {
+            width: 1440px;
+            height: 740px;
+            left: calc(50% - 1440px/2);
+            top: calc(50% - 740px/2);
+        }
+
+        .circle-9 {
+            width: 1460px;
+            height: 760px;
+            left: calc(50% - 1460px/2);
+            top: calc(50% - 760px/2);
+        }
+
+        /* Large TRACKRAT Text */
+        .trackrat-text {
+            position: absolute;
+            width: 4529px;
+            height: 617px;
+            left: -2160px;
+            top: 201px;
+            font-family: 'Fugaz One', cursive;
+            font-style: normal;
+            font-weight: 400;
+            font-size: 400px;
+            line-height: 80%;
+            display: flex;
+            align-items: center;
+            text-align: center;
+            letter-spacing: -0.1em;
+            color: #000000;
+            z-index: 5;
+        }
+
+        /* Frame 2 - Button/Box */
+        .frame-button {
+            box-sizing: border-box;
+            position: absolute;
+            width: 424px;
+            height: 120px;
+            left: 732px;
+            top: 443px;
+            border-radius: 20px 33px;
+            background: transparent;
+            border: 2px solid #000000;
+            z-index: 15;
+        }
+
+        /* Responsive Design */
+        @media screen and (max-width: 1920px) {
+            .container {
+                transform-origin: top left;
+            }
+        }
+
+        @media screen and (max-width: 1440px) {
+            .header-nav {
+                width: calc(100% - 84px);
+                left: 42px;
+                gap: 50px;
+            }
+
+            .circles-group {
+                left: 50%;
+                transform: translateX(-50%) scale(0.75);
+            }
+
+            .trackrat-text {
+                font-size: 300px;
+                left: -1620px;
+            }
+
+            .frame-button {
+                left: 50%;
+                transform: translateX(-50%);
+            }
+        }
+
+        @media screen and (max-width: 1024px) {
+            .header-nav {
+                width: calc(100% - 40px);
+                left: 20px;
+                gap: 30px;
+                height: auto;
+            }
+
+            .header-left,
+            .header-right {
+                font-size: 24px;
+                width: auto;
+                height: auto;
+            }
+
+            .circles-group {
+                transform: translateX(-50%) scale(0.5);
+                top: 120px;
+            }
+
+            .trackrat-text {
+                font-size: 200px;
+                left: -1080px;
+                top: 150px;
+            }
+
+            .frame-button {
+                width: 300px;
+                height: 80px;
+                top: 350px;
+            }
+        }
+
+        @media screen and (max-width: 768px) {
+            .header-nav {
+                flex-direction: column;
+                gap: 10px;
+                top: 30px;
+                height: auto;
+                align-items: flex-start;
+            }
+
+            .header-left,
+            .header-right {
+                font-size: 18px;
+                text-align: left;
+            }
+
+            .circles-group {
+                transform: translateX(-50%) scale(0.35);
+                top: 100px;
+            }
+
+            .trackrat-text {
+                font-size: 120px;
+                left: -648px;
+                top: 120px;
+            }
+
+            .frame-button {
+                width: 200px;
+                height: 60px;
+                top: 250px;
+            }
+        }
+
+        @media screen and (max-width: 480px) {
+            .header-nav {
+                left: 15px;
+                width: calc(100% - 30px);
+                top: 20px;
+            }
+
+            .header-left,
+            .header-right {
+                font-size: 14px;
+            }
+
+            .circles-group {
+                transform: translateX(-50%) scale(0.25);
+                top: 80px;
+            }
+
+            .trackrat-text {
+                font-size: 80px;
+                left: -432px;
+                top: 100px;
+            }
+
+            .frame-button {
+                width: 150px;
+                height: 50px;
+                top: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header Navigation -->
+        <div class="header-nav">
+            <div class="header-left">ON SUNDAYS, WE SPRINT</div>
+            <div class="header-right">NOV 2 4401 TILLEY</div>
+        </div>
+
+        <!-- Concentric Circles -->
+        <div class="circles-group">
+            <div class="circle circle-9"></div>
+            <div class="circle circle-8"></div>
+            <div class="circle circle-7"></div>
+            <div class="circle circle-6"></div>
+            <div class="circle circle-5"></div>
+            <div class="circle circle-4"></div>
+            <div class="circle circle-3"></div>
+            <div class="circle circle-2"></div>
+            <div class="circle circle-1"></div>
+        </div>
+
+        <!-- Large TRACKRAT Text -->
+        <div class="trackrat-text">TRACKRAT</div>
+
+        <!-- Frame Button -->
+        <div class="frame-button"></div>
+    </div>
+</body>
+</html>
