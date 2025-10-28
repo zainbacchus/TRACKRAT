@@ -9,7 +9,6 @@ A minimal, responsive single-page web app for the TRACKRAT brand.
 | HTML5 | Document structure and semantic markup |
 | CSS3 | Responsive styling with viewport units |
 | SVG | Vector graphics for scalable brand visual |
-| JavaScript | Dynamic aspect ratio management |
 | Vercel | Static hosting and global CDN distribution |
 
 ## Project Structure
@@ -19,7 +18,6 @@ TRACKRAT/
 ├── index.html              # Main application file
 ├── vercel.json            # Deployment configuration
 ├── favicon.ico            # Browser icon (32-bit)
-├── favicon-16x16.png      # Browser icon (16x16 PNG)
 ├── claude.md              # AI assistant documentation
 └── README.md              # This file
 ```
@@ -56,22 +54,6 @@ The project is configured for automatic deployment on Vercel:
 - Upload `index.html` and favicon files to any static hosting service
 - No build process required
 
-## How It Works
-
-### Responsive Behavior
-
-The application uses JavaScript to detect viewport aspect ratio and adjust the SVG rendering:
-
-- **Tall Screens** (aspect ratio < 16:9): Shows entire image with letterboxing
-- **Wide Screens** (aspect ratio >= 16:9): Fills screen, may crop edges
-
-### Browser Compatibility
-
-Supports all modern browsers:
-- Chrome/Edge 90+
-- Firefox 85+
-- Safari 14+
-- Mobile browsers (iOS Safari, Chrome Android)
 
 ## Development
 
@@ -81,7 +63,6 @@ All code is contained in `index.html`:
 
 1. **Update Content**: Edit the SVG section (starting ~line 50)
 2. **Modify Styles**: Edit the `<style>` section in the `<head>`
-3. **Change Behavior**: Edit the JavaScript at the bottom of the file
 
 ### Testing
 
@@ -93,16 +74,6 @@ Test responsive behavior across different viewports:
 # Tablet: Test both portrait and landscape orientations
 ```
 
-### Brand Colors
-
-Primary brand color: `#FF4D1F` (orange)
-
-## Performance
-
-- **Load Time**: < 100ms
-- **File Size**: ~20 KB
-- **External Requests**: 0
-- **JavaScript Size**: < 1 KB
 
 ## Contributing
 
