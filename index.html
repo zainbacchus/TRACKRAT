@@ -3,46 +3,95 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>TRACKRAT</title>
+  <title>TRACKRAT Poster</title>
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Fugaz+One&display=swap" rel="stylesheet">
+
   <style>
-    html,body{height:100%;margin:0;background:#FF4D1F}
-    /* Center the SVG and keep perfect 16:9 without cropping */
-    .wrap{height:100%;display:grid;place-items:center;overflow:hidden}
-    svg{
-      width:100vw;           /* fill width */
-      height:100vh;          /* fill height */
-      max-width:100%;
-      max-height:100%;
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      height: 100%;
+      background: #111;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+    }
+
+    /* Fixed 1920x1080 artboard that scales to fit viewport */
+    .poster {
+      position: relative;
+      width: 1920px;
+      height: 1080px;
+      background: #FF4D1F;
+      transform-origin: center;
+    }
+    @media (min-aspect-ratio: 16/9) { .poster { transform: scale(calc(100vh / 1080)); } }
+    @media (max-aspect-ratio: 16/9) { .poster { transform: scale(calc(100vw / 1920)); } }
+
+    /* Top text blocks */
+    .tl, .tr {
+      position: absolute;
+      top: 73px;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 32px;
+      line-height: 0.8;
+      letter-spacing: -0.1em;
+      color: #000;
+      z-index: 3; /* above track */
+    }
+    .tl { left: 42px; text-align: left; }
+    .tr { right: 42px; text-align: right; }
+
+    /* Concentric track */
+    .track {
+      position: absolute;
+      left: 230px;
+      top: 160px;
+      width: 1460px;
+      height: 760px;
+      z-index: 2; /* lines over the wordmark */
+    }
+
+    /* Bottom wordmark */
+    .wordmark {
+      position: absolute;
+      left: 50%;
+      bottom: -42px;              /* slight overlap with the track */
+      transform: translateX(-50%);
+      font-family: "Fugaz One", sans-serif;
+      font-size: 400px;
+      line-height: 0.8;
+      letter-spacing: -0.1em;
+      color: rgba(0,0,0,0.9);
+      white-space: nowrap;
+      z-index: 1;                  /* under the track */
+      pointer-events: none;
     }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <!-- Your exact SVG, inline, responsive -->
-    <svg viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
-      <g clip-path="url(#clip0_2002_111)">
-        <rect width="1920" height="1080" fill="#FF4D1F"/>
-        <!-- wordmark, small text, and track outlines -->
-        <!-- BEGIN pasted from your SVG -->
-        <path d="M222.816 851.4H124.416L84.8156 1077H12.4156L52.0156 851.4H-46.7844L-35.5844 789H234.016L222.816 851.4ZM342.931 789C373.331 789 394.931 795.667 407.731 809C417.331 819.133 422.131 831.933 422.131 847.4C422.131 852.733 421.598 858.333 420.531 864.2L414.931 895.4C411.731 912.733 406.131 926.733 398.131 937.4C390.398 948.067 381.731 955.667 372.131 960.2L408.531 1077H327.731L294.131 969.4H269.331L252.931 1077H176.131L226.931 789H342.931ZM317.731 851.4H287.731L277.331 921H305.331C319.465 921 329.598 917.667 335.731 911C341.865 904.067 344.931 895 344.931 883.8C344.931 862.2 335.865 851.4 317.731 851.4ZM541.031 1077L543.431 1014.2H476.631L457.031 1077H380.631L483.431 789H615.431L617.031 1077H541.031ZM524.631 859L493.031 960.6H545.431L549.831 859H524.631ZM716.081 1082.6C677.948 1082.6 651.548 1074.33 636.881 1057.8C626.748 1046.07 621.681 1029.67 621.681 1008.6C621.681 999.533 622.615 989.8 624.481 979.4L640.881 887.4C652.881 819.933 696.215 786.2 770.881 786.2C801.815 786.2 825.281 792.867 841.281 806.2C857.281 819.267 865.281 837.267 865.281 860.2C865.281 870.867 863.681 881.533 860.481 892.2C857.548 902.6 854.615 910.333 851.681 915.4L847.281 923.4H776.481C785.281 913.267 789.681 898.867 789.681 880.2C789.681 870.333 787.148 862.6 782.081 857C777.015 851.133 769.548 848.2 759.681 848.2C732.748 848.2 716.748 863.133 711.681 893L697.681 973.8C696.348 980.733 695.681 987.533 695.681 994.2C695.681 1011.8 706.215 1020.6 727.281 1020.6C752.615 1020.6 767.815 1006.33 772.881 977.8H844.881L842.881 989.4C832.215 1051.53 789.948 1082.6 716.081 1082.6ZM1113.07 789L1021.47 934.2L1062.27 1077H986.266L956.266 971.4H924.666L905.866 1077H833.866L884.666 789H956.666L935.466 909H961.066L1037.07 789H1113.07ZM1223.17 789C1253.57 789 1275.17 795.667 1287.97 809C1297.57 819.133 1302.37 831.933 1302.37 847.4C1302.37 852.733 1301.83 858.333 1300.77 864.2L1295.17 895.4C1291.97 912.733 1286.37 926.733 1278.37 937.4C1270.63 948.067 1261.97 955.667 1252.37 960.2L1288.77 1077H1207.97L1174.37 969.4H1149.57L1133.17 1077H1056.37L1107.17 789H1223.17ZM1197.97 851.4H1167.97L1157.57 921H1185.57C1199.7 921 1209.83 917.667 1215.97 911C1222.1 904.067 1225.17 895 1225.17 883.8C1225.17 862.2 1216.1 851.4 1197.97 851.4ZM1421.27 1077L1423.67 1014.2H1356.87L1337.27 1077H1260.87L1363.67 789H1495.67L1497.27 1077H1421.27ZM1404.87 859L1373.27 960.6H1425.67L1430.07 859H1404.87ZM1757.27 851.4H1658.87L1619.27 1077H1546.87L1586.47 851.4H1487.67L1498.87 789H1768.47L1757.27 851.4Z" fill="black"/>
-        <path d="M51.6 117.384C50.2347 117.384 49.0613 117.128 48.08 116.616C47.0987 116.083 46.288 115.325 45.648 114.344C45.008 113.363 44.5387 112.157 44.24 110.728C43.9413 109.299 43.792 107.667 43.792 105.832C43.792 104.019 43.9413 102.397 44.24 100.968C44.5387 99.5173 45.008 98.3013 45.648 97.32C46.288 96.3387 47.0987 95.592 48.08 95.08C49.0613 94.5467 50.2347 94.28 51.6 94.28C52.9653 94.28 54.1387 94.5467 55.12 95.08C56.1013 95.592 56.912 96.3387 57.552 97.32C58.192 98.3013 58.6613 99.5173 58.96 100.968C59.2587 102.397 59.408 104.019 59.408 105.832C59.408 107.667 59.2587 109.299 58.96 110.728C58.6613 112.157 58.192 113.363 57.552 114.344C56.912 115.325 56.1013 116.083 55.12 116.616C54.4907 117.128 55.0027 113.672 55.408 113.032C55.8133 112.392 56.1013 111.624 56.272 110.728C56.464 109.811 56.56 108.787 56.56 107.656V104.008C56.56 102.899 56.464 101.885 56.272 100.968C56.1013 100.051 55.8133 99.272 55.408 98.632C55.0027 97.992 54.4907 97.5013 53.872 97.16C53.2533 96.7973 52.496 96.616 51.6 96.616C50.704 96.616 49.9467 96.7973 49.328 97.16C48.7093 97.5013 48.1973 97.992 47.792 98.632C47.3867 99.272 47.088 100.051 46.896 100.968C46.7253 101.885 46.64 102.899 46.64 104.008V107.656C46.64 108.787 46.7253 109.811 46.896 110.728C47.088 111.624 47.3867 112.392 47.792 113.032C48.1973 114.173 48.7093 114.877 49.328 115.048 51.6 115.048ZM63.2035 98.184H62.9795V117H60.5475V94.664H64.3555L71.9715 113.48H72.1955V94.664H74.6275V117H70.8195L63.2035 98.184Z" fill="black"/>
-        <!-- right side small text block paths and rest omitted for brevity since they are in your SVG -->
-        <rect x="311" y="241" width="1298" height="598" rx="299" fill="#FF4D1F" fill-opacity="0.5" stroke="black" stroke-width="2"/>
-        <rect x="301" y="231" width="1318" height="618" rx="309" stroke="black" stroke-width="2"/>
-        <rect x="291" y="221" width="1338" height="638" rx="319" stroke="black" stroke-width="2"/>
-        <rect x="281" y="211" width="1358" height="658" rx="329" stroke="black" stroke-width="2"/>
-        <rect x="271" y="201" width="1378" height="678" rx="339" stroke="black" stroke-width="2"/>
-        <rect x="261" y="191" width="1398" height="698" rx="349" stroke="black" stroke-width="2"/>
-        <rect x="251" y="181" width="1418" height="718" rx="359" stroke="black" stroke-width="2"/>
-        <rect x="241" y="171" width="1438" height="738" rx="369" stroke="black" stroke-width="2"/>
-        <rect x="231" y="161" width="1458" height="758" rx="379" stroke="black" stroke-width="2"/>
+  <div class="poster" role="img" aria-label="TRACKRAT poster">
+    <!-- Top labels -->
+    <div class="tl">ON<br>SUNDAYS,<br>WE SPRINT</div>
+    <div class="tr">NOV 2<br>4401<br>TILLEY</div>
+
+    <!-- Concentric track, strokes only -->
+    <svg class="track" viewBox="0 0 1460 760" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <g stroke="#000" stroke-width="2" fill="none">
+        <rect x="0"   y="0"   width="1460" height="760" rx="380" ry="380"/>
+        <rect x="20"  y="20"  width="1420" height="720" rx="360" ry="360"/>
+        <rect x="40"  y="40"  width="1380" height="680" rx="340" ry="340"/>
+        <rect x="60"  y="60"  width="1340" height="640" rx="320" ry="320"/>
+        <rect x="80"  y="80"  width="1300" height="600" rx="300" ry="300"/>
+        <rect x="100" y="100" width="1260" height="560" rx="280" ry="280"/>
+        <rect x="120" y="120" width="1220" height="520" rx="260" ry="260"/>
+        <rect x="140" y="140" width="1180" height="480" rx="240" ry="240"/>
       </g>
-      <defs>
-        <clipPath id="clip0_2002_111">
-          <rect width="1920" height="1080" fill="white"/>
-        </clipPath>
-      </defs>
     </svg>
+
+    <!-- Bottom wordmark -->
+    <div class="wordmark">TRACKRAT</div>
   </div>
 </body>
 </html>
