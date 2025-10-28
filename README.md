@@ -1,10 +1,6 @@
 # TRACKRAT
 
-A minimal, responsive single-page web application showcasing the TRACKRAT brand with a modern SVG-based design.
-
-## Overview
-
-TRACKRAT is a full-screen brand showcase website featuring dynamic aspect ratio handling and responsive design. Built with pure HTML, CSS, and vanilla JavaScript, it delivers a fast, self-contained web presence without external dependencies.
+A minimal, responsive single-page web app for the TRACKRAT brand.
 
 ## Features
 
@@ -124,14 +120,3 @@ Primary brand color: `#FF4D1F` (orange)
 4. Test across different devices and browsers
 5. Submit a pull request
 
-## License
-
-[Add your license information here]
-
-## Contact
-
-[Add contact information or links here]
-
----
-
-Built with simplicity and performance in mind.
