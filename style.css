@@ -1,0 +1,99 @@
+/* Global reset and full-height setup */
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+/* Body: dark background with centered stage */
+body {
+    background: #111;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+}
+
+/* Stage: viewport-sized container for responsive scaling */
+.stage {
+    width: 100vw;
+    height: 100vh;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+}
+
+/* Poster: fixed 1920x1080 artboard with orange background */
+.poster {
+    width: 1920px;
+    height: 1080px;
+    transform-origin: center;
+    background: #FF4D1F;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Responsive scaling: preserve 16:9 aspect ratio */
+/* If viewport is wider than 16:9, scale by height */
+@media (min-aspect-ratio: 16/9) {
+    .poster {
+        transform: scale(calc(100vh / 1080));
+    }
+}
+
+/* If viewport is narrower than 16:9, scale by width */
+@media (max-aspect-ratio: 16/9) {
+    .poster {
+        transform: scale(calc(100vw / 1920));
+    }
+}
+
+/* Top row: container for left and right text blocks */
+.top-row {
+    position: absolute;
+    left: 42px;
+    top: 73px;
+    width: 1804px;
+    height: 116px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+/* Top left and top right text: shared styles */
+.tl, .tr {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 32px;
+    line-height: 0.8;
+    letter-spacing: -0.1em;
+    color: #000;
+}
+
+/* Top right: right-aligned text */
+.tr {
+    text-align: right;
+}
+
+/* Track: SVG positioned at exact coordinates */
+.track {
+    position: absolute;
+    left: 230px;
+    top: 160px;
+}
+
+/* Wordmark: large TRACKRAT text overlapping track */
+.wordmark {
+    position: absolute;
+    left: -2160px;
+    top: 201px;
+    width: 4529px;
+    height: 617px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: "Fugaz One", sans-serif;
+    font-size: 400px;
+    line-height: 0.8;
+    letter-spacing: -0.1em;
+    color: rgba(0, 0, 0, 0.9);
+    pointer-events: none;
+}
