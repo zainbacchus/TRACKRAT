@@ -30,31 +30,32 @@
     }
   </style>
 </head>
-    <script>
-  (function () {
-    function fit() {
-      const ar = innerWidth / innerHeight;
-      const desktopSvg = document.querySelector('.desktop-view svg');
-      const mobileSvg = document.querySelector('.mobile-view svg');
+<script>
+(function () {
+  function fit() {
+    const ar = innerWidth / innerHeight;
+    const desktopSvg = document.querySelector('.desktop-view svg');
+    const mobileSvg  = document.querySelector('.mobile-view svg');
 
-      // Desktop SVG aspect ratio handling
-      if (desktopSvg) {
-        desktopSvg.setAttribute('preserveAspectRatio',
-          ar < (16/9) ? 'xMidYMin meet' : 'xMidYMid slice');
-      }
-
-      // Mobile SVG aspect ratio handling (402:874 portrait)
-      if (mobileSvg) {
-        mobileSvg.setAttribute('preserveAspectRatio',
-          ar > (402/874) ? 'xMidYMid slice' : 'xMidYMid meet');
-      }
+    if (desktopSvg) {
+      desktopSvg.setAttribute(
+        'preserveAspectRatio',
+        ar < (16/9) ? 'xMidYMin meet' : 'xMidYMid slice'
+      );
     }
-    addEventListener('resize', fit, { passive: true });
-    addEventListener('orientationchange', fit, { passive: true });
-    addEventListener('DOMContentLoaded', fit, { passive: true });
-    fit();
-  })();
-  </script>
+
+    // Always show the full mobile art, pinned to the top
+    if (mobileSvg) {
+      mobileSvg.setAttribute('preserveAspectRatio', 'xMidYMin meet');
+    }
+  }
+  addEventListener('resize', fit, { passive: true });
+  addEventListener('orientationchange', fit, { passive: true });
+  addEventListener('DOMContentLoaded', fit, { passive: true });
+  fit();
+})();
+</script>
+
 
 <body>
   <div class="art" aria-label="TRACKRAT poster">
