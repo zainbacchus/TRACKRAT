@@ -4,41 +4,39 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TRACKRAT</title>
+
+    <!-- Google Fonts: IBM Plex Mono and Fugaz One -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fugaz+One&family=IBM+Plex+Mono:wght@400&display=swap" rel="stylesheet">
+
     <style>
+        /* Global Reset */
         * {
             margin: 0;
             padding: 0;
         }
 
+        /* Body: Centers the poster on screen with black letterboxing */
         body {
             background: #000000;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
+            overflow: hidden;
         }
 
-        /* Frame 3 */
+        /* Frame 3: Main poster container - 1920x1080 orange background */
         .frame-3 {
             position: relative;
             width: 1920px;
             height: 1080px;
             background: #FF4D1F;
+            overflow: hidden;
         }
 
-        /* Group 1 */
-        .group-1 {
-            position: absolute;
-            width: 1460px;
-            height: 760px;
-            left: 230px;
-            top: 160px;
-        }
-
-        /* Group 2 */
+        /* Group 2: Container for header navigation area */
         .group-2 {
             position: absolute;
             width: 1804px;
@@ -47,7 +45,7 @@
             top: 73px;
         }
 
-        /* Frame 2 */
+        /* Frame 2: Decorative rounded rectangle element */
         .frame-2 {
             box-sizing: border-box;
             position: absolute;
@@ -58,7 +56,7 @@
             border-radius: 20px 33px;
         }
 
-        /* TRACKRAT */
+        /* TRACKRAT: Large title text that overflows container for dramatic effect */
         .trackrat {
             position: absolute;
             width: 4529px;
@@ -77,7 +75,7 @@
             color: #000000;
         }
 
-        /* Header Navigation */
+        /* Header Navigation: Flexbox container for top left/right text blocks */
         .header-nav {
             display: flex;
             flex-direction: row;
@@ -92,7 +90,7 @@
             top: 73px;
         }
 
-        /* ON SUNDAYS, WE SPRINT */
+        /* ON SUNDAYS, WE SPRINT: Top left text block */
         .header-left {
             margin: 0 auto;
             width: 163px;
@@ -111,7 +109,7 @@
             flex-grow: 0;
         }
 
-        /* NOV 2 4401 TILLEY */
+        /* NOV 2 4401 TILLEY: Top right text block */
         .header-right {
             margin: 0 auto;
             width: 125px;
@@ -131,7 +129,16 @@
             flex-grow: 0;
         }
 
-        /* Rectangle 1 */
+        /* Group 1: Container for concentric oval track rings */
+        .group-1 {
+            position: absolute;
+            width: 1460px;
+            height: 760px;
+            left: 230px;
+            top: 160px;
+        }
+
+        /* Rectangle 1: Innermost oval with semi-transparent orange fill */
         .rectangle-1 {
             box-sizing: border-box;
             position: absolute;
@@ -144,7 +151,7 @@
             border-radius: 10000px;
         }
 
-        /* Rectangle 2 */
+        /* Rectangle 2: Second concentric oval */
         .rectangle-2 {
             box-sizing: border-box;
             position: absolute;
@@ -156,7 +163,7 @@
             border-radius: 100000px;
         }
 
-        /* Rectangle 3 */
+        /* Rectangle 3: Third concentric oval */
         .rectangle-3 {
             box-sizing: border-box;
             position: absolute;
@@ -168,7 +175,7 @@
             border-radius: 100000px;
         }
 
-        /* Rectangle 4 */
+        /* Rectangle 4: Fourth concentric oval */
         .rectangle-4 {
             box-sizing: border-box;
             position: absolute;
@@ -180,7 +187,7 @@
             border-radius: 100000px;
         }
 
-        /* Rectangle 5 */
+        /* Rectangle 5: Fifth concentric oval */
         .rectangle-5 {
             box-sizing: border-box;
             position: absolute;
@@ -192,7 +199,7 @@
             border-radius: 100000px;
         }
 
-        /* Rectangle 6 */
+        /* Rectangle 6: Sixth concentric oval */
         .rectangle-6 {
             box-sizing: border-box;
             position: absolute;
@@ -204,7 +211,7 @@
             border-radius: 100000px;
         }
 
-        /* Rectangle 7 */
+        /* Rectangle 7: Seventh concentric oval */
         .rectangle-7 {
             box-sizing: border-box;
             position: absolute;
@@ -216,7 +223,7 @@
             border-radius: 100000px;
         }
 
-        /* Rectangle 8 */
+        /* Rectangle 8: Eighth concentric oval */
         .rectangle-8 {
             box-sizing: border-box;
             position: absolute;
@@ -228,7 +235,7 @@
             border-radius: 100000px;
         }
 
-        /* Rectangle 9 */
+        /* Rectangle 9: Outermost oval ring */
         .rectangle-9 {
             box-sizing: border-box;
             position: absolute;
@@ -240,53 +247,58 @@
             border-radius: 100000px;
         }
 
-        /* Responsive Design */
+        /* Responsive Design: Scale entire poster proportionally on smaller screens */
         @media screen and (max-width: 1920px) {
             .frame-3 {
                 transform: scale(calc(100vw / 1920));
-                transform-origin: top center;
+                transform-origin: center center;
+            }
+        }
+
+        @media screen and (max-height: 1080px) {
+            .frame-3 {
+                transform: scale(calc(100vh / 1080));
+                transform-origin: center center;
+            }
+        }
+
+        /* For screens smaller than poster, scale to fit both width and height */
+        @media screen and (max-width: 1920px) and (max-height: 1080px) {
+            .frame-3 {
+                transform: scale(calc(min(100vw / 1920, 100vh / 1080)));
+                transform-origin: center center;
+            }
+        }
+
+        /* Mobile adjustments for very small screens */
+        @media screen and (max-width: 768px) {
+            .frame-3 {
+                transform: scale(calc(100vw / 1920));
+                transform-origin: center center;
             }
 
             body {
                 align-items: flex-start;
             }
         }
-
-        @media screen and (max-width: 1440px) {
-            .frame-3 {
-                transform: scale(0.75);
-            }
-        }
-
-        @media screen and (max-width: 1024px) {
-            .frame-3 {
-                transform: scale(0.53);
-            }
-        }
-
-        @media screen and (max-width: 768px) {
-            .frame-3 {
-                transform: scale(0.4);
-            }
-        }
-
-        @media screen and (max-width: 480px) {
-            .frame-3 {
-                transform: scale(0.25);
-            }
-        }
     </style>
 </head>
 <body>
+    <!-- Main poster container -->
     <div class="frame-3">
-        <!-- Header Navigation -->
+
+        <!-- Top navigation bar with event details -->
         <div class="header-nav">
-            <div class="header-left">ON SUNDAYS, WE SPRINT</div>
-            <div class="header-right">NOV 2 4401 TILLEY</div>
+            <!-- Left text: Event tagline -->
+            <div class="header-left">ON<br>SUNDAYS,<br>WE SPRINT</div>
+
+            <!-- Right text: Date and location -->
+            <div class="header-right">NOV 2<br>4401<br>TILLEY</div>
         </div>
 
-        <!-- Group 1 - Concentric Circles -->
+        <!-- Concentric oval track rings (9 nested ovals) -->
         <div class="group-1">
+            <!-- Rings ordered from outermost to innermost for proper stacking -->
             <div class="rectangle-9"></div>
             <div class="rectangle-8"></div>
             <div class="rectangle-7"></div>
@@ -298,10 +310,10 @@
             <div class="rectangle-1"></div>
         </div>
 
-        <!-- Large TRACKRAT Text -->
+        <!-- Large title text that dramatically overflows the poster -->
         <div class="trackrat">TRACKRAT</div>
 
-        <!-- Frame 2 -->
+        <!-- Decorative frame element -->
         <div class="frame-2"></div>
     </div>
 </body>
