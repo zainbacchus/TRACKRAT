@@ -2,14 +2,6 @@
 
 A minimal, responsive single-page web app for the TRACKRAT brand.
 
-## Features
-
-- **Responsive Design**: Adapts seamlessly to all device sizes and orientations
-- **Dynamic Aspect Ratio**: Automatically adjusts visual presentation based on viewport dimensions
-- **Lightweight**: Single 20 KB HTML file with no external dependencies
-- **Fast Loading**: Inline SVG and styles for instant rendering
-- **Modern Stack**: HTML5, CSS3, SVG, and vanilla JavaScript
-
 ## Technology Stack
 
 | Technology | Purpose |
