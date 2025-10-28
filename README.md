@@ -1,6 +1,6 @@
 # TRACKRAT
 
-A minimal, responsive single-page web app for the TRACKRAT brand.
+A minimal, responsive single-page web app for TRACKRAT.
 
 ## Technology Stack
 
