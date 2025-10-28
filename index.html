@@ -11,13 +11,33 @@
     /* Make the SVG cover the viewport while keeping its 16:9 aspect */
     .art {
       position: fixed; inset: 0;
-      width: 100vw; height: 100vh;
+      width: 100vw; height: 100dvh;   /* mobile friendly */
       display: block;
     }
+    /* fallback for browsers that lack 100dvh */
+    @supports not (height: 100dvh) {
+      .art { height: 100vh; }
+    }
+
     /* Let the SVG scale like background-size: cover */
     .art svg { width: 100%; height: 100%; display:block; }
   </style>
 </head>
+    <script>
+  (function () {
+    const svg = document.querySelector('.art svg');
+    function fit() {
+      const ar = innerWidth / innerHeight;
+      // tall phones use contain, desktops keep cover
+      svg.setAttribute('preserveAspectRatio',
+        ar < (16/9) ? 'xMidYMin meet' : 'xMidYMid slice');
+    }
+    addEventListener('resize', fit, { passive: true });
+    addEventListener('orientationchange', fit, { passive: true });
+    fit();
+  })();
+  </script>
+
 <body>
   <div class="art" aria-label="TRACKRAT poster">
     <!-- Your exact SVG, inlined so nothing external is required -->
