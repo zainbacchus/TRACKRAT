@@ -5,72 +5,148 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <title>Trackrat</title>
   <link rel="icon" href="/favicon.ico" sizes="any">
+  <!-- Web fonts -->
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Fugaz+One&display=swap" rel="stylesheet">
 
   <style>
-    :root { --bg:#FF4D1F; --ink:#000; }
-    * { box-sizing:border-box; }
-    html, body { height:100%; }
-    body { margin:0; background:var(--bg); color:var(--ink); overflow:hidden; }
-
-    /* Top labels - fixed and above the art */
-    .meta{
-      position:fixed; top:2.2vh; left:2.2vw; right:2.2vw;
-      display:flex; justify-content:space-between; align-items:flex-start;
-      font-family:"IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-      letter-spacing:-0.06em; line-height:0.82; z-index:20; user-select:none;
+    :root{
+      /* base sizing for a 1920x1080 frame */
+      --bg:#FF4D1F;
+      --ink:#000;
     }
-    .meta .left{  font-size:clamp(14px,2.1vw,32px); }
-    .meta .right{ font-size:clamp(14px,2.1vw,32px); text-align:right; }
-
-    /* Track */
-    .stage{ position:fixed; inset:0; display:grid; place-items:center; z-index:5; }
-    svg{ width:min(88vw,1500px); height:auto; }
-    .ring rect{ fill:transparent; stroke:var(--ink); stroke-width:2; }
-    .ring rect:first-of-type{ fill:rgba(255,77,31,0.5); }
-
-    /* Bottom wordmark - now height-capped and lifted above the bottom */
-    .watermark{
-      position:fixed; left:0; right:0;
-      bottom:calc(1.2vh + env(safe-area-inset-bottom, 0px));
-      font-family:"Fugaz One", Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
-      /* size limited by both vw and vh so it never overflows */
-      font-size:clamp(160px, min(30vw, 42vh), 400px);
-      letter-spacing:-0.06em; line-height:0.8; white-space:nowrap;
-      text-align:center; color:#000; opacity:0.9;
-      mix-blend-mode:multiply; pointer-events:none; z-index:10;
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      background:var(--bg);
+      color:var(--ink);
+      overflow:hidden;           /* intentional to clip the bottom of the wordmark like the Figma */
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
     }
 
-    @media (max-width:800px){
-      svg{ width:92vw; }
-      .watermark{ font-size:clamp(120px, min(36vw, 38vh), 360px); }
+    /* 16:9 stage that scales with the viewport */
+    .stage{
+      position:relative;
+      width:100vw;
+      height:56.25vw;            /* 16:9 */
+      max-height:100vh;
+      max-width:177.78vh;        /* 16:9 */
+      margin:0 auto;
+      background:var(--bg);
+    }
+
+    /* Top left and top right labels */
+    .labels{
+      position:absolute;
+      inset:0;
+      pointer-events:none;
+    }
+    .tl, .tr{
+      position:absolute;
+      top:min(2.8vw,28px);
+      font-family:"IBM Plex Mono",ui-monospace,monospace;
+      font-weight:400;
+      font-size:clamp(18px,1.67vw,32px);
+      letter-spacing:-0.06em;
+      line-height:0.8;
+      white-space:pre;
+    }
+    .tl{left:min(2.6vw,26px)}
+    .tr{right:min(2.6vw,26px); text-align:right}
+
+    /* The rings */
+    svg.rings{
+      position:absolute;
+      left:0; top:0;
+      width:100%; height:100%;
+    }
+    /* put one copy behind the word and a thin slice in front */
+    .rings.back{z-index:1}
+    .rings.front{z-index:3}
+
+    /* Wordmark */
+    .word{
+      position:absolute;
+      left:0;
+      right:0;
+      bottom:-10vh;              /* tuned so the top of the letters cuts the rings like the mock */
+      z-index:2;
+      font-family:"Fugaz One", system-ui, sans-serif;
+      font-size:clamp(64px,42vh,420px);  /* responsive but anchored to the 16:9 frame */
+      line-height:0.8;
+      letter-spacing:-0.1em;
+      text-transform:uppercase;
+      color:#0A0503;             /* rich near-black for print-like weight */
+      opacity:0.98;
+      transform:translateZ(0);   /* crisp edges */
+      white-space:nowrap;
+      padding-left:min(1.5vw,28px);
+    }
+
+    /* Mobile tweaks */
+    @media (max-aspect-ratio: 16/9){
+      /* Tall screens: keep full bleed and maintain composition */
+      .stage{ width:177.78vh; height:100vh; }
+      .word{ bottom:-8vh; font-size:40vh }
+    }
+    @media (max-width: 720px){
+      .tl,.tr{ font-size:18px }
+      .word{ bottom:-7vh; font-size:34vh }
     }
   </style>
 </head>
 <body>
+  <main class="stage">
+    <!-- labels -->
+    <div class="labels" aria-hidden="true">
+      <div class="tl">ON
+SUNDAYS,
+WE SPRINT</div>
+      <div class="tr">NOV 2
+4401
+TILLEY</div>
+    </div>
 
-  <header class="meta">
-    <div class="left">ON<br>SUNDAYS,<br>WE SPRINT</div>
-    <div class="right">NOV&nbsp;2<br>4401<br>TILLEY</div>
-  </header>
+    <!-- rings behind the word -->
+    <svg class="rings back" viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg">
+      <g fill="none" stroke="black" stroke-width="2">
+        <rect x="231" y="161" width="1458" height="758" rx="379"/>
+        <rect x="241" y="171" width="1438" height="738" rx="369"/>
+        <rect x="251" y="181" width="1418" height="718" rx="359"/>
+        <rect x="261" y="191" width="1398" height="698" rx="349"/>
+        <rect x="271" y="201" width="1378" height="678" rx="339"/>
+        <rect x="281" y="211" width="1358" height="658" rx="329"/>
+        <rect x="291" y="221" width="1338" height="638" rx="319"/>
+        <rect x="301" y="231" width="1318" height="618" rx="309"/>
+        <rect x="311" y="241" width="1298" height="598" rx="299" fill="rgba(255,77,31,0.5)"/>
+      </g>
+    </svg>
 
-  <main class="stage" aria-label="Concentric track graphic">
-    <svg viewBox="0 0 1920 1080" aria-hidden="true" preserveAspectRatio="xMidYMid meet">
-      <g class="ring">
-        <rect x="311" y="241" width="1298" height="598" rx="299"></rect>
-        <rect x="301" y="231" width="1318" height="618" rx="309"></rect>
-        <rect x="291" y="221" width="1338" height="638" rx="319"></rect>
-        <rect x="281" y="211" width="1358" height="658" rx="329"></rect>
-        <rect x="271" y="201" width="1378" height="678" rx="339"></rect>
-        <rect x="261" y="191" width="1398" height="698" rx="349"></rect>
-        <rect x="251" y="181" width="1418" height="718" rx="359"></rect>
-        <rect x="241" y="171" width="1438" height="738" rx="369"></rect>
-        <rect x="231" y="161" width="1458" height="758" rx="379"></rect>
+    <!-- wordmark -->
+    <div class="word">TRACKRAT</div>
+
+    <!-- rings slice in front of the word to create the thin band crossing the letters -->
+    <svg class="rings front" viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <!-- horizontal slice that sits where the rings should pass in front of the letters -->
+        <clipPath id="slice">
+          <!-- y and height tuned to match the reference comp -->
+          <rect x="0" y="705" width="1920" height="78" />
+        </clipPath>
+      </defs>
+      <g clip-path="url(#slice)" fill="none" stroke="black" stroke-width="2">
+        <rect x="231" y="161" width="1458" height="758" rx="379"/>
+        <rect x="241" y="171" width="1438" height="738" rx="369"/>
+        <rect x="251" y="181" width="1418" height="718" rx="359"/>
+        <rect x="261" y="191" width="1398" height="698" rx="349"/>
+        <rect x="271" y="201" width="1378" height="678" rx="339"/>
+        <rect x="281" y="211" width="1358" height="658" rx="329"/>
+        <rect x="291" y="221" width="1338" height="638" rx="319"/>
+        <rect x="301" y="231" width="1318" height="618" rx="309"/>
+        <rect x="311" y="241" width="1298" height="598" rx="299"/>
       </g>
     </svg>
   </main>
-
-  <div class="watermark">TRACKRAT</div>
-
 </body>
 </html>
