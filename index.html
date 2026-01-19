@@ -33,6 +33,23 @@
       env(safe-area-inset-left);
   }
 }
+    /* General Link Styling */
+  a {
+    text-decoration: none;
+    -webkit-tap-highlight-color: transparent; /* Removes the grey box on mobile tap */
+  }
+  
+  /* Hover effect for Desktop */
+  a:hover text {
+    fill: #FFFFFF; /* Change to white or any color that pops against the orange */
+    transition: fill 0.2s ease;
+  }
+  
+  /* "Active" effect for Mobile (when the finger is actually touching it) */
+  a:active text {
+    fill: #000000;
+    opacity: 0.6; 
+  }
 
 
   </style>
@@ -56,7 +73,8 @@
   <tspan x="80"  dy="44">WE SPRINT</tspan>
 </text>
 
-<a href="https://trackrat.myshopify.com/" target="_blank" style="text-decoration: none;">
+<a href="https://trackrat.myshopify.com/" target="_blank">
+  <rect x="860" y="80" width="200" height="60" fill="transparent" />
   <text x="960" y="100"
         text-anchor="middle"
         dominant-baseline="hanging"
@@ -146,6 +164,19 @@
   <tspan x="5%"  dy="44">SUNDAYS,</tspan>
   <tspan x="5%"  dy="44">WE SPRINT</tspan>
 </text>
+
+<a href="https://trackrat.myshopify.com/" target="_blank">
+  <rect x="25%" y="180" width="50%" height="80" fill="transparent" />
+  <text x="50%" y="200"
+        text-anchor="middle"
+        dominant-baseline="hanging"
+        font-family="IBM Plex Mono, monospace"
+        font-size="42" 
+        fill="#000"
+        style="cursor: pointer; font-weight: bold;">
+    [ SHOP ]
+  </text>
+</a>
 
 <!-- Top-right stacked block -->
 <text x="95%" y="100"
