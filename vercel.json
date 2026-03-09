@@ -1,11 +1,7 @@
 {
-  "version": 2,
-  "builds": [{ "src": "**", "use": "@vercel/static" }],
-  "routes": [
-    { "src": "/favicon.ico", "dest": "/favicon.ico" },
-    { "src": "/favicon-16x16.png", "dest": "/favicon-16x16.png" },
-    { "src": "/brand", "dest": "/brand.html" },
-    { "src": "/2026-invitational", "dest": "/invitational.html" },
-    { "src": "/(.*)", "dest": "/index.html" }
+  "rewrites": [
+    { "source": "/brand", "destination": "/brand.html" },
+    { "source": "/2026-invitational", "destination": "/invitational.html" },
+    { "source": "/(.*)", "destination": "/index.html" }
   ]
 }
