@@ -4,6 +4,8 @@
   "routes": [
     { "src": "/favicon.ico", "dest": "/favicon.ico" },
     { "src": "/favicon-16x16.png", "dest": "/favicon-16x16.png" },
+    { "src": "/brand", "dest": "/brand.html" },
+    { "src": "/2026-invitational", "dest": "/invitational.html" },
     { "src": "/(.*)", "dest": "/index.html" }
   ]
 }

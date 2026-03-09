@@ -5,15 +5,14 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <link rel="icon" href="/favicon.ico" sizes="any">
   <title>TRACKRAT</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fugaz+One&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     html, body { height: 100%; }
-    body { margin: 0; background:#FF4D1F; overflow:hidden; }
-    .art { width:100vw; height:100vh; }           /* fallback */
-@supports (height: 100dvh) {
-  .art { height: 100dvh; }                    /* correct on mobile */
-}
-
-
+    body { margin: 0; background:#FF4D1F; overflow:hidden; font-family: 'IBM Plex Mono', monospace; }
+    .art { width:100vw; height:100vh; }
+    @supports (height: 100dvh) { .art { height: 100dvh; } }
     .art svg { width: 100%; height: 100%; display:block; }
 
     .desktop-view { display: block; }
@@ -25,78 +24,78 @@
     }
 
     @supports(padding-top: env(safe-area-inset-top)) {
-  .art {
-    padding:
-      env(safe-area-inset-top)
-      env(safe-area-inset-right)
-      env(safe-area-inset-bottom)
-      env(safe-area-inset-left);
-  }
-}
-    /* General Link Styling */
-  a {
-    text-decoration: none;
-    -webkit-tap-highlight-color: transparent; /* Removes the grey box on mobile tap */
-  }
-  
-  /* Hover effect for Desktop */
-  a:hover text {
-    fill: #FFFFFF; /* Change to white or any color that pops against the orange */
-    transition: fill 0.2s ease;
-  }
-  
-  /* "Active" effect for Mobile (when the finger is actually touching it) */
-  a:active text {
-    fill: #000000;
-    opacity: 0.6; 
-  }
+      .art {
+        padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+      }
+    }
 
+    /* HTML Nav */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 24px 40px;
+      font-size: 14px;
+      letter-spacing: 0.05em;
+      color: #000000;
+    }
+    nav .nav-left {
+      font-family: 'Fugaz One', cursive;
+      font-size: 20px;
+      letter-spacing: -0.14em;
+    }
+    nav .nav-right {
+      display: flex;
+      gap: 28px;
+      font-weight: 600;
+      font-size: 13px;
+    }
+    a { text-decoration: none; color: inherit; -webkit-tap-highlight-color: transparent; }
+    nav a:hover { opacity: 0.6; transition: opacity 0.2s ease; }
 
+    /* SVG link hover */
+    a:hover text { fill: #FFFFFF; transition: fill 0.2s ease; }
+    a:active text { opacity: 0.6; }
+
+    @media (max-width: 768px) {
+      nav { padding: 20px 20px; }
+      nav .nav-right { gap: 14px; font-size: 11px; }
+      nav .nav-left { font-size: 16px; }
+    }
   </style>
 </head>
 
 <body>
+  <nav>
+    <div class="nav-right" style="margin: 0 auto;">
+      <a href="https://shop.trackratsprint.club/" target="_blank">[ SHOP ]</a>
+      <a href="/brand.html">[ BRAND ]</a>
+      <a href="/invitational.html">[ 2026 INVITATIONAL ]</a>
+    </div>
+  </nav>
   <div class="art" aria-label="TRACKRAT poster">
     <!-- Desktop SVG - 16:9 landscape -->
     <div class="desktop-view">
 <svg width="1920" height="1080" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid meet" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 <g clip-path="url(#clip0_21_2)">
 <rect width="1920" height="1080" fill="#FF4D1F"/>
-  <!-- Top-left header -->
-<text x="80" y="100"
+
+<!-- Top-left info -->
+<text x="80" y="80"
       dominant-baseline="hanging"
       font-family="IBM Plex Mono, monospace"
-      font-size="36"
+      font-size="20"
       fill="#000">
   <tspan x="80"  dy="0">ON</tspan>
-  <tspan x="80"  dy="44">SUNDAYS,</tspan>
-  <tspan x="80"  dy="44">WE SPRINT</tspan>
+  <tspan x="80"  dy="24">SUNDAYS,</tspan>
+  <tspan x="80"  dy="24">WE SPRINT</tspan>
 </text>
 
-<a href="https://shop.trackratsprint.club/" target="_blank">
-  <rect x="860" y="80" width="200" height="60" fill="transparent" />
-  <text x="960" y="100"
-        text-anchor="middle"
-        dominant-baseline="hanging"
-        font-family="IBM Plex Mono, monospace"
-        font-size="36"
-        fill="#000"
-        style="cursor: pointer; font-weight: bold;">
-    [ SHOP ]
-  </text>
-</a>
-
-<!-- Top-right stacked block -->
-<text x="1840" y="100"
-      text-anchor="end"
-      dominant-baseline="hanging"
-      font-family="IBM Plex Mono, monospace"
-      font-size="36"
-      fill="#000">
-  <tspan x="1840" dy="0">830AM</tspan>
-  <tspan id="js-date-desktop" x="1840" dy="44">NOV 2</tspan>
-  <tspan x="1820" dy="44">4401 TILLEY</tspan>
-</text>
+<!-- Top-right info -->
+<text text-anchor="end" dominant-baseline="hanging" font-family="IBM Plex Mono, monospace" font-size="20" fill="#000"><tspan x="1840" dy="80">830AM</tspan><tspan id="js-date-desktop" x="1840" dy="24">NOV 2</tspan><tspan x="1840" dy="24">4401 TILLEY</tspan></text>
 <rect x="313" y="239" width="1298" height="598" rx="299" fill="#FF4D1F"/>
 <rect x="313" y="239" width="1298" height="598" rx="299" fill="url(#pattern0_21_2)"/>
 <rect x="313" y="239" width="1298" height="598" rx="299" fill="url(#pattern1_21_2)"/>
@@ -154,41 +153,20 @@
 <svg width="1179" height="2556" viewBox="0 0 1179 2556" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 <g clip-path="url(#clip0_13_3)">
 <rect width="1179" height="2556" rx="44" fill="#FF4D1F"/>
-    <!-- Top-left header -->
-<text x="5%" y="100"
+
+<!-- Top-left info -->
+<text x="5%" y="80"
       dominant-baseline="hanging"
       font-family="IBM Plex Mono, monospace"
-      font-size="36"
+      font-size="28"
       fill="#000">
   <tspan x="5%"  dy="0">ON</tspan>
-  <tspan x="5%"  dy="44">SUNDAYS,</tspan>
-  <tspan x="5%"  dy="44">WE SPRINT</tspan>
+  <tspan x="5%"  dy="32">SUNDAYS,</tspan>
+  <tspan x="5%"  dy="32">WE SPRINT</tspan>
 </text>
 
-<a href="https://shop.trackratsprint.club/" target="_blank">
-  <rect x="25%" y="120" width="50%" height="80" fill="transparent" />
-  <text x="50%" y="140"
-        text-anchor="middle"
-        dominant-baseline="hanging"
-        font-family="IBM Plex Mono, monospace"
-        font-size="42" 
-        fill="#000"
-        style="cursor: pointer; font-weight: bold;">
-    [ SHOP ]
-  </text>
-</a>
-
-<!-- Top-right stacked block -->
-<text x="95%" y="100"
-      text-anchor="end"
-      dominant-baseline="hanging"
-      font-family="IBM Plex Mono, monospace"
-      font-size="36"
-      fill="#000">
-  <tspan x="95%" dy="0">830AM</tspan>
-  <tspan id="js-date-mobile" x="95%" dy="44">NOV 2</tspan>
-  <tspan x="93%" dy="44">4401 TILLEY</tspan>
-</text>
+<!-- Top-right info -->
+<text text-anchor="end" dominant-baseline="hanging" font-family="IBM Plex Mono, monospace" font-size="28" fill="#000"><tspan x="95%" dy="80">830AM</tspan><tspan id="js-date-mobile" x="95%" dy="32">NOV 2</tspan><tspan x="95%" dy="32">4401 TILLEY</tspan></text>
 <rect x="228" y="310" width="734" height="1601" rx="367" fill="#FF4D1F"/>
 <rect x="228" y="310" width="734" height="1601" rx="367" fill="url(#pattern0_13_3)"/>
 <rect x="228" y="310" width="734" height="1601" rx="367" fill="url(#pattern1_13_3)"/>

@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>TRACKRAT — BRAND</title>
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fugaz+One&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --orange: #FF4D1F;
+      --black: #000000;
+      --white: #FFFFFF;
+      --font: 'IBM Plex Mono', monospace;
+      --lane-color: rgba(255, 255, 255, 0.12);
+      --stagger-yellow: rgba(230, 190, 50, 0.12);
+      --lane-color-orange: rgba(0, 0, 0, 0.08);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font);
+      background: var(--black);
+      color: var(--white);
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .wordmark {
+      font-family: 'Fugaz One', cursive;
+      letter-spacing: -0.14em;
+    }
+
+    /* ---- TRACK LANES (background) ---- */
+    .track-lanes {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 0;
+      pointer-events: none;
+      display: flex;
+      justify-content: center;
+      gap: 0;
+    }
+
+    .lane {
+      width: calc(100% / 8);
+      height: 100%;
+      border-right: 1px solid var(--lane-color);
+    }
+
+    .lane:first-child { border-left: 1px solid var(--lane-color); }
+
+    /* ---- RUNNER DOT ---- */
+    .runner {
+      position: fixed;
+      z-index: 50;
+      width: 12px;
+      height: 12px;
+      background: var(--orange);
+      border-radius: 50%;
+      left: calc(50% + 6.25%);
+      top: 50%;
+      transform: translate(-50%, -50%);
+      box-shadow: 0 0 20px rgba(255, 77, 31, 0.6), 0 0 60px rgba(255, 77, 31, 0.2);
+      transition: left 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .runner-trail {
+      position: fixed;
+      z-index: 49;
+      width: 4px;
+      height: 40px;
+      background: linear-gradient(to top, var(--orange), transparent);
+      left: calc(50% + 6.25%);
+      top: 50%;
+      transform: translate(-50%, 0);
+      opacity: 0.4;
+      transition: left 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    /* ---- LANE NUMBERS ---- */
+    /* ---- STAGGER MARKS ---- */
+    .stagger-marks {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .stagger-tri {
+      position: absolute;
+      width: calc(100% / 8);
+      aspect-ratio: 1 / 0.7;
+    }
+
+    .stagger-tri svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    /* Lane positions */
+    .stagger-tri.l1 { left: 0; }
+    .stagger-tri.l2 { left: 12.5%; }
+    .stagger-tri.l3 { left: 25%; }
+    .stagger-tri.l4 { left: 37.5%; }
+    .stagger-tri.l5 { left: 50%; }
+    .stagger-tri.l6 { left: 62.5%; }
+    .stagger-tri.l7 { left: 75%; }
+    .stagger-tri.l8 { left: 87.5%; }
+
+    /* ---- NAV ---- */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 24px 40px;
+      font-size: 13px;
+      letter-spacing: 0.05em;
+    }
+
+    nav .nav-left {
+      font-family: 'Fugaz One', cursive;
+      font-size: 18px;
+      letter-spacing: -0.14em;
+      position: absolute;
+      left: 40px;
+    }
+
+    nav .nav-center {
+      display: flex;
+      gap: 28px;
+      font-weight: 500;
+    }
+
+    nav a:hover { opacity: 0.6; transition: opacity 0.2s ease; }
+
+    /* ---- PROGRESS BAR ---- */
+    .progress-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 2px;
+      background: var(--orange);
+      z-index: 200;
+      width: 0%;
+      transition: width 0.1s linear;
+    }
+
+    /* ---- HERO ---- */
+    .hero {
+      position: relative;
+      z-index: 10;
+      height: 100vh;
+      height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 0 40px 80px;
+    }
+
+    .hero-start {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+    }
+
+    /* Starting line */
+    .start-line {
+      position: absolute;
+      bottom: 60px;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: repeating-linear-gradient(90deg, var(--white) 0, var(--white) 20px, transparent 20px, transparent 40px);
+      opacity: 0.15;
+    }
+
+    .hero-brand {
+      font-size: clamp(60px, 14vw, 200px);
+      font-family: 'Fugaz One', cursive;
+      letter-spacing: -0.14em;
+      color: var(--orange);
+      line-height: 0.85;
+    }
+
+    .hero-tagline {
+      font-size: clamp(11px, 1.2vw, 15px);
+      letter-spacing: 0.2em;
+      margin-top: 20px;
+      opacity: 0.5;
+      font-weight: 500;
+    }
+
+    .hero-scroll-cue {
+      position: absolute;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 11px;
+      letter-spacing: 0.3em;
+      opacity: 0.3;
+      animation: bob 2s ease-in-out infinite;
+    }
+
+    @keyframes bob {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50% { transform: translateX(-50%) translateY(6px); }
+    }
+
+    /* ---- SECTIONS ---- */
+    .section {
+      position: relative;
+      z-index: 10;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding: 120px 40px;
+    }
+
+    .section-content {
+      max-width: 560px;
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+
+    .section-content.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Position content in different lanes */
+    .section.lane-2 { justify-content: flex-start; padding-left: calc(12.5% + 40px); }
+    .section.lane-3 { justify-content: flex-start; padding-left: calc(25% + 40px); }
+    .section.lane-5 { justify-content: flex-start; padding-left: calc(12.5% + 40px); }
+    .section.lane-6 { justify-content: flex-end; padding-right: calc(25% + 40px); }
+    .section.lane-7 { justify-content: flex-start; padding-left: calc(37.5% + 40px); }
+
+    .section-number {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      color: var(--orange);
+      margin-bottom: 20px;
+      display: block;
+    }
+
+    .section-title {
+      font-size: clamp(32px, 5vw, 64px);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1;
+      margin-bottom: 32px;
+    }
+
+    .section-body {
+      font-size: clamp(14px, 1.4vw, 17px);
+      line-height: 1.75;
+      opacity: 0.75;
+    }
+
+    .section-body p + p { margin-top: 20px; }
+
+    /* ---- CORRECTIONS ---- */
+    .corrections {
+      margin-top: 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .correction-row {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      font-size: clamp(14px, 1.6vw, 20px);
+      font-weight: 500;
+    }
+
+    .wrong {
+      color: rgba(255, 255, 255, 0.25);
+      text-decoration: line-through;
+      text-decoration-color: rgba(255, 255, 255, 0.12);
+      min-width: 140px;
+    }
+
+    .arrow { color: var(--orange); }
+    .right { font-weight: 700; }
+
+    /* ---- SPRINT ORANGE SECTION ---- */
+    .section.orange-section {
+      background: var(--orange);
+      color: var(--black);
+      margin: 0 -0px;
+      padding-top: 120px;
+      padding-bottom: 120px;
+    }
+
+    .section.orange-section .lane-overlay {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      display: flex;
+      justify-content: center;
+      pointer-events: none;
+    }
+
+    .section.orange-section .lane-overlay .lane-o {
+      width: calc(100% / 8);
+      height: 100%;
+      border-right: 1px solid var(--lane-color-orange);
+    }
+
+    .section.orange-section .lane-overlay .lane-o:first-child {
+      border-left: 1px solid var(--lane-color-orange);
+    }
+
+    .section.orange-section .section-number {
+      color: var(--black);
+      opacity: 0.4;
+    }
+
+    .section.orange-section .section-body {
+      color: var(--black);
+      opacity: 0.75;
+    }
+
+    .color-display {
+      margin-top: 48px;
+      display: flex;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+
+    .swatch { display: flex; flex-direction: column; gap: 10px; }
+
+    .swatch-box {
+      width: 100px;
+      height: 100px;
+      border-radius: 6px;
+    }
+
+    .swatch-box.sw-orange { background: var(--orange); border: 2px solid var(--black); }
+    .swatch-box.sw-black { background: var(--black); }
+    .swatch-box.sw-white { background: var(--white); }
+
+    .swatch-label { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; }
+    .swatch-hex { font-size: 11px; opacity: 0.5; }
+
+    /* ---- DETAILS GRID ---- */
+    .details-grid {
+      margin-top: 48px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2px;
+    }
+
+    .detail-card {
+      background: rgba(255, 255, 255, 0.03);
+      padding: 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .detail-label {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      color: var(--orange);
+    }
+
+    .detail-value {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+
+    .detail-note {
+      font-size: 12px;
+      opacity: 0.45;
+      line-height: 1.6;
+    }
+
+    /* ---- WORDMARK DISPLAY ---- */
+    .wordmark-display {
+      margin-top: 48px;
+      margin-bottom: 64px;
+    }
+
+    .wordmark-large {
+      font-family: 'Fugaz One', cursive;
+      letter-spacing: -0.14em;
+      font-size: clamp(44px, 9vw, 110px);
+      line-height: 1;
+      color: var(--white);
+    }
+
+    .wordmark-meta {
+      margin-top: 12px;
+      font-size: 12px;
+      opacity: 0.4;
+    }
+
+    /* ---- FONT SPECIMEN ---- */
+    .specimen-row {
+      display: flex;
+      align-items: baseline;
+      gap: 20px;
+      font-size: 16px;
+      margin-bottom: 6px;
+    }
+
+    .specimen-label {
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      color: var(--orange);
+      min-width: 60px;
+    }
+
+    /* ---- MANIFESTO ---- */
+    .manifesto {
+      position: relative;
+      z-index: 10;
+      padding: 120px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 80vh;
+    }
+
+    .manifesto-text {
+      font-size: clamp(24px, 4vw, 56px);
+      font-weight: 700;
+      line-height: 1.25;
+      letter-spacing: -0.02em;
+      text-align: center;
+      max-width: 900px;
+    }
+
+    .manifesto-text .hi { color: var(--orange); }
+
+    /* ---- FINISH LINE ---- */
+    .finish {
+      position: relative;
+      z-index: 10;
+      height: 60px;
+      background: repeating-linear-gradient(
+        90deg,
+        var(--white) 0, var(--white) 20px,
+        var(--black) 20px, var(--black) 40px
+      );
+      opacity: 0.08;
+    }
+
+    /* ---- FOOTER ---- */
+    footer {
+      position: relative;
+      z-index: 10;
+      padding: 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      opacity: 0.3;
+    }
+
+    /* ---- RESPONSIVE ---- */
+    @media (max-width: 900px) {
+      .section.lane-2,
+      .section.lane-3,
+      .section.lane-5,
+      .section.lane-6,
+      .section.lane-7 {
+        padding-left: 24px;
+        padding-right: 24px;
+        justify-content: flex-start;
+      }
+
+      .section { padding: 80px 24px; }
+
+      nav { padding: 20px 24px; }
+      nav .nav-center { gap: 16px; font-size: 11px; }
+      nav .nav-left { left: 24px; }
+
+      .hero { padding: 0 24px 60px; }
+
+      .details-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .manifesto { padding: 80px 24px; }
+
+      .runner, .runner-trail { display: none; }
+
+      footer {
+        padding: 32px 24px;
+        flex-direction: column;
+        gap: 8px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- PROGRESS BAR -->
+  <div class="progress-bar" id="progress"></div>
+
+  <!-- FIXED TRACK LANES -->
+  <div class="track-lanes">
+    <div class="lane"></div>
+    <div class="lane"></div>
+    <div class="lane"></div>
+    <div class="lane"></div>
+    <div class="lane"></div>
+    <div class="lane"></div>
+    <div class="lane"></div>
+    <div class="lane"></div>
+  </div>
+
+  <!-- STAGGER MARKS — one triangle per lane, staggered like a real track start -->
+  <div class="stagger-marks" aria-hidden="true">
+    <div class="stagger-tri l1" style="top:78%"><svg viewBox="0 0 100 90" preserveAspectRatio="none"><polygon points="0,0 100,0 50,90" fill="rgba(230,190,50,0.12)"/></svg></div>
+    <div class="stagger-tri l2" style="top:68%"><svg viewBox="0 0 100 90" preserveAspectRatio="none"><polygon points="0,0 100,0 50,90" fill="rgba(230,190,50,0.12)"/></svg></div>
+    <div class="stagger-tri l3" style="top:58%"><svg viewBox="0 0 100 90" preserveAspectRatio="none"><polygon points="0,0 100,0 50,90" fill="rgba(230,190,50,0.12)"/></svg></div>
+    <div class="stagger-tri l4" style="top:48%"><svg viewBox="0 0 100 90" preserveAspectRatio="none"><polygon points="0,0 100,0 50,90" fill="rgba(230,190,50,0.12)"/></svg></div>
+    <div class="stagger-tri l5" style="top:38%"><svg viewBox="0 0 100 90" preserveAspectRatio="none"><polygon points="0,0 100,0 50,90" fill="rgba(230,190,50,0.12)"/></svg></div>
+    <div class="stagger-tri l6" style="top:28%"><svg viewBox="0 0 100 90" preserveAspectRatio="none"><polygon points="0,0 100,0 50,90" fill="rgba(230,190,50,0.12)"/></svg></div>
+    <div class="stagger-tri l7" style="top:18%"><svg viewBox="0 0 100 90" preserveAspectRatio="none"><polygon points="0,0 100,0 50,90" fill="rgba(230,190,50,0.12)"/></svg></div>
+    <div class="stagger-tri l8" style="top:8%"><svg viewBox="0 0 100 90" preserveAspectRatio="none"><polygon points="0,0 100,0 50,90" fill="rgba(230,190,50,0.12)"/></svg></div>
+  </div>
+
+  <!-- RUNNER DOT -->
+  <div class="runner" id="runner"></div>
+  <div class="runner-trail" id="runner-trail"></div>
+
+  <!-- NAV -->
+  <nav>
+    <a href="/" class="nav-left wordmark">TRACKRAT</a>
+    <div class="nav-center">
+      <a href="https://shop.trackratsprint.club" target="_blank">[ SHOP ]</a>
+      <a href="/brand.html">[ BRAND ]</a>
+      <a href="/invitational.html">[ 2026 INVITATIONAL ]</a>
+    </div>
+    <div class="nav-spacer"></div>
+  </nav>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="start-line"></div>
+    <div class="hero-brand">TRACKRAT</div>
+    <div class="hero-tagline">BRAND GUIDE</div>
+    <div class="hero-scroll-cue">SCROLL</div>
+  </div>
+
+  <!-- 01 — TRACKRAT -->
+  <div class="section lane-2" data-lane="2">
+    <div class="section-content">
+      <span class="section-number">01 &mdash; THE NAME</span>
+      <h2 class="section-title">TRACKRAT</h2>
+      <div class="section-body">
+        <p>NOT trackrat. NOT Trackrat. NOT TrackRat. NOT TRACKRATS.</p>
+        <p>TRACKRAT. ONE WORD. ALL CAPS. ALWAYS.</p>
+        <p>THE NAME IS SINGULAR BECAUSE TRACKRAT ALREADY IMPLIES THE COMMUNITY BUILT ON SHARED EFFORT &mdash; THE SPECIFIC KIND OF EFFORT THAT MAKES YOUR LUNGS BURN AND YOUR LEGS GO NUMB.</p>
+      </div>
+      <div class="corrections">
+        <div class="correction-row">
+          <span class="wrong">trackrat</span>
+          <span class="arrow">&rarr;</span>
+          <span class="right">TRACKRAT</span>
+        </div>
+        <div class="correction-row">
+          <span class="wrong">Trackrat</span>
+          <span class="arrow">&rarr;</span>
+          <span class="right">TRACKRAT</span>
+        </div>
+        <div class="correction-row">
+          <span class="wrong">TrackRat</span>
+          <span class="arrow">&rarr;</span>
+          <span class="right">TRACKRAT</span>
+        </div>
+        <div class="correction-row">
+          <span class="wrong">TRACKRATS</span>
+          <span class="arrow">&rarr;</span>
+          <span class="right">TRACKRAT</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 02 — SPRINT CLUB -->
+  <div class="section lane-6" data-lane="6">
+    <div class="section-content">
+      <span class="section-number">02 &mdash; IDENTITY</span>
+      <h2 class="section-title">SPRINT CLUB<br />&gt; RUN CLUB</h2>
+      <div class="section-body">
+        <p>TRACKRAT EXISTS FOR PEOPLE WHO WANT TO GO FAST. NOT JOG. MAX EFFORT.</p>
+        <p>THERE'S NOTHING WRONG WITH RUNNING CLUBS. BUT THAT'S NOT WHAT WE ARE. WE MEET ON THE TRACK. WE SPRINT. WE GROW TOGETHER. WE DO IT AGAIN.</p>
+        <p>ON SUNDAYS, WE SPRINT.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 03 — SPRINT ORANGE -->
+  <div class="section orange-section lane-3" data-lane="3">
+    <div class="lane-overlay">
+      <div class="lane-o"></div><div class="lane-o"></div><div class="lane-o"></div><div class="lane-o"></div>
+      <div class="lane-o"></div><div class="lane-o"></div><div class="lane-o"></div><div class="lane-o"></div>
+    </div>
+    <div class="section-content">
+      <span class="section-number">03 &mdash; COLOR</span>
+      <h2 class="section-title">SPRINT<br />ORANGE</h2>
+      <div class="section-body">
+        <p>NOT ORANGE. NOT BURNT ORANGE. SPRINT ORANGE.</p>
+        <p>SPRINT ORANGE IS THE COLOR BEHIND YOUR EYES WHEN YOU'VE LEFT EVERYTHING ON THE TRACK. IT'S WHAT MAX EFFORT LOOKS LIKE FROM THE INSIDE.</p>
+      </div>
+      <div class="color-display">
+        <div class="swatch">
+          <div class="swatch-box sw-orange"></div>
+          <div class="swatch-label">SPRINT ORANGE</div>
+          <div class="swatch-hex">#FF4D1F</div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-box sw-black"></div>
+          <div class="swatch-label">BLACK</div>
+          <div class="swatch-hex">#000000</div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-box sw-white"></div>
+          <div class="swatch-label">WHITE</div>
+          <div class="swatch-hex">#FFFFFF</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 04 — DETAILS -->
+  <div class="section lane-2" data-lane="2" style="min-height: auto; padding-top: 120px; padding-bottom: 40px;">
+    <div class="section-content" style="max-width: 900px;">
+      <span class="section-number">04 &mdash; DETAILS</span>
+      <h2 class="section-title">DETAILS</h2>
+
+      <div class="wordmark-display">
+        <div class="detail-label" style="margin-bottom: 16px;">WORDMARK</div>
+        <div class="wordmark-large">TRACKRAT</div>
+        <div class="wordmark-meta">FUGAZ ONE &middot; &minus;14% LETTER SPACING</div>
+      </div>
+
+      <div class="detail-label" style="margin-bottom: 16px;">BODY FONT</div>
+      <div class="specimen-row"><span class="specimen-label">400</span><span style="font-weight:400">TRACKRAT SPRINT CLUB</span></div>
+      <div class="specimen-row"><span class="specimen-label">500</span><span style="font-weight:500">TRACKRAT SPRINT CLUB</span></div>
+      <div class="specimen-row"><span class="specimen-label">600</span><span style="font-weight:600">TRACKRAT SPRINT CLUB</span></div>
+      <div class="specimen-row"><span class="specimen-label">700</span><span style="font-weight:700">TRACKRAT SPRINT CLUB</span></div>
+    </div>
+  </div>
+
+  <div class="section lane-2" data-lane="4" style="min-height: auto; padding-top: 40px; padding-bottom: 120px;">
+    <div class="section-content" style="max-width: 100%; width: 100%;">
+      <div class="details-grid">
+        <div class="detail-card">
+          <span class="detail-label">FONT</span>
+          <span class="detail-value">IBM PLEX MONO</span>
+          <span class="detail-note">MONOSPACED. SHARP. FUNCTIONAL. EVERY CHARACTER TAKES THE SAME SPACE.</span>
+        </div>
+        <div class="detail-card">
+          <span class="detail-label">LOGO</span>
+          <span class="detail-value" style="font-family: 'Fugaz One', cursive; letter-spacing: -0.14em; font-size: 24px;">TRACKRAT</span>
+          <span class="detail-note">WORDMARK IN FUGAZ ONE, &minus;14% LETTER SPACING. NO ICON. THE NAME DOES THE WORK.</span>
+        </div>
+        <div class="detail-card">
+          <span class="detail-label">COLOR</span>
+          <span class="detail-value">#FF4D1F</span>
+          <span class="detail-note">SPRINT ORANGE. PRIMARY BRAND COLOR. MAX EFFORT, VISUALIZED.</span>
+        </div>
+        <div class="detail-card">
+          <span class="detail-label">AVATAR</span>
+          <div style="display: flex; align-items: center; gap: 16px;">
+            <div style="width: 48px; height: 48px; border-radius: 50%; background: var(--orange); flex-shrink: 0;"></div>
+            <span class="detail-value" style="font-size: 16px;">PLAIN CIRCLE</span>
+          </div>
+          <span class="detail-note">SOLID SPRINT ORANGE CIRCLE. NO LOGO, NO TEXT. JUST THE COLOR.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MANIFESTO -->
+  <div class="manifesto" data-lane="5">
+    <div class="section-content" style="max-width: 900px;">
+      <div class="manifesto-text">
+        WE MEET ON THE TRACK.<br />
+        WE <span class="hi">SPRINT</span>.<br />
+        WE GROW TOGETHER.<br />
+        WE DO IT <span class="hi">AGAIN</span>.
+      </div>
+    </div>
+  </div>
+
+  <!-- FINISH LINE -->
+  <div class="finish"></div>
+
+  <!-- FOOTER -->
+  <footer>
+    <span>TRACKRAT SPRINT CLUB</span>
+    <span>BRAND GUIDE</span>
+  </footer>
+
+  <script>
+    // Scroll progress bar
+    const progress = document.getElementById('progress');
+    const runner = document.getElementById('runner');
+    const runnerTrail = document.getElementById('runner-trail');
+
+    // Lane positions (center of each lane as % from left)
+    const lanePositions = {
+      1: 6.25,
+      2: 18.75,
+      3: 31.25,
+      4: 43.75,
+      5: 56.25,
+      6: 68.75,
+      7: 81.25,
+      8: 93.75
+    };
+
+    // Get all sections with lane data
+    const sections = document.querySelectorAll('[data-lane]');
+
+    function updateScroll() {
+      const scrollTop = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const scrollPercent = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+
+      // Update progress bar
+      progress.style.width = scrollPercent + '%';
+
+      // Find which section is most in view
+      let currentLane = 5; // default center
+      sections.forEach(section => {
+        const rect = section.getBoundingClientRect();
+        const sectionMiddle = rect.top + rect.height / 2;
+        if (sectionMiddle > 0 && sectionMiddle < window.innerHeight) {
+          currentLane = parseInt(section.dataset.lane);
+        }
+      });
+
+      // Move runner to current lane
+      const laneX = lanePositions[currentLane];
+      runner.style.left = `calc(${laneX}%)`;
+      runnerTrail.style.left = `calc(${laneX}%)`;
+
+      // Reveal sections on scroll
+      document.querySelectorAll('.section-content').forEach(content => {
+        const rect = content.getBoundingClientRect();
+        if (rect.top < window.innerHeight * 0.8) {
+          content.classList.add('visible');
+        }
+      });
+    }
+
+    window.addEventListener('scroll', updateScroll, { passive: true });
+    window.addEventListener('resize', updateScroll);
+    updateScroll();
+  </script>
+
+</body>
+</html>
