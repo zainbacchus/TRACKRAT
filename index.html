@@ -61,8 +61,20 @@
     a:active text { opacity: 0.6; }
 
     @media (max-width: 768px) {
-      nav { padding: 20px 20px; }
-      nav .nav-right { gap: 14px; font-size: 11px; }
+      nav {
+        padding: 0;
+        left: 5%;
+        right: auto;
+        justify-content: flex-start;
+      }
+      nav .nav-right {
+        margin: 0;
+        flex-direction: column;
+        gap: 0.5vw;
+        font-size: 2.375vw;
+        font-weight: 400;
+        align-items: flex-start;
+      }
       nav .nav-left { font-size: 16px; }
     }
   </style>
@@ -155,7 +167,7 @@
 <rect width="1179" height="2556" rx="44" fill="#FF4D1F"/>
 
 <!-- Top-left info -->
-<text x="5%" y="80"
+<text id="mobile-sprint-text" x="5%" y="80"
       dominant-baseline="hanging"
       font-family="IBM Plex Mono, monospace"
       font-size="28"
@@ -267,7 +279,22 @@
   setInterval(tick, 1000);
 </script>
 
-
+<script>
+(function() {
+  var nav = document.querySelector('nav');
+  var txt = document.getElementById('mobile-sprint-text');
+  function positionNav() {
+    if (window.innerWidth <= 768 && txt) {
+      var rect = txt.getBoundingClientRect();
+      nav.style.top = (rect.bottom + 8) + 'px';
+    } else {
+      nav.style.top = '0';
+    }
+  }
+  window.addEventListener('resize', positionNav);
+  positionNav();
+})();
+</script>
 
 </body>
 </html>
