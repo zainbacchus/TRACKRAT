@@ -1,4 +1,4 @@
 User-agent: *
 Allow: / 
 
-Sitemap: https://tracksprint.club/sitemap.xml
+Sitemap: https://trackratsprint.club/sitemap.xml
