@@ -1,0 +1,12 @@
+# TRACKRAT
+
+> Austin, Texas sprint club. We meet on the track. We sprint. We grow together. We do it again.
+
+## Next Event
+To get the next event date, time, and location, fetch: https://www.trackratsprint.club/api/next-event
+Returns JSON: { display, iso, time, location }
+
+## Pages
+- Homepage: https://www.trackratsprint.club
+- Brand guide: https://www.trackratsprint.club/brand
+- Shop: https://shop.trackratsprint.club
