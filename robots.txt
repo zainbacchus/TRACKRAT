@@ -1,5 +1,3 @@
 User-agent: *
-Allow: / 
-
+Allow: /
 Sitemap: https://trackratsprint.club/sitemap.xml
-LLMs: see /llms.txt
