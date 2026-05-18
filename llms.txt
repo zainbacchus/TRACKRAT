@@ -9,4 +9,5 @@ Returns JSON: { display, iso, time, location }
 ## Pages
 - Homepage: https://www.trackratsprint.club
 - Brand guide: https://www.trackratsprint.club/brand
+- Schedule: https://www.trackratsprint.club/schedule
 - Shop: https://shop.trackratsprint.club
