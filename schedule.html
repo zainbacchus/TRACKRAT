@@ -320,26 +320,190 @@
       }
     }
 
+    /* ---- MOBILE MENU TOGGLE ---- */
+    .menu-toggle {
+      display: none;
+      position: relative;
+      width: 32px;
+      height: 32px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      z-index: 200;
+      color: var(--white);
+    }
+
+    .menu-toggle span {
+      position: absolute;
+      left: 4px;
+      right: 4px;
+      height: 2px;
+      background: currentColor;
+      transition: transform 0.3s ease, opacity 0.2s ease, top 0.3s ease;
+    }
+
+    .menu-toggle span:nth-child(1) { top: 10px; }
+    .menu-toggle span:nth-child(2) { top: 16px; }
+    .menu-toggle span:nth-child(3) { top: 22px; }
+
+    .menu-toggle.is-open span:nth-child(1) {
+      top: 16px;
+      transform: rotate(45deg);
+    }
+    .menu-toggle.is-open span:nth-child(2) { opacity: 0; }
+    .menu-toggle.is-open span:nth-child(3) {
+      top: 16px;
+      transform: rotate(-45deg);
+    }
+
+    /* ---- MOBILE MENU OVERLAY ---- */
+    .mobile-menu {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 150;
+      background: var(--black);
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 80px 32px 60px;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .mobile-menu.is-open {
+      display: flex;
+      opacity: 1;
+    }
+
+    .mobile-menu a {
+      font-size: clamp(32px, 8vw, 44px);
+      font-family: 'Fugaz One', cursive;
+      letter-spacing: -0.04em;
+      color: var(--white);
+      padding: 14px 0;
+      width: 100%;
+      transform: translateX(-20px);
+      opacity: 0;
+      transition: transform 0.4s ease, opacity 0.4s ease, color 0.2s ease;
+    }
+
+    .mobile-menu.is-open a {
+      transform: translateX(0);
+      opacity: 1;
+    }
+
+    .mobile-menu.is-open a:nth-child(1) { transition-delay: 0.05s; }
+    .mobile-menu.is-open a:nth-child(2) { transition-delay: 0.12s; }
+    .mobile-menu.is-open a:nth-child(3) { transition-delay: 0.19s; }
+    .mobile-menu.is-open a:nth-child(4) { transition-delay: 0.26s; }
+
+    .mobile-menu a:hover,
+    .mobile-menu a:active {
+      color: var(--orange);
+    }
+
+    .mobile-menu-footer {
+      position: absolute;
+      bottom: 40px;
+      left: 32px;
+      right: 32px;
+      font-size: 10px;
+      letter-spacing: 0.3em;
+      opacity: 0.3;
+      font-weight: 600;
+    }
+
+    body.menu-open { overflow: hidden; }
+
     /* ---- RESPONSIVE ---- */
     @media (max-width: 768px) {
-      nav { padding: 20px 24px; justify-content: flex-start; }
-      nav .nav-left { position: static; margin-right: 16px; }
-      nav .nav-center { gap: 12px; font-size: 9px; white-space: nowrap; }
+      nav {
+        padding: 16px 20px;
+        justify-content: space-between;
+      }
+      nav .nav-left {
+        position: static;
+        font-size: 16px;
+        flex-shrink: 0;
+      }
+      nav .nav-center {
+        display: none;
+      }
+      .menu-toggle {
+        display: block;
+      }
 
-      .page { padding: 120px 24px 60px; }
-      .schedule-card { padding: 28px 24px; }
+      .page { padding: 100px 20px 60px; }
+
+      .page-header { margin-bottom: 40px; }
+
+      .page-eyebrow { margin-bottom: 12px; }
+
+      .page-title {
+        font-size: clamp(48px, 16vw, 90px);
+      }
+
+      .schedule-card { padding: 28px 22px; gap: 14px; }
+
+      .card-title {
+        font-size: clamp(24px, 7vw, 36px);
+      }
 
       .card-detail {
-        flex-direction: column;
-        align-items: flex-start;
+        flex-direction: row;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+        font-size: 14px;
+      }
+
+      /* Time on its own line; location + pin together on the next */
+      .card-detail .time {
+        flex: 1 1 100%;
+        order: 1;
+      }
+
+      .card-detail .location {
+        flex: 1 1 auto;
+        order: 2;
+        min-width: 0;
+      }
+
+      .card-detail .icon-btn {
+        order: 3;
+        flex-shrink: 0;
+      }
+
+      .card-detail > span[style*="opacity:0.4"] {
+        display: none;
+      }
+
+      .card-actions {
+        margin-top: 4px;
         gap: 10px;
       }
 
+      .action-label {
+        font-size: 10px;
+        letter-spacing: 0.1em;
+        line-height: 1.4;
+      }
+
       footer {
-        padding: 32px 24px;
+        padding: 32px 20px;
         flex-direction: column;
         gap: 8px;
       }
+    }
+
+    @media (max-width: 420px) {
+      nav .nav-left { font-size: 14px; }
+      .page-title { font-size: clamp(40px, 18vw, 72px); }
     }
   </style>
 </head>
@@ -375,11 +539,25 @@
     <a href="/" class="nav-left wordmark">TRACKRAT</a>
     <div class="nav-center">
       <a href="https://shop.trackratsprint.club" target="_blank">[ SHOP ]</a>
-      <a href="/brand">[ BRAND ]</a>
       <a href="/schedule">[ SCHEDULE ]</a>
+      <a href="/brand">[ BRAND ]</a>
       <a href="/2026-invitational">[ 2026 INVITATIONAL ]</a>
     </div>
+    <button class="menu-toggle" id="menuToggle" aria-label="Open menu" aria-expanded="false">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
   </nav>
+
+  <!-- MOBILE MENU OVERLAY -->
+  <div class="mobile-menu" id="mobileMenu" aria-hidden="true">
+    <a href="https://shop.trackratsprint.club" target="_blank">SHOP</a>
+    <a href="/schedule">SCHEDULE</a>
+    <a href="/brand">BRAND</a>
+    <a href="/2026-invitational">2026 INVITATIONAL</a>
+    <div class="mobile-menu-footer">TRACKRAT SPRINT CLUB</div>
+  </div>
 
   <!-- PAGE -->
   <div class="page">
@@ -473,6 +651,46 @@
   </footer>
 
   <script>
+    // ---- MOBILE MENU TOGGLE ----
+    const menuToggle = document.getElementById('menuToggle');
+    const mobileMenu = document.getElementById('mobileMenu');
+
+    function closeMenu() {
+      menuToggle.classList.remove('is-open');
+      mobileMenu.classList.remove('is-open');
+      document.body.classList.remove('menu-open');
+      menuToggle.setAttribute('aria-expanded', 'false');
+      mobileMenu.setAttribute('aria-hidden', 'true');
+    }
+
+    function openMenu() {
+      menuToggle.classList.add('is-open');
+      mobileMenu.classList.add('is-open');
+      document.body.classList.add('menu-open');
+      menuToggle.setAttribute('aria-expanded', 'true');
+      mobileMenu.setAttribute('aria-hidden', 'false');
+    }
+
+    menuToggle.addEventListener('click', () => {
+      if (menuToggle.classList.contains('is-open')) {
+        closeMenu();
+      } else {
+        openMenu();
+      }
+    });
+
+    // Close menu when a link is tapped
+    mobileMenu.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', closeMenu);
+    });
+
+    // Close on Escape
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && menuToggle.classList.contains('is-open')) {
+        closeMenu();
+      }
+    });
+
     // ---- .ICS GENERATION ----
     // Generates a weekly recurring event using the iCalendar spec (RFC 5545).
     // Anchored to the next upcoming occurrence of the target weekday,
