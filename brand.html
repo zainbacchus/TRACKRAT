@@ -494,6 +494,107 @@
       opacity: 0.3;
     }
 
+    /* ---- MOBILE MENU TOGGLE ---- */
+    .menu-toggle {
+      display: none;
+      position: relative;
+      width: 32px;
+      height: 32px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      z-index: 200;
+      color: var(--white);
+    }
+
+    .menu-toggle span {
+      position: absolute;
+      left: 4px;
+      right: 4px;
+      height: 2px;
+      background: currentColor;
+      transition: transform 0.3s ease, opacity 0.2s ease, top 0.3s ease;
+    }
+
+    .menu-toggle span:nth-child(1) { top: 10px; }
+    .menu-toggle span:nth-child(2) { top: 16px; }
+    .menu-toggle span:nth-child(3) { top: 22px; }
+
+    .menu-toggle.is-open span:nth-child(1) {
+      top: 16px;
+      transform: rotate(45deg);
+    }
+    .menu-toggle.is-open span:nth-child(2) { opacity: 0; }
+    .menu-toggle.is-open span:nth-child(3) {
+      top: 16px;
+      transform: rotate(-45deg);
+    }
+
+    /* ---- MOBILE MENU OVERLAY ---- */
+    .mobile-menu {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 150;
+      background: var(--black);
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 80px 32px 60px;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .mobile-menu.is-open {
+      display: flex;
+      opacity: 1;
+    }
+
+    .mobile-menu a {
+      font-size: clamp(32px, 8vw, 44px);
+      font-family: 'Fugaz One', cursive;
+      letter-spacing: -0.04em;
+      color: var(--white);
+      padding: 14px 0;
+      width: 100%;
+      transform: translateX(-20px);
+      opacity: 0;
+      transition: transform 0.4s ease, opacity 0.4s ease, color 0.2s ease;
+    }
+
+    .mobile-menu.is-open a {
+      transform: translateX(0);
+      opacity: 1;
+    }
+
+    .mobile-menu.is-open a:nth-child(1) { transition-delay: 0.05s; }
+    .mobile-menu.is-open a:nth-child(2) { transition-delay: 0.12s; }
+    .mobile-menu.is-open a:nth-child(3) { transition-delay: 0.19s; }
+    .mobile-menu.is-open a:nth-child(4) { transition-delay: 0.26s; }
+
+    .mobile-menu a:hover,
+    .mobile-menu a:active {
+      color: var(--orange);
+    }
+
+    .mobile-menu-footer {
+      position: absolute;
+      bottom: 40px;
+      left: 32px;
+      right: 32px;
+      font-size: 10px;
+      letter-spacing: 0.3em;
+      opacity: 0.3;
+      font-weight: 600;
+    }
+
+    body.menu-open { overflow: hidden; }
+
+
     /* ---- RESPONSIVE ---- */
     @media (max-width: 900px) {
       .section.lane-2,
