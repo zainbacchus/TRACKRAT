@@ -1,6 +1,20 @@
 {
+  "headers": [
+    {
+      "source": "/sitemap.xml",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/xml; charset=utf-8"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
+        }
+      ]
+    }
+  ],
   "rewrites": [
-    { "source": "/sitemap.xml", "destination": "/api/sitemap" },
     { "source": "/brand", "destination": "/brand.html" },
     { "source": "/schedule", "destination": "/schedule.html" },
     { "source": "/2026-invitational", "destination": "/invitational.html" },
