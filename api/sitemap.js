@@ -5,6 +5,7 @@ export default function handler() {
   <url><loc>https://www.trackratsprint.club/</loc></url>
   <url><loc>https://www.trackratsprint.club/2026-invitational</loc></url>
   <url><loc>https://www.trackratsprint.club/brand</loc></url>
+  <url><loc>https://www.trackratsprint.club/schedule</loc></url>
 </urlset>`;
   return new Response(xml, {
     headers: { 'content-type': 'application/xml' },
