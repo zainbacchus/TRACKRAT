@@ -1,13 +1,19 @@
 # TRACKRAT
 
-> Austin, Texas sprint club. We meet on the track. We sprint. We grow together. We do it again.
+> Austin, Texas sprint club. We meet on the track. We sprint. We grow together. We do it again. Sunday Sprints at 4401 Tilley St. Thursday midweek workouts at varying locations. All speeds welcome. No sign ups. Just show up.
 
-## Next Event
-To get the next event date, time, and location, fetch: https://www.trackratsprint.club/api/next-event
-Returns JSON: { display, iso, time, location }
+
+## API 
+- `/api/next-event` returns the next upcoming meet as JSON with fields: `display` (date), `weekday`, `iso`, `time`, `location`, `type` (`sunday` or `thursday`), `title`
+
+## Meeting Times
+
+- **Sunday Sprints** — 8:30 AM at 4401 Tilley St, Austin, TX 78723
+- **Thursday Midweek Workout** — 6:30 PM, location varies weekly (announced via @trackratsprintclub Instagram story)
+
 
 ## Pages
-- Homepage: https://www.trackratsprint.club
-- Brand guide: https://www.trackratsprint.club/brand
-- Schedule: https://www.trackratsprint.club/schedule
-- Shop: https://shop.trackratsprint.club
+- [Home](https://trackratsprint.club/): Landing page 
+- [Schedule](https://trackratsprint.club/schedule): Weekly meet times and locations, with calendar download (.ics) and Google Maps links
+- [Brand](https://trackratsprint.club/brand): Brand guide covering name conventions
+- [Shop](https://shop.trackratsprint.club): Apparel and merchandise
