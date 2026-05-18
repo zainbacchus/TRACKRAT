@@ -2,6 +2,7 @@
   "rewrites": [
     { "source": "/sitemap.xml", "destination": "/api/sitemap" },
     { "source": "/brand", "destination": "/brand.html" },
+    { "source": "/schedule", "destination": "/schedule.html" },
     { "source": "/2026-invitational", "destination": "/invitational.html" },
     { "source": "/(.*)", "destination": "/index.html" }
   ]
