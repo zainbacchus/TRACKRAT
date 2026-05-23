@@ -232,6 +232,15 @@
     .submit-btn:hover { transform: translateY(-1px); }
     .submit-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
 
+    .cancel-btn {
+      background: transparent; border: 1px solid var(--field-border);
+      color: var(--white); padding: 14px 22px;
+      font-family: var(--font); font-size: 12px; font-weight: 700;
+      letter-spacing: 0.2em; cursor: pointer;
+      transition: border-color 0.2s ease, color 0.2s ease;
+    }
+    .cancel-btn:hover { border-color: var(--orange); color: var(--orange); }
+
     .form-msg { font-size: 12px; letter-spacing: 0.05em; }
     .form-msg.error { color: #ff8a6b; }
     .form-msg.success { color: var(--orange); }
@@ -285,13 +294,25 @@
       font-size: 10px; letter-spacing: 0.2em; font-weight: 600;
       color: var(--orange); margin-right: 12px;
     }
+    .pr-row .row-actions {
+      display: flex; align-items: center; gap: 4px;
+    }
+    .pr-row .edit-btn,
     .pr-row .delete-btn {
       background: transparent; border: none; color: var(--white);
       opacity: 0.4; cursor: pointer; padding: 4px;
       transition: opacity 0.2s ease, color 0.2s ease;
     }
+    .pr-row .edit-btn:hover { opacity: 1; color: var(--orange); }
     .pr-row .delete-btn:hover { opacity: 1; color: #ff8a6b; }
+    .pr-row .edit-btn svg,
     .pr-row .delete-btn svg { width: 16px; height: 16px; display: block; }
+
+    /* Event chips look "locked" while editing — only the active one stays bright. */
+    .event-chip[disabled] {
+      opacity: 0.3; cursor: not-allowed;
+    }
+    .event-chip[disabled]:hover { border-color: var(--field-border); }
 
     .empty-state {
       padding: 16px 24px; font-size: 13px; opacity: 0.4;
@@ -536,6 +557,7 @@
 
         <div class="submit-row">
           <button class="submit-btn" id="submitBtn" disabled>SAVE PR</button>
+          <button class="cancel-btn" id="cancelEditBtn" type="button" style="display:none">CANCEL</button>
           <span class="form-msg" id="formMsg"></span>
         </div>
       </div>
@@ -660,8 +682,82 @@
     eventGrid.addEventListener('click', e => {
       const chip = e.target.closest('.event-chip');
       if (!chip) return;
+      // Lock the event while editing — you can only edit the value/date,
+      // not retype the entry as a different event.
+      if (editingId && !chip.classList.contains('is-active')) return;
       showForEvent(chip.dataset.event);
     });
+
+    // ---- EDIT MODE ----
+    let editingId = null;
+    const cancelEditBtn = document.getElementById('cancelEditBtn');
+
+    function setEventLock(locked) {
+      [...eventGrid.querySelectorAll('.event-chip')].forEach(c => {
+        if (locked && !c.classList.contains('is-active')) {
+          c.setAttribute('disabled', '');
+        } else {
+          c.removeAttribute('disabled');
+        }
+      });
+    }
+
+    function startEdit(r) {
+      editingId = r.id;
+      showForEvent(r.event);
+      setEventLock(true);
+
+      // Pre-fill date selects.
+      const [y, mo, d] = (r.achieved_on || '').split('-');
+      if (y && mo && d) {
+        monthSel.value = mo;
+        daySel.value = d;
+        yearSel.value = y;
+      }
+
+      // Pre-fill value inputs based on event kind.
+      if (RUN_EVENTS.has(r.event)) {
+        const total = Number(r.value_seconds || 0);
+        const h = Math.floor(total / 3600);
+        const m = Math.floor((total % 3600) / 60);
+        const s = total - h * 3600 - m * 60;
+        document.getElementById('inpHours').value = h ? String(h) : '';
+        document.getElementById('inpMinutes').value = m ? String(m) : '';
+        // Trim trailing zeros so 11.45 doesn't become "11.450".
+        document.getElementById('inpSeconds').value = s
+          ? String(Number(s.toFixed(3))) : '';
+      } else {
+        document.getElementById('inpPounds').value = String(Number(r.value_pounds));
+        document.getElementById('inpSets').value = r.sets != null ? String(r.sets) : '1';
+        document.getElementById('inpReps').value = r.reps != null ? String(r.reps) : '1';
+      }
+
+      submitBtn.textContent = 'UPDATE PR';
+      cancelEditBtn.style.display = 'inline-block';
+      formMsg.textContent = '';
+      formMsg.className = 'form-msg';
+
+      // Bring the form into view (it lives above the history).
+      document.querySelector('.pr-form-card')
+        .scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function cancelEdit() {
+      editingId = null;
+      setEventLock(false);
+      submitBtn.textContent = 'SAVE PR';
+      cancelEditBtn.style.display = 'none';
+      document.getElementById('inpHours').value = '';
+      document.getElementById('inpMinutes').value = '';
+      document.getElementById('inpSeconds').value = '';
+      document.getElementById('inpPounds').value = '';
+      document.getElementById('inpSets').value = '1';
+      document.getElementById('inpReps').value = '1';
+      formMsg.textContent = '';
+      formMsg.className = 'form-msg';
+    }
+
+    cancelEditBtn.addEventListener('click', cancelEdit);
 
     // ---- FORMATTING ----
     function fmtSeconds(totalSec) {
@@ -700,7 +796,12 @@
     // ---- RENDER HISTORY ----
     const historyList = document.getElementById('historyList');
 
+    // Cache the latest fetch so edit-button clicks can look up the row by id
+    // without a second round-trip to Supabase.
+    let allRowsCache = [];
+
     function renderHistory(allRows) {
+      allRowsCache = allRows;
       const grouped = {};
       EVENT_ORDER.forEach(ev => { grouped[ev] = []; });
       allRows.forEach(r => { if (grouped[r.event]) grouped[r.event].push(r); });
@@ -748,14 +849,22 @@
             <span class="pr-value">${val}</span>
             <span class="pr-date">${fmtDate(r.achieved_on)}</span>
             ${isBest ? '<span class="pr-best-tag">BEST</span>' : ''}
-            <button class="delete-btn" title="Delete" data-id="${r.id}" aria-label="Delete entry">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="3 6 5 6 21 6"></polyline>
-                <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path>
-                <path d="M10 11v6"></path><path d="M14 11v6"></path>
-                <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"></path>
-              </svg>
-            </button>
+            <span class="row-actions">
+              <button class="edit-btn" title="Edit" data-id="${r.id}" aria-label="Edit entry">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 20h9"></path>
+                  <path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19l-4 1 1-4 12.5-12.5z"></path>
+                </svg>
+              </button>
+              <button class="delete-btn" title="Delete" data-id="${r.id}" aria-label="Delete entry">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="3 6 5 6 21 6"></polyline>
+                  <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path>
+                  <path d="M10 11v6"></path><path d="M14 11v6"></path>
+                  <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"></path>
+                </svg>
+              </button>
+            </span>
           `;
           section.appendChild(row);
         });
@@ -765,13 +874,23 @@
     }
 
     historyList.addEventListener('click', async e => {
-      const btn = e.target.closest('.delete-btn');
-      if (!btn) return;
-      if (!confirm('Delete this PR entry?')) return;
-      const id = btn.dataset.id;
-      const { error } = await supabase.from('prs').delete().eq('id', id);
-      if (error) { alert(error.message); return; }
-      await refreshHistory();
+      const editBtn = e.target.closest('.edit-btn');
+      if (editBtn) {
+        const id = editBtn.dataset.id;
+        const row = allRowsCache.find(r => String(r.id) === String(id));
+        if (row) startEdit(row);
+        return;
+      }
+      const delBtn = e.target.closest('.delete-btn');
+      if (delBtn) {
+        if (!confirm('Delete this PR entry?')) return;
+        const id = delBtn.dataset.id;
+        const { error } = await supabase.from('prs').delete().eq('id', id);
+        if (error) { alert(error.message); return; }
+        // If they just deleted the row they were editing, exit edit mode.
+        if (editingId && String(editingId) === String(id)) cancelEdit();
+        await refreshHistory({ silent: true });
+      }
     });
 
      async function refreshHistory({ silent = false } = {}) {
@@ -808,10 +927,17 @@
         return;
       }
 
+      // Build a fully-specified payload — both value columns and sets/reps
+      // are set every time (one populated, the others null). This keeps
+      // UPDATEs constraint-safe even if we ever allow event changes later.
       const payload = {
         user_id: sess.session.user.id,
         event: selectedEvent,
-        achieved_on: `${yearSel.value}-${monthSel.value}-${daySel.value}`
+        achieved_on: `${yearSel.value}-${monthSel.value}-${daySel.value}`,
+        value_seconds: null,
+        value_pounds: null,
+        sets: null,
+        reps: null
       };
 
       if (RUN_EVENTS.has(selectedEvent)) {
@@ -845,25 +971,22 @@
       }
 
       submitBtn.disabled = true;
-      const { error } = await supabase.from('prs').insert(payload);
+      const resp = editingId
+        ? await supabase.from('prs').update(payload).eq('id', editingId)
+        : await supabase.from('prs').insert(payload);
       submitBtn.disabled = false;
 
-      if (error) {
-        formMsg.textContent = error.message;
+      if (resp.error) {
+        formMsg.textContent = resp.error.message;
         formMsg.classList.add('error');
         return;
       }
 
-      formMsg.textContent = 'SAVED.';
+      const wasEditing = !!editingId;
+      cancelEdit();
+      formMsg.textContent = wasEditing ? 'UPDATED.' : 'SAVED.';
       formMsg.classList.add('success');
-      // Reset value inputs but keep event + date selection.
-      document.getElementById('inpHours').value = '';
-      document.getElementById('inpMinutes').value = '';
-      document.getElementById('inpSeconds').value = '';
-      document.getElementById('inpPounds').value = '';
-      document.getElementById('inpSets').value = '1';
-      document.getElementById('inpReps').value = '1';
-      await refreshHistory();
+      await refreshHistory({ silent: true });
     });
 
     // ---- AUTH UI ----
@@ -917,21 +1040,38 @@
     });
 
     // Init
+    // onAuthStateChange in Supabase JS v2 runs inside an internal auth lock.
+    // Awaiting Supabase calls (`refreshHistory`, `from('prs').select`) directly
+    // inside the callback deadlocks the next fetch once the SDK fires a
+    // background event (token refresh, tab visibility change, focus). Symptom:
+    // after ~30–60s on the page, records vanish into perma-LOADING and saves
+    // also hang. Fix:
+    //   1. Defer Supabase calls out of the callback with setTimeout(…, 0).
+    //   2. Only re-fetch when the user actually changes — token refreshes
+    //      don't change which rows we should show.
+    //   3. Use silent refresh so the UI doesn't flicker to LOADING.
     let currentUserId = null;
+
     (async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (session) {
+        currentUserId = session.user.id;
         setSignedIn(session.user);
         await refreshHistory();
       } else {
         setSignedOut();
       }
-      supabase.auth.onAuthStateChange(async (_event, session) => {
+
+      supabase.auth.onAuthStateChange((_event, session) => {
         if (session) {
-          currentUserId = session.user.id;
-          setSignedIn(session.user);
-          await refreshHistory();
-        } else {
+          const nextUserId = session.user.id;
+          if (nextUserId !== currentUserId) {
+            currentUserId = nextUserId;
+            setSignedIn(session.user);
+            setTimeout(() => { refreshHistory({ silent: true }); }, 0);
+          }
+        } else if (currentUserId !== null) {
+          currentUserId = null;
           setSignedOut();
         }
       });
