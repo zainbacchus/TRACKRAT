@@ -751,9 +751,11 @@
       await refreshHistory();
     });
 
-    async function refreshHistory() {
-      historyList.className = 'loading';
-      historyList.textContent = 'LOADING…';
+     async function refreshHistory({ silent = false } = {}) {
+      if (!silent) {
+        historyList.className = 'loading';
+        historyList.textContent = 'LOADING…';
+      }
       const { data, error } = await supabase
         .from('prs')
         .select('*')
