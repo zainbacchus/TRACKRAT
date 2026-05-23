@@ -185,7 +185,7 @@
       display: grid; gap: 12px; margin-bottom: 16px;
     }
     .form-row.time { grid-template-columns: repeat(3, 1fr); }
-    .form-row.weight { grid-template-columns: 1fr; }
+    .form-row.weight { grid-template-columns: 2fr 1fr 1fr; }
     .form-row.date { grid-template-columns: repeat(3, 1fr); }
 
     .field {
@@ -376,6 +376,7 @@
       .pr-form-card { padding: 24px 20px; }
       .event-grid { grid-template-columns: repeat(2, 1fr); }
       .form-row.time { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+      .form-row.weight { grid-template-columns: 2fr 1fr 1fr; gap: 8px; }
       .form-row.date { grid-template-columns: repeat(3, 1fr); gap: 8px; }
       .field input, .field select { font-size: 16px; padding: 10px 12px; }
       .field select { padding-right: 32px; }
@@ -478,6 +479,8 @@
           <button type="button" class="event-chip" data-event="400m">400M</button>
           <button type="button" class="event-chip" data-event="1mile">1 MILE</button>
           <button type="button" class="event-chip" data-event="5K">5K</button>
+          <button type="button" class="event-chip" data-event="halfmarathon">HALF MARATHON</button>
+          <button type="button" class="event-chip" data-event="marathon">MARATHON</button>
           <button type="button" class="event-chip" data-event="bench">BENCH</button>
           <button type="button" class="event-chip" data-event="deadlift">DEADLIFT</button>
           <button type="button" class="event-chip" data-event="squat">SQUAT</button>
@@ -499,11 +502,19 @@
           </div>
         </div>
 
-        <!-- Weight input (lift events) -->
+        <!-- Weight + sets + reps (lift events) -->
         <div class="form-row weight" id="weightRow" style="display:none">
           <div class="field">
             <label for="inpPounds">WEIGHT (LBS)</label>
             <input id="inpPounds" type="number" min="1" max="2000" step="1" placeholder="225" inputmode="numeric" />
+          </div>
+          <div class="field">
+            <label for="inpSets">SETS</label>
+            <input id="inpSets" type="number" min="1" max="99" step="1" value="1" placeholder="1" inputmode="numeric" />
+          </div>
+          <div class="field">
+            <label for="inpReps">REPS</label>
+            <input id="inpReps" type="number" min="1" max="99" step="1" value="1" placeholder="1" inputmode="numeric" />
           </div>
         </div>
 
@@ -577,14 +588,18 @@
     });
 
     // ---- EVENT METADATA ----
-    const RUN_EVENTS = new Set(['100m','200m','400m','1mile','5K']);
+    const RUN_EVENTS = new Set(['100m','200m','400m','1mile','5K','halfmarathon','marathon']);
     const LIFT_EVENTS = new Set(['bench','deadlift','squat']);
     const EVENT_LABELS = {
       '100m':'100M', '200m':'200M', '400m':'400M',
       '1mile':'1 MILE', '5K':'5K',
+      'halfmarathon':'HALF MARATHON', 'marathon':'MARATHON',
       'bench':'BENCH', 'deadlift':'DEADLIFT', 'squat':'SQUAT'
     };
-    const EVENT_ORDER = ['100m','200m','400m','1mile','5K','bench','deadlift','squat'];
+    const EVENT_ORDER = [
+      '100m','200m','400m','1mile','5K','halfmarathon','marathon',
+      'bench','deadlift','squat'
+    ];
 
     // ---- DATE PICKER POPULATION ----
     const MONTHS = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
@@ -660,6 +675,14 @@
       return `${Number(s).toFixed(2)}s`;
     }
     function fmtPounds(lbs) { return `${Number(lbs)} lbs`; }
+    function fmtLift(r) {
+      const lbs = `${Number(r.value_pounds)} lbs`;
+      // Older rows may not have sets/reps; show plain weight then.
+      if (r.sets != null && r.reps != null) {
+        return `${lbs} · ${r.sets}×${r.reps}`;
+      }
+      return lbs;
+    }
     function fmtDate(iso) {
       const d = new Date(iso + 'T00:00:00');
       return d.toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' }).toUpperCase();
@@ -706,7 +729,7 @@
         section.className = 'event-section';
 
         const bestVal = best
-          ? (RUN_EVENTS.has(ev) ? fmtSeconds(best.value_seconds) : fmtPounds(best.value_pounds))
+          ? (RUN_EVENTS.has(ev) ? fmtSeconds(best.value_seconds) : fmtLift(best))
           : '—';
 
         section.innerHTML = `
@@ -718,7 +741,7 @@
 
         sorted.forEach(r => {
           const isBest = best && r.id === best.id;
-          const val = RUN_EVENTS.has(ev) ? fmtSeconds(r.value_seconds) : fmtPounds(r.value_pounds);
+          const val = RUN_EVENTS.has(ev) ? fmtSeconds(r.value_seconds) : fmtLift(r);
           const row = document.createElement('div');
           row.className = 'pr-row' + (isBest ? ' is-best' : '');
           row.innerHTML = `
@@ -809,7 +832,16 @@
           formMsg.classList.add('error');
           return;
         }
+        const sets = parseInt(document.getElementById('inpSets').value, 10);
+        const reps = parseInt(document.getElementById('inpReps').value, 10);
+        if (!(sets >= 1) || !(reps >= 1)) {
+          formMsg.textContent = 'Enter at least 1 set and 1 rep.';
+          formMsg.classList.add('error');
+          return;
+        }
         payload.value_pounds = Number(lbs.toFixed(2));
+        payload.sets = sets;
+        payload.reps = reps;
       }
 
       submitBtn.disabled = true;
@@ -829,6 +861,8 @@
       document.getElementById('inpMinutes').value = '';
       document.getElementById('inpSeconds').value = '';
       document.getElementById('inpPounds').value = '';
+      document.getElementById('inpSets').value = '1';
+      document.getElementById('inpReps').value = '1';
       await refreshHistory();
     });
 
