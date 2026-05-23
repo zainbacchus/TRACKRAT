@@ -598,7 +598,7 @@
         <div class="form-row notes" id="notesRow" style="display:none">
           <div class="field">
             <label for="inpNotes">NOTE (OPTIONAL)</label>
-            <textarea id="inpNotes" maxlength="280" rows="2" placeholder="How did it feel? Wind, mood, weather…"></textarea>
+            <textarea id="inpNotes" maxlength="280" rows="2" placeholder="How did it feel? Where did you PR?"></textarea>
           </div>
         </div>
 
@@ -1076,7 +1076,7 @@
       bootLoader.style.display = 'none';
       signinCard.style.display = 'none';
       signedInView.style.display = 'block';
-      pageSub.textContent = 'TRACK YOUR TIMES AND LIFTS. EVERY PR IS YOURS.';
+      pageSub.textContent = 'TRACK YOUR TIMES AND LIFTS. PRIVATE BY DEFAULT.';
 
       const meta = user.user_metadata || {};
       const name = meta.full_name || meta.name || user.email || 'ATHLETE';
