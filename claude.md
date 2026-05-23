@@ -1,201 +1,244 @@
-# Claude.md - TRACKRAT Project Guide
+# Claude.md — TRACKRAT Project Guide
 
-This document provides context about the TRACKRAT project for AI assistants like Claude.
+Context for AI assistants working on the TRACKRAT codebase.
 
 ## Project Overview
 
-TRACKRAT is a single-page web application that serves as a brand showcase website. It features a responsive, full-screen SVG-based design with dynamic aspect ratio handling.
+TRACKRAT is a static multi-page marketing site for the TRACKRAT Sprint Club
+(Austin, TX) at **trackratsprint.club**, plus a small authenticated PR
+("personal record") tracking dashboard.
+
+Pages:
+
+- `/` — landing
+- `/schedule` — weekly schedule with .ics calendar export
+- `/brand` — brand guide
+- `/2026-invitational` — event placeholder
+- `/prs` — personal record tracker (Google sign-in, per-user data via Supabase)
 
 ## Architecture
 
-**Type:** Static Single-Page Application (SPA)
-**Deployment:** Vercel (serverless static hosting)
-**Size:** ~20 KB main file (extremely lightweight)
+| Concern | Choice |
+|---|---|
+| Hosting | Vercel (static + edge runtime for `api/`) |
+| Pages | One self-contained HTML file per route (inline CSS + JS) |
+| Auth | Supabase Auth (Google OAuth provider) |
+| Database | Supabase Postgres with Row Level Security |
+| Build step | None — plain HTML/CSS/JS, ES modules from esm.sh |
+
+There is intentionally no framework, bundler, or package.json. Each page
+holds its own styles and scripts so it can be read top-to-bottom without
+chasing imports. The only shared module is the Supabase client.
 
 ## File Structure
 
 ```
 TRACKRAT/
-├── index.html              # Main application (all-in-one: HTML, CSS, JS, SVG)
-├── vercel.json            # Vercel deployment configuration
-├── favicon.ico            # 32-bit favicon
-├── favicon-16x16.png      # 16x16 PNG icon
-├── claude.md              # This file - AI assistant guide
-└── README.md              # User-facing documentation
+├── index.html              # /            — landing
+├── schedule.html           # /schedule    — weekly schedule + .ics export
+├── brand.html              # /brand       — brand guide
+├── invitational.html       # /2026-invitational
+├── prs.html                # /prs         — PR tracker (Google sign-in)
+├── api/
+│   └── next-event.js       # Edge function: returns the next upcoming event
+├── js/
+│   └── supabase-config.js  # Shared Supabase client (URL + anon key)
+├── supabase-schema.sql     # `prs` table + RLS policies (run once)
+├── middleware.js           # Vercel middleware (if any rewrites/headers)
+├── vercel.json             # Rewrites for clean URLs
+├── robots.txt              # Disallows /prs from crawlers
+├── sitemap.xml             # Public-page sitemap (excludes /prs)
+├── llms.txt                # LLM-facing site description
+├── favicon.ico
+├── README.md               # User-facing setup docs
+└── claude.md               # This file
 ```
 
-## Technology Stack
+## Routing
 
-- **HTML5:** Semantic markup with inline styles and scripts
-- **CSS3:** Responsive design using viewport units (100dvh), flexbox patterns
-- **SVG:** Inline vector graphics for the main visual (1920x1080 base resolution)
-- **Vanilla JavaScript:** ES6 for dynamic aspect ratio management
-- **Vercel:** Static hosting with CDN distribution
+`vercel.json` rewrites clean URLs to the underlying `.html` files:
 
-## Key Features
+```json
+{ "source": "/schedule", "destination": "/schedule.html" }
+{ "source": "/brand", "destination": "/brand.html" }
+{ "source": "/2026-invitational", "destination": "/invitational.html" }
+{ "source": "/prs", "destination": "/prs.html" }
+{ "source": "/(.*)", "destination": "/index.html" }
+```
 
-1. **Responsive Full-Screen Design**
-   - No scrollbars, fills entire viewport
-   - Adaptive aspect ratio handling for all device types
-   - Supports both portrait and landscape orientations
+The fallback to `/index.html` is the SPA-style catch-all. Locally (no Vercel)
+visit `*.html` paths directly.
 
-2. **SVG-Based Visual**
-   - Self-contained inline SVG (no external dependencies)
-   - Dynamic scaling with viewport coverage
-   - Aspect ratio detection (< 16:9 uses contain, >= 16:9 uses cover)
+## Shared Patterns Across Pages
 
-3. **Minimal Dependencies**
-   - Zero external resources
-   - Single HTML file contains everything
-   - No build process required
+Each marketing page follows the same skeleton — match it when adding pages.
+
+### Design tokens (CSS variables)
+
+```css
+--orange: #FF4D1F;      /* primary brand */
+--black:  #000000;
+--white:  #FFFFFF;
+--font:   'IBM Plex Mono', monospace;
+--lane-color: rgba(255, 255, 255, 0.12);  /* track-lane background */
+```
+
+Typography pairs **Fugaz One** (display) with **IBM Plex Mono** (UI / body),
+loaded from Google Fonts.
+
+### Track-lane background
+
+`schedule.html`, `brand.html`, and `prs.html` all use a fixed 8-lane track
+backdrop:
+
+```html
+<div class="track-lanes">
+  <div class="lane"></div> <!-- ×8 -->
+</div>
+```
+
+`index.html` and `invitational.html` use the solid orange or black
+backgrounds without lanes.
+
+### Nav
+
+Identical structure on every page. The auth slot is **not** state-aware —
+`[ PRS ]` shows regardless of session. The `/prs` page itself handles the
+signed-out vs signed-in view.
+
+Desktop nav order: `HOME · SHOP · SCHEDULE · BRAND · 2026 INVITATIONAL · PRS`
+Mobile menu has the same items, with staggered fade-in transitions on
+`a:nth-child(1)…(7)`. When adding/removing nav items, update the stagger
+delays so the animation stays consistent.
+
+### Mobile menu toggle
+
+Hamburger → close (×) animation via three rotating `<span>`s. The toggle
+script is duplicated per page; it's small enough that DRYing it isn't worth
+the indirection.
+
+## Personal Records (/prs)
+
+Authenticated dashboard backed by Supabase.
+
+### Data model (`supabase-schema.sql`)
+
+Single `prs` table:
+
+```sql
+prs (
+  id           uuid pk,
+  user_id      uuid references auth.users on delete cascade,
+  event        text check (event in (
+                 '100m','200m','400m','1mile','5K',
+                 'bench','deadlift','squat')),
+  value_seconds numeric,  -- run events
+  value_pounds  numeric,  -- lift events
+  achieved_on   date,
+  created_at    timestamptz default now()
+)
+```
+
+A check constraint enforces that **exactly one** of `value_seconds` /
+`value_pounds` is populated, matching the event category.
+
+RLS is enabled with four policies (`select`, `insert`, `update`, `delete`)
+each scoped to `auth.uid() = user_id`. The anon key shipped to the client
+can only see/touch rows owned by the signed-in user.
+
+### Why the anon key is safe to commit
+
+Supabase's anon key is *designed* to be public. Security is enforced by the
+RLS policies above — not by key secrecy. The only key that must never ship
+to the client is `service_role`, which bypasses RLS. We don't use it.
+
+### Client flow (`prs.html`)
+
+1. Import shared client: `import { supabase } from '/js/supabase-config.js'`.
+2. On load, call `supabase.auth.getSession()`.
+   - No session → show the sign-in card.
+   - Session → show the user strip, PR form, and history list.
+3. `signInWithOAuth({ provider: 'google', options: { redirectTo: <origin>/prs }})`.
+4. `onAuthStateChange` keeps the UI in sync after sign-in/sign-out.
+5. CRUD calls go straight to `supabase.from('prs')…` — RLS handles authorization.
+
+The form has three modes shown conditionally based on the selected event:
+
+- Sprint / distance events → hours / minutes / seconds inputs → stored as
+  total seconds (`numeric(10,3)`).
+- Lift events → single pounds input.
+- Date picker → month / day / year selects (independent of event type).
+
+The "current PR" badge on each event section is computed client-side
+(`Math.min` of times, `Math.max` of weights) so we don't have to maintain a
+"best" flag in the DB.
+
+## API: `api/next-event.js`
+
+Edge runtime function (`export const config = { runtime: 'edge' }`) that
+returns the next upcoming Sunday/Thursday event for use by the home page.
+Stateless, no DB access. America/Chicago timezone is hard-coded.
 
 ## Development Guidelines
 
-### Making Changes
+### Local development
 
-1. **HTML/CSS/JS Changes:**
-   - Edit `index.html` directly
-   - Test responsive behavior across different viewport sizes
-   - Verify SVG rendering on mobile and desktop
-
-2. **SVG Modifications:**
-   - SVG is inline in `index.html` starting around line ~50
-   - Base resolution: 1920x1080 (16:9 aspect ratio)
-   - Uses `preserveAspectRatio` attribute for scaling control
-
-3. **Deployment:**
-   - Push changes to the repository
-   - Vercel automatically deploys from git
-   - Configuration in `vercel.json` handles routing
-
-### Testing Checklist
-
-- [ ] Test on mobile (portrait and landscape)
-- [ ] Test on tablet
-- [ ] Test on desktop (various window sizes)
-- [ ] Verify aspect ratio handling (< 16:9 and >= 16:9)
-- [ ] Check favicon rendering
-- [ ] Validate HTML/CSS/JS syntax
-
-## Code Patterns
-
-### Aspect Ratio Handler (JavaScript)
-
-```javascript
-(function() {
-    function updateAspectRatio() {
-        const aspectRatio = window.innerWidth / window.innerHeight;
-        const svg = document.querySelector('svg');
-        if (svg) {
-            svg.setAttribute('preserveAspectRatio',
-                aspectRatio < 1.777 ? 'xMidYMid meet' : 'xMidYMid slice'
-            );
-        }
-    }
-    // Event listeners...
-})();
+```bash
+npx serve .          # http://localhost:3000
+# or
+python -m http.server 3000
 ```
 
-**Logic:**
-- Calculates viewport aspect ratio (width/height)
-- For tall devices (< 16:9): uses `meet` mode (contain - shows entire image)
-- For wide devices (>= 16:9): uses `slice` mode (cover - fills screen, may crop)
+Visit pages by their `.html` filename locally — Vercel's clean-URL rewrites
+don't apply to plain file servers.
 
-### Vercel Configuration
+### Adding a new page
 
-```json
-{
-  "version": 2,
-  "builds": [{"src": "**", "use": "@vercel/static"}],
-  "routes": [
-    {"src": "/favicon.ico", "dest": "/favicon.ico"},
-    {"src": "/(.*)", "dest": "/index.html"}
-  ]
-}
-```
+1. Create `newpage.html` mirroring an existing page's skeleton (nav,
+   mobile menu, track lanes if applicable).
+2. Add a `/newpage` rewrite to `vercel.json`.
+3. Add the link to **every** page's nav (desktop `.nav-center` and mobile
+   `.mobile-menu`) — and update the `.mobile-menu.is-open a:nth-child(N)`
+   stagger delays accordingly.
+4. If indexable, add to `sitemap.xml`. If user-private, add to `robots.txt`
+   as `Disallow:`.
 
-**Routes:**
-1. Direct pass-through for favicons
-2. Fallback to index.html for all other requests (SPA behavior)
+### Editing the PR dashboard
 
-## Common Tasks
+- All UI logic lives in `prs.html`. Don't try to extract components.
+- Database changes: update `supabase-schema.sql` and run the new SQL in the
+  Supabase dashboard. Migrations are manual — there's no migration tool.
+- When adding a new event, update **three** places: the SQL `check`
+  constraint, the `EVENT_LABELS`/`EVENT_ORDER`/`RUN_EVENTS`/`LIFT_EVENTS`
+  constants in `prs.html`, and the chip button grid markup.
 
-### Update Brand Colors
+### Deployment
 
-The orange brand color is `#FF4D1F`. To change:
-1. Update SVG fill/stroke attributes
-2. Update CSS background color
-3. Keep consistent across all elements
-
-### Modify Text Content
-
-SVG text is in the inline SVG section of `index.html`:
-- Look for `<text>` elements
-- Consider font size, positioning, and alignment
-- Test rendering after changes
-
-### Change Layout
-
-CSS styling is in the `<style>` section:
-- Body: full-screen positioning, zero margins
-- SVG container: viewport-based sizing (100vw, 100dvh)
-- Consider mobile-first responsive design
-
-## Deployment
-
-**Vercel Deployment:**
-- Automatic on git push
-- No build step required (static files)
-- Global CDN distribution
-- HTTPS enabled by default
-
-**Manual Deployment:**
-- Can host on any static file server
-- No server-side processing needed
-- Single file (index.html) can run standalone
+Pushing to the default branch triggers an automatic Vercel deploy. No build
+step. Static files + edge functions only.
 
 ## Browser Compatibility
 
-**Required Features:**
-- SVG support
-- ES6 JavaScript (arrow functions, const/let)
-- CSS viewport units (dvh, vw)
-- Modern event listeners
-
-**Supported Browsers:**
-- Chrome/Edge 90+
-- Firefox 85+
-- Safari 14+
-- Mobile browsers (iOS Safari, Chrome Android)
-
-## Performance
-
-**Metrics:**
-- Load time: < 100ms (single 20 KB file)
-- Rendering: Instant (inline content, no external requests)
-- JavaScript: Minimal (< 1 KB)
-- Lighthouse score potential: 95+
-
-## Maintenance Notes
-
-- No dependencies to update (no package.json)
-- No security vulnerabilities (static content only)
-- Git history shows regular updates to index.html
-- Keep favicons up-to-date with brand changes
+- ES modules (native `<script type="module">`)
+- `fetch`, async/await, viewport units (`dvh`, `vw`)
+- Targets: current Chrome, Safari 14+, Firefox 85+, mobile Safari + Chrome
 
 ## AI Assistant Tips
 
-When helping with this project:
-1. All functionality is in `index.html` - read this file first
-2. This is a presentation/marketing site, not an application
-3. Preserve the responsive behavior when making changes
-4. Test suggestions across different viewport sizes
-5. Keep the minimal, self-contained nature of the project
-6. Respect the brand identity (colors, typography, layout)
-
-## Resources
-
-- **Repository:** zainbacchus/TRACKRAT
-- **Branch:** claude/add-documentation-011CUYxjrH4PbU6YayHiddke
-- **Recent Activity:** Regular updates to index.html
-- **Main Branch:** (check git for current main branch name)
+1. **Read the page top-to-bottom.** Each `.html` file is self-contained
+   (styles + scripts inline). There's no shared CSS file or component
+   library to chase.
+2. **The repo is public.** Treat anything in `js/supabase-config.js` and
+   below as visible to the world. Anything sensitive belongs in Vercel env
+   vars, not in tracked files.
+3. **Don't introduce a framework or build step.** The minimal, no-deps
+   ethos is intentional. If you reach for React/Vite/Tailwind, stop and
+   reconsider.
+4. **Match the existing style.** Black background, orange accent,
+   Fugaz One + IBM Plex Mono, ALL-CAPS labels with letter-spacing on UI
+   chrome, track lanes for dashboard-style pages.
+5. **Keep the nav in lockstep across all five pages.** A change to nav
+   markup or stagger delays must be applied everywhere or pages will drift.
+6. **For PR features, trust RLS.** Don't add server-side authorization
+   logic — it's already in Postgres. The client talks to Supabase directly.
+7. **Mobile-first.** Test at 375px before declaring done.

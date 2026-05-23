@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>TRACKRAT — PRS</title>
+  <meta name="description" content="Log your personal records. Sprints, distance, and lifts." />
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fugaz+One&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script defer src="https://cdn.vercel-insights.com/v1/script.js"></script>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --orange: #FF4D1F;
+      --black: #000000;
+      --white: #FFFFFF;
+      --font: 'IBM Plex Mono', monospace;
+      --lane-color: rgba(255, 255, 255, 0.12);
+      --field-bg: rgba(255, 255, 255, 0.04);
+      --field-border: rgba(255, 255, 255, 0.12);
+      --field-border-hover: rgba(255, 77, 31, 0.5);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font);
+      background: var(--black);
+      color: var(--white);
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+    }
+
+    a { text-decoration: none; color: inherit; -webkit-tap-highlight-color: transparent; }
+
+    .wordmark { font-family: 'Fugaz One', cursive; letter-spacing: -0.14em; }
+
+    /* ---- TRACK LANES ---- */
+    .track-lanes {
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      z-index: 0; pointer-events: none;
+      display: flex; justify-content: center; gap: 0;
+    }
+    .lane { width: calc(100% / 8); height: 100%; border-right: 1px solid var(--lane-color); }
+    .lane:first-child { border-left: 1px solid var(--lane-color); }
+
+    /* ---- NAV ---- */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; justify-content: center; align-items: center;
+      padding: 24px 40px; font-size: 13px; letter-spacing: 0.05em;
+    }
+    nav .nav-left {
+      font-family: 'Fugaz One', cursive; font-size: 18px;
+      letter-spacing: -0.14em; position: absolute; left: 40px;
+    }
+    nav .nav-center { display: flex; gap: 28px; font-weight: 500; }
+    nav a:hover { opacity: 0.6; transition: opacity 0.2s ease; }
+
+    /* ---- PAGE ---- */
+    .page {
+      position: relative; z-index: 10; min-height: 100vh;
+      padding: 140px 40px 80px;
+      display: flex; flex-direction: column; align-items: center;
+    }
+
+    .page-header {
+      width: 100%; max-width: 900px; margin-bottom: 60px;
+      opacity: 0; transform: translateY(20px);
+      animation: fadeUp 0.7s ease 0.1s forwards;
+    }
+
+    .page-eyebrow {
+      font-size: 12px; font-weight: 600; letter-spacing: 0.2em;
+      color: var(--orange); margin-bottom: 16px; display: block;
+    }
+
+    .page-title {
+      font-family: 'Fugaz One', cursive; letter-spacing: -0.10em;
+      font-size: clamp(60px, 12vw, 160px); line-height: 0.85; color: var(--orange);
+    }
+
+    .page-sub {
+      font-size: clamp(14px, 1.4vw, 16px); margin-top: 20px; opacity: 0.6;
+      max-width: 560px; line-height: 1.5;
+    }
+
+    /* ---- SIGNED-OUT STATE ---- */
+    .signin-card {
+      width: 100%; max-width: 560px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      padding: 56px 40px; text-align: center;
+      opacity: 0; transform: translateY(30px);
+      animation: fadeUp 0.7s ease 0.3s forwards;
+    }
+
+    .signin-card h2 {
+      font-family: 'Fugaz One', cursive; letter-spacing: -0.06em;
+      font-size: clamp(28px, 4vw, 36px); margin-bottom: 12px;
+    }
+
+    .signin-card p { opacity: 0.6; margin-bottom: 32px; font-size: 14px; line-height: 1.5; }
+
+    .google-btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      gap: 12px; padding: 16px 28px;
+      background: var(--orange); color: var(--black);
+      border: none; cursor: pointer;
+      font-family: var(--font); font-size: 13px; font-weight: 700;
+      letter-spacing: 0.15em; text-transform: uppercase;
+      transition: transform 0.15s ease, opacity 0.2s ease;
+    }
+    .google-btn:hover { transform: translateY(-1px); opacity: 0.92; }
+    .google-btn svg { width: 18px; height: 18px; }
+
+    /* ---- SIGNED-IN: USER STRIP ---- */
+    .user-strip {
+      width: 100%; max-width: 900px;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 20px; margin-bottom: 32px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+    .user-strip .who { display: flex; align-items: center; gap: 12px; }
+    .user-strip .avatar {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: var(--orange); color: var(--black);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 14px; flex-shrink: 0;
+      background-size: cover; background-position: center;
+    }
+    .user-strip .name { font-size: 13px; font-weight: 600; }
+    .user-strip .email { font-size: 11px; opacity: 0.5; letter-spacing: 0.05em; }
+    .user-strip button {
+      background: transparent; border: 1px solid var(--field-border);
+      color: var(--white); padding: 8px 16px;
+      font-family: var(--font); font-size: 11px; font-weight: 600;
+      letter-spacing: 0.15em; cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .user-strip button:hover { border-color: var(--orange); color: var(--orange); }
+
+    /* ---- PR FORM ---- */
+    .pr-form-card {
+      width: 100%; max-width: 900px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      padding: 32px; margin-bottom: 48px;
+    }
+
+    .pr-form-card h2 {
+      font-family: 'Fugaz One', cursive; letter-spacing: -0.04em;
+      font-size: clamp(22px, 3vw, 28px); margin-bottom: 8px;
+    }
+
+    .pr-form-card .hint {
+      font-size: 11px; letter-spacing: 0.2em; font-weight: 600;
+      color: var(--orange); margin-bottom: 24px;
+    }
+
+    .event-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 8px; margin-bottom: 24px;
+    }
+    .event-chip {
+      background: var(--field-bg);
+      border: 1px solid var(--field-border);
+      color: var(--white);
+      padding: 12px 8px; font-family: var(--font);
+      font-size: 12px; font-weight: 600; letter-spacing: 0.1em;
+      text-transform: uppercase; cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .event-chip:hover { border-color: var(--field-border-hover); }
+    .event-chip.is-active {
+      background: var(--orange); border-color: var(--orange); color: var(--black);
+    }
+
+    .form-row {
+      display: grid; gap: 12px; margin-bottom: 16px;
+    }
+    .form-row.time { grid-template-columns: repeat(3, 1fr); }
+    .form-row.weight { grid-template-columns: 1fr; }
+    .form-row.date { grid-template-columns: repeat(3, 1fr); }
+
+    .field {
+      display: flex; flex-direction: column; gap: 6px;
+    }
+    .field label {
+      font-size: 10px; letter-spacing: 0.2em;
+      font-weight: 600; opacity: 0.5;
+    }
+    .field input, .field select {
+      background: var(--field-bg);
+      border: 1px solid var(--field-border);
+      color: var(--white);
+      padding: 12px 14px;
+      font-family: var(--font); font-size: 15px;
+      transition: border-color 0.15s ease;
+      width: 100%;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+    .field select {
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2'><polyline points='6 9 12 15 18 9'/></svg>");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      padding-right: 36px;
+    }
+    .field input:focus, .field select:focus {
+      outline: none; border-color: var(--orange);
+    }
+    .field input::-webkit-outer-spin-button,
+    .field input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+    .field input[type=number] { -moz-appearance: textfield; }
+
+    .submit-row {
+      display: flex; gap: 12px; margin-top: 8px; align-items: center;
+    }
+    .submit-btn {
+      background: var(--orange); color: var(--black);
+      border: none; padding: 14px 28px;
+      font-family: var(--font); font-size: 12px; font-weight: 700;
+      letter-spacing: 0.2em; cursor: pointer;
+      transition: opacity 0.2s ease, transform 0.15s ease;
+    }
+    .submit-btn:hover { transform: translateY(-1px); }
+    .submit-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+    .form-msg { font-size: 12px; letter-spacing: 0.05em; }
+    .form-msg.error { color: #ff8a6b; }
+    .form-msg.success { color: var(--orange); }
+
+    /* ---- HISTORY ---- */
+    .history { width: 100%; max-width: 900px; }
+    .history-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    .history-title {
+      font-size: 11px; letter-spacing: 0.3em; font-weight: 600;
+      color: var(--orange);
+    }
+
+    .event-section {
+      margin-bottom: 24px;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .event-section-head {
+      padding: 20px 24px;
+      display: flex; align-items: baseline; justify-content: space-between;
+      flex-wrap: wrap; gap: 8px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    .event-section-name {
+      font-family: 'Fugaz One', cursive; letter-spacing: -0.04em;
+      font-size: clamp(20px, 2.5vw, 26px);
+    }
+    .event-best {
+      font-size: 12px; letter-spacing: 0.2em; font-weight: 600;
+      color: var(--orange);
+    }
+    .event-best .value { font-size: 18px; letter-spacing: -0.01em; margin-left: 8px; }
+
+    .pr-row {
+      padding: 14px 24px;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+      font-size: 14px;
+    }
+    .pr-row:last-child { border-bottom: none; }
+    .pr-row.is-best { background: rgba(255, 77, 31, 0.06); }
+
+    .pr-row .pr-value { font-weight: 600; min-width: 100px; }
+    .pr-row .pr-date { opacity: 0.55; font-size: 12px; letter-spacing: 0.05em; flex: 1; }
+    .pr-row .pr-best-tag {
+      font-size: 10px; letter-spacing: 0.2em; font-weight: 600;
+      color: var(--orange); margin-right: 12px;
+    }
+    .pr-row .delete-btn {
+      background: transparent; border: none; color: var(--white);
+      opacity: 0.4; cursor: pointer; padding: 4px;
+      transition: opacity 0.2s ease, color 0.2s ease;
+    }
+    .pr-row .delete-btn:hover { opacity: 1; color: #ff8a6b; }
+    .pr-row .delete-btn svg { width: 16px; height: 16px; display: block; }
+
+    .empty-state {
+      padding: 16px 24px; font-size: 13px; opacity: 0.4;
+    }
+
+    .loading {
+      padding: 40px; text-align: center; opacity: 0.5; font-size: 13px;
+      letter-spacing: 0.2em;
+    }
+
+    /* ---- MOBILE MENU TOGGLE ---- */
+    .menu-toggle {
+      display: none; position: relative; width: 32px; height: 32px;
+      background: transparent; border: none; cursor: pointer; padding: 0;
+      z-index: 200; color: var(--white);
+    }
+    .menu-toggle span {
+      position: absolute; left: 4px; right: 4px; height: 2px;
+      background: currentColor;
+      transition: transform 0.3s ease, opacity 0.2s ease, top 0.3s ease;
+    }
+    .menu-toggle span:nth-child(1) { top: 10px; }
+    .menu-toggle span:nth-child(2) { top: 16px; }
+    .menu-toggle span:nth-child(3) { top: 22px; }
+    .menu-toggle.is-open span:nth-child(1) { top: 16px; transform: rotate(45deg); }
+    .menu-toggle.is-open span:nth-child(2) { opacity: 0; }
+    .menu-toggle.is-open span:nth-child(3) { top: 16px; transform: rotate(-45deg); }
+
+    .mobile-menu {
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      z-index: 150; background: var(--black);
+      display: none; flex-direction: column;
+      justify-content: center; align-items: flex-start;
+      padding: 80px 32px 60px; opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .mobile-menu.is-open { display: flex; opacity: 1; }
+    .mobile-menu a {
+      font-size: clamp(28px, 7vw, 40px);
+      font-family: 'Fugaz One', cursive; letter-spacing: -0.04em;
+      color: var(--white); padding: 12px 0; width: 100%;
+      transform: translateX(-20px); opacity: 0;
+      transition: transform 0.4s ease, opacity 0.4s ease, color 0.2s ease;
+    }
+    .mobile-menu.is-open a { transform: translateX(0); opacity: 1; }
+    .mobile-menu.is-open a:nth-child(1) { transition-delay: 0.05s; }
+    .mobile-menu.is-open a:nth-child(2) { transition-delay: 0.10s; }
+    .mobile-menu.is-open a:nth-child(3) { transition-delay: 0.15s; }
+    .mobile-menu.is-open a:nth-child(4) { transition-delay: 0.20s; }
+    .mobile-menu.is-open a:nth-child(5) { transition-delay: 0.25s; }
+    .mobile-menu.is-open a:nth-child(6) { transition-delay: 0.30s; }
+    .mobile-menu a:hover, .mobile-menu a:active { color: var(--orange); }
+    .mobile-menu-footer {
+      position: absolute; bottom: 40px; left: 32px; right: 32px;
+      font-size: 10px; letter-spacing: 0.3em; opacity: 0.3;
+      font-weight: 600;
+    }
+    body.menu-open { overflow: hidden; }
+
+    @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+
+    /* ---- FOOTER ---- */
+    footer {
+      position: relative; z-index: 10; padding: 40px;
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 11px; letter-spacing: 0.1em; opacity: 0.3;
+    }
+
+    /* ---- RESPONSIVE ---- */
+    @media (max-width: 768px) {
+      nav { padding: 16px 20px; justify-content: space-between; }
+      nav .nav-left { position: static; font-size: 16px; flex-shrink: 0; }
+      nav .nav-center { display: none; }
+      .menu-toggle { display: block; }
+
+      .page { padding: 100px 20px 60px; }
+      .page-header { margin-bottom: 40px; }
+      .page-title { font-size: clamp(48px, 16vw, 90px); }
+
+      .signin-card { padding: 40px 24px; }
+
+      .pr-form-card { padding: 24px 20px; }
+      .event-grid { grid-template-columns: repeat(2, 1fr); }
+      .form-row.time { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+      .form-row.date { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+      .field input, .field select { font-size: 16px; padding: 10px 12px; }
+      .field select { padding-right: 32px; }
+
+      .user-strip { flex-direction: row; padding: 14px 16px; }
+      .user-strip .email { display: none; }
+
+      .event-section-head { padding: 16px 18px; }
+      .pr-row { padding: 12px 18px; flex-wrap: wrap; }
+      .pr-row .pr-value { min-width: auto; }
+
+      footer { padding: 32px 20px; flex-direction: column; gap: 8px; }
+    }
+    @media (max-width: 420px) {
+      nav .nav-left { font-size: 14px; }
+      .page-title { font-size: clamp(40px, 18vw, 72px); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TRACK LANES -->
+  <div class="track-lanes">
+    <div class="lane"></div><div class="lane"></div><div class="lane"></div><div class="lane"></div>
+    <div class="lane"></div><div class="lane"></div><div class="lane"></div><div class="lane"></div>
+  </div>
+
+  <!-- NAV -->
+  <nav>
+    <a href="/" class="nav-left wordmark">TRACKRAT</a>
+    <div class="nav-center">
+      <a href="/">[ HOME ]</a>
+      <a href="https://shop.trackratsprint.club" target="_blank">[ SHOP ]</a>
+      <a href="/schedule">[ SCHEDULE ]</a>
+      <a href="/brand">[ BRAND ]</a>
+      <a href="/2026-invitational">[ 2026 INVITATIONAL ]</a>
+      <a href="/prs">[ PRS ]</a>
+    </div>
+    <button class="menu-toggle" id="menuToggle" aria-label="Open menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- MOBILE MENU OVERLAY -->
+  <div class="mobile-menu" id="mobileMenu" aria-hidden="true">
+    <a href="/">HOME</a>
+    <a href="https://shop.trackratsprint.club" target="_blank">SHOP</a>
+    <a href="/schedule">SCHEDULE</a>
+    <a href="/brand">BRAND</a>
+    <a href="/2026-invitational">2026 INVITATIONAL</a>
+    <a href="/prs">PRS</a>
+    <div class="mobile-menu-footer">TRACKRAT SPRINT CLUB</div>
+  </div>
+
+  <!-- PAGE -->
+  <div class="page">
+
+    <div class="page-header">
+      <span class="page-eyebrow">PERSONAL RECORDS</span>
+      <h1 class="page-title">PRS</h1>
+      <p class="page-sub" id="pageSub">SIGN IN TO LOG YOUR FASTEST TIMES AND HEAVIEST LIFTS.</p>
+    </div>
+
+    <!-- SIGNED OUT -->
+    <div class="signin-card" id="signinCard" style="display:none">
+      <h2>SIGN IN</h2>
+      <p>Use your Google account. We only store your PRs — nothing else.</p>
+      <button class="google-btn" id="googleSignIn">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+          <path fill="currentColor" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.99.66-2.25 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+          <path fill="currentColor" d="M5.84 14.1c-.22-.66-.35-1.36-.35-2.1s.13-1.44.35-2.1V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.83z"/>
+          <path fill="currentColor" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.83C6.71 7.31 9.14 5.38 12 5.38z"/>
+        </svg>
+        Sign in with Google
+      </button>
+    </div>
+
+    <!-- SIGNED IN -->
+    <div id="signedInView" style="display:none; width: 100%; max-width: 900px;">
+
+      <div class="user-strip">
+        <div class="who">
+          <div class="avatar" id="userAvatar"></div>
+          <div>
+            <div class="name" id="userName"></div>
+            <div class="email" id="userEmail"></div>
+          </div>
+        </div>
+        <button id="signOutBtn">SIGN OUT</button>
+      </div>
+
+      <div class="pr-form-card">
+        <h2>LOG A PR</h2>
+        <div class="hint">SELECT EVENT</div>
+
+        <div class="event-grid" id="eventGrid">
+          <button type="button" class="event-chip" data-event="100m">100M</button>
+          <button type="button" class="event-chip" data-event="200m">200M</button>
+          <button type="button" class="event-chip" data-event="400m">400M</button>
+          <button type="button" class="event-chip" data-event="1mile">1 MILE</button>
+          <button type="button" class="event-chip" data-event="5K">5K</button>
+          <button type="button" class="event-chip" data-event="bench">BENCH</button>
+          <button type="button" class="event-chip" data-event="deadlift">DEADLIFT</button>
+          <button type="button" class="event-chip" data-event="squat">SQUAT</button>
+        </div>
+
+        <!-- Time input (run events) -->
+        <div class="form-row time" id="timeRow" style="display:none">
+          <div class="field">
+            <label for="inpHours">HOURS</label>
+            <input id="inpHours" type="number" min="0" max="23" step="1" placeholder="0" inputmode="numeric" />
+          </div>
+          <div class="field">
+            <label for="inpMinutes">MINUTES</label>
+            <input id="inpMinutes" type="number" min="0" max="59" step="1" placeholder="0" inputmode="numeric" />
+          </div>
+          <div class="field">
+            <label for="inpSeconds">SECONDS</label>
+            <input id="inpSeconds" type="number" min="0" max="59.999" step="0.01" placeholder="0.00" inputmode="decimal" />
+          </div>
+        </div>
+
+        <!-- Weight input (lift events) -->
+        <div class="form-row weight" id="weightRow" style="display:none">
+          <div class="field">
+            <label for="inpPounds">WEIGHT (LBS)</label>
+            <input id="inpPounds" type="number" min="1" max="2000" step="1" placeholder="225" inputmode="numeric" />
+          </div>
+        </div>
+
+        <!-- Date row -->
+        <div class="form-row date" id="dateRow" style="display:none">
+          <div class="field">
+            <label for="inpMonth">MONTH</label>
+            <select id="inpMonth"></select>
+          </div>
+          <div class="field">
+            <label for="inpDay">DAY</label>
+            <select id="inpDay"></select>
+          </div>
+          <div class="field">
+            <label for="inpYear">YEAR</label>
+            <select id="inpYear"></select>
+          </div>
+        </div>
+
+        <div class="submit-row">
+          <button class="submit-btn" id="submitBtn" disabled>SAVE PR</button>
+          <span class="form-msg" id="formMsg"></span>
+        </div>
+      </div>
+
+      <div class="history" id="history">
+        <div class="history-header">
+          <span class="history-title">YOUR RECORDS</span>
+        </div>
+        <div id="historyList" class="loading">LOADING…</div>
+      </div>
+    </div>
+
+    <!-- Loading splash before auth state resolves -->
+    <div id="bootLoader" class="loading">LOADING…</div>
+
+  </div>
+
+  <footer>
+    <span>TRACKRAT SPRINT CLUB</span>
+    <span>PERSONAL RECORDS</span>
+  </footer>
+
+  <script type="module">
+    import { supabase } from '/js/supabase-config.js';
+
+    // ---- MOBILE MENU ----
+    const menuToggle = document.getElementById('menuToggle');
+    const mobileMenu = document.getElementById('mobileMenu');
+
+    function closeMenu() {
+      menuToggle.classList.remove('is-open');
+      mobileMenu.classList.remove('is-open');
+      document.body.classList.remove('menu-open');
+      menuToggle.setAttribute('aria-expanded', 'false');
+      mobileMenu.setAttribute('aria-hidden', 'true');
+    }
+    function openMenu() {
+      menuToggle.classList.add('is-open');
+      mobileMenu.classList.add('is-open');
+      document.body.classList.add('menu-open');
+      menuToggle.setAttribute('aria-expanded', 'true');
+      mobileMenu.setAttribute('aria-hidden', 'false');
+    }
+    menuToggle.addEventListener('click', () => {
+      menuToggle.classList.contains('is-open') ? closeMenu() : openMenu();
+    });
+    mobileMenu.querySelectorAll('a').forEach(l => l.addEventListener('click', closeMenu));
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && menuToggle.classList.contains('is-open')) closeMenu();
+    });
+
+    // ---- EVENT METADATA ----
+    const RUN_EVENTS = new Set(['100m','200m','400m','1mile','5K']);
+    const LIFT_EVENTS = new Set(['bench','deadlift','squat']);
+    const EVENT_LABELS = {
+      '100m':'100M', '200m':'200M', '400m':'400M',
+      '1mile':'1 MILE', '5K':'5K',
+      'bench':'BENCH', 'deadlift':'DEADLIFT', 'squat':'SQUAT'
+    };
+    const EVENT_ORDER = ['100m','200m','400m','1mile','5K','bench','deadlift','squat'];
+
+    // ---- DATE PICKER POPULATION ----
+    const MONTHS = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+    const monthSel = document.getElementById('inpMonth');
+    const daySel = document.getElementById('inpDay');
+    const yearSel = document.getElementById('inpYear');
+
+    function populateDatePicker() {
+      MONTHS.forEach((m, i) => {
+        const o = document.createElement('option');
+        o.value = String(i + 1).padStart(2, '0'); o.textContent = m;
+        monthSel.appendChild(o);
+      });
+      for (let d = 1; d <= 31; d++) {
+        const o = document.createElement('option');
+        o.value = String(d).padStart(2, '0'); o.textContent = String(d);
+        daySel.appendChild(o);
+      }
+      const thisYear = new Date().getFullYear();
+      for (let y = thisYear; y >= thisYear - 30; y--) {
+        const o = document.createElement('option');
+        o.value = String(y); o.textContent = String(y);
+        yearSel.appendChild(o);
+      }
+      const now = new Date();
+      monthSel.value = String(now.getMonth() + 1).padStart(2, '0');
+      daySel.value = String(now.getDate()).padStart(2, '0');
+      yearSel.value = String(now.getFullYear());
+    }
+    populateDatePicker();
+
+    // ---- FORM STATE ----
+    let selectedEvent = null;
+    const eventGrid = document.getElementById('eventGrid');
+    const timeRow = document.getElementById('timeRow');
+    const weightRow = document.getElementById('weightRow');
+    const dateRow = document.getElementById('dateRow');
+    const submitBtn = document.getElementById('submitBtn');
+    const formMsg = document.getElementById('formMsg');
+
+    function showForEvent(ev) {
+      selectedEvent = ev;
+      [...eventGrid.querySelectorAll('.event-chip')].forEach(c => {
+        c.classList.toggle('is-active', c.dataset.event === ev);
+      });
+      if (RUN_EVENTS.has(ev)) {
+        timeRow.style.display = 'grid';
+        weightRow.style.display = 'none';
+      } else {
+        timeRow.style.display = 'none';
+        weightRow.style.display = 'grid';
+      }
+      dateRow.style.display = 'grid';
+      submitBtn.disabled = false;
+      formMsg.textContent = '';
+    }
+
+    eventGrid.addEventListener('click', e => {
+      const chip = e.target.closest('.event-chip');
+      if (!chip) return;
+      showForEvent(chip.dataset.event);
+    });
+
+    // ---- FORMATTING ----
+    function fmtSeconds(totalSec) {
+      const t = Number(totalSec);
+      const h = Math.floor(t / 3600);
+      const m = Math.floor((t % 3600) / 60);
+      const s = t - h * 3600 - m * 60;
+      const sFmt = (s % 1 === 0) ? String(s).padStart(2, '0') : s.toFixed(2).padStart(5, '0');
+      if (h > 0) return `${h}:${String(m).padStart(2,'0')}:${sFmt}`;
+      if (m > 0) return `${m}:${sFmt}`;
+      return `${Number(s).toFixed(2)}s`;
+    }
+    function fmtPounds(lbs) { return `${Number(lbs)} lbs`; }
+    function fmtDate(iso) {
+      const d = new Date(iso + 'T00:00:00');
+      return d.toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' }).toUpperCase();
+    }
+
+    // ---- BEST RECORD ----
+    function bestRow(rows, event) {
+      if (!rows.length) return null;
+      if (RUN_EVENTS.has(event)) {
+        return rows.reduce((b, r) => (b === null || Number(r.value_seconds) < Number(b.value_seconds)) ? r : b, null);
+      }
+      return rows.reduce((b, r) => (b === null || Number(r.value_pounds) > Number(b.value_pounds)) ? r : b, null);
+    }
+
+    // ---- RENDER HISTORY ----
+    const historyList = document.getElementById('historyList');
+
+    function renderHistory(allRows) {
+      const grouped = {};
+      EVENT_ORDER.forEach(ev => { grouped[ev] = []; });
+      allRows.forEach(r => { if (grouped[r.event]) grouped[r.event].push(r); });
+
+      const hasAny = Object.values(grouped).some(arr => arr.length > 0);
+      if (!hasAny) {
+        historyList.className = '';
+        historyList.innerHTML = '<div class="empty-state">No PRs yet. Log your first one above.</div>';
+        return;
+      }
+
+      historyList.className = '';
+      historyList.innerHTML = '';
+
+      EVENT_ORDER.forEach(ev => {
+        const rows = grouped[ev];
+        if (!rows.length) return;
+        // Sort: best first... actually keep chronological newest first, mark best.
+        const sorted = rows.slice().sort((a, b) =>
+          (b.achieved_on || '').localeCompare(a.achieved_on || '') ||
+          (b.created_at || '').localeCompare(a.created_at || '')
+        );
+        const best = bestRow(sorted, ev);
+
+        const section = document.createElement('div');
+        section.className = 'event-section';
+
+        const bestVal = best
+          ? (RUN_EVENTS.has(ev) ? fmtSeconds(best.value_seconds) : fmtPounds(best.value_pounds))
+          : '—';
+
+        section.innerHTML = `
+          <div class="event-section-head">
+            <span class="event-section-name">${EVENT_LABELS[ev]}</span>
+            <span class="event-best">PR<span class="value">${bestVal}</span></span>
+          </div>
+        `;
+
+        sorted.forEach(r => {
+          const isBest = best && r.id === best.id;
+          const val = RUN_EVENTS.has(ev) ? fmtSeconds(r.value_seconds) : fmtPounds(r.value_pounds);
+          const row = document.createElement('div');
+          row.className = 'pr-row' + (isBest ? ' is-best' : '');
+          row.innerHTML = `
+            <span class="pr-value">${val}</span>
+            <span class="pr-date">${fmtDate(r.achieved_on)}</span>
+            ${isBest ? '<span class="pr-best-tag">BEST</span>' : ''}
+            <button class="delete-btn" title="Delete" data-id="${r.id}" aria-label="Delete entry">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="3 6 5 6 21 6"></polyline>
+                <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path>
+                <path d="M10 11v6"></path><path d="M14 11v6"></path>
+                <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"></path>
+              </svg>
+            </button>
+          `;
+          section.appendChild(row);
+        });
+
+        historyList.appendChild(section);
+      });
+    }
+
+    historyList.addEventListener('click', async e => {
+      const btn = e.target.closest('.delete-btn');
+      if (!btn) return;
+      if (!confirm('Delete this PR entry?')) return;
+      const id = btn.dataset.id;
+      const { error } = await supabase.from('prs').delete().eq('id', id);
+      if (error) { alert(error.message); return; }
+      await refreshHistory();
+    });
+
+    async function refreshHistory() {
+      historyList.className = 'loading';
+      historyList.textContent = 'LOADING…';
+      const { data, error } = await supabase
+        .from('prs')
+        .select('*')
+        .order('achieved_on', { ascending: false });
+      if (error) {
+        historyList.className = '';
+        historyList.innerHTML = `<div class="empty-state">Couldn't load PRs: ${error.message}</div>`;
+        return;
+      }
+      renderHistory(data || []);
+    }
+
+    // ---- SUBMIT ----
+    submitBtn.addEventListener('click', async () => {
+      formMsg.textContent = '';
+      formMsg.className = 'form-msg';
+      if (!selectedEvent) {
+        formMsg.textContent = 'Pick an event.';
+        formMsg.classList.add('error');
+        return;
+      }
+
+      const { data: sess } = await supabase.auth.getSession();
+      if (!sess.session) {
+        formMsg.textContent = 'Not signed in.';
+        formMsg.classList.add('error');
+        return;
+      }
+
+      const payload = {
+        user_id: sess.session.user.id,
+        event: selectedEvent,
+        achieved_on: `${yearSel.value}-${monthSel.value}-${daySel.value}`
+      };
+
+      if (RUN_EVENTS.has(selectedEvent)) {
+        const h = parseFloat(document.getElementById('inpHours').value || '0');
+        const m = parseFloat(document.getElementById('inpMinutes').value || '0');
+        const s = parseFloat(document.getElementById('inpSeconds').value || '0');
+        const total = (h * 3600) + (m * 60) + s;
+        if (!(total > 0)) {
+          formMsg.textContent = 'Enter a time greater than zero.';
+          formMsg.classList.add('error');
+          return;
+        }
+        payload.value_seconds = Number(total.toFixed(3));
+      } else {
+        const lbs = parseFloat(document.getElementById('inpPounds').value || '0');
+        if (!(lbs > 0)) {
+          formMsg.textContent = 'Enter a weight greater than zero.';
+          formMsg.classList.add('error');
+          return;
+        }
+        payload.value_pounds = Number(lbs.toFixed(2));
+      }
+
+      submitBtn.disabled = true;
+      const { error } = await supabase.from('prs').insert(payload);
+      submitBtn.disabled = false;
+
+      if (error) {
+        formMsg.textContent = error.message;
+        formMsg.classList.add('error');
+        return;
+      }
+
+      formMsg.textContent = 'SAVED.';
+      formMsg.classList.add('success');
+      // Reset value inputs but keep event + date selection.
+      document.getElementById('inpHours').value = '';
+      document.getElementById('inpMinutes').value = '';
+      document.getElementById('inpSeconds').value = '';
+      document.getElementById('inpPounds').value = '';
+      await refreshHistory();
+    });
+
+    // ---- AUTH UI ----
+    const bootLoader = document.getElementById('bootLoader');
+    const signinCard = document.getElementById('signinCard');
+    const signedInView = document.getElementById('signedInView');
+    const pageSub = document.getElementById('pageSub');
+
+    function setSignedOut() {
+      bootLoader.style.display = 'none';
+      signinCard.style.display = 'block';
+      signedInView.style.display = 'none';
+      pageSub.textContent = 'SIGN IN TO LOG YOUR FASTEST TIMES AND HEAVIEST LIFTS.';
+    }
+
+    function setSignedIn(user) {
+      bootLoader.style.display = 'none';
+      signinCard.style.display = 'none';
+      signedInView.style.display = 'block';
+      pageSub.textContent = 'TRACK YOUR TIMES AND LIFTS. EVERY PR IS YOURS.';
+
+      const meta = user.user_metadata || {};
+      const name = meta.full_name || meta.name || user.email || 'ATHLETE';
+      const avatar = meta.avatar_url || meta.picture;
+
+      document.getElementById('userName').textContent = name;
+      document.getElementById('userEmail').textContent = user.email || '';
+
+      const avatarEl = document.getElementById('userAvatar');
+      if (avatar) {
+        avatarEl.style.backgroundImage = `url("${avatar}")`;
+        avatarEl.textContent = '';
+      } else {
+        avatarEl.style.backgroundImage = '';
+        avatarEl.textContent = String(name).trim().charAt(0).toUpperCase();
+      }
+    }
+
+    document.getElementById('googleSignIn').addEventListener('click', async () => {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: window.location.origin + '/prs'
+        }
+      });
+      if (error) alert(error.message);
+    });
+
+    document.getElementById('signOutBtn').addEventListener('click', async () => {
+      await supabase.auth.signOut();
+    });
+
+    // Init
+    (async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        setSignedIn(session.user);
+        await refreshHistory();
+      } else {
+        setSignedOut();
+      }
+      supabase.auth.onAuthStateChange(async (_event, session) => {
+        if (session) {
+          setSignedIn(session.user);
+          await refreshHistory();
+        } else {
+          setSignedOut();
+        }
+      });
+    })();
+  </script>
+
+</body>
+</html>

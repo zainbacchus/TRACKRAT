@@ -1,4 +1,5 @@
 User-agent: *
 Allow: /
+Disallow: /prs
 
 Sitemap: https://www.trackratsprint.club/sitemap.xml

@@ -20,6 +20,7 @@
     { "source": "/brand", "destination": "/brand.html" },
     { "source": "/schedule", "destination": "/schedule.html" },
     { "source": "/2026-invitational", "destination": "/invitational.html" },
+    { "source": "/prs", "destination": "/prs.html" },
     { "source": "/(.*)", "destination": "/index.html" }
   ]
 }
