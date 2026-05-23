@@ -187,6 +187,7 @@
     .form-row.time { grid-template-columns: repeat(3, 1fr); }
     .form-row.weight { grid-template-columns: 2fr 1fr 1fr; }
     .form-row.date { grid-template-columns: repeat(3, 1fr); }
+    .form-row.notes { grid-template-columns: 1fr; }
 
     .field {
       display: flex; flex-direction: column; gap: 6px;
@@ -195,7 +196,7 @@
       font-size: 10px; letter-spacing: 0.2em;
       font-weight: 600; opacity: 0.5;
     }
-    .field input, .field select {
+    .field input, .field select, .field textarea {
       background: var(--field-bg);
       border: 1px solid var(--field-border);
       color: var(--white);
@@ -206,13 +207,18 @@
       -webkit-appearance: none;
       appearance: none;
     }
+    .field textarea {
+      resize: vertical;
+      line-height: 1.4;
+      min-height: 60px;
+    }
     .field select {
       background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2'><polyline points='6 9 12 15 18 9'/></svg>");
       background-repeat: no-repeat;
       background-position: right 12px center;
       padding-right: 36px;
     }
-    .field input:focus, .field select:focus {
+    .field input:focus, .field select:focus, .field textarea:focus {
       outline: none; border-color: var(--orange);
     }
     .field input::-webkit-outer-spin-button,
@@ -278,15 +284,34 @@
     }
     .event-best .value { font-size: 18px; letter-spacing: -0.01em; margin-left: 8px; }
 
+    /* Each PR entry = the row of metrics + an optional note line.
+       Border + is-best tint live on the wrapper so a note inherits the
+       highlight and the divider sits below the note when present. */
+    .pr-entry { border-bottom: 1px solid rgba(255, 255, 255, 0.03); }
+    .pr-entry:last-child { border-bottom: none; }
+    .pr-entry.is-best { background: rgba(255, 77, 31, 0.06); }
+
     .pr-row {
       padding: 14px 24px;
       display: flex; align-items: center; justify-content: space-between;
       gap: 12px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.03);
       font-size: 14px;
     }
-    .pr-row:last-child { border-bottom: none; }
-    .pr-row.is-best { background: rgba(255, 77, 31, 0.06); }
+
+    .pr-note {
+      padding: 0 24px 14px;
+      font-size: 13px; line-height: 1.45;
+      opacity: 0.7;
+      white-space: pre-wrap; word-break: break-word;
+    }
+    .pr-note::before {
+      content: '“';
+      opacity: 0.5; margin-right: 2px;
+    }
+    .pr-note::after {
+      content: '”';
+      opacity: 0.5; margin-left: 2px;
+    }
 
     .pr-row .pr-value { font-weight: 600; min-width: 100px; }
     .pr-row .pr-date { opacity: 0.55; font-size: 12px; letter-spacing: 0.05em; flex: 1; }
@@ -406,8 +431,22 @@
       .user-strip .email { display: none; }
 
       .event-section-head { padding: 16px 18px; }
-      .pr-row { padding: 12px 18px; flex-wrap: wrap; }
-      .pr-row .pr-value { min-width: auto; }
+      /* Two-row layout on mobile: value on its own line, then
+         date · best · actions on the next. Prevents the date from wrapping
+         mid-string (e.g. "JUL 27,\n2025") when the value is long like
+         "235 lbs · 1×2". */
+      .pr-row {
+        padding: 12px 18px;
+        flex-wrap: wrap;
+        column-gap: 12px;
+        row-gap: 6px;
+        align-items: center;
+      }
+      .pr-row .pr-value { flex: 1 1 100%; min-width: auto; order: 1; }
+      .pr-row .pr-date { flex: 0 1 auto; order: 2; white-space: nowrap; }
+      .pr-row .pr-best-tag { order: 3; margin-right: 0; }
+      .pr-row .row-actions { order: 4; margin-left: auto; }
+      .pr-note { padding: 0 18px 12px; font-size: 12px; }
 
       footer { padding: 32px 20px; flex-direction: column; gap: 8px; }
     }
@@ -555,6 +594,14 @@
           </div>
         </div>
 
+        <!-- Notes row -->
+        <div class="form-row notes" id="notesRow" style="display:none">
+          <div class="field">
+            <label for="inpNotes">NOTE (OPTIONAL)</label>
+            <textarea id="inpNotes" maxlength="280" rows="2" placeholder="How did it feel? Wind, mood, weather…"></textarea>
+          </div>
+        </div>
+
         <div class="submit-row">
           <button class="submit-btn" id="submitBtn" disabled>SAVE PR</button>
           <button class="cancel-btn" id="cancelEditBtn" type="button" style="display:none">CANCEL</button>
@@ -659,6 +706,7 @@
     const timeRow = document.getElementById('timeRow');
     const weightRow = document.getElementById('weightRow');
     const dateRow = document.getElementById('dateRow');
+    const notesRow = document.getElementById('notesRow');
     const submitBtn = document.getElementById('submitBtn');
     const formMsg = document.getElementById('formMsg');
 
@@ -675,6 +723,7 @@
         weightRow.style.display = 'grid';
       }
       dateRow.style.display = 'grid';
+      notesRow.style.display = 'grid';
       submitBtn.disabled = false;
       formMsg.textContent = '';
     }
@@ -732,6 +781,8 @@
         document.getElementById('inpReps').value = r.reps != null ? String(r.reps) : '1';
       }
 
+      document.getElementById('inpNotes').value = r.notes || '';
+
       submitBtn.textContent = 'UPDATE PR';
       cancelEditBtn.style.display = 'inline-block';
       formMsg.textContent = '';
@@ -753,6 +804,7 @@
       document.getElementById('inpPounds').value = '';
       document.getElementById('inpSets').value = '1';
       document.getElementById('inpReps').value = '1';
+      document.getElementById('inpNotes').value = '';
       formMsg.textContent = '';
       formMsg.className = 'form-msg';
     }
@@ -782,6 +834,13 @@
     function fmtDate(iso) {
       const d = new Date(iso + 'T00:00:00');
       return d.toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' }).toUpperCase();
+    }
+
+    // Notes are user-supplied. Escape before injecting into innerHTML.
+    function escapeHtml(s) {
+      return s
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     }
 
     // ---- BEST RECORD ----
@@ -843,30 +902,39 @@
         sorted.forEach(r => {
           const isBest = best && r.id === best.id;
           const val = RUN_EVENTS.has(ev) ? fmtSeconds(r.value_seconds) : fmtLift(r);
-          const row = document.createElement('div');
-          row.className = 'pr-row' + (isBest ? ' is-best' : '');
-          row.innerHTML = `
-            <span class="pr-value">${val}</span>
-            <span class="pr-date">${fmtDate(r.achieved_on)}</span>
-            ${isBest ? '<span class="pr-best-tag">BEST</span>' : ''}
-            <span class="row-actions">
-              <button class="edit-btn" title="Edit" data-id="${r.id}" aria-label="Edit entry">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M12 20h9"></path>
-                  <path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19l-4 1 1-4 12.5-12.5z"></path>
-                </svg>
-              </button>
-              <button class="delete-btn" title="Delete" data-id="${r.id}" aria-label="Delete entry">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <polyline points="3 6 5 6 21 6"></polyline>
-                  <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path>
-                  <path d="M10 11v6"></path><path d="M14 11v6"></path>
-                  <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"></path>
-                </svg>
-              </button>
-            </span>
+
+          const entry = document.createElement('div');
+          entry.className = 'pr-entry' + (isBest ? ' is-best' : '');
+
+          const noteHtml = (r.notes && String(r.notes).trim())
+            ? `<div class="pr-note">${escapeHtml(String(r.notes).trim())}</div>`
+            : '';
+
+          entry.innerHTML = `
+            <div class="pr-row">
+              <span class="pr-value">${val}</span>
+              <span class="pr-date">${fmtDate(r.achieved_on)}</span>
+              ${isBest ? '<span class="pr-best-tag">BEST</span>' : ''}
+              <span class="row-actions">
+                <button class="edit-btn" title="Edit" data-id="${r.id}" aria-label="Edit entry">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 20h9"></path>
+                    <path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19l-4 1 1-4 12.5-12.5z"></path>
+                  </svg>
+                </button>
+                <button class="delete-btn" title="Delete" data-id="${r.id}" aria-label="Delete entry">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="3 6 5 6 21 6"></polyline>
+                    <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path>
+                    <path d="M10 11v6"></path><path d="M14 11v6"></path>
+                    <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"></path>
+                  </svg>
+                </button>
+              </span>
+            </div>
+            ${noteHtml}
           `;
-          section.appendChild(row);
+          section.appendChild(entry);
         });
 
         historyList.appendChild(section);
@@ -927,9 +995,10 @@
         return;
       }
 
-      // Build a fully-specified payload — both value columns and sets/reps
-      // are set every time (one populated, the others null). This keeps
-      // UPDATEs constraint-safe even if we ever allow event changes later.
+      // Build a fully-specified payload — all value columns, sets/reps,
+      // and notes are set every time (one populated, the rest null). This
+      // keeps UPDATEs constraint-safe even if we ever allow event changes.
+      const noteRaw = (document.getElementById('inpNotes').value || '').trim();
       const payload = {
         user_id: sess.session.user.id,
         event: selectedEvent,
@@ -937,7 +1006,8 @@
         value_seconds: null,
         value_pounds: null,
         sets: null,
-        reps: null
+        reps: null,
+        notes: noteRaw ? noteRaw.slice(0, 280) : null
       };
 
       if (RUN_EVENTS.has(selectedEvent)) {
