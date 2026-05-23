@@ -883,6 +883,7 @@
     });
 
     // Init
+    let currentUserId = null;
     (async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (session) {
@@ -893,6 +894,7 @@
       }
       supabase.auth.onAuthStateChange(async (_event, session) => {
         if (session) {
+          currentUserId = session.user.id;
           setSignedIn(session.user);
           await refreshHistory();
         } else {
