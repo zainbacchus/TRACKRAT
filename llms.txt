@@ -1,19 +1,53 @@
 # TRACKRAT
 
-> Austin, Texas sprint club. We meet on the track. We sprint. We grow together. We do it again. Sunday Sprints at 4401 Tilley St. Thursday midweek workouts at varying locations. All speeds welcome. No sign ups. Just show up.
+> TRACKRAT is a free sprint club based in Austin, Texas. We meet on the track every Sunday morning and run a midweek workout on Thursday evenings. All speeds welcome. No membership fees, no sign-ups — just show up.
 
 
-## API 
-- `/api/next-event` returns the next upcoming meet as JSON with fields: `display` (date), `weekday`, `iso`, `time`, `location`, `type` (`sunday` or `thursday`), `title`
+## Identity
+
+- **Name:** TRACKRAT (often "TRACKRAT Sprint Club")
+- **City:** Austin, Texas, USA
+- **Cost:** Free
+- **Sign-up required:** No
+- **Tagline:** "Sprint Club > Run Club"
+
 
 ## Meeting Times
 
-- **Sunday Sprints** — 8:30 AM at 4401 Tilley St, Austin, TX 78723
-- **Thursday Midweek Workout** — 6:30 PM, location varies weekly (announced via @trackratsprintclub Instagram story)
+- **Sunday Sprints** — 8:30 AM, weekly, at a public track in Austin
+- **Thursday Midweek Workout** — 6:30 PM, weekly, location varies (announced via @trackratsprintclub Instagram story the day of)
+
+Both sessions run year-round. Exact addresses are listed on the schedule page.
+
+
+## Culture
+
+TRACKRAT is structured but not coached competitively. Beginners line up next to former collegiate sprinters. Every workout has a plan; runners pick their own intensity. Common questions and characteristics:
+
+- **Beginner-friendly:** yes. All speeds welcome — from first-timers to sub-elite.
+- **Drop-in:** yes. No commitment required; come when you can.
+- **Coaching:** workouts are programmed (not freelance), but there is no individual coaching or paid instruction.
+- **Equipment:** bring running shoes. The track provides everything else.
+- **Vibe:** community-first. People stay for coffee after Sunday Sprints.
 
 
 ## Pages
-- [Home](https://trackratsprint.club/): Landing page 
-- [Schedule](https://trackratsprint.club/schedule): Weekly meet times and locations, with calendar download (.ics) and Google Maps links
-- [Brand](https://trackratsprint.club/brand): Brand guide covering name conventions
-- [Shop](https://shop.trackratsprint.club): Apparel and merchandise
+
+- [Home](https://www.trackratsprint.club/) — Landing page with about/FAQ content
+- [Schedule](https://www.trackratsprint.club/schedule) — Weekly meet times, locations, .ics calendar download, Google Maps links
+- [Brand](https://www.trackratsprint.club/brand) — Brand guide (voice, naming conventions, visual identity)
+- [2026 Invitational](https://www.trackratsprint.club/2026-invitational) — TRACKRAT's hosted community sprint meet
+- [Personal Records](https://www.trackratsprint.club/pr) — Authenticated dashboard for members to log PRs (Google sign-in required; private per user)
+- [Shop](https://shop.trackratsprint.club) — Apparel and merchandise
+
+
+## API
+
+- `GET /api/next-event` — Returns the next upcoming meet as JSON with fields: `display` (date string), `weekday`, `iso`, `time`, `location`, `type` (`sunday` or `thursday`), `title`. Edge runtime, America/Chicago timezone.
+
+
+## Contact
+
+- **Instagram:** [@trackratsprintclub](https://instagram.com/trackratsprintclub) (primary channel for weekly location updates)
+- **Shop:** [shop.trackratsprint.club](https://shop.trackratsprint.club)
+- **Website:** [www.trackratsprint.club](https://www.trackratsprint.club)

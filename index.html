@@ -3,8 +3,35 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>TRACKRAT</title>
-  <meta name="description" content="TRACKRAT is a sprint club based in Austin, Texas. Join us on the track every Sunday and Thursday. All speeds welcome." />
+  <title>TRACKRAT — Austin Sprint Club</title>
+  <meta name="description" content="TRACKRAT is a free sprint club in Austin, Texas. All speeds welcome. Sunday Sprints at 8:30 AM, Thursday Midweek Workouts at 6:30 PM. No sign-ups — just show up." />
+  <link rel="canonical" href="https://www.trackratsprint.club/" />
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="TRACKRAT" />
+  <meta property="og:title" content="TRACKRAT — Austin Sprint Club" />
+  <meta property="og:description" content="Free sprint club in Austin, Texas. All speeds welcome. Sunday Sprints 8:30 AM, Thursday Midweek Workouts 6:30 PM. No sign-ups, just show up." />
+  <meta property="og:url" content="https://www.trackratsprint.club/" />
+  <meta property="og:image" content="https://www.trackratsprint.club/og.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="TRACKRAT wordmark" />
+  <meta property="og:locale" content="en_US" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="TRACKRAT — Austin Sprint Club" />
+  <meta name="twitter:description" content="Free sprint club in Austin, Texas. All speeds welcome. Sunday 8:30 AM, Thursday 6:30 PM. No sign-ups." />
+  <meta name="twitter:image" content="https://www.trackratsprint.club/og.png" />
+
+  <!-- Geo -->
+  <meta name="geo.region" content="US-TX" />
+  <meta name="geo.placename" content="Austin" />
+
+  <!-- Theme -->
+  <meta name="theme-color" content="#FF4D1F" />
+
   <link rel="icon" href="/favicon.ico" sizes="any">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -17,13 +44,14 @@
       --black: #000000;
       --white: #FFFFFF;
     }
-    html, body { height: 100%; }
+    html { scroll-behavior: smooth; }
     body {
       font-family: 'IBM Plex Mono', monospace;
       background: var(--orange);
       color: var(--black);
-      overflow: hidden;
+      overflow-x: hidden;
       -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
     }
     a {
       text-decoration: none;
@@ -163,7 +191,8 @@
       color: var(--white);
     }
 
-    .page {
+    /* ---- HERO ---- */
+    .hero {
       width: 100%;
       height: 100vh;
       height: 100dvh;
@@ -173,23 +202,115 @@
       align-items: center;
       text-align: center;
       padding: 40px;
+      position: relative;
     }
 
-    .subtitle {
+    .hero h1.wordmark {
       font-size: clamp(80px, 18vw, 240px);
       font-family: 'Fugaz One', cursive;
       letter-spacing: -0.14em;
       line-height: 0.85;
       margin-bottom: 24px;
       padding-right: 0.14em;
+      font-weight: normal;
     }
-    .coming {
+    .hero-tagline {
       font-size: clamp(12px, 1.4vw, 16px);
       letter-spacing: 0.3em;
       margin-top: 40px;
       opacity: 0.4;
       font-weight: 600;
     }
+    .scroll-cue {
+      position: absolute;
+      bottom: 32px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 10px;
+      letter-spacing: 0.4em;
+      font-weight: 600;
+      opacity: 0.45;
+      animation: bob 2.2s ease-in-out infinite;
+    }
+    @keyframes bob {
+      0%, 100% { transform: translate(-50%, 0); }
+      50%      { transform: translate(-50%, 6px); }
+    }
+
+    /* ---- ABOUT CONTENT (SEO/AEO-readable copy) ---- */
+    .content {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 80px 40px 120px;
+    }
+    .content .eyebrow {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.3em;
+      opacity: 0.55;
+      margin-bottom: 24px;
+    }
+    .content h2 {
+      font-family: 'Fugaz One', cursive;
+      font-weight: normal;
+      letter-spacing: -0.06em;
+      font-size: clamp(40px, 6vw, 72px);
+      line-height: 0.95;
+      margin-bottom: 28px;
+    }
+    .content h3 {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      margin: 40px 0 14px;
+    }
+    .content p {
+      font-size: clamp(16px, 1.6vw, 19px);
+      line-height: 1.55;
+      margin-bottom: 16px;
+    }
+    .content ul {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 16px;
+    }
+    .content li {
+      font-size: clamp(15px, 1.5vw, 18px);
+      line-height: 1.55;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+    }
+    .content li:last-child { border-bottom: none; }
+    .content strong { font-weight: 700; }
+    .cta {
+      display: inline-block;
+      margin-top: 32px;
+      padding: 14px 22px;
+      background: var(--black);
+      color: var(--orange);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      transition: transform 0.15s ease, opacity 0.2s ease;
+    }
+    .cta:hover { transform: translateY(-1px); opacity: 0.95; }
+
+    /* ---- FOOTER ---- */
+    .site-footer {
+      padding: 32px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      font-weight: 600;
+      opacity: 0.55;
+      border-top: 1px solid rgba(0, 0, 0, 0.15);
+    }
+    .site-footer a:hover { opacity: 0.7; }
     @media (max-width: 768px) {
       nav {
         padding: 16px 20px;
@@ -206,6 +327,11 @@
       .menu-toggle {
         display: block;
       }
+
+      .content { padding: 60px 22px 80px; }
+      .content h2 { font-size: clamp(36px, 11vw, 52px); }
+      .content li { font-size: 15px; }
+      .site-footer { padding: 24px 22px; flex-direction: column; gap: 8px; }
     }
     @media (max-width: 420px) {
       nav .nav-left { font-size: 14px; }
@@ -241,10 +367,36 @@
     <div class="mobile-menu-footer">TRACKRAT SPRINT CLUB</div>
   </div>
 
-  <div class="page">
-    <div class="subtitle">TRACKRAT</div>
-    <div class="coming">SPRINT CLUB > RUN CLUB</div>
-  </div>
+  <main>
+    <section class="hero" aria-label="TRACKRAT">
+      <h1 class="wordmark">TRACKRAT</h1>
+      <p class="hero-tagline">SPRINT CLUB &gt; RUN CLUB</p>
+      <a href="#about" class="scroll-cue" aria-label="Scroll for more">SCROLL ↓</a>
+    </section>
+
+    <section class="content" id="about" aria-labelledby="about-heading">
+      <p class="eyebrow">AUSTIN · TEXAS</p>
+      <h2 id="about-heading">A free sprint club in Austin.</h2>
+      <p>TRACKRAT is a community sprint club based in Austin, Texas. We meet on the track every Sunday morning and run a midweek workout on Thursday evenings. All speeds welcome. No sign-ups, no membership fees — just show up.</p>
+      <p>Workouts are structured but not coached competitively. Beginners line up next to former collegiate sprinters. Pick the intensity that works for you, run hard, get coffee after.</p>
+
+      <h3>When we meet</h3>
+      <ul>
+        <li><strong>Sundays at 8:30 AM</strong> — Sunday Sprints at the track</li>
+        <li><strong>Thursdays at 6:30 PM</strong> — Midweek Workout, location announced weekly via <a href="https://instagram.com/trackratsprintclub" target="_blank" rel="noopener" style="text-decoration:underline">@trackratsprintclub</a> on Instagram</li>
+      </ul>
+
+      <h3>Who it's for</h3>
+      <p>If you've thought about getting back on a track and didn't know where to start, this is it. We welcome sprinters, distance runners, runners returning from injury, runners who are nervous about being slow, and runners who have never raced a day in their life. Austin is the city. TRACKRAT is the club.</p>
+
+      <a href="/schedule" class="cta">See the schedule →</a>
+    </section>
+
+    <footer class="site-footer">
+      <span>TRACKRAT SPRINT CLUB · AUSTIN, TX</span>
+      <span><a href="https://instagram.com/trackratsprintclub" target="_blank" rel="noopener">@TRACKRATSPRINTCLUB</a></span>
+    </footer>
+  </main>
 
   <script>
     const menuToggle = document.getElementById('menuToggle');
@@ -281,6 +433,82 @@
         closeMenu();
       }
     });
+  </script>
+
+  <!-- Structured data: SportsClub (no explicit street address — meet
+       location is intentionally omitted from JSON-LD per brand preference) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SportsClub",
+    "name": "TRACKRAT",
+    "alternateName": "TRACKRAT Sprint Club",
+    "description": "Free sprint club based in Austin, Texas. All speeds welcome. No sign-ups, just show up.",
+    "url": "https://www.trackratsprint.club/",
+    "logo": "https://www.trackratsprint.club/og.png",
+    "image": "https://www.trackratsprint.club/og.png",
+    "sport": "Track and field",
+    "areaServed": {
+      "@type": "City",
+      "name": "Austin",
+      "containedInPlace": { "@type": "AdministrativeArea", "name": "Texas, USA" }
+    },
+    "openingHoursSpecification": [
+      { "@type": "OpeningHoursSpecification", "dayOfWeek": "Sunday",   "opens": "08:30", "closes": "10:00" },
+      { "@type": "OpeningHoursSpecification", "dayOfWeek": "Thursday", "opens": "18:30", "closes": "20:00" }
+    ],
+    "sameAs": [
+      "https://instagram.com/trackratsprintclub",
+      "https://shop.trackratsprint.club"
+    ],
+    "priceRange": "Free"
+  }
+  </script>
+
+  <!-- Structured data: FAQPage (high-value for AEO / Google AI Overviews) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What is TRACKRAT?",
+        "acceptedAnswer": { "@type": "Answer",
+          "text": "TRACKRAT is a free sprint club in Austin, Texas. We meet on the track every Sunday morning and run a midweek workout on Thursday evenings. All speeds welcome, no sign-ups required." }
+      },
+      {
+        "@type": "Question",
+        "name": "Where does TRACKRAT meet?",
+        "acceptedAnswer": { "@type": "Answer",
+          "text": "Sunday Sprints meet at a public track in Austin. Thursday Midweek Workouts rotate to varying locations around the city, announced each week via @trackratsprintclub on Instagram. Full details are on the schedule page." }
+      },
+      {
+        "@type": "Question",
+        "name": "When does TRACKRAT meet?",
+        "acceptedAnswer": { "@type": "Answer",
+          "text": "Sunday Sprints at 8:30 AM and Thursday Midweek Workouts at 6:30 PM. Both happen every week." }
+      },
+      {
+        "@type": "Question",
+        "name": "How much does TRACKRAT cost?",
+        "acceptedAnswer": { "@type": "Answer",
+          "text": "Nothing. TRACKRAT is free. There are no membership fees, dues, or sign-ups." }
+      },
+      {
+        "@type": "Question",
+        "name": "Do I need to register or sign up?",
+        "acceptedAnswer": { "@type": "Answer",
+          "text": "No. Just show up to the meet location at the listed time." }
+      },
+      {
+        "@type": "Question",
+        "name": "Is TRACKRAT beginner-friendly?",
+        "acceptedAnswer": { "@type": "Answer",
+          "text": "Yes. All speeds are welcome. Workouts are structured but not coached competitively — runners pick the intensity that works for them." }
+      }
+    ]
+  }
   </script>
 
 </body>
