@@ -544,6 +544,7 @@
           <button type="button" class="event-chip" data-event="bench">BENCH</button>
           <button type="button" class="event-chip" data-event="deadlift">DEADLIFT</button>
           <button type="button" class="event-chip" data-event="squat">SQUAT</button>
+          <button type="button" class="event-chip" data-event="squat">HANG CLEAN</button>
         </div>
 
         <!-- Time input (run events) -->
@@ -658,16 +659,16 @@
 
     // ---- EVENT METADATA ----
     const RUN_EVENTS = new Set(['100m','200m','400m','1mile','5K','halfmarathon','marathon']);
-    const LIFT_EVENTS = new Set(['bench','deadlift','squat']);
+    const LIFT_EVENTS = new Set(['bench','deadlift','squat', 'hangclean']);
     const EVENT_LABELS = {
       '100m':'100M', '200m':'200M', '400m':'400M',
       '1mile':'1 MILE', '5K':'5K',
       'halfmarathon':'HALF MARATHON', 'marathon':'MARATHON',
-      'bench':'BENCH', 'deadlift':'DEADLIFT', 'squat':'SQUAT'
+      'bench':'BENCH', 'deadlift':'DEADLIFT', 'squat':'SQUAT', 'hangclean':'HANG CLEAN'
     };
     const EVENT_ORDER = [
       '100m','200m','400m','1mile','5K','halfmarathon','marathon',
-      'bench','deadlift','squat'
+      'bench','deadlift','squat', 'hangclean'
     ];
 
     // ---- DATE PICKER POPULATION ----
