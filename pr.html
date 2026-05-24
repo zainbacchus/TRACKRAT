@@ -566,6 +566,7 @@
           <button type="button" class="event-chip" data-event="deadlift">DEADLIFT</button>
           <button type="button" class="event-chip" data-event="squat">SQUAT</button>
           <button type="button" class="event-chip" data-event="hangclean">HANG CLEAN</button>
+          <button type="button" class="event-chip" data-event="pullups">PULL UPS</button>
         </div>
 
         <!-- Time input (run events) -->
@@ -587,8 +588,8 @@
         <!-- Weight + sets + reps (lift events) -->
         <div class="form-row weight" id="weightRow" style="display:none">
           <div class="field">
-            <label for="inpPounds">WEIGHT (LBS)</label>
-            <input id="inpPounds" type="number" min="1" max="2000" step="1" placeholder="225" inputmode="numeric" />
+            <label for="inpPounds" id="inpPoundsLabel">WEIGHT (LBS)</label>
+            <input id="inpPounds" type="number" min="0" max="2000" step="1" placeholder="225" inputmode="numeric" />
           </div>
           <div class="field">
             <label for="inpSets">SETS</label>
@@ -680,16 +681,17 @@
 
     // ---- EVENT METADATA ----
     const RUN_EVENTS = new Set(['100m','200m','400m','1mile','5K','halfmarathon','marathon']);
-    const LIFT_EVENTS = new Set(['bench','deadlift','squat', 'hangclean']);
+    const LIFT_EVENTS = new Set(['bench','deadlift','squat','hangclean','pullups']);
     const EVENT_LABELS = {
       '100m':'100M', '200m':'200M', '400m':'400M',
       '1mile':'1 MILE', '5K':'5K',
       'halfmarathon':'HALF MARATHON', 'marathon':'MARATHON',
-      'bench':'BENCH', 'deadlift':'DEADLIFT', 'squat':'SQUAT', 'hangclean':'HANG CLEAN'
+      'bench':'BENCH', 'deadlift':'DEADLIFT', 'squat':'SQUAT',
+      'hangclean':'HANG CLEAN', 'pullups':'PULL UPS'
     };
     const EVENT_ORDER = [
       '100m','200m','400m','1mile','5K','halfmarathon','marathon',
-      'bench','deadlift','squat', 'hangclean'
+      'bench','deadlift','squat','hangclean','pullups'
     ];
 
     // ---- DATE PICKER POPULATION ----
@@ -743,6 +745,20 @@
       } else {
         timeRow.style.display = 'none';
         weightRow.style.display = 'grid';
+        // Pull-ups are tracked with optional added weight (0 lbs = bodyweight).
+        // Other lifts require a positive weight. Swap the label/placeholder
+        // and the input's min attribute so the UI matches the rule.
+        const pounds = document.getElementById('inpPounds');
+        const lbl = document.getElementById('inpPoundsLabel');
+        if (ev === 'pullups') {
+          lbl.textContent = 'ADDED WEIGHT (LBS)';
+          pounds.min = '0';
+          pounds.placeholder = '0';
+        } else {
+          lbl.textContent = 'WEIGHT (LBS)';
+          pounds.min = '1';
+          pounds.placeholder = '225';
+        }
       }
       dateRow.style.display = 'grid';
       notesRow.style.display = 'grid';
@@ -846,12 +862,14 @@
     }
     function fmtPounds(lbs) { return `${Number(lbs)} lbs`; }
     function fmtLift(r) {
-      const lbs = `${Number(r.value_pounds)} lbs`;
+      const w = Number(r.value_pounds);
+      // Bodyweight pull-ups (weight = 0) read as "BW" instead of "0 lbs".
+      const base = (r.event === 'pullups' && w === 0) ? 'BW' : `${w} lbs`;
       // Older rows may not have sets/reps; show plain weight then.
       if (r.sets != null && r.reps != null) {
-        return `${lbs} · ${r.sets}×${r.reps}`;
+        return `${base} · ${r.sets}×${r.reps}`;
       }
-      return lbs;
+      return base;
     }
     function fmtDate(iso) {
       const d = new Date(iso + 'T00:00:00');
@@ -1045,8 +1063,12 @@
         payload.value_seconds = Number(total.toFixed(3));
       } else {
         const lbs = parseFloat(document.getElementById('inpPounds').value || '0');
-        if (!(lbs > 0)) {
-          formMsg.textContent = 'Enter a weight greater than zero.';
+        // Pull-ups can be logged with 0 lbs (bodyweight); other lifts must be > 0.
+        const isPullups = selectedEvent === 'pullups';
+        if (isPullups ? !(lbs >= 0) || Number.isNaN(lbs) : !(lbs > 0)) {
+          formMsg.textContent = isPullups
+            ? 'Enter added weight (0 or more).'
+            : 'Enter a weight greater than zero.';
           formMsg.classList.add('error');
           return;
         }
