@@ -12,14 +12,26 @@
           "value": "public, max-age=0, must-revalidate"
         }
       ]
+    },
+    {
+      "source": "/fonts/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
     }
+  ],
+  "redirects": [
+    { "source": "/2026-invitational", "destination": "/invitational", "permanent": true }
   ],
   "rewrites": [
     { "source": "/sitemap.xml", "destination": "/sitemap.xml" },
     { "source": "/robots.txt", "destination": "/robots.txt" },
     { "source": "/brand", "destination": "/brand.html" },
     { "source": "/schedule", "destination": "/schedule.html" },
-    { "source": "/2026-invitational", "destination": "/invitational.html" },
+    { "source": "/invitational", "destination": "/invitational.html" },
     { "source": "/pr", "destination": "/pr.html" },
     { "source": "/(.*)", "destination": "/index.html" }
   ]

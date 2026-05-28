@@ -36,7 +36,7 @@ TRACKRAT is structured but not coached competitively. Beginners line up next to 
 - [Home](https://www.trackratsprint.club/) — Landing page with about/FAQ content
 - [Schedule](https://www.trackratsprint.club/schedule) — Weekly meet times, locations, .ics calendar download, Google Maps links
 - [Brand](https://www.trackratsprint.club/brand) — Brand guide (voice, naming conventions, visual identity)
-- [2026 Invitational](https://www.trackratsprint.club/2026-invitational) — TRACKRAT's hosted community sprint meet
+- [2026 Invitational](https://www.trackratsprint.club/invitational) — TRACKRAT's hosted community sprint meet
 - [Personal Records](https://www.trackratsprint.club/pr) — Authenticated dashboard for members to log PRs (Google sign-in required; private per user)
 - [Shop](https://shop.trackratsprint.club) — Apparel and merchandise
 

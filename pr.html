@@ -27,11 +27,18 @@
   <meta name="theme-color" content="#000000" />
 
   <link rel="icon" href="/favicon.ico" sizes="any">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fugaz+One&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Self-hosted fonts (see @font-face in inline <style>). -->
+  <link rel="preload" as="font" type="font/woff2" href="/fonts/fugaz-one-latin.woff2" crossorigin>
+  <link rel="preload" as="font" type="font/woff2" href="/fonts/ibm-plex-mono-400-latin.woff2" crossorigin>
   <script defer src="https://cdn.vercel-insights.com/v1/script.js"></script>
   <style>
+    /* Self-hosted fonts (latin subset). */
+    @font-face { font-family: 'Fugaz One';     font-style: normal; font-weight: 400; font-display: swap; src: url('/fonts/fugaz-one-latin.woff2') format('woff2'); }
+    @font-face { font-family: 'IBM Plex Mono'; font-style: normal; font-weight: 400; font-display: swap; src: url('/fonts/ibm-plex-mono-400-latin.woff2') format('woff2'); }
+    @font-face { font-family: 'IBM Plex Mono'; font-style: normal; font-weight: 500; font-display: swap; src: url('/fonts/ibm-plex-mono-500-latin.woff2') format('woff2'); }
+    @font-face { font-family: 'IBM Plex Mono'; font-style: normal; font-weight: 600; font-display: swap; src: url('/fonts/ibm-plex-mono-600-latin.woff2') format('woff2'); }
+    @font-face { font-family: 'IBM Plex Mono'; font-style: normal; font-weight: 700; font-display: swap; src: url('/fonts/ibm-plex-mono-700-latin.woff2') format('woff2'); }
+
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
     :root {
@@ -493,7 +500,7 @@
       <a href="https://shop.trackratsprint.club" target="_blank">[ SHOP ]</a>
       <a href="/schedule">[ SCHEDULE ]</a>
       <a href="/brand">[ BRAND ]</a>
-      <a href="/2026-invitational">[ 2026 INVITATIONAL ]</a>
+      <a href="/invitational">[ 2026 INVITATIONAL ]</a>
       <a href="/pr">[ PERSONAL RECORDS ]</a>
     </div>
     <button class="menu-toggle" id="menuToggle" aria-label="Open menu" aria-expanded="false">
@@ -507,7 +514,7 @@
     <a href="https://shop.trackratsprint.club" target="_blank">SHOP</a>
     <a href="/schedule">SCHEDULE</a>
     <a href="/brand">BRAND</a>
-    <a href="/2026-invitational">2026 INVITATIONAL</a>
+    <a href="/invitational">2026 INVITATIONAL</a>
     <a href="/pr">PERSONAL RECORDS</a>
     <div class="mobile-menu-footer">TRACKRAT SPRINT CLUB</div>
   </div>

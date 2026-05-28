@@ -13,7 +13,7 @@ Pages:
 - `/` — landing (with about/FAQ content + structured data for SEO/AEO)
 - `/schedule` — weekly schedule with `.ics` calendar export
 - `/brand` — brand guide
-- `/2026-invitational` — event placeholder
+- `/invitational` — event placeholder
 - `/pr` — personal record tracker (Google sign-in, per-user data via Supabase)
 
 > Note: the PR page is `/pr` (singular). Earlier versions used `/prs` — if you
@@ -40,15 +40,18 @@ TRACKRAT/
 ├── index.html              # /                      — landing
 ├── schedule.html           # /schedule              — weekly schedule + .ics
 ├── brand.html              # /brand                 — brand guide
-├── invitational.html       # /2026-invitational
+├── invitational.html       # /invitational
 ├── pr.html                 # /pr                    — PR tracker (Google sign-in)
 ├── api/
 │   └── next-event.js       # Edge function: returns the next upcoming event
 ├── js/
 │   └── supabase-config.js  # Shared Supabase client (URL + anon key)
+├── fonts/                  # Self-hosted webfonts (woff2, latin subset)
+│   ├── fugaz-one-latin.woff2
+│   └── ibm-plex-mono-{400,500,600,700}-latin.woff2
 ├── og.png                  # 1200×630 Open Graph image (shared by all pages)
 ├── middleware.js           # Vercel middleware
-├── vercel.json             # Clean-URL rewrites
+├── vercel.json             # Clean-URL rewrites + /fonts/* long-cache headers
 ├── robots.txt              # Disallows /pr from crawlers
 ├── sitemap.xml             # Public-page sitemap (excludes /pr)
 ├── llms.txt                # LLM-facing site description
@@ -69,7 +72,7 @@ schema** section of `README.md`. If you make DB changes, update that block
 ```json
 { "source": "/schedule",          "destination": "/schedule.html" }
 { "source": "/brand",             "destination": "/brand.html" }
-{ "source": "/2026-invitational", "destination": "/invitational.html" }
+{ "source": "/invitational", "destination": "/invitational.html" }
 { "source": "/pr",                "destination": "/pr.html" }
 { "source": "/(.*)",              "destination": "/index.html" }
 ```
@@ -118,8 +121,15 @@ root.
 --lane-color: rgba(255, 255, 255, 0.12);  /* track-lane background */
 ```
 
-Typography pairs **Fugaz One** (display) with **IBM Plex Mono** (UI / body),
-loaded from Google Fonts.
+Typography pairs **Fugaz One** (display) with **IBM Plex Mono** (UI / body).
+Both are **self-hosted** as latin-subset woff2 files in `/fonts`. Every
+page preloads the two above-the-fold fonts (Fugaz One regular + Plex Mono
+400) and declares all five `@font-face` rules inline at the top of its
+`<style>` block. `font-display: swap` keeps the page readable in a
+fallback face during the brief load. Don't bring back the Google Fonts
+`<link>` — it was removed deliberately to eliminate render-blocking and
+the third-party round-trip. To swap fonts: drop a replacement woff2 with
+the same filename into `/fonts/`.
 
 ### Track-lane background
 
@@ -287,7 +297,9 @@ don't apply to plain file servers.
 ### Adding a new page
 
 1. Create `newpage.html` mirroring an existing page's skeleton (nav, mobile
-   menu, track lanes if applicable, **full SEO meta block**).
+   menu, track lanes if applicable, **full SEO meta block**, **the two
+   `<link rel="preload" as="font" ... crossorigin>` tags**, and **all five
+   `@font-face` declarations** at the top of `<style>`).
 2. Add a `/newpage` rewrite to `vercel.json`.
 3. Add the link to **every** page's nav (desktop `.nav-center` and mobile
    `.mobile-menu`) — and update the `.mobile-menu.is-open a:nth-child(N)`
@@ -350,3 +362,14 @@ Static files + edge functions only.
 9. **The meet-up street address is intentionally not in JSON-LD or
    `llms.txt`.** It lives only on the human-visible `/schedule` page. Keep
    it that way unless the brand owner says otherwise.
+10. **Don't use `opacity` for "dim" text on the orange background.** Black
+    at low opacity composites with `#FF4D1F` to a muddy mid-orange that
+    fails WCAG AA contrast. On `index.html`, use the solid color
+    `#1a0700` (or darker) instead — same visual feel, ~5.9:1 contrast.
+    On the black-background pages (`schedule`/`brand`/`pr`) white text is
+    fine.
+11. **Don't reintroduce Google Fonts.** Fonts are self-hosted in `/fonts/`
+    and preloaded per page. Reverting to `fonts.googleapis.com/css2?...`
+    brings back render-blocking + a network-dependency chain that
+    Lighthouse will flag. If you need a new weight, fetch the matching
+    woff2 from Google with a modern UA and drop it in `/fonts/`.

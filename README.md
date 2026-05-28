@@ -13,7 +13,7 @@ and JS. Hosted on Vercel.
 | Pages | One self-contained `.html` per route (inline CSS + JS) |
 | Auth (PR tracker) | Supabase Auth (Google OAuth) |
 | Database (PR tracker) | Supabase Postgres with Row Level Security |
-| Fonts | Fugaz One (display) + IBM Plex Mono (UI), loaded from Google Fonts |
+| Fonts | Self-hosted Fugaz One (display) + IBM Plex Mono (UI), latin subset, woff2 in `/fonts` |
 | Build step | None |
 
 ## Project Structure
@@ -23,13 +23,16 @@ TRACKRAT/
 ├── index.html              # /                      — landing (with SEO/AEO content + JSON-LD)
 ├── schedule.html           # /schedule              — weekly schedule + .ics export
 ├── brand.html              # /brand                 — brand guide
-├── invitational.html       # /2026-invitational     — event placeholder
+├── invitational.html       # /invitational     — event placeholder
 ├── pr.html                 # /pr                    — Personal Records (Google sign-in)
 ├── api/
 │   └── next-event.js       # Edge function: next upcoming event as JSON
 ├── js/
 │   └── supabase-config.js  # Shared Supabase client (URL + anon key)
-├── vercel.json             # Clean-URL rewrites
+├── fonts/                  # Self-hosted webfonts (woff2, latin subset)
+│   ├── fugaz-one-latin.woff2
+│   └── ibm-plex-mono-{400,500,600,700}-latin.woff2
+├── vercel.json             # Clean-URL rewrites + /fonts/* long-cache headers
 ├── middleware.js           # Vercel middleware
 ├── og.png                  # 1200×630 Open Graph image (shared across all pages)
 ├── robots.txt              # Disallows /pr from crawlers
@@ -67,6 +70,77 @@ The OG image (`og.png`) is currently rendered from brand parameters with
 Impact (the closest condensed-display face available locally) standing in
 for Fugaz One. Drop a properly-rendered version at the repo root to replace.
 
+## Invitational RSVP (Luma)
+
+The `/invitational` page wraps a [Luma](https://lu.ma) RSVP form in a
+TRACKRAT-branded hero. Luma handles email confirmations, edit-by-link, and
+the admin dashboard so we don't have to build that infra in-house for a
+single annual event. *(Planned migration: build native RSVP in Supabase
+for the 2027 event once we know what data + features matter.)*
+
+### One-time Luma event setup
+
+1. **Create the event** at <https://lu.ma/create>:
+   - Name: `TRACKRAT 2026 Invitational`
+   - Date: Saturday, October 10, 2026, morning *(exact time TBD — set a
+     placeholder like 9:00 AM and note "time TBD" in the description)*
+   - Location: in-person, Austin, TX *(specific address TBD)*
+   - Visibility: Public
+   - Cover image: upload `/og.png` from this repo
+   - Description: short blurb about the event
+2. **Event Questions** (Settings → Registration → Custom Questions):
+   - Q1: "Are you competing or spectating?" — multiple choice, required
+     - Options: `Competitor`, `Spectator`
+   - Q2: "Which events?" — multi-select, required, **show only if
+     Competitor**
+     - Options: `100m (Men's)`, `100m (Women's)`, `200m (Men's)`,
+       `200m (Women's)`, `400m (Men's)`, `400m (Women's)`,
+       `4×100 Coed Relay`, `4×400 Coed Relay`
+   - Q3: "Instagram handle" — short text, required, **show only if
+     Competitor**
+3. **Branding** (Settings → Appearance):
+   - Accent color: `#FF4D1F` (TRACKRAT orange)
+   - Theme: light (matches the white card on our orange page)
+4. **Publish** the event.
+5. **Copy the event ID** from the URL (`https://lu.ma/XYZ123` → the
+   `XYZ123` part).
+
+### Wire it into `/invitational`
+
+Open `invitational.html`, find the `LUMA RSVP EMBED` comment block, and:
+
+1. Uncomment the `<iframe>` element.
+2. Replace `YOUR_LUMA_EVENT_ID` in the `src` URL with your event ID.
+3. Delete the `<div class="rsvp-placeholder">…</div>` block right below it.
+4. Commit, push, deploy.
+
+That's it. The page above the fold stays 100% TRACKRAT-branded; the form
+inside is Luma.
+
+### Pulling RSVPs
+
+Luma's dashboard has a built-in attendee list with filters and CSV export
+(Event Page → Manage → Guests → Export). Use that to build heat sheets
+before race day.
+
+## Fonts
+
+Fonts are **self-hosted** (woff2, latin subset) from `/fonts`. Every page:
+
+1. Preloads the two above-the-fold fonts (Fugaz One + IBM Plex Mono 400)
+   via `<link rel="preload" as="font" ... crossorigin>`.
+2. Declares all five `@font-face` rules inline at the top of `<style>`.
+3. Uses `font-display: swap` so text renders in the fallback font for the
+   brief moment before the woff2 finishes loading.
+
+Total weight: ~50 KB across 5 files. `vercel.json` sets
+`Cache-Control: public, max-age=31536000, immutable` on `/fonts/*`, so
+returning visitors don't re-download the fonts.
+
+To refresh or change fonts: re-fetch the woff2s from Google Fonts (or any
+source), drop them in `/fonts/` with the existing filenames, and they'll
+be picked up by the next deploy. No build step.
+
 ## Routing
 
 `vercel.json` rewrites clean URLs to the underlying `.html` files:
@@ -74,7 +148,7 @@ for Fugaz One. Drop a properly-rendered version at the repo root to replace.
 ```json
 { "source": "/schedule",          "destination": "/schedule.html" }
 { "source": "/brand",             "destination": "/brand.html" }
-{ "source": "/2026-invitational", "destination": "/invitational.html" }
+{ "source": "/invitational", "destination": "/invitational.html" }
 { "source": "/pr",                "destination": "/pr.html" }
 ```
 
