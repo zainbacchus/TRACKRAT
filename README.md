@@ -118,13 +118,20 @@ Headers: security baseline on every response (`X-Content-Type-Options`,
 
 ## Supabase SDK (vendored)
 
-The Supabase JS SDK is **self-hosted** at
-`js/vendor/supabase-js-<version>.bundle.mjs` (a dependency-inlined ESM
-bundle plus a local Buffer polyfill) so no third-party CDN executes code
-on the authenticated `/pr` page. To upgrade: fetch a new dependency-inlined
-bundle of the target version, replace the vendor file (point its single
-`buffer` import at `./node-buffer.mjs`), and update the import path in
-`js/supabase-config.js`. Test sign-in + a PR save before deploying.
+The Supabase JS SDK (currently **2.108.1**) is **self-hosted** at
+`js/vendor/supabase-js-<version>.bundle.mjs` — a dependency-inlined ESM
+bundle plus its Node polyfills (`node-buffer.mjs`, `node-process.mjs`,
+`node-events.mjs`, `node-tty.mjs`, `node-async_hooks.mjs`) — so no
+third-party CDN executes code on the authenticated `/pr` page. Auth uses
+the PKCE flow (`flowType: 'pkce'` in `js/supabase-config.js`).
+
+To upgrade: fetch `https://esm.sh/@supabase/supabase-js@<ver>?bundle-deps&target=es2020`,
+follow its stub to the `.bundle.mjs` build, rewrite every `/node/*.mjs`
+import (recursively — polyfills import each other) to the local
+`./node-*.mjs` files, verify no absolute or bare module specifiers remain
+(string literals inside error messages can false-positive a grep), update
+the import path in `js/supabase-config.js`, and test sign-in + a PR save
+on production before calling it done.
 
 ## Local Development
 

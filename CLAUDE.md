@@ -47,7 +47,7 @@ TRACKRAT/
 │   └── next-event.js       # Edge function: next upcoming event (public API; no page consumes it)
 ├── js/
 │   ├── supabase-config.js  # Shared Supabase client (URL + anon key)
-│   └── vendor/             # Vendored Supabase JS SDK (dep-inlined ESM bundle + buffer polyfill)
+│   └── vendor/             # Vendored Supabase JS SDK (dep-inlined ESM bundle + node-*.mjs polyfills)
 ├── fonts/                  # Self-hosted webfonts (woff2, latin subset) + OFL licenses
 │   ├── fugaz-one-latin.woff2
 │   ├── ibm-plex-mono-{400,500,600,700}-latin.woff2
@@ -91,15 +91,19 @@ Locally (no Vercel) visit `*.html` paths directly.
 
 ## Supabase SDK (vendored)
 
-`js/supabase-config.js` imports the SDK from
+`js/supabase-config.js` imports the SDK (currently 2.108.1) from
 `/js/vendor/supabase-js-<version>.bundle.mjs` — a dependency-inlined ESM
-bundle with its single `buffer` import pointed at the local
-`node-buffer.mjs` polyfill. **Don't reintroduce a CDN import (esm.sh,
-jsDelivr, unpkg)** — the vendored copy exists so no third party executes
-code on the authenticated /pr page. To upgrade: fetch a dependency-inlined
-bundle of the new version, fix its buffer import path, replace the vendor
-file, update the import in supabase-config.js, and test sign-in + a PR
-save before deploying.
+bundle whose Node polyfill imports are rewritten to the local
+`./node-*.mjs` files (buffer, process, events, tty, async_hooks — they
+import each other, so the rewrite is recursive). Auth uses `flowType:
+'pkce'`. **Don't reintroduce a CDN import (esm.sh, jsDelivr, unpkg)** —
+the vendored copy exists so no third party executes code on the
+authenticated /pr page. To upgrade: fetch a dependency-inlined bundle of
+the new version, rewrite the polyfill imports, verify zero absolute/bare
+specifiers remain (beware: realtime-js embeds `import ws from "ws"`
+inside error-message *strings* — a grep false positive, not a real
+import), update the import in supabase-config.js, and test sign-in + a
+PR save on production before calling it done.
 
 ## SEO / AEO
 
