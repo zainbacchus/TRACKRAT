@@ -21,24 +21,28 @@ and JS. Hosted on Vercel.
 ```
 TRACKRAT/
 ├── index.html              # /                      — landing (with SEO/AEO content + JSON-LD)
-├── schedule.html           # /schedule              — weekly schedule + .ics export
+├── schedule.html           # /schedule              — weekly schedule + .ics export + Event JSON-LD
 ├── brand.html              # /brand                 — brand guide
-├── invitational.html       # /invitational     — event placeholder
+├── invitational.html       # /invitational          — event placeholder
 ├── pr.html                 # /pr                    — Personal Records (Google sign-in)
+├── 404.html                # branded not-found page (Vercel serves it with status 404)
 ├── api/
-│   └── next-event.js       # Edge function: next upcoming event as JSON
+│   └── next-event.js       # Edge function: next upcoming event as JSON (public API, see llms.txt)
 ├── js/
-│   └── supabase-config.js  # Shared Supabase client (URL + anon key)
-├── fonts/                  # Self-hosted webfonts (woff2, latin subset)
+│   ├── supabase-config.js  # Shared Supabase client (URL + anon key)
+│   └── vendor/             # Vendored (self-hosted) Supabase JS SDK bundle
+├── fonts/                  # Self-hosted webfonts (woff2, latin subset) + OFL license texts
 │   ├── fugaz-one-latin.woff2
-│   └── ibm-plex-mono-{400,500,600,700}-latin.woff2
-├── vercel.json             # Clean-URL rewrites + /fonts/* long-cache headers
-├── middleware.js           # Vercel middleware
+│   ├── ibm-plex-mono-{400,500,600,700}-latin.woff2
+│   └── LICENSE-*.txt       # SIL OFL 1.1 notices for both font families
+├── vercel.json             # cleanUrls, security headers, redirects, cache headers
 ├── og.png                  # 1200×630 Open Graph image (shared across all pages)
-├── robots.txt              # Disallows /pr from crawlers
+├── robots.txt              # Crawl rules (/pr is noindexed via meta, not Disallowed)
 ├── sitemap.xml             # Public-page sitemap
 ├── llms.txt                # LLM-facing site description
 ├── favicon.ico
+├── LICENSE                 # MIT for code; brand assets excluded (all rights reserved)
+├── SECURITY.md             # Vulnerability disclosure policy
 ├── README.md               # This file
 └── CLAUDE.md               # Project context for AI assistants
 ```
@@ -58,70 +62,23 @@ The home page (`index.html`) additionally has:
 - An actual content section below the splash hero with location, schedule, and
   audience copy (so crawlers and answer engines have substantive text to read).
 - A `SportsClub` JSON-LD block with `openingHoursSpecification`, `areaServed`,
-  and `sameAs` links. **The specific meet-up street address is intentionally
-  omitted from JSON-LD** — it lives only on the visible schedule page.
+  the full Sunday meet location (4401 Tilley St — also on Google Business
+  Profile), and `sameAs` links covering Instagram/Discord/X/shop/GBP.
 - A `FAQPage` JSON-LD block (high signal for Google AI Overviews, ChatGPT
-  Search, Perplexity).
+  Search, Perplexity). Every FAQ answer is grounded in visible page copy.
 
 `pr.html` carries `noindex, follow` since it's an authenticated dashboard.
-It's also disallowed in `robots.txt`.
+(It is deliberately NOT `Disallow`ed in `robots.txt` — Google must be able
+to crawl the page to see the noindex.)
 
-The OG image (`og.png`) is currently rendered from brand parameters with
-Impact (the closest condensed-display face available locally) standing in
-for Fugaz One. Drop a properly-rendered version at the repo root to replace.
+`schedule.html` ships `Event` JSON-LD for both weekly sessions
+(`eventSchedule` with weekly recurrence). The Sunday session carries the
+full street address (fixed location, already public, matches Google
+Business Profile — required for Google's local/event surfaces). Thursday
+stays city-level because its location genuinely varies week to week.
 
-## Invitational RSVP (Luma)
-
-The `/invitational` page wraps a [Luma](https://lu.ma) RSVP form in a
-TRACKRAT-branded hero. Luma handles email confirmations, edit-by-link, and
-the admin dashboard so we don't have to build that infra in-house for a
-single annual event. *(Planned migration: build native RSVP in Supabase
-for the 2027 event once we know what data + features matter.)*
-
-### One-time Luma event setup
-
-1. **Create the event** at <https://lu.ma/create>:
-   - Name: `TRACKRAT 2026 Invitational`
-   - Date: Saturday, October 10, 2026, morning *(exact time TBD — set a
-     placeholder like 9:00 AM and note "time TBD" in the description)*
-   - Location: in-person, Austin, TX *(specific address TBD)*
-   - Visibility: Public
-   - Cover image: upload `/og.png` from this repo
-   - Description: short blurb about the event
-2. **Event Questions** (Settings → Registration → Custom Questions):
-   - Q1: "Are you competing or spectating?" — multiple choice, required
-     - Options: `Competitor`, `Spectator`
-   - Q2: "Which events?" — multi-select, required, **show only if
-     Competitor**
-     - Options: `100m (Men's)`, `100m (Women's)`, `200m (Men's)`,
-       `200m (Women's)`, `400m (Men's)`, `400m (Women's)`,
-       `4×100 Coed Relay`, `4×400 Coed Relay`
-   - Q3: "Instagram handle" — short text, required, **show only if
-     Competitor**
-3. **Branding** (Settings → Appearance):
-   - Accent color: `#FF4D1F` (TRACKRAT orange)
-   - Theme: light (matches the white card on our orange page)
-4. **Publish** the event.
-5. **Copy the event ID** from the URL (`https://lu.ma/XYZ123` → the
-   `XYZ123` part).
-
-### Wire it into `/invitational`
-
-Open `invitational.html`, find the `LUMA RSVP EMBED` comment block, and:
-
-1. Uncomment the `<iframe>` element.
-2. Replace `YOUR_LUMA_EVENT_ID` in the `src` URL with your event ID.
-3. Delete the `<div class="rsvp-placeholder">…</div>` block right below it.
-4. Commit, push, deploy.
-
-That's it. The page above the fold stays 100% TRACKRAT-branded; the form
-inside is Luma.
-
-### Pulling RSVPs
-
-Luma's dashboard has a built-in attendee list with filters and CSV export
-(Event Page → Manage → Guests → Export). Use that to build heat sheets
-before race day.
+The OG image (`og.png`) is rendered in actual Fugaz One (black wordmark on
+brand orange, 1200×630, palette-optimized).
 
 ## Fonts
 
@@ -141,16 +98,33 @@ To refresh or change fonts: re-fetch the woff2s from Google Fonts (or any
 source), drop them in `/fonts/` with the existing filenames, and they'll
 be picked up by the next deploy. No build step.
 
-## Routing
+## Routing & headers
 
-`vercel.json` rewrites clean URLs to the underlying `.html` files:
+`vercel.json` uses **`cleanUrls: true`** — Vercel serves `/schedule` from
+`schedule.html` and 308-redirects `/schedule.html` → `/schedule` (no
+duplicate-content URLs). There is no catch-all rewrite: unknown URLs get
+the branded `404.html` with a real 404 status.
 
-```json
-{ "source": "/schedule",          "destination": "/schedule.html" }
-{ "source": "/brand",             "destination": "/brand.html" }
-{ "source": "/invitational", "destination": "/invitational.html" }
-{ "source": "/pr",                "destination": "/pr.html" }
-```
+Redirects:
+
+- apex `trackratsprint.club/*` → `www.trackratsprint.club/*` (canonical host)
+- `/2026-invitational` → `/invitational` (legacy URL)
+- `/prs` → `/pr` (legacy URL)
+
+Headers: security baseline on every response (`X-Content-Type-Options`,
+`X-Frame-Options: DENY`, CSP `frame-ancestors 'none'`, `Referrer-Policy`,
+`Permissions-Policy`), immutable year-long cache on `/fonts/*` and
+`/js/vendor/*`, daily cache on `og.png`/`favicon.ico`.
+
+## Supabase SDK (vendored)
+
+The Supabase JS SDK is **self-hosted** at
+`js/vendor/supabase-js-<version>.bundle.mjs` (a dependency-inlined ESM
+bundle plus a local Buffer polyfill) so no third-party CDN executes code
+on the authenticated `/pr` page. To upgrade: fetch a new dependency-inlined
+bundle of the target version, replace the vendor file (point its single
+`buffer` import at `./node-buffer.mjs`), and update the import path in
+`js/supabase-config.js`. Test sign-in + a PR save before deploying.
 
 ## Local Development
 
@@ -172,12 +146,17 @@ files + edge functions only.
 
 # Personal Records (`/pr`)
 
-Authenticated dashboard at `/pr` where members log PRs across 11 events:
+Authenticated dashboard at `/pr` where members log PRs across 16 events:
 
 **Run / distance** (stored as seconds): `100m`, `200m`, `400m`, `1mile`, `5K`,
 `halfmarathon`, `marathon`.
 **Lifts** (stored as pounds + sets + reps): `bench`, `deadlift`, `squat`,
-`hangclean`.
+`hangclean`, `pullups` (pull-ups allow 0 lbs = bodyweight; all other lifts
+require a positive weight).
+**Performance metrics** (stored as a single number in `value_metric`):
+`verticaljump` (inches), `rsi` (unitless reactive strength index),
+`peakpower` (CMJ, watts), `groundcontact` (seconds — only metric where
+LOWER is better for the BEST badge).
 
 Every entry can optionally include a free-form **note** (≤ 280 chars). The
 "best PR" badge per event is computed client-side (min time / max weight).
@@ -215,6 +194,7 @@ create table if not exists public.prs (
   event         text not null,
   value_seconds numeric(10,3),
   value_pounds  numeric(10,2),
+  value_metric  numeric(10,3),
   sets          int,
   reps          int,
   notes         text,
@@ -224,7 +204,8 @@ create table if not exists public.prs (
 
 alter table public.prs add constraint prs_event_check check (event in (
   '100m','200m','400m','1mile','5K','halfmarathon','marathon',
-  'bench','deadlift','squat','hangclean'
+  'bench','deadlift','squat','hangclean','pullups',
+  'verticaljump','rsi','peakpower','groundcontact'
 ));
 
 alter table public.prs add constraint value_matches_event check (
@@ -235,6 +216,16 @@ alter table public.prs add constraint value_matches_event check (
   (event in ('bench','deadlift','squat','hangclean')
     and value_pounds is not null and value_seconds is null
     and value_pounds > 0)
+  or
+  (event = 'pullups'
+    and value_pounds is not null and value_seconds is null
+    and value_pounds >= 0)
+  or
+  (event in ('verticaljump','rsi','peakpower','groundcontact')
+    and value_metric is not null
+    and value_seconds is null and value_pounds is null
+    and sets is null and reps is null
+    and value_metric > 0)
 );
 
 alter table public.prs add constraint notes_length check (notes is null or length(notes) <= 280);

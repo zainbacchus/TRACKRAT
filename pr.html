@@ -30,7 +30,7 @@
   <!-- Self-hosted fonts (see @font-face in inline <style>). -->
   <link rel="preload" as="font" type="font/woff2" href="/fonts/fugaz-one-latin.woff2" crossorigin>
   <link rel="preload" as="font" type="font/woff2" href="/fonts/ibm-plex-mono-400-latin.woff2" crossorigin>
-  <script defer src="https://cdn.vercel-insights.com/v1/script.js"></script>
+  <script defer src="/_vercel/insights/script.js"></script>
   <style>
     /* Self-hosted fonts (latin subset). */
     @font-face { font-family: 'Fugaz One';     font-style: normal; font-weight: 400; font-display: swap; src: url('/fonts/fugaz-one-latin.woff2') format('woff2'); }
@@ -215,6 +215,7 @@
     .form-row.time { grid-template-columns: repeat(3, 1fr); }
     .form-row.weight { grid-template-columns: 2fr 1fr 1fr; }
     .form-row.date { grid-template-columns: repeat(3, 1fr); }
+    .form-row.metric { grid-template-columns: 1fr; }
     .form-row.notes { grid-template-columns: 1fr; }
 
     .field {
@@ -348,12 +349,13 @@
       color: var(--orange); margin-right: 12px;
     }
     .pr-row .row-actions {
-      display: flex; align-items: center; gap: 4px;
+      display: flex; align-items: center; gap: 8px;
     }
     .pr-row .edit-btn,
     .pr-row .delete-btn {
       background: transparent; border: none; color: var(--white);
-      opacity: 0.4; cursor: pointer; padding: 4px;
+      /* 40×40 touch target (16px icon + 12px padding each side) */
+      opacity: 0.55; cursor: pointer; padding: 12px;
       transition: opacity 0.2s ease, color 0.2s ease;
     }
     .pr-row .edit-btn:hover { opacity: 1; color: var(--orange); }
@@ -368,11 +370,11 @@
     .event-chip[disabled]:hover { border-color: var(--field-border); }
 
     .empty-state {
-      padding: 16px 24px; font-size: 13px; opacity: 0.4;
+      padding: 16px 24px; font-size: 13px; opacity: 0.65; /* WCAG AA on black */
     }
 
     .loading {
-      padding: 40px; text-align: center; opacity: 0.5; font-size: 13px;
+      padding: 40px; text-align: center; opacity: 0.65; font-size: 13px;
       letter-spacing: 0.2em;
     }
 
@@ -431,8 +433,15 @@
     footer {
       position: relative; z-index: 10; padding: 40px;
       display: flex; justify-content: space-between; align-items: center;
-      font-size: 11px; letter-spacing: 0.1em; opacity: 0.3;
+      font-size: 11px; letter-spacing: 0.1em; opacity: 0.55; /* WCAG AA */
     }
+    /* ---- SOCIAL ICONS ---- */
+    .socials { display: flex; align-items: center; gap: 6px; }
+    .socials a {
+      display: inline-flex; align-items: center; justify-content: center;
+      padding: 11px; /* 18px icon + padding = 40px touch target */
+    }
+    .socials svg { width: 18px; height: 18px; fill: currentColor; display: block; }
 
     /* ---- RESPONSIVE ---- */
     @media (max-width: 768px) {
@@ -482,6 +491,14 @@
       nav .nav-left { font-size: 14px; }
       .page-title { font-size: clamp(40px, 18vw, 72px); }
     }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+      html { scroll-behavior: auto !important; }
+    }
   </style>
 </head>
 <body>
@@ -497,13 +514,13 @@
     <a href="/" class="nav-left wordmark">TRACKRAT</a>
     <div class="nav-center">
       <a href="/">[ HOME ]</a>
-      <a href="https://shop.trackratsprint.club" target="_blank">[ SHOP ]</a>
+      <a href="https://shop.trackratsprint.club" target="_blank" rel="noopener">[ SHOP ]</a>
       <a href="/schedule">[ SCHEDULE ]</a>
       <a href="/brand">[ BRAND ]</a>
       <a href="/invitational">[ 2026 INVITATIONAL ]</a>
       <a href="/pr">[ PERSONAL RECORDS ]</a>
     </div>
-    <button class="menu-toggle" id="menuToggle" aria-label="Open menu" aria-expanded="false">
+    <button class="menu-toggle" id="menuToggle" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
       <span></span><span></span><span></span>
     </button>
   </nav>
@@ -511,7 +528,7 @@
   <!-- MOBILE MENU OVERLAY -->
   <div class="mobile-menu" id="mobileMenu" aria-hidden="true">
     <a href="/">HOME</a>
-    <a href="https://shop.trackratsprint.club" target="_blank">SHOP</a>
+    <a href="https://shop.trackratsprint.club" target="_blank" rel="noopener">SHOP</a>
     <a href="/schedule">SCHEDULE</a>
     <a href="/brand">BRAND</a>
     <a href="/invitational">2026 INVITATIONAL</a>
@@ -520,7 +537,7 @@
   </div>
 
   <!-- PAGE -->
-  <div class="page">
+  <main class="page">
 
     <div class="page-header">
       <span class="page-eyebrow">PERSONAL RECORDS</span>
@@ -574,6 +591,10 @@
           <button type="button" class="event-chip" data-event="squat">SQUAT</button>
           <button type="button" class="event-chip" data-event="hangclean">HANG CLEAN</button>
           <button type="button" class="event-chip" data-event="pullups">PULL UPS</button>
+          <button type="button" class="event-chip" data-event="verticaljump">VERTICAL JUMP</button>
+          <button type="button" class="event-chip" data-event="rsi">RSI</button>
+          <button type="button" class="event-chip" data-event="peakpower">PEAK POWER</button>
+          <button type="button" class="event-chip" data-event="groundcontact">GROUND CONTACT</button>
         </div>
 
         <!-- Time input (run events) -->
@@ -605,6 +626,14 @@
           <div class="field">
             <label for="inpReps">REPS</label>
             <input id="inpReps" type="number" min="1" max="99" step="1" value="1" placeholder="1" inputmode="numeric" />
+          </div>
+        </div>
+
+        <!-- Single-value metric input (jump / power / RSI / contact time) -->
+        <div class="form-row metric" id="metricRow" style="display:none">
+          <div class="field">
+            <label for="inpMetric" id="inpMetricLabel">VALUE</label>
+            <input id="inpMetric" type="number" min="0" step="0.01" placeholder="0" inputmode="decimal" />
           </div>
         </div>
 
@@ -650,10 +679,21 @@
     <!-- Loading splash before auth state resolves -->
     <div id="bootLoader" class="loading">LOADING…</div>
 
-  </div>
+  </main>
 
   <footer>
     <span>TRACKRAT SPRINT CLUB</span>
+    <div class="socials">
+      <a href="https://instagram.com/trackratsprintclub/" target="_blank" rel="noopener" aria-label="TRACKRAT on Instagram">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0C8.74 0 8.333.015 7.053.072 5.775.132 4.905.333 4.14.63c-.789.306-1.459.717-2.126 1.384S.935 3.35.63 4.14C.333 4.905.131 5.775.072 7.053.012 8.333 0 8.74 0 12s.015 3.667.072 4.947c.06 1.277.261 2.148.558 2.913.306.788.717 1.459 1.384 2.126.667.666 1.336 1.079 2.126 1.384.766.296 1.636.499 2.913.558C8.333 23.988 8.74 24 12 24s3.667-.015 4.947-.072c1.277-.06 2.148-.262 2.913-.558.788-.306 1.459-.718 2.126-1.384.666-.667 1.079-1.335 1.384-2.126.296-.765.499-1.636.558-2.913.06-1.28.072-1.687.072-4.947s-.015-3.667-.072-4.947c-.06-1.277-.262-2.149-.558-2.913-.306-.789-.718-1.459-1.384-2.126C21.319 1.347 20.651.935 19.86.63c-.765-.297-1.636-.499-2.913-.558C15.667.012 15.26 0 12 0zm0 2.16c3.203 0 3.585.016 4.85.071 1.17.055 1.805.249 2.227.415.562.217.96.477 1.382.896.419.42.679.819.896 1.381.164.422.36 1.057.413 2.227.057 1.266.07 1.646.07 4.85s-.015 3.585-.074 4.85c-.061 1.17-.256 1.805-.421 2.227-.224.562-.479.96-.899 1.382-.419.419-.824.679-1.38.896-.42.164-1.065.36-2.235.413-1.274.057-1.649.07-4.859.07-3.211 0-3.586-.015-4.859-.074-1.171-.061-1.816-.256-2.236-.421-.569-.224-.96-.479-1.379-.899-.421-.419-.69-.824-.9-1.38-.165-.42-.359-1.065-.42-2.235-.045-1.26-.061-1.649-.061-4.844 0-3.196.016-3.586.061-4.861.061-1.17.255-1.814.42-2.234.21-.57.479-.96.9-1.381.419-.419.81-.689 1.379-.898.42-.166 1.051-.361 2.221-.421 1.275-.045 1.65-.06 4.859-.06l.045.03zm0 3.678c-3.405 0-6.162 2.76-6.162 6.162 0 3.405 2.76 6.162 6.162 6.162 3.405 0 6.162-2.76 6.162-6.162 0-3.405-2.76-6.162-6.162-6.162zM12 16c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4zm7.846-10.405c0 .795-.646 1.44-1.44 1.44-.795 0-1.44-.646-1.44-1.44 0-.794.646-1.439 1.44-1.439.793-.001 1.44.645 1.44 1.439z"/></svg>
+      </a>
+      <a href="https://discord.gg/X8EXhHR9f" target="_blank" rel="noopener" aria-label="TRACKRAT on Discord">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189z"/></svg>
+      </a>
+      <a href="https://x.com/trackratsprints" target="_blank" rel="noopener" aria-label="TRACKRAT on X">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z"/></svg>
+      </a>
+    </div>
     <span>PERSONAL RECORDS</span>
   </footer>
 
@@ -669,14 +709,19 @@
       mobileMenu.classList.remove('is-open');
       document.body.classList.remove('menu-open');
       menuToggle.setAttribute('aria-expanded', 'false');
+      menuToggle.setAttribute('aria-label', 'Open menu');
       mobileMenu.setAttribute('aria-hidden', 'true');
+      menuToggle.focus();
     }
     function openMenu() {
       menuToggle.classList.add('is-open');
       mobileMenu.classList.add('is-open');
       document.body.classList.add('menu-open');
       menuToggle.setAttribute('aria-expanded', 'true');
+      menuToggle.setAttribute('aria-label', 'Close menu');
       mobileMenu.setAttribute('aria-hidden', 'false');
+      const firstLink = mobileMenu.querySelector('a');
+      if (firstLink) firstLink.focus();
     }
     menuToggle.addEventListener('click', () => {
       menuToggle.classList.contains('is-open') ? closeMenu() : openMenu();
@@ -689,16 +734,28 @@
     // ---- EVENT METADATA ----
     const RUN_EVENTS = new Set(['100m','200m','400m','1mile','5K','halfmarathon','marathon']);
     const LIFT_EVENTS = new Set(['bench','deadlift','squat','hangclean','pullups']);
+    // Single-number performance metrics. `better` controls which entry wins
+    // the BEST badge ('higher' for jumps/power, 'lower' for contact time).
+    const METRIC_EVENTS = {
+      'verticaljump':  { inputLabel: 'HEIGHT (INCHES)',        unit: 'in', step: '0.1',   placeholder: '30',    better: 'higher', decimals: 1 },
+      'rsi':           { inputLabel: 'RSI',                    unit: '',   step: '0.01',  placeholder: '2.50',  better: 'higher', decimals: 2 },
+      'peakpower':     { inputLabel: 'PEAK POWER — CMJ (WATTS)', unit: 'W', step: '1',    placeholder: '4500',  better: 'higher', decimals: 0 },
+      'groundcontact': { inputLabel: 'CONTACT TIME (SECONDS)', unit: 's',  step: '0.001', placeholder: '0.180', better: 'lower',  decimals: 3 }
+    };
+    const METRIC_SET = new Set(Object.keys(METRIC_EVENTS));
     const EVENT_LABELS = {
       '100m':'100M', '200m':'200M', '400m':'400M',
       '1mile':'1 MILE', '5K':'5K',
       'halfmarathon':'HALF MARATHON', 'marathon':'MARATHON',
       'bench':'BENCH', 'deadlift':'DEADLIFT', 'squat':'SQUAT',
-      'hangclean':'HANG CLEAN', 'pullups':'PULL UPS'
+      'hangclean':'HANG CLEAN', 'pullups':'PULL UPS',
+      'verticaljump':'VERTICAL JUMP', 'rsi':'RSI',
+      'peakpower':'PEAK POWER', 'groundcontact':'GROUND CONTACT'
     };
     const EVENT_ORDER = [
       '100m','200m','400m','1mile','5K','halfmarathon','marathon',
-      'bench','deadlift','squat','hangclean','pullups'
+      'bench','deadlift','squat','hangclean','pullups',
+      'verticaljump','rsi','peakpower','groundcontact'
     ];
 
     // ---- DATE PICKER POPULATION ----
@@ -728,7 +785,25 @@
       monthSel.value = String(now.getMonth() + 1).padStart(2, '0');
       daySel.value = String(now.getDate()).padStart(2, '0');
       yearSel.value = String(now.getFullYear());
+      clampDaysToMonth();
     }
+    // Keep the day list honest for the selected month/year (no Feb 31 —
+    // impossible dates used to surface as raw Postgres errors on save).
+    function clampDaysToMonth() {
+      const year = parseInt(yearSel.value, 10);
+      const month = parseInt(monthSel.value, 10);
+      const maxDay = new Date(year, month, 0).getDate();
+      [...daySel.options].forEach(o => {
+        o.hidden = parseInt(o.value, 10) > maxDay;
+        o.disabled = o.hidden;
+      });
+      if (parseInt(daySel.value, 10) > maxDay) {
+        daySel.value = String(maxDay).padStart(2, '0');
+      }
+    }
+    monthSel.addEventListener('change', clampDaysToMonth);
+    yearSel.addEventListener('change', clampDaysToMonth);
+
     populateDatePicker();
 
     // ---- FORM STATE ----
@@ -746,12 +821,24 @@
       [...eventGrid.querySelectorAll('.event-chip')].forEach(c => {
         c.classList.toggle('is-active', c.dataset.event === ev);
       });
+      const metricRow = document.getElementById('metricRow');
       if (RUN_EVENTS.has(ev)) {
         timeRow.style.display = 'grid';
         weightRow.style.display = 'none';
+        metricRow.style.display = 'none';
+      } else if (METRIC_SET.has(ev)) {
+        timeRow.style.display = 'none';
+        weightRow.style.display = 'none';
+        metricRow.style.display = 'grid';
+        const cfg = METRIC_EVENTS[ev];
+        const inp = document.getElementById('inpMetric');
+        document.getElementById('inpMetricLabel').textContent = cfg.inputLabel;
+        inp.step = cfg.step;
+        inp.placeholder = cfg.placeholder;
       } else {
         timeRow.style.display = 'none';
         weightRow.style.display = 'grid';
+        metricRow.style.display = 'none';
         // Pull-ups are tracked with optional added weight (0 lbs = bodyweight).
         // Other lifts require a positive weight. Swap the label/placeholder
         // and the input's min attribute so the UI matches the rule.
@@ -804,9 +891,13 @@
       // Pre-fill date selects.
       const [y, mo, d] = (r.achieved_on || '').split('-');
       if (y && mo && d) {
+        // Set month/year first, re-clamp the day list for that month, THEN
+        // set the day — otherwise a previously-clamped list (e.g. Feb was
+        // selected) could leave the stored day hidden/disabled.
         monthSel.value = mo;
-        daySel.value = d;
         yearSel.value = y;
+        clampDaysToMonth();
+        daySel.value = d;
       }
 
       // Pre-fill value inputs based on event kind.
@@ -820,6 +911,8 @@
         // Trim trailing zeros so 11.45 doesn't become "11.450".
         document.getElementById('inpSeconds').value = s
           ? String(Number(s.toFixed(3))) : '';
+      } else if (METRIC_SET.has(r.event)) {
+        document.getElementById('inpMetric').value = String(Number(r.value_metric));
       } else {
         document.getElementById('inpPounds').value = String(Number(r.value_pounds));
         document.getElementById('inpSets').value = r.sets != null ? String(r.sets) : '1';
@@ -849,6 +942,7 @@
       document.getElementById('inpPounds').value = '';
       document.getElementById('inpSets').value = '1';
       document.getElementById('inpReps').value = '1';
+      document.getElementById('inpMetric').value = '';
       document.getElementById('inpNotes').value = '';
       formMsg.textContent = '';
       formMsg.className = 'form-msg';
@@ -891,10 +985,27 @@
     }
 
     // ---- BEST RECORD ----
+    function fmtMetric(r) {
+      const cfg = METRIC_EVENTS[r.event];
+      const n = Number(r.value_metric);
+      // Sub-second metrics (ground contact) keep fixed decimals — "0.180 s";
+      // everything else trims trailing zeros — "30 in", "2.5", "4500 W".
+      const txt = cfg.decimals >= 3 ? n.toFixed(cfg.decimals) : String(Number(n.toFixed(cfg.decimals)));
+      return cfg.unit ? `${txt} ${cfg.unit}` : txt;
+    }
+
     function bestRow(rows, event) {
       if (!rows.length) return null;
       if (RUN_EVENTS.has(event)) {
         return rows.reduce((b, r) => (b === null || Number(r.value_seconds) < Number(b.value_seconds)) ? r : b, null);
+      }
+      if (METRIC_SET.has(event)) {
+        const lower = METRIC_EVENTS[event].better === 'lower';
+        return rows.reduce((b, r) => {
+          if (b === null) return r;
+          const rv = Number(r.value_metric), bv = Number(b.value_metric);
+          return (lower ? rv < bv : rv > bv) ? r : b;
+        }, null);
       }
       return rows.reduce((b, r) => (b === null || Number(r.value_pounds) > Number(b.value_pounds)) ? r : b, null);
     }
@@ -936,7 +1047,7 @@
         section.className = 'event-section';
 
         const bestVal = best
-          ? (RUN_EVENTS.has(ev) ? fmtSeconds(best.value_seconds) : fmtLift(best))
+          ? (RUN_EVENTS.has(ev) ? fmtSeconds(best.value_seconds) : METRIC_SET.has(ev) ? fmtMetric(best) : fmtLift(best))
           : '—';
 
         section.innerHTML = `
@@ -948,7 +1059,7 @@
 
         sorted.forEach(r => {
           const isBest = best && r.id === best.id;
-          const val = RUN_EVENTS.has(ev) ? fmtSeconds(r.value_seconds) : fmtLift(r);
+          const val = RUN_EVENTS.has(ev) ? fmtSeconds(r.value_seconds) : METRIC_SET.has(ev) ? fmtMetric(r) : fmtLift(r);
 
           const entry = document.createElement('div');
           entry.className = 'pr-entry' + (isBest ? ' is-best' : '');
@@ -1019,7 +1130,9 @@
         .order('achieved_on', { ascending: false });
       if (error) {
         historyList.className = '';
-        historyList.innerHTML = `<div class="empty-state">Couldn't load PRs: ${error.message}</div>`;
+        // error.message comes off the wire — escape it like any other
+        // untrusted string before it touches innerHTML.
+        historyList.innerHTML = `<div class="empty-state">Couldn't load PRs: ${escapeHtml(String(error.message))}</div>`;
         return;
       }
       renderHistory(data || []);
@@ -1027,9 +1140,13 @@
 
     // ---- SUBMIT ----
     submitBtn.addEventListener('click', async () => {
+      // Guard against double-submit: disable immediately, before any await.
+      if (submitBtn.disabled) return;
+      submitBtn.disabled = true;
       formMsg.textContent = '';
       formMsg.className = 'form-msg';
       if (!selectedEvent) {
+        submitBtn.disabled = false;
         formMsg.textContent = 'Pick an event.';
         formMsg.classList.add('error');
         return;
@@ -1037,6 +1154,7 @@
 
       const { data: sess } = await supabase.auth.getSession();
       if (!sess.session) {
+        submitBtn.disabled = false;
         formMsg.textContent = 'Not signed in.';
         formMsg.classList.add('error');
         return;
@@ -1052,6 +1170,7 @@
         achieved_on: `${yearSel.value}-${monthSel.value}-${daySel.value}`,
         value_seconds: null,
         value_pounds: null,
+        value_metric: null,
         sets: null,
         reps: null,
         notes: noteRaw ? noteRaw.slice(0, 280) : null
@@ -1063,16 +1182,27 @@
         const s = parseFloat(document.getElementById('inpSeconds').value || '0');
         const total = (h * 3600) + (m * 60) + s;
         if (!(total > 0)) {
+          submitBtn.disabled = false;
           formMsg.textContent = 'Enter a time greater than zero.';
           formMsg.classList.add('error');
           return;
         }
         payload.value_seconds = Number(total.toFixed(3));
+      } else if (METRIC_SET.has(selectedEvent)) {
+        const v = parseFloat(document.getElementById('inpMetric').value);
+        if (!(v > 0)) {
+          submitBtn.disabled = false;
+          formMsg.textContent = 'Enter a value greater than zero.';
+          formMsg.classList.add('error');
+          return;
+        }
+        payload.value_metric = Number(v.toFixed(3));
       } else {
         const lbs = parseFloat(document.getElementById('inpPounds').value || '0');
         // Pull-ups can be logged with 0 lbs (bodyweight); other lifts must be > 0.
         const isPullups = selectedEvent === 'pullups';
         if (isPullups ? !(lbs >= 0) || Number.isNaN(lbs) : !(lbs > 0)) {
+          submitBtn.disabled = false;
           formMsg.textContent = isPullups
             ? 'Enter added weight (0 or more).'
             : 'Enter a weight greater than zero.';
@@ -1082,6 +1212,7 @@
         const sets = parseInt(document.getElementById('inpSets').value, 10);
         const reps = parseInt(document.getElementById('inpReps').value, 10);
         if (!(sets >= 1) || !(reps >= 1)) {
+          submitBtn.disabled = false;
           formMsg.textContent = 'Enter at least 1 set and 1 rep.';
           formMsg.classList.add('error');
           return;
@@ -1091,7 +1222,6 @@
         payload.reps = reps;
       }
 
-      submitBtn.disabled = true;
       const resp = editingId
         ? await supabase.from('prs').update(payload).eq('id', editingId)
         : await supabase.from('prs').insert(payload);
