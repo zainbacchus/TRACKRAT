@@ -1,0 +1,16 @@
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Editor
+*.swp
+*.swo
+.vscode/
+.idea/
+
+# Env / secrets (none should exist in this repo, but belt-and-suspenders)
+.env
+.env.*
+
+# Dependencies (repo is intentionally build-free; nothing should create this)
+node_modules/
