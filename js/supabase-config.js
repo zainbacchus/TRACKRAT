@@ -7,16 +7,21 @@
 export const SUPABASE_URL = 'https://mwrkoosfrhimlppdeljo.supabase.co';
 export const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im13cmtvb3NmcmhpbWxwcGRlbGpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk1NTk0MjUsImV4cCI6MjA5NTEzNTQyNX0.Gsh4He_LfhcqOwUosC_iEp73w7oi1hvSIGCROtjXAjo';
 
-// Supabase JS SDK v2.45.4, vendored (self-hosted) in /js/vendor — a
-// dependency-inlined ESM bundle, so no third-party CDN runs code on the
-// authenticated /pr page. To upgrade: fetch a new bundle, replace the
-// vendor file, and update the version in this path.
-import { createClient } from '/js/vendor/supabase-js-2.45.4.bundle.mjs';
+// Supabase JS SDK v2.108.1, vendored (self-hosted) in /js/vendor — a
+// dependency-inlined ESM bundle plus its Node polyfills (buffer, process,
+// events, tty, async_hooks), so no third-party CDN runs code on the
+// authenticated /pr page. To upgrade: fetch a new bundle, rewrite its
+// /node/*.mjs imports to the local ./node-*.mjs files, replace the vendor
+// file, and update the version in this path.
+import { createClient } from '/js/vendor/supabase-js-2.108.1.bundle.mjs';
 
 export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
   auth: {
     persistSession: true,
     autoRefreshToken: true,
-    detectSessionInUrl: true
+    detectSessionInUrl: true,
+    // PKCE: OAuth returns a one-time ?code= exchanged client-side instead
+    // of delivering tokens in the URL fragment.
+    flowType: 'pkce'
   }
 });
