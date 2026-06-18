@@ -398,64 +398,66 @@
     /* ---- MOBILE MENU OVERLAY ---- */
     .mobile-menu {
       position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
+      inset: 0;
       z-index: 150;
       background: var(--black);
       display: none;
       flex-direction: column;
-      justify-content: center;
-      align-items: flex-start;
-      padding: 80px 32px 60px;
+      padding: 18px 32px 28px;
       opacity: 0;
       transition: opacity 0.3s ease;
+      overflow-y: auto;
     }
-
-    .mobile-menu.is-open {
-      display: flex;
-      opacity: 1;
+    .mobile-menu.is-open { display: flex; opacity: 1; }
+    /* Header: wordmark (-> home) + explicit close X. Lives INSIDE the overlay
+       so the close control is always above the overlay content (the old
+       hamburger-morph X was buried under this overlay by a z-index stacking
+       trap: nav's z-index:100 context capped the toggle below the 150 overlay). */
+    .mobile-menu-header {
+      display: flex; align-items: center; justify-content: space-between;
+      width: 100%; flex-shrink: 0;
     }
-
-    .mobile-menu a {
-      font-size: clamp(32px, 8vw, 44px);
+    .mobile-menu-wordmark {
+      font-family: 'Fugaz One', cursive; letter-spacing: -0.14em;
+      font-size: 18px; color: var(--white);
+    }
+    .mobile-menu-close {
+      background: transparent; border: none; cursor: pointer;
+      width: 44px; height: 44px; margin-right: -10px; padding: 0;
+      color: var(--white); display: flex; align-items: center; justify-content: center;
+    }
+    .mobile-menu-close svg { width: 26px; height: 26px; display: block; }
+    .mobile-menu-close:hover { color: var(--orange); }
+    .mobile-menu-links {
+      flex: 1; min-height: 0;
+      display: flex; flex-direction: column; justify-content: center;
+      align-items: flex-start; width: 100%;
+    }
+    .mobile-menu-links > a,
+    .mobile-accordion-trigger {
+      font-size: clamp(30px, 7.5vw, 44px);
       font-family: 'Fugaz One', cursive;
       letter-spacing: -0.04em;
       color: var(--white);
-      padding: 14px 0;
-      width: 100%;
-      transform: translateX(-20px);
-      opacity: 0;
+      padding: 12px 0; width: 100%;
+      background: transparent; border: none; text-align: left; cursor: pointer;
+      display: flex; align-items: center; justify-content: space-between;
+      transform: translateX(-20px); opacity: 0;
       transition: transform 0.4s ease, opacity 0.4s ease, color 0.2s ease;
     }
-
-    .mobile-menu.is-open a {
-      transform: translateX(0);
-      opacity: 1;
-    }
-
-    .mobile-menu.is-open a:nth-child(1) { transition-delay: 0.05s; }
-    .mobile-menu.is-open a:nth-child(2) { transition-delay: 0.12s; }
-    .mobile-menu.is-open a:nth-child(3) { transition-delay: 0.19s; }
-    .mobile-menu.is-open a:nth-child(4) { transition-delay: 0.26s; }
-    .mobile-menu.is-open a:nth-child(5) { transition-delay: 0.33s; }
-    .mobile-menu.is-open a:nth-child(6) { transition-delay: 0.40s; }
-
-    .mobile-menu a:hover,
-    .mobile-menu a:active {
-      color: var(--orange);
-    }
-
+    .mobile-menu.is-open .mobile-menu-links > a,
+    .mobile-menu.is-open .mobile-accordion-trigger { transform: translateX(0); opacity: 1; }
+    .mobile-menu.is-open .mobile-menu-links > *:nth-child(1) { transition-delay: 0.05s; }
+    .mobile-menu.is-open .mobile-menu-links > *:nth-child(2) { transition-delay: 0.12s; }
+    .mobile-menu.is-open .mobile-menu-links > *:nth-child(3) { transition-delay: 0.19s; }
+    .mobile-menu.is-open .mobile-menu-links > *:nth-child(4) { transition-delay: 0.26s; }
+    .mobile-menu.is-open .mobile-menu-links > *:nth-child(5) { transition-delay: 0.33s; }
+    .mobile-menu-links a:hover, .mobile-menu-links a:active,
+    .mobile-accordion-trigger:hover { color: var(--orange); }
     .mobile-menu-footer {
-      position: absolute;
-      bottom: 40px;
-      left: 32px;
-      right: 32px;
-      font-size: 10px;
-      letter-spacing: 0.3em;
-      opacity: 0.3;
-      font-weight: 600;
+      flex-shrink: 0;
+      font-size: 10px; letter-spacing: 0.3em;
+      opacity: 0.4; font-weight: 600; color: var(--white);
     }
 
     body.menu-open { overflow: hidden; }
@@ -587,7 +589,6 @@
   <nav>
     <a href="/" class="nav-left wordmark">TRACKRAT</a>
     <div class="nav-center">
-      <a href="/">[ HOME ]</a>
       <a href="https://shop.trackratsprint.club" target="_blank" rel="noopener">[ SHOP ]</a>
       <a href="/schedule">[ SCHEDULE ]</a>
       <a href="/brand">[ BRAND ]</a>
@@ -603,12 +604,22 @@
 
   <!-- MOBILE MENU OVERLAY -->
   <div class="mobile-menu" id="mobileMenu" aria-hidden="true">
-    <a href="/">HOME</a>
-    <a href="https://shop.trackratsprint.club" target="_blank" rel="noopener">SHOP</a>
-    <a href="/schedule">SCHEDULE</a>
-    <a href="/brand">BRAND</a>
-    <a href="/invitational">2026 INVITATIONAL</a>
-    <a href="/pr">PERSONAL RECORDS</a>
+    <div class="mobile-menu-header">
+      <a href="/" class="mobile-menu-wordmark" aria-label="TRACKRAT — home">TRACKRAT</a>
+      <button class="mobile-menu-close" id="menuClose" type="button" aria-label="Close menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true">
+          <line x1="5" y1="5" x2="19" y2="19"></line>
+          <line x1="19" y1="5" x2="5" y2="19"></line>
+        </svg>
+      </button>
+    </div>
+    <div class="mobile-menu-links">
+      <a href="https://shop.trackratsprint.club" target="_blank" rel="noopener">SHOP</a>
+      <a href="/schedule">SCHEDULE</a>
+      <a href="/brand">BRAND</a>
+      <a href="/invitational">2026 INVITATIONAL</a>
+      <a href="/pr">PERSONAL RECORDS</a>
+    </div>
     <div class="mobile-menu-footer">TRACKRAT SPRINT CLUB</div>
   </div>
 
@@ -715,49 +726,31 @@
   </footer>
 
   <script>
-    // ---- MOBILE MENU TOGGLE ----
     const menuToggle = document.getElementById('menuToggle');
     const mobileMenu = document.getElementById('mobileMenu');
+    const menuClose = document.getElementById('menuClose');
 
     function closeMenu() {
       menuToggle.classList.remove('is-open');
       mobileMenu.classList.remove('is-open');
       document.body.classList.remove('menu-open');
       menuToggle.setAttribute('aria-expanded', 'false');
-      menuToggle.setAttribute('aria-label', 'Open menu');
       mobileMenu.setAttribute('aria-hidden', 'true');
       menuToggle.focus();
     }
-
     function openMenu() {
       menuToggle.classList.add('is-open');
       mobileMenu.classList.add('is-open');
       document.body.classList.add('menu-open');
       menuToggle.setAttribute('aria-expanded', 'true');
-      menuToggle.setAttribute('aria-label', 'Close menu');
       mobileMenu.setAttribute('aria-hidden', 'false');
-      const firstLink = mobileMenu.querySelector('a');
-      if (firstLink) firstLink.focus();
+      menuClose.focus();
     }
-
-    menuToggle.addEventListener('click', () => {
-      if (menuToggle.classList.contains('is-open')) {
-        closeMenu();
-      } else {
-        openMenu();
-      }
-    });
-
-    // Close menu when a link is tapped
-    mobileMenu.querySelectorAll('a').forEach(link => {
-      link.addEventListener('click', closeMenu);
-    });
-
-    // Close on Escape
+    menuToggle.addEventListener('click', openMenu);
+    menuClose.addEventListener('click', closeMenu);
+    mobileMenu.querySelectorAll('a').forEach(link => link.addEventListener('click', closeMenu));
     document.addEventListener('keydown', e => {
-      if (e.key === 'Escape' && menuToggle.classList.contains('is-open')) {
-        closeMenu();
-      }
+      if (e.key === 'Escape' && mobileMenu.classList.contains('is-open')) closeMenu();
     });
 
     // ---- .ICS GENERATION ----

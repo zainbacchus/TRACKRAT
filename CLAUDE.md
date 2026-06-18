@@ -13,7 +13,7 @@ Pages:
 - `/` — landing (with about/FAQ content + structured data for SEO/AEO)
 - `/schedule` — weekly schedule with `.ics` calendar export
 - `/brand` — brand guide
-- `/invitational` — event placeholder
+- `/invitational` — 2026 Invitational event page (RSVP via Sweatpals)
 - `/pr` — personal record tracker (Google sign-in, per-user data via Supabase)
 
 > Note: the PR page is `/pr` (singular). Earlier versions used `/prs` — if you
@@ -40,7 +40,7 @@ TRACKRAT/
 ├── index.html              # /                      — landing
 ├── schedule.html           # /schedule              — weekly schedule + .ics + Event JSON-LD
 ├── brand.html              # /brand                 — brand guide
-├── invitational.html       # /invitational          — event placeholder
+├── invitational.html       # /invitational          — 2026 Invitational (Sweatpals RSVP)
 ├── pr.html                 # /pr                    — PR tracker (Google sign-in)
 ├── 404.html                # branded 404 (served automatically by Vercel)
 ├── api/
@@ -179,24 +179,24 @@ without lanes.
 
 ### Nav
 
-Identical structure on every page. The auth slot is **not** state-aware —
-`[ PERSONAL RECORDS ]` (or `[ PRS ]` / `[ PR ]` in older copies) shows
-regardless of session. The `/pr` page itself handles signed-out vs signed-in.
+**Byte-identical across all pages** (intentionally duplicated — no framework).
+There is **no HOME link** — the `TRACKRAT` wordmark on the left is the home
+link everywhere. The auth slot is **not** state-aware: `[ PERSONAL RECORDS ]`
+shows regardless of session; the `/pr` page handles signed-out vs signed-in.
 
-Desktop order: `HOME · SHOP · SCHEDULE · BRAND · 2026 INVITATIONAL · PERSONAL RECORDS`
+Desktop order: `SHOP · SCHEDULE · BRAND · 2026 INVITATIONAL · PERSONAL RECORDS`
 
-Mobile menu has the same items with staggered fade-in transitions on
-`a:nth-child(1)…(6)`. When adding or removing nav items, update the stagger
-delays so the animation stays consistent. The menu toggle carries
-`aria-controls="mobileMenu"`, swaps its `aria-label` between Open/Close
-menu, and moves focus into the menu on open / back to the toggle on close
-— preserve all three when touching the menu script.
+All nav items are flat links (no dropdowns). An "Events" dropdown grouping
+existed briefly but was removed; `2026 INVITATIONAL` is a top-level link.
 
-### Mobile menu toggle
-
-Hamburger → close (×) animation via three rotating `<span>`s. The toggle
-script is duplicated per page; it's small enough that DRYing it isn't worth
-the indirection.
+Mobile menu is a full-screen overlay with its own **header** — the TRACKRAT
+wordmark (→ home) on the left and an explicit **close X** (`#menuClose`) on the
+right. The X lives INSIDE the overlay on purpose: the old hamburger-morph X was
+buried by a z-index stacking trap (nav's `z-index:100` context capped the
+toggle below the `150` overlay). Don't move the close control back into `<nav>`.
+The hamburger (`#menuToggle`) only opens; `#menuClose`, tapping a link, and
+Escape all close. Focus moves to the X on open, back to the hamburger on close.
+Stagger fade-ins run on `.mobile-menu-links > *:nth-child(1…5)`.
 
 ## Personal Records (`/pr`)
 

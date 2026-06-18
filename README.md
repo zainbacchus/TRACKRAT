@@ -23,7 +23,7 @@ TRACKRAT/
 ├── index.html              # /                      — landing (with SEO/AEO content + JSON-LD)
 ├── schedule.html           # /schedule              — weekly schedule + .ics export + Event JSON-LD
 ├── brand.html              # /brand                 — brand guide
-├── invitational.html       # /invitational          — event placeholder
+├── invitational.html       # /invitational          — 2026 Invitational (Sweatpals RSVP)
 ├── pr.html                 # /pr                    — Personal Records (Google sign-in)
 ├── 404.html                # branded not-found page (Vercel serves it with status 404)
 ├── api/
