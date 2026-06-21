@@ -200,9 +200,10 @@
       font-size: clamp(56px, 8vw, 104px); line-height: 0.84;
       color: var(--black); padding-right: 0.14em;
     }
+    .auth-brandgroup { width: fit-content; }
     .auth-tagline {
       font-size: 13px; font-weight: 700; letter-spacing: 0.28em;
-      color: #1a0700; margin-top: 22px;
+      color: #1a0700; margin-top: 22px; text-align: center; padding-left: 0.28em;
     }
     .auth-panel {
       flex: 1; background: var(--black);
@@ -775,8 +776,10 @@
        body.auth-mode is set; replaced by the dashboard below on sign-in. -->
   <div id="authScreen" class="auth-screen" aria-label="Sign in to TRACKRAT">
     <div class="auth-brand">
-      <div class="auth-wordmark">TRACKRAT</div>
-      <div class="auth-tagline">SPRINT CLUB &gt; RUN CLUB</div>
+      <div class="auth-brandgroup">
+        <div class="auth-wordmark">TRACKRAT</div>
+        <div class="auth-tagline">SPRINT CLUB &gt; RUN CLUB</div>
+      </div>
     </div>
     <div class="auth-panel">
       <div class="auth-inner">
