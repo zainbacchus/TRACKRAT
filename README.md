@@ -24,7 +24,8 @@ TRACKRAT/
 ├── schedule.html           # /schedule              — weekly schedule + .ics export + Event JSON-LD
 ├── brand.html              # /brand                 — brand guide
 ├── invitational.html       # /invitational          — 2026 Invitational (Sweatpals RSVP)
-├── pr.html                 # /pr                    — Personal Records (Google sign-in)
+├── offtrack.html           # /offtrack              — OFFTRACK demo night, presented by TRACKRAT (under Events)
+├── dashboard.html          # /dashboard             — member Dashboard: PRs + Promotions (Google sign-in)
 ├── 404.html                # branded not-found page (Vercel serves it with status 404)
 ├── api/
 │   └── next-event.js       # Edge function: next upcoming event as JSON (public API, see llms.txt)
@@ -35,9 +36,10 @@ TRACKRAT/
 │   ├── fugaz-one-latin.woff2
 │   ├── ibm-plex-mono-{400,500,600,700}-latin.woff2
 │   └── LICENSE-*.txt       # SIL OFL 1.1 notices for both font families
+├── promos/                 # Partner logos for the Dashboard → Promotions tab
 ├── vercel.json             # cleanUrls, security headers, redirects, cache headers
 ├── og.png                  # 1200×630 Open Graph image (shared across all pages)
-├── robots.txt              # Crawl rules (/pr is noindexed via meta, not Disallowed)
+├── robots.txt              # Crawl rules (/dashboard is noindexed via meta, not Disallowed)
 ├── sitemap.xml             # Public-page sitemap
 ├── llms.txt                # LLM-facing site description
 ├── favicon.ico
@@ -67,9 +69,10 @@ The home page (`index.html`) additionally has:
 - A `FAQPage` JSON-LD block (high signal for Google AI Overviews, ChatGPT
   Search, Perplexity). Every FAQ answer is grounded in visible page copy.
 
-`pr.html` carries `noindex, follow` since it's an authenticated dashboard.
-(It is deliberately NOT `Disallow`ed in `robots.txt` — Google must be able
-to crawl the page to see the noindex.)
+`dashboard.html` carries `noindex, follow` since it's an authenticated
+dashboard. (It is deliberately NOT `Disallow`ed in `robots.txt` — Google must
+be able to crawl the page to see the noindex.) `offtrack.html` is a normal
+public, indexable page and is listed in `sitemap.xml`.
 
 `schedule.html` ships `Event` JSON-LD for both weekly sessions
 (`eventSchedule` with weekly recurrence). The Sunday session carries the
@@ -109,7 +112,8 @@ Redirects:
 
 - apex `trackratsprint.club/*` → `www.trackratsprint.club/*` (canonical host)
 - `/2026-invitational` → `/invitational` (legacy URL)
-- `/prs` → `/pr` (legacy URL)
+- `/pr` and `/prs` → `/dashboard` (legacy URLs — the PR tracker is now the
+  Dashboard's Personal Records tab)
 
 Headers: security baseline on every response (`X-Content-Type-Options`,
 `X-Frame-Options: DENY`, CSP `frame-ancestors 'none'`, `Referrer-Policy`,
@@ -122,8 +126,8 @@ The Supabase JS SDK (currently **2.108.1**) is **self-hosted** at
 `js/vendor/supabase-js-<version>.bundle.mjs` — a dependency-inlined ESM
 bundle plus its Node polyfills (`node-buffer.mjs`, `node-process.mjs`,
 `node-events.mjs`, `node-tty.mjs`, `node-async_hooks.mjs`) — so no
-third-party CDN executes code on the authenticated `/pr` page. Auth uses
-the PKCE flow (`flowType: 'pkce'` in `js/supabase-config.js`).
+third-party CDN executes code on the authenticated `/dashboard` page. Auth
+uses the PKCE flow (`flowType: 'pkce'` in `js/supabase-config.js`).
 
 To upgrade: fetch `https://esm.sh/@supabase/supabase-js@<ver>?bundle-deps&target=es2020`,
 follow its stub to the `.bundle.mjs` build, rewrite every `/node/*.mjs`
@@ -151,9 +155,21 @@ files + edge functions only.
 
 ---
 
-# Personal Records (`/pr`)
+# Dashboard (`/dashboard`)
 
-Authenticated dashboard at `/pr` where members log PRs across 16 events:
+Authenticated member dashboard at `/dashboard` (Google sign-in). It has two
+tabs:
+
+- **Personal Records** (default) — log PRs across 16 events (below).
+- **Promotions** — member discount codes / perks, loaded from the Supabase
+  `promotions` table (see [Promotions](#promotions) below). Visible only to
+  signed-in users; the codes are not committed to this public repo.
+
+The old `/pr` route 301-redirects to `/dashboard`.
+
+## Personal Records tab
+
+Members log PRs across 16 events:
 
 **Run / distance** (stored as seconds): `100m`, `200m`, `400m`, `1mile`, `5K`,
 `halfmarathon`, `marathon`.
@@ -251,6 +267,59 @@ create policy "prs_update_own" on public.prs for update using (auth.uid() = user
 create policy "prs_delete_own" on public.prs for delete using (auth.uid() = user_id);
 ```
 
+### 3b. Promotions table (Dashboard → Promotions tab)
+
+Member promotions are stored in Supabase — **not** in this public repo — so the
+codes stay behind the sign-in wall. Run this once in the SQL editor. Read access
+is granted to the `authenticated` role only (any signed-in user), so the anon
+key alone can't read the codes.
+
+```sql
+create table if not exists public.promotions (
+  id          uuid primary key default gen_random_uuid(),
+  partner     text not null,          -- e.g. "Example Partner"
+  offer       text not null,          -- "15% off"
+  details     text,                   -- supporting line under the offer
+  code        text,                   -- discount code, e.g. "PARTNERXX" (nullable; real codes live only in Supabase)
+  redemption  text,                   -- how to redeem
+  location    text,                   -- address or display text for the WHERE line
+  url         text,                   -- optional link for the WHERE line (maps / website)
+  logo        text,                   -- asset path under /promos, e.g. "/promos/example.png" (use raster: PNG/WEBP/JPG)
+  logo_bg     text,                   -- optional CSS color for the logo tile (dark logos need a light tile)
+  sort_order  int  not null default 0,
+  active      boolean not null default true,
+  created_at  timestamptz not null default now()
+);
+
+alter table public.promotions enable row level security;
+grant select on public.promotions to authenticated;
+create policy "promotions_select_auth" on public.promotions
+  for select to authenticated using (active);
+
+-- ⚠️  Do NOT paste real promotions into this file. This repo is PUBLIC, so any
+-- codes/offers/terms committed here are world-readable on GitHub — which defeats
+-- the whole point of gating promotions behind sign-in. Keep the real INSERT in a
+-- private place (password manager / internal doc) and run it ONLY in the Supabase
+-- SQL editor. `sort_order` controls display order (ascending).
+--
+-- Format (placeholder data — replace before running, do not commit real values):
+insert into public.promotions (partner, offer, details, code, redemption, location, url, logo, logo_bg, sort_order) values
+  ('Example Partner', '10% off',
+   'When you mention you''re with TRACKRAT Sprint Club.',
+   'PARTNERXX', 'Show this code / mention the club at checkout.',
+   '123 Example St, Austin, TX', 'https://example.com',
+   '/promos/example.svg', '#FFFFFF', 1);
+```
+
+To add/edit a promotion: `insert`/`update` a row in the Supabase dashboard (set
+`active = false` to hide one) — **never commit real codes/offers to this repo.**
+If it has a logo, commit the image under `/promos/` (logo files are inherently
+public on the deployed site) and point `logo` at it. **Use a raster format
+(PNG/WEBP/JPG), not SVG** — SVGs used as `<img>` can fail to size/render in some
+browsers (notably iOS Safari) and show as blank. Dark logos that need to sit on
+the dark dashboard get a matching dark `logo_bg` (e.g. WellSport uses `#080808`);
+logos meant for a light background get `logo_bg: '#FFFFFF'`.
+
 ### 4. Set up Google OAuth
 
 In [Google Cloud Console](https://console.cloud.google.com):
@@ -274,14 +343,18 @@ In Supabase:
 - **Authentication → URL Configuration**:
   - **Site URL**: `https://www.trackratsprint.club`
   - **Redirect URLs** (add each):
-    - `https://www.trackratsprint.club/pr`
-    - `https://trackratsprint.club/pr`
-    - `http://localhost:3000/pr`
+    - `https://www.trackratsprint.club/dashboard`
+    - `https://trackratsprint.club/dashboard`
+    - `http://localhost:3000/dashboard`
+
+  > Sign-in redirects to `/dashboard` (`redirectTo` in `dashboard.html`). If
+  > these `/dashboard` URLs aren't in the allowlist, Google sign-in falls back
+  > to the Site URL instead of returning to the dashboard.
 
 ### 5. Deploy
 
-Push to `main`. Vercel picks up the `/pr` rewrite from `vercel.json` and
-serves `pr.html`.
+Push to `main`. Vercel serves `/dashboard` from `dashboard.html` via
+`cleanUrls`, and 301-redirects the legacy `/pr` and `/prs` to `/dashboard`.
 
 ## Adding a new event
 
@@ -290,9 +363,9 @@ Three places to update — keep them in sync:
 1. **SQL** — extend the `prs_event_check` and `value_matches_event` constraints
    in your Supabase database (write an `alter table ... drop constraint ... add
    constraint ...` migration in the SQL editor).
-2. **`pr.html`** — add to `RUN_EVENTS` or `LIFT_EVENTS`, plus `EVENT_LABELS`
-   and `EVENT_ORDER`.
-3. **`pr.html`** — add a chip button to the `#eventGrid` markup.
+2. **`dashboard.html`** — add to `RUN_EVENTS` or `LIFT_EVENTS`, plus
+   `EVENT_LABELS` and `EVENT_ORDER`.
+3. **`dashboard.html`** — add a chip button to the `#eventGrid` markup.
 
 ## Why is the anon key in a public repo OK?
 

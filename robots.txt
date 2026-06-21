@@ -1,4 +1,4 @@
-# /pr is kept out of search results by its noindex meta tag, NOT by a
+# /dashboard is kept out of search results by its noindex meta tag, NOT by a
 # Disallow rule — blocking crawl here would prevent Google from ever
 # seeing the noindex.
 User-agent: *

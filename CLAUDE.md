@@ -14,10 +14,15 @@ Pages:
 - `/schedule` — weekly schedule with `.ics` calendar export
 - `/brand` — brand guide
 - `/invitational` — 2026 Invitational event page (RSVP via Sweatpals)
-- `/pr` — personal record tracker (Google sign-in, per-user data via Supabase)
+- `/offtrack` — OFFTRACK demo night, presented by TRACKRAT (grouped under the **Events** nav dropdown)
+- `/dashboard` — member dashboard (Google sign-in): a **Personal Records** tab
+  (per-user PRs via Supabase) + a **Promotions** tab (member perks from the
+  `promotions` table)
 
-> Note: the PR page is `/pr` (singular). Earlier versions used `/prs` — if you
-> see that anywhere in the codebase, it's stale and should be `/pr`.
+> Note: the dashboard is `/dashboard`. It used to be `/pr` (and `/prs` before
+> that); both now 301-redirect to `/dashboard`. If you see `/pr` or `pr.html`
+> anywhere outside those redirect rules, it's stale and should be `/dashboard`
+> / `dashboard.html`.
 
 ## Architecture
 
@@ -41,7 +46,8 @@ TRACKRAT/
 ├── schedule.html           # /schedule              — weekly schedule + .ics + Event JSON-LD
 ├── brand.html              # /brand                 — brand guide
 ├── invitational.html       # /invitational          — 2026 Invitational (Sweatpals RSVP)
-├── pr.html                 # /pr                    — PR tracker (Google sign-in)
+├── offtrack.html           # /offtrack              — OFFTRACK demo night (under Events dropdown)
+├── dashboard.html          # /dashboard             — member dashboard: PRs + Promotions (Google sign-in)
 ├── 404.html                # branded 404 (served automatically by Vercel)
 ├── api/
 │   └── next-event.js       # Edge function: next upcoming event (public API; no page consumes it)
@@ -52,10 +58,11 @@ TRACKRAT/
 │   ├── fugaz-one-latin.woff2
 │   ├── ibm-plex-mono-{400,500,600,700}-latin.woff2
 │   └── LICENSE-*.txt
+├── promos/                 # Partner logos for the Dashboard → Promotions tab
 ├── og.png                  # 1200×630 Open Graph image (shared by all pages)
 ├── vercel.json             # cleanUrls, security headers, redirects, cache headers
-├── robots.txt              # Crawl rules (/pr handled by noindex meta, NOT Disallow)
-├── sitemap.xml             # Public-page sitemap (excludes /pr)
+├── robots.txt              # Crawl rules (/dashboard handled by noindex meta, NOT Disallow)
+├── sitemap.xml             # Public-page sitemap (excludes /dashboard; includes /offtrack)
 ├── llms.txt                # LLM-facing site description
 ├── favicon.ico
 ├── LICENSE                 # MIT for code; brand assets all rights reserved
@@ -78,7 +85,7 @@ rewrite**: unknown URLs return the branded `404.html` with a real 404
 status (a catch-all to index.html would make every typo a soft-404).
 
 Redirects: apex → `www.trackratsprint.club` (canonical host),
-`/2026-invitational` → `/invitational`, `/prs` → `/pr`.
+`/2026-invitational` → `/invitational`, and `/pr` + `/prs` → `/dashboard`.
 
 Headers: security baseline on `/(.*)`(nosniff, `X-Frame-Options: DENY`,
 CSP `frame-ancestors 'none'; object-src 'none'; base-uri 'none'`,
@@ -98,7 +105,7 @@ bundle whose Node polyfill imports are rewritten to the local
 import each other, so the rewrite is recursive). Auth uses `flowType:
 'pkce'`. **Don't reintroduce a CDN import (esm.sh, jsDelivr, unpkg)** —
 the vendored copy exists so no third party executes code on the
-authenticated /pr page. To upgrade: fetch a dependency-inlined bundle of
+authenticated /dashboard page. To upgrade: fetch a dependency-inlined bundle of
 the new version, rewrite the polyfill imports, verify zero absolute/bare
 specifiers remain (beware: realtime-js embeds `import ws from "ws"`
 inside error-message *strings* — a grep false positive, not a real
@@ -127,7 +134,7 @@ Every public page ships with:
   Search, Perplexity, etc. Every FAQ answer must stay grounded in visible
   page copy (invisible-answer FAQ markup can be treated as spam).
 
-`pr.html` carries `noindex, follow`; it's a private dashboard. It is
+`dashboard.html` carries `noindex, follow`; it's a private dashboard. It is
 deliberately NOT `Disallow`ed in robots.txt — blocking crawl would prevent
 Google from ever seeing the noindex meta.
 
@@ -166,7 +173,7 @@ the same filename into `/fonts/`.
 
 ### Track-lane background
 
-`schedule.html`, `brand.html`, and `pr.html` use a fixed 8-lane track backdrop:
+`schedule.html`, `brand.html`, and `dashboard.html` use a fixed 8-lane track backdrop:
 
 ```html
 <div class="track-lanes">
@@ -180,14 +187,25 @@ without lanes.
 ### Nav
 
 **Byte-identical across all pages** (intentionally duplicated — no framework).
-There is **no HOME link** — the `TRACKRAT` wordmark on the left is the home
-link everywhere. The auth slot is **not** state-aware: `[ PERSONAL RECORDS ]`
-shows regardless of session; the `/pr` page handles signed-out vs signed-in.
+The only per-page difference is the `.menu-toggle` color (black on the orange/
+paper pages, white on the black pages) — the rest of the nav markup, CSS, and
+JS must stay identical everywhere. There is **no HOME link** — the `TRACKRAT`
+wordmark on the left is the home link everywhere. The `[ DASHBOARD ]` slot is
+**not** state-aware: it shows regardless of session; `/dashboard` handles
+signed-out vs signed-in.
 
-Desktop order: `SHOP · SCHEDULE · BRAND · 2026 INVITATIONAL · PERSONAL RECORDS`
+Desktop order: `SHOP · SCHEDULE · BRAND · EVENTS ▾ · DASHBOARD`
 
-All nav items are flat links (no dropdowns). An "Events" dropdown grouping
-existed briefly but was removed; `2026 INVITATIONAL` is a top-level link.
+**Events is a dropdown, not a page** (there is intentionally no `/events`
+route). It groups the two event pages: **2026 Invitational** and
+**OFFTRACK** (`/offtrack`). Desktop: a `.nav-dropdown` whose `.nav-dropdown-panel`
+opens on `:hover` / `:focus-within` (CSS) plus click-toggle + click-outside +
+Escape (JS); the panel is always solid black with a hairline border so it reads
+the same on the orange pages and the black pages. Mobile: a
+`.mobile-accordion-trigger` button (a direct child of `.mobile-menu-links`, so
+the slide-in stagger still works — note the stagger now runs to `:nth-child(6)`)
+that toggles `.mobile-accordion-panel.is-open`. If you add another nav item,
+replicate the whole block across all pages and re-check the stagger count.
 
 Mobile menu is a full-screen overlay with its own **header** — the TRACKRAT
 wordmark (→ home) on the left and an explicit **close X** (`#menuClose`) on the
@@ -196,11 +214,47 @@ buried by a z-index stacking trap (nav's `z-index:100` context capped the
 toggle below the `150` overlay). Don't move the close control back into `<nav>`.
 The hamburger (`#menuToggle`) only opens; `#menuClose`, tapping a link, and
 Escape all close. Focus moves to the X on open, back to the hamburger on close.
-Stagger fade-ins run on `.mobile-menu-links > *:nth-child(1…5)`.
+Stagger fade-ins run on `.mobile-menu-links > *:nth-child(1…6)` (6 since the
+Events accordion was added).
 
-## Personal Records (`/pr`)
+## Dashboard (`/dashboard`)
 
-Authenticated dashboard backed by Supabase.
+Authenticated member dashboard backed by Supabase (`dashboard.html`, formerly
+`pr.html` / `/pr`). Two tabs inside the signed-in view, toggled by
+`.dash-tab` buttons (`selectTab('pr'|'promo')`):
+
+- **Personal Records** (default) — the PR tracker described below, wrapped in
+  `#prPanel`.
+- **Promotions** — `#promoPanel`. Lazy-loads on first open from the Supabase
+  `promotions` table and renders `.promo-card`s. See **Promotions** below.
+
+### Promotions tab
+
+Member perks (discount codes etc.) live in a Supabase **`promotions`** table —
+**not** in this public repo — so the codes stay behind the sign-in wall. RLS
+grants `select` to the `authenticated` role only (any signed-in Google user;
+there's no separate "member" role). The table **DDL** lives in README's
+*Promotions table* section; the **real rows are seeded directly in Supabase and
+are deliberately NOT committed** (the repo is public — committing codes/offers
+would defeat the sign-in gate). README ships only a placeholder example.
+Migrations are manual (run in the SQL editor).
+
+- Columns: `partner, offer, details, code, redemption, location, url, logo,
+  logo_bg, sort_order, active`. Rendering is data-driven in
+  `dashboard.html` (`promoCardHtml`); add a promo by inserting a row.
+- Partner **logos** are committed under `/promos/` (brand marks are public; only
+  the codes are gated). **Use raster (PNG/WEBP/JPG), not SVG** — SVG-as-`<img>`
+  can render blank on iOS Safari. `logo_bg` is the tile color behind the logo:
+  dark-on-light logos use `#FFFFFF`; a light/white logo for the dark dashboard
+  bakes a dark bg into the PNG and sets `logo_bg` to match (WellSport: `#080808`).
+- All promo fields are escaped before injection (`escapeHtml`); `url` is
+  validated with `safeUrl` (http/https only) and `logo_bg` with `safeColor`.
+- The tab degrades gracefully if the table doesn't exist yet (shows an error
+  line, PR tab unaffected).
+
+## Personal Records tab
+
+Backed by Supabase.
 
 ### Events
 
@@ -212,7 +266,7 @@ Authenticated dashboard backed by Supabase.
 `value_pounds = 0` for bodyweight; every other lift requires > 0).
 
 **Performance metrics** (single number in `value_metric`, configured in
-the `METRIC_EVENTS` object in pr.html — unit label, input step,
+the `METRIC_EVENTS` object in dashboard.html — unit label, input step,
 placeholder, and BEST direction): `verticaljump` (in), `rsi` (unitless),
 `peakpower` (W), `groundcontact` (s, lower-is-better). To add another
 metric: one entry in `METRIC_EVENTS`, plus `EVENT_LABELS`/`EVENT_ORDER`,
@@ -261,13 +315,18 @@ Supabase's anon key is *designed* to be public. Security is enforced by the
 RLS policies above — not by key secrecy. The only key that must never ship
 to the client is `service_role`, which bypasses RLS. We don't use it.
 
-### Client flow (`pr.html`)
+### Client flow (`dashboard.html`)
 
 1. Import shared client: `import { supabase } from '/js/supabase-config.js'`.
-2. On load, call `supabase.auth.getSession()`.
-   - No session → show the sign-in card.
-   - Session → show the user strip, PR form, and history list.
-3. `signInWithOAuth({ provider: 'google', options: { redirectTo: <origin>/pr }})`.
+2. On load, call `supabase.auth.getSession()`. The page defaults to
+   `body.auth-mode`, which shows the focused full-screen sign-in (`#authScreen`)
+   — an orange/black split with the wordmark and a single **Sign in with Google**
+   button — and hides the nav/dashboard/footer.
+   - No session → keep `body.auth-mode` (show `#authScreen`).
+   - Session → `setSignedIn()` removes `body.auth-mode`, revealing the nav,
+     user strip, PR form/history, and Promotions tab. (Google is the only
+     sign-in method.)
+3. `signInWithOAuth({ provider: 'google', options: { redirectTo: <origin>/dashboard }})`.
 4. `onAuthStateChange` keeps the UI in sync after sign-in/sign-out — see the
    *Important gotchas* section below.
 5. CRUD calls go straight to `supabase.from('prs')…` — RLS handles
@@ -318,7 +377,7 @@ the `value_matches_event` constraint satisfied for UPDATEs even if we ever
 allow swapping event types during edit.
 
 **Notes are user input.** Use `escapeHtml()` before injecting into
-`innerHTML`. The helper is already defined in `pr.html`.
+`innerHTML`. The helper is already defined in `dashboard.html`.
 
 ## API: `api/next-event.js`
 
@@ -347,8 +406,9 @@ don't apply to plain file servers.
    `@font-face` declarations** at the top of `<style>`).
 2. Add a `/newpage` rewrite to `vercel.json`.
 3. Add the link to **every** page's nav (desktop `.nav-center` and mobile
-   `.mobile-menu`) — and update the `.mobile-menu.is-open a:nth-child(N)`
-   stagger delays accordingly.
+   `.mobile-menu-links`) — and update the
+   `.mobile-menu.is-open .mobile-menu-links > *:nth-child(N)` stagger delays
+   accordingly. (Or add it under the Events dropdown if it's an event.)
 4. If indexable, add to `sitemap.xml` with a `<lastmod>`. If user-private,
    set `<meta name="robots" content="noindex, follow">` in the page head —
    and do NOT also `Disallow` it in robots.txt (a crawl block would stop
@@ -361,13 +421,13 @@ Three places to keep in sync:
 1. **SQL** — extend the `prs_event_check` and `value_matches_event`
    constraints in Supabase (write a migration as `alter table ... drop
    constraint ... add constraint ...`).
-2. **`pr.html`** — add to `RUN_EVENTS` or `LIFT_EVENTS`, plus `EVENT_LABELS`
+2. **`dashboard.html`** — add to `RUN_EVENTS` or `LIFT_EVENTS`, plus `EVENT_LABELS`
    and `EVENT_ORDER`.
-3. **`pr.html`** — add a chip button to the `#eventGrid` markup.
+3. **`dashboard.html`** — add a chip button to the `#eventGrid` markup.
 
 ### Editing the PR dashboard
 
-- All UI logic lives in `pr.html`. Don't try to extract components.
+- All UI logic lives in `dashboard.html`. Don't try to extract components.
 - Database changes: write the migration in `README.md`'s schema section, run
   it in the Supabase SQL editor, and call it out in commit messages.
 - Migrations are manual — there's no migration tool.
@@ -397,8 +457,10 @@ Static files + edge functions only.
 4. **Match the existing style.** Black background, orange accent, Fugaz One +
    IBM Plex Mono, ALL-CAPS labels with letter-spacing on UI chrome, track
    lanes for dashboard-style pages.
-5. **Keep the nav in lockstep across all five pages.** A change to nav
-   markup or stagger delays must be applied everywhere or pages will drift.
+5. **Keep the nav in lockstep across all six nav pages** (index, schedule,
+   brand, invitational, offtrack, dashboard). A change to nav markup, the
+   Events dropdown/accordion, or stagger delays must be applied everywhere or
+   pages will drift. (404.html has no nav.)
 6. **For PR features, trust RLS.** Don't add server-side authorization logic
    — it's already in Postgres. The client talks to Supabase directly.
 7. **Mobile-first.** Test at 375px before declaring done.
@@ -416,7 +478,7 @@ Static files + edge functions only.
     at low opacity composites with `#FF4D1F` to a muddy mid-orange that
     fails WCAG AA contrast. On `index.html`, use the solid color
     `#1a0700` (or darker) instead — same visual feel, ~5.9:1 contrast.
-    On the black-background pages (`schedule`/`brand`/`pr`) white text is
+    On the black-background pages (`schedule`/`brand`/`dashboard`) white text is
     fine.
 11. **Don't reintroduce Google Fonts.** Fonts are self-hosted in `/fonts/`
     and preloaded per page. Reverting to `fonts.googleapis.com/css2?...`

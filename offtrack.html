@@ -3,33 +3,40 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>2026 Invitational · TRACKRAT — Austin Sprint Club</title>
-  <meta name="description" content="The 2026 TRACKRAT Invitational in Austin, Texas. A community sprint meet. Details coming soon." />
-  <link rel="canonical" href="https://www.trackratsprint.club/invitational" />
+  <title>OFFTRACK · TRACKRAT — Austin Sprint Club</title>
+  <meta name="description" content="OFFTRACK is a demo night in Austin, TX, presented by TRACKRAT. Builders, founders, and creatives show off personal tech projects. Get notified about the next one." />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <link rel="canonical" href="https://www.trackratsprint.club/offtrack" />
 
+  <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="TRACKRAT" />
-  <meta property="og:title" content="2026 Invitational · TRACKRAT" />
-  <meta property="og:description" content="The 2026 TRACKRAT Invitational — Austin, TX. Details coming soon." />
-  <meta property="og:url" content="https://www.trackratsprint.club/invitational" />
+  <meta property="og:title" content="OFFTRACK · TRACKRAT" />
+  <meta property="og:description" content="A demo night in Austin, TX, presented by TRACKRAT. Builders, founders, and creatives show off personal projects. Get notified about the next one." />
+  <meta property="og:url" content="https://www.trackratsprint.club/offtrack" />
   <meta property="og:image" content="https://www.trackratsprint.club/og.png" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
   <meta property="og:image:alt" content="TRACKRAT wordmark" />
   <meta property="og:locale" content="en_US" />
 
+  <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="2026 Invitational · TRACKRAT" />
-  <meta name="twitter:description" content="The 2026 TRACKRAT Invitational — Austin, TX." />
+  <meta name="twitter:title" content="OFFTRACK · TRACKRAT" />
+  <meta name="twitter:description" content="A demo night in Austin, TX, presented by TRACKRAT." />
   <meta name="twitter:image" content="https://www.trackratsprint.club/og.png" />
 
+  <!-- Geo -->
   <meta name="geo.region" content="US-TX" />
   <meta name="geo.placename" content="Austin" />
-  <meta name="theme-color" content="#000000" />
+
+  <!-- Theme -->
+  <meta name="theme-color" content="#FF4D1F" />
+
   <link rel="icon" href="/favicon.ico" sizes="any">
   <!-- Self-hosted fonts. @font-face declarations live in the inline <style>
        below; preload the two above-the-fold fonts (Fugaz One wordmark + IBM
-       Plex Mono 400 body) so they fetch in parallel with the HTML parse. -->
+       Plex Mono 400 body) so the browser fetches them alongside the HTML. -->
   <link rel="preload" as="font" type="font/woff2" href="/fonts/fugaz-one-latin.woff2" crossorigin>
   <link rel="preload" as="font" type="font/woff2" href="/fonts/ibm-plex-mono-400-latin.woff2" crossorigin>
   <script defer src="/_vercel/insights/script.js"></script>
@@ -47,49 +54,45 @@
       --orange: #FF4D1F;
       --black: #000000;
       --white: #FFFFFF;
+      /* Notebook page: warm paper + faint blue rule lines (kept from ABC). */
+      --paper: #FBFAF7;
+      --ink: #14141B;
+      --line: #ECEAE4;
+      --muted: #6B6A66;
+      --font: 'IBM Plex Mono', monospace;
     }
-    html, body { height: 100%; }
+    html { scroll-behavior: smooth; }
     body {
-      font-family: 'IBM Plex Mono', monospace;
-      background: var(--orange);
-      color: var(--black);
-      /* overflow-x only — clipping y makes zoomed/reflowed content
-         unreachable (WCAG 1.4.4 / 1.4.10) */
+      font-family: var(--font);
+      /* warm paper, ruled like a notebook */
+      background-color: var(--paper);
+      background-image: repeating-linear-gradient(
+        to bottom,
+        transparent 0, transparent 33px,
+        rgba(45,134,214,0.12) 33px, rgba(45,134,214,0.12) 34px);
+      color: var(--ink);
       overflow-x: hidden;
       -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
     }
-    a {
-      text-decoration: none;
-      color: inherit;
-      -webkit-tap-highlight-color: transparent;
-    }
+    a { text-decoration: none; color: inherit; -webkit-tap-highlight-color: transparent; }
     a:hover { opacity: 0.6; transition: opacity 0.2s ease; }
+
+    /* ===================================================================
+       NAV (canonical — byte-identical across all pages; only --menu-toggle
+       color flips per background). Wordmark = home; no HOME link. EVENTS is
+       a dropdown grouping, NOT a page.
+       =================================================================== */
     nav {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 100;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 24px 40px;
-      font-size: 13px;
-      letter-spacing: 0.05em;
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; justify-content: center; align-items: center;
+      padding: 24px 40px; font-size: 13px; letter-spacing: 0.05em;
     }
     nav .nav-left {
-      font-family: 'Fugaz One', cursive;
-      font-size: 18px;
-      letter-spacing: -0.14em;
-      position: absolute;
-      left: 40px;
+      font-family: 'Fugaz One', cursive; font-size: 18px;
+      letter-spacing: -0.14em; position: absolute; left: 40px;
     }
-    nav .nav-center {
-      display: flex;
-      gap: 28px;
-      font-weight: 500;
-      align-items: center;
-    }
+    nav .nav-center { display: flex; gap: 28px; font-weight: 500; align-items: center; }
 
     /* ---- DESKTOP EVENTS DROPDOWN ---- */
     .nav-dropdown { position: relative; display: inline-flex; align-items: center; }
@@ -104,6 +107,8 @@
     .nav-dropdown:hover .nav-dropdown-caret,
     .nav-dropdown:focus-within .nav-dropdown-caret,
     .nav-dropdown.is-open .nav-dropdown-caret { transform: rotate(180deg); }
+    /* Panel is always dark (black) so it reads the same on the orange pages
+       and the black pages. */
     .nav-dropdown-panel {
       position: absolute; top: 100%; left: 50%;
       transform: translateX(-50%) translateY(6px);
@@ -127,63 +132,30 @@
 
     /* ---- MOBILE MENU TOGGLE ---- */
     .menu-toggle {
-      display: none;
-      position: relative;
-      width: 32px;
-      height: 32px;
-      background: transparent;
-      border: none;
-      cursor: pointer;
-      padding: 0;
-      z-index: 200;
-      color: var(--black);
+      display: none; position: relative; width: 32px; height: 32px;
+      background: transparent; border: none; cursor: pointer; padding: 0;
+      z-index: 200; color: var(--black);
     }
-
     .menu-toggle span {
-      position: absolute;
-      left: 4px;
-      right: 4px;
-      height: 2px;
+      position: absolute; left: 4px; right: 4px; height: 2px;
       background: currentColor;
       transition: transform 0.3s ease, opacity 0.2s ease, top 0.3s ease;
     }
-
     .menu-toggle span:nth-child(1) { top: 10px; }
     .menu-toggle span:nth-child(2) { top: 16px; }
     .menu-toggle span:nth-child(3) { top: 22px; }
-
-    .menu-toggle.is-open {
-      color: var(--white);
-    }
-
-    .menu-toggle.is-open span:nth-child(1) {
-      top: 16px;
-      transform: rotate(45deg);
-    }
+    .menu-toggle.is-open { color: var(--white); }
+    .menu-toggle.is-open span:nth-child(1) { top: 16px; transform: rotate(45deg); }
     .menu-toggle.is-open span:nth-child(2) { opacity: 0; }
-    .menu-toggle.is-open span:nth-child(3) {
-      top: 16px;
-      transform: rotate(-45deg);
-    }
+    .menu-toggle.is-open span:nth-child(3) { top: 16px; transform: rotate(-45deg); }
 
     /* ---- MOBILE MENU OVERLAY ---- */
     .mobile-menu {
-      position: fixed;
-      inset: 0;
-      z-index: 150;
-      background: var(--black);
-      display: none;
-      flex-direction: column;
-      padding: 18px 32px 28px;
-      opacity: 0;
-      transition: opacity 0.3s ease;
-      overflow-y: auto;
+      position: fixed; inset: 0; z-index: 150; background: var(--black);
+      display: none; flex-direction: column; padding: 18px 32px 28px;
+      opacity: 0; transition: opacity 0.3s ease; overflow-y: auto;
     }
     .mobile-menu.is-open { display: flex; opacity: 1; }
-    /* Header: wordmark (-> home) + explicit close X. Lives INSIDE the overlay
-       so the close control is always above the overlay content (the old
-       hamburger-morph X was buried under this overlay by a z-index stacking
-       trap: nav's z-index:100 context capped the toggle below the 150 overlay). */
     .mobile-menu-header {
       display: flex; align-items: center; justify-content: space-between;
       width: 100%; flex-shrink: 0;
@@ -207,8 +179,7 @@
     .mobile-menu-links > a,
     .mobile-accordion-trigger {
       font-size: clamp(30px, 7.5vw, 44px);
-      font-family: 'Fugaz One', cursive;
-      letter-spacing: -0.04em;
+      font-family: 'Fugaz One', cursive; letter-spacing: -0.04em;
       color: var(--white);
       padding: 12px 0; width: 100%;
       background: transparent; border: none; text-align: left; cursor: pointer;
@@ -223,15 +194,10 @@
     .mobile-menu.is-open .mobile-menu-links > *:nth-child(3) { transition-delay: 0.19s; }
     .mobile-menu.is-open .mobile-menu-links > *:nth-child(4) { transition-delay: 0.26s; }
     .mobile-menu.is-open .mobile-menu-links > *:nth-child(5) { transition-delay: 0.33s; }
+    .mobile-menu.is-open .mobile-menu-links > *:nth-child(6) { transition-delay: 0.40s; }
     .mobile-menu-links a:hover, .mobile-menu-links a:active,
     .mobile-accordion-trigger:hover { color: var(--orange); }
-    .mobile-menu-footer {
-      flex-shrink: 0;
-      font-size: 10px; letter-spacing: 0.3em;
-      opacity: 0.4; font-weight: 600; color: var(--white);
-    }
     /* ---- MOBILE EVENTS ACCORDION ---- */
-    .mobile-menu.is-open .mobile-menu-links > *:nth-child(6) { transition-delay: 0.40s; }
     .mobile-accordion-trigger .acc-caret { width: 18px; height: 18px; flex-shrink: 0; transition: transform 0.2s ease; }
     .mobile-accordion-trigger[aria-expanded="true"] .acc-caret { transform: rotate(180deg); }
     .mobile-accordion-panel {
@@ -245,90 +211,218 @@
       padding: 9px 0;
     }
     .mobile-accordion-panel a:hover { color: var(--orange); }
+    .mobile-menu-footer {
+      flex-shrink: 0; font-size: 10px; letter-spacing: 0.3em;
+      opacity: 0.4; font-weight: 600; color: var(--white);
+    }
     body.menu-open { overflow: hidden; }
 
-    .page {
-      width: 100%;
-      height: 100vh;
-      height: 100dvh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      padding: 40px;
+    /* ===================================================================
+       PAGE — TRACKRAT skin on notebook paper
+       =================================================================== */
+    .wrap { max-width: 820px; margin: 0 auto; padding: 0 24px; }
+
+    header.hero { text-align: center; padding: 150px 24px 8px; }
+    .eyebrow {
+      display: inline-block; font-size: 12px; font-weight: 700;
+      letter-spacing: 0.3em; color: var(--orange); margin-bottom: 18px;
     }
-    .subtitle {
-      font-size: clamp(24px, 4vw, 48px);
-      font-family: 'Fugaz One', cursive;
-      font-weight: normal;
-      line-height: 1;
-      margin-bottom: 8px;
+    .page-title {
+      font-family: 'Fugaz One', cursive; font-weight: normal;
+      letter-spacing: -0.14em; line-height: 0.86;
+      font-size: clamp(52px, 12vw, 128px); color: var(--ink);
     }
-    .year {
-      font-size: clamp(80px, 18vw, 240px);
-      font-family: 'Fugaz One', cursive;
-      letter-spacing: -0.14em;
-      line-height: 0.85;
-      margin-bottom: 24px;
-      padding-right: 0.14em;
+    .hero-tagline {
+      font-size: clamp(11px, 1.4vw, 14px); letter-spacing: 0.3em;
+      margin-top: 26px; color: var(--muted); font-weight: 600;
     }
-    .coming {
-      font-size: clamp(12px, 1.4vw, 16px);
-      letter-spacing: 0.3em;
-      margin-top: 40px;
-      /* Dark warm-black instead of opacity 0.4 — same dim feel, but
-         ~5.9:1 contrast on the orange bg (WCAG AA needs 4.5:1) */
-      color: #1a0700;
-      font-weight: 600;
+
+    /* ---- CARD STACK ---- */
+    main { padding: 40px 0 24px; }
+    .stack { display: flex; flex-direction: column; gap: 22px; }
+    .card {
+      position: relative; background: var(--white);
+      border: 1px solid var(--line);
+      padding: 46px 32px 32px;            /* top room for the corner tape label */
+      box-shadow: 0 14px 30px -20px rgba(20,20,27,0.45);
     }
+    /* notes tossed onto the page — each card at its own slight angle */
+    .card:nth-of-type(1) { transform: rotate(-0.6deg); }
+    .card:nth-of-type(2) { transform: rotate(0.5deg); }
+    .card:nth-of-type(3) { transform: rotate(-0.4deg); }
+    .card:nth-of-type(4) { transform: rotate(0.6deg); }
+
+    /* Section labels = washi tape stuck across a top corner of each card.
+       Torn ends, a careless tilt, a shadow that lifts it off the page.
+       (Kept from ABC; recolored to TRACKRAT orange/ink, set in Plex Mono.) */
+    .card-label {
+      position: absolute; top: -15px; z-index: 3;
+      font-family: var(--font); font-weight: 700;
+      font-size: 12px; line-height: 1; letter-spacing: 0.12em;
+      text-transform: uppercase; padding: 8px 18px 9px;
+      clip-path: polygon(
+        3% 0%, 0.5% 24%, 2.5% 48%, 0% 72%, 2.5% 100%,
+        97.5% 100%, 100% 73%, 97% 49%, 99.5% 25%, 96.5% 0%);
+      background-image:
+        repeating-linear-gradient(90deg,
+          rgba(255,255,255,0.06) 0, rgba(255,255,255,0.06) 1px, transparent 1px, transparent 3px),
+        linear-gradient(106deg,
+          rgba(255,255,255,0.18), rgba(255,255,255,0) 44%, rgba(0,0,0,0.08));
+      filter: drop-shadow(0 3px 3px rgba(20,20,27,0.26));
+    }
+    .label-orange { background-color: rgba(255,77,31,0.94); color: #1a0700; }
+    .label-ink    { background-color: rgba(0,0,0,0.9); color: var(--white); }
+    .card:nth-of-type(1) .card-label { left: 20px;  transform: rotate(-5deg); }
+    .card:nth-of-type(2) .card-label { right: 20px; transform: rotate(4.5deg); }
+    .card:nth-of-type(3) .card-label { left: 26px;  transform: rotate(-3.5deg); }
+    .card:nth-of-type(4) .card-label { right: 22px; transform: rotate(5deg); }
+
+    .card h2 {
+      font-family: 'Fugaz One', cursive; font-weight: normal;
+      letter-spacing: -0.04em; font-size: clamp(28px, 5vw, 42px);
+      line-height: 0.96; margin-bottom: 14px; color: var(--ink);
+    }
+    .card p { font-size: 16px; line-height: 1.6; margin-bottom: 14px; }
+    .card p:last-child { margin-bottom: 0; }
+
+    /* ---- NEXT EVENT ---- */
+    .session-line {
+      display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 16px;
+      font-family: 'Fugaz One', cursive; letter-spacing: -0.03em;
+      font-size: clamp(26px, 5.5vw, 42px); color: var(--ink); margin-bottom: 12px;
+    }
+    .session-sub { font-size: 14px; color: var(--muted); font-weight: 600; line-height: 1.5; }
+    .session-rsvp {
+      margin-top: 16px; font-size: 12px; font-weight: 700;
+      letter-spacing: 0.18em; text-transform: uppercase; color: var(--orange);
+    }
+
+    /* ---- SIGNUP ---- */
+    .signup-form { display: flex; gap: 12px; margin-top: 20px; flex-wrap: wrap; }
+    .signup-form input[type="email"] {
+      flex: 1; min-width: 220px; background: #fff;
+      border: 1px solid var(--line); color: var(--ink);
+      padding: 14px 16px; font-family: var(--font); font-size: 15px;
+    }
+    .signup-form input[type="email"]::placeholder { color: #b3b1ac; }
+    .signup-form input[type="email"]:focus { outline: none; border-color: var(--orange); }
+    .signup-hp { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+    .signup-btn {
+      background: var(--black); color: var(--orange); border: none;
+      padding: 14px 28px; font-family: var(--font); font-size: 12px;
+      font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase;
+      cursor: pointer; transition: transform 0.12s ease, opacity 0.2s ease;
+    }
+    .signup-btn:hover { transform: translateY(-1px); opacity: 0.92; }
+    .signup-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    .signup-msg { margin-top: 14px; font-size: 13px; font-weight: 600; min-height: 1em; }
+    .signup-msg.ok { color: #1f6fb0; }
+    .signup-msg.err { color: #c8392e; }
+
+    /* ---- DEMOS ARCHIVE ---- */
+    .demos { margin-top: 44px; }
+    .demos h2 {
+      font-family: 'Fugaz One', cursive; font-weight: normal;
+      letter-spacing: -0.04em; font-size: clamp(26px, 4.4vw, 36px);
+      color: var(--ink); margin-bottom: 8px;
+    }
+    .demo-event { margin-top: 24px; }
+    .demo-event-title {
+      font-family: var(--font); font-weight: 700; font-size: 13px;
+      letter-spacing: 0.2em; text-transform: uppercase; color: var(--orange);
+      padding-bottom: 8px; margin-bottom: 8px;
+      border-bottom: 3px solid var(--black);
+    }
+    .demo-row {
+      display: flex; justify-content: space-between; align-items: baseline; gap: 16px;
+      padding: 12px 0; border-bottom: 1px solid var(--line); font-size: 15px;
+    }
+    .demo-row:last-child { border-bottom: none; }
+    .demo-name { font-weight: 600; }
+    .demo-author { color: var(--muted); font-weight: 600; text-align: right; white-space: nowrap; }
+    .demos-empty { color: var(--muted); font-style: italic; padding: 8px 0; font-size: 15px; }
+
+    /* ---- FOOTER ---- */
+    .site-footer {
+      margin-top: 48px; padding: 32px 24px 56px;
+      border-top: 1px solid var(--line);
+      display: flex; justify-content: space-between; align-items: center;
+      gap: 16px; font-size: 11px; letter-spacing: 0.2em; font-weight: 600;
+      color: var(--muted);
+    }
+    .site-footer a:hover { color: var(--ink); }
+    .socials { display: flex; align-items: center; gap: 6px; }
+    .socials a {
+      display: inline-flex; align-items: center; justify-content: center;
+      padding: 11px; color: var(--ink);
+    }
+    .socials svg { width: 18px; height: 18px; fill: currentColor; display: block; }
+
     @media (max-width: 768px) {
-      nav {
-        padding: 16px 20px;
-        justify-content: space-between;
-      }
-      nav .nav-left {
-        position: static;
-        font-size: 16px;
-        flex-shrink: 0;
-      }
-      nav .nav-center {
-        display: none;
-      }
-      .menu-toggle {
-        display: block;
-      }
+      nav { padding: 16px 20px; justify-content: space-between; }
+      nav .nav-left { position: static; font-size: 16px; flex-shrink: 0; }
+      nav .nav-center { display: none; }
+      .menu-toggle { display: block; }
+      header.hero { padding: 120px 20px 4px; }
+      .card { padding: 42px 22px 26px; }
+      .wrap { padding: 0 18px; }
+      .site-footer { flex-direction: column; gap: 12px; text-align: center; }
     }
     @media (max-width: 420px) {
       nav .nav-left { font-size: 14px; }
     }
-    /* ---- SOCIAL FOOTER ---- */
-    .site-footer {
-      position: fixed;
-      bottom: 18px;
-      left: 0;
-      right: 0;
-      z-index: 50; /* under the mobile-menu overlay (150) */
-      display: flex;
-      justify-content: center;
-    }
-    /* ---- SOCIAL ICONS ---- */
-    .socials { display: flex; align-items: center; gap: 6px; }
-    .socials a {
-      display: inline-flex; align-items: center; justify-content: center;
-      padding: 11px; /* 18px icon + padding = 40px touch target */
-    }
-    .socials svg { width: 18px; height: 18px; fill: currentColor; display: block; }
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after {
         animation-duration: 0.01ms !important;
         animation-iteration-count: 1 !important;
         transition-duration: 0.01ms !important;
       }
+      html { scroll-behavior: auto !important; }
     }
   </style>
+
+  <!-- Structured data: OFFTRACK event, presented by TRACKRAT. -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "name": "OFFTRACK",
+        "description": "A demo night in Austin, Texas, presented by TRACKRAT, where builders, founders, and creatives show off personal tech projects.",
+        "url": "https://www.trackratsprint.club/offtrack",
+        "parentOrganization": { "@type": "SportsClub", "name": "TRACKRAT", "url": "https://www.trackratsprint.club/" },
+        "areaServed": {
+          "@type": "City", "name": "Austin",
+          "containedInPlace": { "@type": "AdministrativeArea", "name": "Texas, USA" }
+        }
+      },
+      {
+        "@type": "Event",
+        "name": "OFFTRACK demo night",
+        "description": "A casual demo night in Austin, TX. Builders, founders, and creatives give short 5 to 6 minute demos of personal tech projects. Personal projects only, leave the work stuff at work.",
+        "startDate": "2026-07-22T19:00:00-05:00",
+        "doorTime": "2026-07-22T18:30:00-05:00",
+        "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
+        "eventStatus": "https://schema.org/EventScheduled",
+        "isAccessibleForFree": true,
+        "inLanguage": "en-US",
+        "location": {
+          "@type": "Place",
+          "name": "Austin, TX (venue to be announced)",
+          "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "Austin", "addressRegion": "TX", "addressCountry": "US"
+          }
+        },
+        "organizer": { "@type": "Organization", "name": "TRACKRAT", "url": "https://www.trackratsprint.club/" }
+      }
+    ]
+  }
+  </script>
 </head>
 <body>
+  <!-- NAV -->
   <nav>
     <a href="/" class="nav-left">TRACKRAT</a>
     <div class="nav-center">
@@ -348,9 +442,7 @@
       <a href="/dashboard">[ DASHBOARD ]</a>
     </div>
     <button class="menu-toggle" id="menuToggle" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
-      <span></span>
-      <span></span>
-      <span></span>
+      <span></span><span></span><span></span>
     </button>
   </nav>
 
@@ -382,13 +474,76 @@
     <div class="mobile-menu-footer">TRACKRAT SPRINT CLUB</div>
   </div>
 
-  <main class="page">
-    <h1 class="subtitle"><span style="letter-spacing: -0.14em;">TRACKRAT</span> <span style="letter-spacing: -0.10em;">INVITATIONAL</span></h1>
-    <div class="year">2026</div>
-    <p class="coming">DETAILS COMING SOON</p>
+  <!-- HERO -->
+  <header class="hero">
+    <span class="eyebrow">TRACKRAT · EVENTS</span>
+    <h1 class="page-title">OFFTRACK</h1>
+  </header>
+
+  <main class="wrap">
+    <div class="stack">
+
+      <!-- THE DIFF -->
+      <section class="card">
+        <span class="card-label label-orange">The diff</span>
+        <h2>Show &amp; tell for builders</h2>
+        <p>Unlike your typical networking events, OFFTRACK is a small, once-every-couple-months event put on by TRACKRAT Sprint Club. It's for people doing creative things with technology to show off the cool stuff they've built.</p>
+        <p>Demos are 5 to 10 minutes each. Personal projects only; leave the work stuff at work.</p>
+      </section>
+
+      <!-- WHY -->
+      <section class="card">
+        <span class="card-label label-ink">Iron sharpens iron</span>
+        <p>TRACKRAT was started by founders, investors, and operators building in tech. The track taught us something simple: you get better, faster, around people who push you. OFFTRACK takes that same energy off the track and into the things we make.</p>
+      </section>
+
+      <!-- NEXT EVENT -->
+      <section class="card">
+        <span class="card-label label-orange">Next event</span>
+        <div class="session-line">
+          <span>Wed · July 22</span>
+        </div>
+        <p class="session-sub">Doors 6:30 PM CT · demos start ~7 PM</p>
+        <p class="session-rsvp"><a href="https://luma.com/dmb7o78s" target="_blank" rel="noopener">RSVP →</a></p>
+      </section>
+
+      <!-- GET NOTIFIED -->
+      <section class="card">
+        <span class="card-label label-ink">Get notified</span>
+        <h2>Get notified about the next one</h2>
+        <p>Drop your email and we'll let you know when the next event is.</p>
+        <form class="signup-form" id="signupForm" novalidate>
+          <input type="email" id="signupEmail" name="email" required
+                 placeholder="your@email.com" autocomplete="email" aria-label="Email address" />
+          <input type="text" class="signup-hp" id="signupCompany" name="company"
+                 tabindex="-1" autocomplete="off" aria-hidden="true" />
+          <button type="submit" class="signup-btn" id="signupBtn">Notify me</button>
+        </form>
+        <p class="signup-msg" id="signupMsg" role="status" aria-live="polite"></p>
+      </section>
+
+    </div>
+
+    <!-- ============================================================
+         PAST DEMOS ARCHIVE
+         To add an event after it happens, COPY a .demo-event block and
+         place it ABOVE the others (newest first). Each demo is one
+         .demo-row: project title — presenter name.
+         ============================================================ -->
+    <section class="demos">
+      <h2>Past demos</h2>
+      <div class="demo-event">
+        <div class="demo-event-title">July 22, 2026</div>
+        <p class="demos-empty">Coming soon.</p>
+        <!-- Replace the line above with rows like this once the event happens:
+        <div class="demo-row"><span class="demo-name">Project title</span><span class="demo-author">Presenter name</span></div>
+        -->
+      </div>
+    </section>
   </main>
 
   <footer class="site-footer">
+    <span>OFFTRACK · PRESENTED BY TRACKRAT</span>
     <div class="socials">
       <a href="https://instagram.com/trackratsprintclub/" target="_blank" rel="noopener" aria-label="TRACKRAT on Instagram">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0C8.74 0 8.333.015 7.053.072 5.775.132 4.905.333 4.14.63c-.789.306-1.459.717-2.126 1.384S.935 3.35.63 4.14C.333 4.905.131 5.775.072 7.053.012 8.333 0 8.74 0 12s.015 3.667.072 4.947c.06 1.277.261 2.148.558 2.913.306.788.717 1.459 1.384 2.126.667.666 1.336 1.079 2.126 1.384.766.296 1.636.499 2.913.558C8.333 23.988 8.74 24 12 24s3.667-.015 4.947-.072c1.277-.06 2.148-.262 2.913-.558.788-.306 1.459-.718 2.126-1.384.666-.667 1.079-1.335 1.384-2.126.296-.765.499-1.636.558-2.913.06-1.28.072-1.687.072-4.947s-.015-3.667-.072-4.947c-.06-1.277-.262-2.149-.558-2.913-.306-.789-.718-1.459-1.384-2.126C21.319 1.347 20.651.935 19.86.63c-.765-.297-1.636-.499-2.913-.558C15.667.012 15.26 0 12 0zm0 2.16c3.203 0 3.585.016 4.85.071 1.17.055 1.805.249 2.227.415.562.217.96.477 1.382.896.419.42.679.819.896 1.381.164.422.36 1.057.413 2.227.057 1.266.07 1.646.07 4.85s-.015 3.585-.074 4.85c-.061 1.17-.256 1.805-.421 2.227-.224.562-.479.96-.899 1.382-.419.419-.824.679-1.38.896-.42.164-1.065.36-2.235.413-1.274.057-1.649.07-4.859.07-3.211 0-3.586-.015-4.859-.074-1.171-.061-1.816-.256-2.236-.421-.569-.224-.96-.479-1.379-.899-.421-.419-.69-.824-.9-1.38-.165-.42-.359-1.065-.42-2.235-.045-1.26-.061-1.649-.061-4.844 0-3.196.016-3.586.061-4.861.061-1.17.255-1.814.42-2.234.21-.57.479-.96.9-1.381.419-.419.81-.689 1.379-.898.42-.166 1.051-.361 2.221-.421 1.275-.045 1.65-.06 4.859-.06l.045.03zm0 3.678c-3.405 0-6.162 2.76-6.162 6.162 0 3.405 2.76 6.162 6.162 6.162 3.405 0 6.162-2.76 6.162-6.162 0-3.405-2.76-6.162-6.162-6.162zM12 16c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4zm7.846-10.405c0 .795-.646 1.44-1.44 1.44-.795 0-1.44-.646-1.44-1.44 0-.794.646-1.439 1.44-1.439.793-.001 1.44.645 1.44 1.439z"/></svg>
@@ -408,6 +563,8 @@
     </div>
   </footer>
 
+  <!-- Nav interactions: mobile menu open/close, desktop Events dropdown,
+       mobile Events accordion. (Shared, byte-identical, across all pages.) -->
   <script>
     const menuToggle = document.getElementById('menuToggle');
     const mobileMenu = document.getElementById('mobileMenu');
@@ -431,6 +588,8 @@
     }
     menuToggle.addEventListener('click', openMenu);
     menuClose.addEventListener('click', closeMenu);
+    // Tapping a real link closes the menu (the accordion trigger is a <button>,
+    // so it's intentionally not matched here).
     mobileMenu.querySelectorAll('a').forEach(link => link.addEventListener('click', closeMenu));
 
     // Desktop Events dropdown — hover/focus is CSS; this adds click + a11y.
@@ -468,6 +627,58 @@
         navDropdown.classList.remove('is-open');
         navDropdownTrigger.setAttribute('aria-expanded', 'false');
       }
+    });
+  </script>
+
+  <!-- Email signup → Supabase `signups` table (anon INSERT-only via RLS; the
+       public anon key cannot read the list back). Rows tagged source:'builders'. -->
+  <script type="module">
+    import { supabase } from '/js/supabase-config.js';
+
+    const form = document.getElementById('signupForm');
+    const emailInput = document.getElementById('signupEmail');
+    const honeypot = document.getElementById('signupCompany');
+    const btn = document.getElementById('signupBtn');
+    const msg = document.getElementById('signupMsg');
+
+    function setMsg(text, kind) {
+      msg.textContent = text;
+      msg.className = 'signup-msg' + (kind ? ' ' + kind : '');
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (btn.disabled) return;
+
+      const email = emailInput.value.trim();
+      if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+        setMsg('Enter a valid email.', 'err');
+        emailInput.focus();
+        return;
+      }
+      if (honeypot.value) { setMsg("You're on the list.", 'ok'); form.reset(); return; }
+
+      btn.disabled = true;
+      setMsg('Adding you…', '');
+
+      const { error } = await supabase
+        .from('signups')
+        .insert({ email: email.toLowerCase(), source: 'builders' });
+
+      btn.disabled = false;
+
+      if (error) {
+        if (error.code === '23505') {
+          setMsg("You're already on the list.", 'ok');
+          form.reset();
+        } else {
+          setMsg("Couldn't add you just now. Try again in a bit.", 'err');
+        }
+        return;
+      }
+
+      setMsg("You're on the list. See you at the next event!", 'ok');
+      form.reset();
     });
   </script>
 

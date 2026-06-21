@@ -66,6 +66,15 @@
           "value": "public, max-age=86400"
         }
       ]
+    },
+    {
+      "source": "/promos/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=86400"
+        }
+      ]
     }
   ],
   "redirects": [
@@ -76,6 +85,7 @@
       "permanent": true
     },
     { "source": "/2026-invitational", "destination": "/invitational", "permanent": true },
-    { "source": "/prs", "destination": "/pr", "permanent": true }
+    { "source": "/pr", "destination": "/dashboard", "permanent": true },
+    { "source": "/prs", "destination": "/dashboard", "permanent": true }
   ]
 }
