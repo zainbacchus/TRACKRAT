@@ -146,8 +146,8 @@ local/event surfaces. The **Thursday** session stays city-level because
 its location genuinely varies (accuracy beats completeness — don't give
 it a fake fixed address).
 
-The OG image is rendered in actual Fugaz One (black wordmark on brand
-orange `#FF4D1F`, 1200×630, palette-optimized PNG).
+The OG image is rendered in actual Fugaz One (black wordmark on Sprint
+Orange `#FF4D1F`, 1200×630, palette-optimized PNG).
 
 ## Shared Patterns Across Pages
 
