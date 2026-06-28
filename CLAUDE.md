@@ -29,7 +29,7 @@ Pages:
 
 | Concern | Choice |
 |---|---|
-| Hosting | Vercel (static + edge runtime for `api/`) |
+| Hosting | Vercel (static) |
 | Pages | One self-contained HTML file per route (inline CSS + JS) |
 | Auth | Supabase Auth (Google OAuth provider) |
 | Database | Supabase Postgres with Row Level Security |
@@ -51,8 +51,6 @@ TRACKRAT/
 ├── offtrack.html           # /offtrack              — OFFTRACK demo night (under Events dropdown)
 ├── dashboard.html          # /dashboard             — member dashboard: PRs + Promotions (Google sign-in)
 ├── 404.html                # branded 404 (served automatically by Vercel)
-├── api/
-│   └── next-event.js       # Edge function: next upcoming event (public API; no page consumes it)
 ├── js/
 │   ├── supabase-config.js  # Shared Supabase client (URL + anon key)
 │   └── vendor/             # Vendored Supabase JS SDK (dep-inlined ESM bundle + node-*.mjs polyfills)
@@ -378,12 +376,6 @@ allow swapping event types during edit.
 
 **Notes are user input.** Use `escapeHtml()` before injecting into
 `innerHTML`. The helper is already defined in `dashboard.html`.
-
-## API: `api/next-event.js`
-
-Edge runtime function (`export const config = { runtime: 'edge' }`) that
-returns the next upcoming Sunday/Thursday event for the home page. Stateless,
-no DB access. America/Chicago timezone is hard-coded.
 
 ## Development Guidelines
 

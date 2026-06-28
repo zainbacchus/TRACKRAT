@@ -27,8 +27,6 @@ TRACKRAT/
 ├── offtrack.html           # /offtrack              — OFFTRACK demo night, presented by TRACKRAT (under Events)
 ├── dashboard.html          # /dashboard             — member Dashboard: PRs + Promotions (Google sign-in)
 ├── 404.html                # branded not-found page (Vercel serves it with status 404)
-├── api/
-│   └── next-event.js       # Edge function: next upcoming event as JSON (public API, see llms.txt)
 ├── js/
 │   ├── supabase-config.js  # Shared Supabase client (URL + anon key)
 │   └── vendor/             # Vendored (self-hosted) Supabase JS SDK bundle

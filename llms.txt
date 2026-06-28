@@ -19,7 +19,7 @@
 
 Both sessions run year-round.
 
-**A typical workout:** group warm-up (dynamic movement + a 400 at warm-up pace), then a workout ranging from 400s down to 200s and 100s (~1 mile net distance), then a group cool-down. Runners can pair up with people their speed or with someone more seasoned to learn from.
+**A typical workout:** group warm-up (dynamic movement + a 400 at warm-up pace), then a workout ranging from 400s down to 200s and 100s (~1 mile net distance), then a group cool-down.
 
 
 ## Culture
@@ -43,11 +43,6 @@ TRACKRAT is structured but not coached competitively. Beginners line up next to 
 - [OFFTRACK](https://www.trackratsprint.club/offtrack) — Demo night in Austin presented by TRACKRAT (under the Events menu)
 - [Dashboard](https://www.trackratsprint.club/dashboard) — Authenticated member dashboard: log PRs and view member promotions (Google sign-in required; private per user)
 - [Shop](https://shop.trackratsprint.club) — Apparel and merchandise
-
-
-## API
-
-- `GET /api/next-event` — Returns the next upcoming meet as JSON with fields: `display` (date string), `weekday`, `iso`, `time`, `location`, `type` (`sunday` or `thursday`), `title`. Edge runtime, America/Chicago timezone.
 
 
 ## Contact
