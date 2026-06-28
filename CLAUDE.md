@@ -13,6 +13,7 @@ Pages:
 - `/` — landing (with about/FAQ content + structured data for SEO/AEO)
 - `/schedule` — weekly schedule with `.ics` calendar export
 - `/brand` — brand guide
+- `/podium` — competition results: meets TRACKRAT raced as a team, the relay squads, and placements (newest first; client-side search + discipline filter; static data array)
 - `/invitational` — 2026 Invitational event page (RSVP via Sweatpals)
 - `/offtrack` — OFFTRACK demo night, presented by TRACKRAT (grouped under the **Events** nav dropdown)
 - `/dashboard` — member dashboard (Google sign-in): a **Personal Records** tab
@@ -45,6 +46,7 @@ TRACKRAT/
 ├── index.html              # /                      — landing
 ├── schedule.html           # /schedule              — weekly schedule + .ics + Event JSON-LD
 ├── brand.html              # /brand                 — brand guide
+├── podium.html             # /podium                — competition results (search + discipline filter)
 ├── invitational.html       # /invitational          — 2026 Invitational (Sweatpals RSVP)
 ├── offtrack.html           # /offtrack              — OFFTRACK demo night (under Events dropdown)
 ├── dashboard.html          # /dashboard             — member dashboard: PRs + Promotions (Google sign-in)
@@ -139,12 +141,10 @@ deliberately NOT `Disallow`ed in robots.txt — blocking crawl would prevent
 Google from ever seeing the noindex meta.
 
 `schedule.html` ships `Event` JSON-LD for both weekly sessions
-(`eventSchedule`, weekly recurrence). The **Sunday** session carries the
-full street address (4401 Tilley St, Austin TX 78723) — it's a fixed,
-already-public location and the address is required for Google's
-local/event surfaces. The **Thursday** session stays city-level because
-its location genuinely varies (accuracy beats completeness — don't give
-it a fake fixed address).
+(`eventSchedule`, weekly recurrence). Both sessions carry a full street
+address — **Sunday** at 4401 Tilley St, Austin TX 78723 and **Thursday**
+at 201 E Mary St, Austin TX 78704 — fixed, already-public locations; the
+addresses make each event eligible for Google's local/event surfaces.
 
 The OG image is rendered in actual Fugaz One (black wordmark on Sprint
 Orange `#FF4D1F`, 1200×630, palette-optimized PNG).
@@ -194,7 +194,7 @@ wordmark on the left is the home link everywhere. The `[ DASHBOARD ]` slot is
 **not** state-aware: it shows regardless of session; `/dashboard` handles
 signed-out vs signed-in.
 
-Desktop order: `SHOP · SCHEDULE · BRAND · EVENTS ▾ · DASHBOARD`
+Desktop order: `SHOP · SCHEDULE · BRAND · PODIUM · EVENTS ▾ · DASHBOARD`
 
 **Events is a dropdown, not a page** (there is intentionally no `/events`
 route). It groups the two event pages: **2026 Invitational** and
@@ -203,7 +203,7 @@ opens on `:hover` / `:focus-within` (CSS) plus click-toggle + click-outside +
 Escape (JS); the panel is always solid black with a hairline border so it reads
 the same on the orange pages and the black pages. Mobile: a
 `.mobile-accordion-trigger` button (a direct child of `.mobile-menu-links`, so
-the slide-in stagger still works — note the stagger now runs to `:nth-child(6)`)
+the slide-in stagger still works — note the stagger now runs to `:nth-child(7)`)
 that toggles `.mobile-accordion-panel.is-open`. If you add another nav item,
 replicate the whole block across all pages and re-check the stagger count.
 
@@ -214,8 +214,8 @@ buried by a z-index stacking trap (nav's `z-index:100` context capped the
 toggle below the `150` overlay). Don't move the close control back into `<nav>`.
 The hamburger (`#menuToggle`) only opens; `#menuClose`, tapping a link, and
 Escape all close. Focus moves to the X on open, back to the hamburger on close.
-Stagger fade-ins run on `.mobile-menu-links > *:nth-child(1…6)` (6 since the
-Events accordion was added).
+Stagger fade-ins run on `.mobile-menu-links > *:nth-child(1…7)` (7 since the
+Events accordion + the Podium link were added).
 
 ## Dashboard (`/dashboard`)
 
@@ -457,8 +457,8 @@ Static files + edge functions only.
 4. **Match the existing style.** Black background, orange accent, Fugaz One +
    IBM Plex Mono, ALL-CAPS labels with letter-spacing on UI chrome, track
    lanes for dashboard-style pages.
-5. **Keep the nav in lockstep across all six nav pages** (index, schedule,
-   brand, invitational, offtrack, dashboard). A change to nav markup, the
+5. **Keep the nav in lockstep across all seven nav pages** (index, schedule,
+   brand, podium, invitational, offtrack, dashboard). A change to nav markup, the
    Events dropdown/accordion, or stagger delays must be applied everywhere or
    pages will drift. (404.html has no nav.)
 6. **For PR features, trust RLS.** Don't add server-side authorization logic
@@ -467,13 +467,12 @@ Static files + edge functions only.
 8. **SEO meta is not optional.** Every new public page needs a unique title,
    canonical, OG, Twitter card, and geo meta. Copy the head block from
    `schedule.html` as a starting point.
-9. **Address policy: the fixed Sunday location (4401 Tilley St) IS
-   published in JSON-LD, llms.txt, and visible copy** — it's already
-   public (schedule page, .ics files, Google Business Profile) and the
-   address is what makes the club eligible for Google's local/event
-   surfaces. The Thursday location stays city-level everywhere because it
-   genuinely varies week to week. Keep structured data, GBP, and visible
-   copy consistent with each other (NAP consistency).
+9. **Address policy: both meet locations are fixed and published** —
+   Sunday at 4401 Tilley St and Thursday at 201 E Mary St — in JSON-LD,
+   llms.txt, and visible copy with full street addresses (each is already
+   public on the schedule page + in the .ics files, and the address makes
+   the event eligible for Google's local/event surfaces). Keep structured
+   data, GBP, and visible copy consistent with each other (NAP consistency).
 10. **Don't use `opacity` for "dim" text on the orange background.** Black
     at low opacity composites with `#FF4D1F` to a muddy mid-orange that
     fails WCAG AA contrast. On `index.html`, use the solid color

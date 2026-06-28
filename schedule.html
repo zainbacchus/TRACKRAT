@@ -4,13 +4,13 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Schedule · TRACKRAT — Austin Sprint Club</title>
-  <meta name="description" content="Weekly TRACKRAT track workouts in Austin, Texas. Sunday Sprints at 8:30 AM, Thursday Midweek Workouts at 6:30 PM. All levels, all speeds welcome. No sign-ups, just show up." />
+  <meta name="description" content="Weekly TRACKRAT track workouts in Austin, Texas. Sunday Sprints at 8:00 AM, Thursday Midweek Workouts at 6:30 PM. All levels, all speeds welcome. No sign-ups, just show up." />
   <link rel="canonical" href="https://www.trackratsprint.club/schedule" />
 
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="TRACKRAT" />
   <meta property="og:title" content="Schedule · TRACKRAT — Austin Sprint Club" />
-  <meta property="og:description" content="Sunday Sprints 8:30 AM, Thursday Midweek Workouts 6:30 PM. Austin, Texas. No sign-ups." />
+  <meta property="og:description" content="Sunday Sprints 8:00 AM, Thursday Midweek Workouts 6:30 PM. Austin, Texas. No sign-ups." />
   <meta property="og:url" content="https://www.trackratsprint.club/schedule" />
   <meta property="og:image" content="https://www.trackratsprint.club/og.png" />
   <meta property="og:image:width" content="1200" />
@@ -20,7 +20,7 @@
 
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Schedule · TRACKRAT — Austin Sprint Club" />
-  <meta name="twitter:description" content="Sunday 8:30 AM, Thursday 6:30 PM. Austin, TX. No sign-ups." />
+  <meta name="twitter:description" content="Sunday 8:00 AM, Thursday 6:30 PM. Austin, TX. No sign-ups." />
   <meta name="twitter:image" content="https://www.trackratsprint.club/og.png" />
 
   <meta name="geo.region" content="US-TX" />
@@ -190,6 +190,15 @@
     }
     .nav-dropdown-panel a:hover { color: var(--orange); opacity: 1; }
 
+    /* Collapse nav to the hamburger before the centered link bar crowds the
+       absolute wordmark (the multi-item nav overlaps it from ~770-900px). */
+    @media (max-width: 940px) {
+      nav { justify-content: space-between; padding: 16px 20px; }
+      nav .nav-left { position: static; font-size: 16px; flex-shrink: 0; }
+      nav .nav-center { display: none !important; }
+      .menu-toggle { display: block !important; }
+    }
+
     nav a:hover { opacity: 0.6; transition: opacity 0.2s ease; }
 
     /* ---- PAGE LAYOUT ---- */
@@ -292,6 +301,30 @@
     .card-detail .location {
       font-weight: 500;
     }
+
+    /* ---- SESSION BREAKDOWN ---- */
+    .card-breakdown {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+      margin-top: 2px;
+    }
+    .card-breakdown li {
+      display: flex;
+      align-items: baseline;
+      gap: 16px;
+      font-size: 15px;
+      line-height: 1.3;
+    }
+    .bd-time {
+      flex-shrink: 0;
+      min-width: 132px;
+      color: var(--orange);
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
+    .bd-label { color: rgba(255, 255, 255, 0.85); letter-spacing: 0.04em; }
 
     /* ---- ACTION ICONS ---- */
     .icon-btn {
@@ -497,6 +530,7 @@
 
     /* ---- MOBILE EVENTS ACCORDION ---- */
     .mobile-menu.is-open .mobile-menu-links > *:nth-child(6) { transition-delay: 0.40s; }
+    .mobile-menu.is-open .mobile-menu-links > *:nth-child(7) { transition-delay: 0.47s; }
     .mobile-accordion-trigger .acc-caret { width: 18px; height: 18px; flex-shrink: 0; transition: transform 0.2s ease; }
     .mobile-accordion-trigger[aria-expanded="true"] .acc-caret { transform: rotate(180deg); }
     .mobile-accordion-panel {
@@ -642,6 +676,7 @@
       <a href="https://shop.trackratsprint.club" target="_blank" rel="noopener">[ SHOP ]</a>
       <a href="/schedule">[ SCHEDULE ]</a>
       <a href="/brand">[ BRAND ]</a>
+      <a href="/podium">[ PODIUM ]</a>
       <div class="nav-dropdown">
         <button class="nav-dropdown-trigger" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="eventsMenu">
           [ EVENTS ]
@@ -676,6 +711,7 @@
       <a href="https://shop.trackratsprint.club" target="_blank" rel="noopener">SHOP</a>
       <a href="/schedule">SCHEDULE</a>
       <a href="/brand">BRAND</a>
+      <a href="/podium">PODIUM</a>
       <button class="mobile-accordion-trigger" type="button" aria-expanded="false" aria-controls="mobileEvents">
         EVENTS
         <svg class="acc-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -693,7 +729,6 @@
   <main class="page">
 
     <div class="page-header">
-      <span class="page-eyebrow">WHEN &amp; WHERE</span>
       <h1 class="page-title">SCHEDULE</h1>
     </div>
 
@@ -704,7 +739,7 @@
         <span class="card-day">SUNDAY</span>
         <h2 class="card-title">SUNDAY SPRINTS</h2>
         <div class="card-detail">
-          <span class="time">8:30 AM</span>
+          <span class="time">8:00 &ndash; 10:00 AM</span>
           <span style="opacity:0.4">&middot;</span>
           <span class="location">4401 TILLEY ST</span>
           <a class="icon-btn"
@@ -719,6 +754,11 @@
             </svg>
           </a>
         </div>
+        <ul class="card-breakdown">
+          <li><span class="bd-time">8:00 &ndash; 8:30</span><span class="bd-label">Mobility</span></li>
+          <li><span class="bd-time">8:30 &ndash; 9:00</span><span class="bd-label">Warm-up</span></li>
+          <li><span class="bd-time">9:00 &ndash; 10:00</span><span class="bd-label">Workout</span></li>
+        </ul>
         <div class="card-actions">
           <a class="icon-btn"
              href="#"
@@ -741,10 +781,25 @@
         <span class="card-day">THURSDAY</span>
         <h2 class="card-title">MIDWEEK WORKOUT</h2>
         <div class="card-detail">
-          <span class="time">6:30 PM</span>
+          <span class="time">6:30 &ndash; 8:00 PM</span>
           <span style="opacity:0.4">&middot;</span>
-          <span class="location">LOCATIONS VARY &mdash; TBD WEEKLY VIA <a href="https://instagram.com/trackratsprintclub" target="_blank" rel="noopener" style="color:var(--orange);font-weight:600;">@TRACKRATSPRINTCLUB</a> IG STORY</span>
+          <span class="location">201 E MARY ST</span>
+          <a class="icon-btn"
+             href="https://maps.app.goo.gl/VbRfEMgbgChgRe7K9"
+             target="_blank"
+             rel="noopener"
+             aria-label="Open 201 E Mary St in Google Maps"
+             title="Open in Google Maps">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+              <circle cx="12" cy="10" r="3"></circle>
+            </svg>
+          </a>
         </div>
+        <ul class="card-breakdown">
+          <li><span class="bd-time">6:30 &ndash; 7:00</span><span class="bd-label">Mobility</span></li>
+          <li><span class="bd-time">7:00 &ndash; 8:00</span><span class="bd-label">Workout</span></li>
+        </ul>
         <div class="card-actions">
           <a class="icon-btn"
              href="#"
@@ -869,8 +924,8 @@
         weekday: 0, // 0 = Sunday
         title: 'TRACKRAT — Sunday Sprints',
         startHour: 8,
-        startMinute: 30,
-        durationHours: 1.5,
+        startMinute: 0,
+        durationHours: 2,
         location: '4401 Tilley St, Austin, TX 78723',
         description: 'Weekly Sunday sprints with TRACKRAT. All speeds welcome. No sign ups. Just show up.\\n\\nhttps://trackratsprint.club',
         byday: 'SU'
@@ -881,8 +936,8 @@
         startHour: 18,
         startMinute: 30,
         durationHours: 1.5,
-        location: 'Location varies — check @trackratsprintclub Instagram story',
-        description: 'Weekly Thursday midweek workout with TRACKRAT. Location varies — check our Instagram story (@trackratsprintclub) the day of for the meet point. All speeds welcome. No sign ups. Just show up.\\n\\nhttps://trackratsprint.club',
+        location: '201 E Mary St, Austin, TX 78704',
+        description: 'Weekly Thursday midweek workout with TRACKRAT at 201 E Mary St, Austin, TX 78704. All speeds welcome. No sign ups. Just show up.\\n\\nhttps://trackratsprint.club',
         byday: 'TH'
       }
     };
@@ -1003,12 +1058,10 @@
     });
   </script>
 
-  <!-- Structured data: the two recurring weekly sessions. The Sunday
-       session carries the full street address (it's fixed and already
-       public on this page, in the .ics files, and on Google Business
-       Profile — full address makes the event eligible for Google's
-       local/event surfaces). Thursday stays city-level because the
-       location genuinely varies week to week. -->
+  <!-- Structured data: the two recurring weekly sessions. Both carry the
+       full street address (fixed, public on this page and in the .ics
+       files) — the address makes each event eligible for Google's
+       local/event surfaces. -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -1043,7 +1096,7 @@
         "eventSchedule": {
           "@type": "Schedule",
           "byDay": "https://schema.org/Sunday",
-          "startTime": "08:30:00",
+          "startTime": "08:00:00",
           "endTime": "10:00:00",
           "scheduleTimezone": "America/Chicago",
           "repeatFrequency": "P1W"
@@ -1052,18 +1105,20 @@
       {
         "@type": "Event",
         "name": "TRACKRAT Midweek Workout",
-        "description": "Weekly Thursday evening track workout with TRACKRAT. Location varies — announced via @trackratsprintclub on Instagram. All speeds welcome. Free, no sign-ups.",
+        "description": "Weekly Thursday evening track workout with TRACKRAT at 201 E Mary St, Austin, TX. All speeds welcome. Free, no sign-ups.",
         "organizer": { "@id": "https://www.trackratsprint.club/#club" },
         "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
         "eventStatus": "https://schema.org/EventScheduled",
         "isAccessibleForFree": true,
         "location": {
           "@type": "Place",
-          "name": "Austin, Texas",
+          "name": "201 E Mary St",
           "address": {
             "@type": "PostalAddress",
+            "streetAddress": "201 E Mary St",
             "addressLocality": "Austin",
             "addressRegion": "TX",
+            "postalCode": "78704",
             "addressCountry": "US"
           }
         },

@@ -4,14 +4,14 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>TRACKRAT — Austin Sprint Club</title>
-  <meta name="description" content="TRACKRAT is a free community sprint club in Austin, Texas. Weekly track workouts for all levels — Sunday Sprints at 8:30 AM, Thursday Midweek Workouts at 6:30 PM. No sign-ups — just show up." />
+  <meta name="description" content="TRACKRAT is a free community sprint club in Austin, Texas. Weekly track workouts for all levels — Sunday Sprints at 8:00 AM, Thursday Midweek Workouts at 6:30 PM. No sign-ups — just show up." />
   <link rel="canonical" href="https://www.trackratsprint.club/" />
 
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="TRACKRAT" />
   <meta property="og:title" content="TRACKRAT — Austin Sprint Club" />
-  <meta property="og:description" content="Free community sprint club in Austin, Texas. Track workouts for all levels — Sunday Sprints 8:30 AM, Thursday Midweek Workouts 6:30 PM. No sign-ups, just show up." />
+  <meta property="og:description" content="Free community sprint club in Austin, Texas. Track workouts for all levels — Sunday Sprints 8:00 AM, Thursday Midweek Workouts 6:30 PM. No sign-ups, just show up." />
   <meta property="og:url" content="https://www.trackratsprint.club/" />
   <meta property="og:image" content="https://www.trackratsprint.club/og.png" />
   <meta property="og:image:width" content="1200" />
@@ -22,7 +22,7 @@
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="TRACKRAT — Austin Sprint Club" />
-  <meta name="twitter:description" content="Free community sprint club in Austin, TX. Track workouts for all levels. Sunday 8:30 AM, Thursday 6:30 PM." />
+  <meta name="twitter:description" content="Free community sprint club in Austin, TX. Track workouts for all levels. Sunday 8:00 AM, Thursday 6:30 PM." />
   <meta name="twitter:image" content="https://www.trackratsprint.club/og.png" />
 
   <!-- Geo -->
@@ -161,6 +161,15 @@
       font-weight: 500; padding: 11px 14px; white-space: nowrap;
     }
     .nav-dropdown-panel a:hover { color: var(--orange); opacity: 1; }
+
+    /* Collapse nav to the hamburger before the centered link bar crowds the
+       absolute wordmark (the multi-item nav overlaps it from ~770-900px). */
+    @media (max-width: 940px) {
+      nav { justify-content: space-between; padding: 16px 20px; }
+      nav .nav-left { position: static; font-size: 16px; flex-shrink: 0; }
+      nav .nav-center { display: none !important; }
+      .menu-toggle { display: block !important; }
+    }
 
     /* ---- MOBILE MENU TOGGLE ---- */
     .menu-toggle {
@@ -432,6 +441,7 @@
        the other pages). */
     /* ---- MOBILE EVENTS ACCORDION ---- */
     .mobile-menu.is-open .mobile-menu-links > *:nth-child(6) { transition-delay: 0.40s; }
+    .mobile-menu.is-open .mobile-menu-links > *:nth-child(7) { transition-delay: 0.47s; }
     .mobile-accordion-trigger .acc-caret { width: 18px; height: 18px; flex-shrink: 0; transition: transform 0.2s ease; }
     .mobile-accordion-trigger[aria-expanded="true"] .acc-caret { transform: rotate(180deg); }
     .mobile-accordion-panel {
@@ -463,6 +473,7 @@
       <a href="https://shop.trackratsprint.club" target="_blank" rel="noopener">[ SHOP ]</a>
       <a href="/schedule">[ SCHEDULE ]</a>
       <a href="/brand">[ BRAND ]</a>
+      <a href="/podium">[ PODIUM ]</a>
       <div class="nav-dropdown">
         <button class="nav-dropdown-trigger" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="eventsMenu">
           [ EVENTS ]
@@ -497,6 +508,7 @@
       <a href="https://shop.trackratsprint.club" target="_blank" rel="noopener">SHOP</a>
       <a href="/schedule">SCHEDULE</a>
       <a href="/brand">BRAND</a>
+      <a href="/podium">PODIUM</a>
       <button class="mobile-accordion-trigger" type="button" aria-expanded="false" aria-controls="mobileEvents">
         EVENTS
         <svg class="acc-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -524,8 +536,8 @@
 
       <h3>When we meet</h3>
       <ul>
-        <li><strong>Sundays at 8:30 AM</strong> — Sunday Sprints at the track</li>
-        <li><strong>Thursdays at 6:30 PM</strong> — Midweek Workout, location announced weekly via <a href="https://instagram.com/trackratsprintclub" target="_blank" rel="noopener" style="text-decoration:underline">@trackratsprintclub</a> on Instagram</li>
+        <li><strong>Sundays at 8:00 AM</strong> — Sunday Sprints at the track</li>
+        <li><strong>Thursdays at 6:30 PM</strong> — Midweek Workout at 201 E Mary St</li>
       </ul>
 
       <h3>Who it's for</h3>
@@ -660,7 +672,7 @@
       }
     },
     "openingHoursSpecification": [
-      { "@type": "OpeningHoursSpecification", "dayOfWeek": "Sunday",   "opens": "08:30", "closes": "10:00" },
+      { "@type": "OpeningHoursSpecification", "dayOfWeek": "Sunday",   "opens": "08:00", "closes": "10:00" },
       { "@type": "OpeningHoursSpecification", "dayOfWeek": "Thursday", "opens": "18:30", "closes": "20:00" }
     ],
     "sameAs": [
@@ -690,13 +702,13 @@
         "@type": "Question",
         "name": "Where does TRACKRAT meet?",
         "acceptedAnswer": { "@type": "Answer",
-          "text": "Sunday Sprints meet at a public track in Austin. Thursday Midweek Workouts rotate to varying locations around the city, announced each week via @trackratsprintclub on Instagram. Full details are on the schedule page." }
+          "text": "Sunday Sprints meet at a public track in Austin. Thursday Midweek Workouts meet at 201 E Mary St, Austin. Full details are on the schedule page." }
       },
       {
         "@type": "Question",
         "name": "When does TRACKRAT meet?",
         "acceptedAnswer": { "@type": "Answer",
-          "text": "Sunday Sprints at 8:30 AM and Thursday Midweek Workouts at 6:30 PM. Both happen every week." }
+          "text": "Sunday Sprints at 8:00 AM and Thursday Midweek Workouts at 6:30 PM. Both happen every week." }
       },
       {
         "@type": "Question",

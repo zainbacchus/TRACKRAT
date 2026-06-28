@@ -3,39 +3,37 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>2026 Invitational · TRACKRAT — Austin Sprint Club</title>
-  <meta name="description" content="The 2026 TRACKRAT Invitational in Austin, Texas. A community sprint meet. Details coming soon." />
-  <link rel="canonical" href="https://www.trackratsprint.club/invitational" />
+  <title>Podium · TRACKRAT — Austin Sprint Club</title>
+  <meta name="description" content="TRACKRAT's track record — every meet the Austin sprint club has raced as a team, the relay squads, and where we placed. Most recent first." />
+  <link rel="canonical" href="https://www.trackratsprint.club/podium" />
 
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="TRACKRAT" />
-  <meta property="og:title" content="2026 Invitational · TRACKRAT" />
-  <meta property="og:description" content="The 2026 TRACKRAT Invitational — Austin, TX. Details coming soon." />
-  <meta property="og:url" content="https://www.trackratsprint.club/invitational" />
-  <meta property="og:image" content="https://www.trackratsprint.club/og-invitational.png" />
+  <meta property="og:title" content="Podium · TRACKRAT — Austin Sprint Club" />
+  <meta property="og:description" content="Every meet TRACKRAT has raced as a team — the relay squads and where we placed." />
+  <meta property="og:url" content="https://www.trackratsprint.club/podium" />
+  <meta property="og:image" content="https://www.trackratsprint.club/og.png" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
-  <meta property="og:image:alt" content="TRACKRAT Invitational 2026 — a community sprint meet in Austin, TX" />
+  <meta property="og:image:alt" content="TRACKRAT wordmark" />
   <meta property="og:locale" content="en_US" />
 
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="2026 Invitational · TRACKRAT" />
-  <meta name="twitter:description" content="The 2026 TRACKRAT Invitational — Austin, TX." />
-  <meta name="twitter:image" content="https://www.trackratsprint.club/og-invitational.png" />
+  <meta name="twitter:title" content="Podium · TRACKRAT — Austin Sprint Club" />
+  <meta name="twitter:description" content="Every meet TRACKRAT has raced as a team — the relay squads and where we placed." />
+  <meta name="twitter:image" content="https://www.trackratsprint.club/og.png" />
 
   <meta name="geo.region" content="US-TX" />
   <meta name="geo.placename" content="Austin" />
   <meta name="theme-color" content="#000000" />
+
   <link rel="icon" href="/favicon.ico" sizes="any">
-  <!-- Self-hosted fonts. @font-face declarations live in the inline <style>
-       below; preload the two above-the-fold fonts (Fugaz One wordmark + IBM
-       Plex Mono 400 body) so they fetch in parallel with the HTML parse. -->
+  <!-- Self-hosted fonts (see @font-face in inline <style>). -->
   <link rel="preload" as="font" type="font/woff2" href="/fonts/fugaz-one-latin.woff2" crossorigin>
   <link rel="preload" as="font" type="font/woff2" href="/fonts/ibm-plex-mono-400-latin.woff2" crossorigin>
   <script defer src="/_vercel/insights/script.js"></script>
   <style>
-    /* Self-hosted fonts (latin subset). font-display: swap keeps the page
-       readable in a fallback font until the woff2 downloads. */
+    /* Self-hosted fonts (latin subset). */
     @font-face { font-family: 'Fugaz One';     font-style: normal; font-weight: 400; font-display: swap; src: url('/fonts/fugaz-one-latin.woff2') format('woff2'); }
     @font-face { font-family: 'IBM Plex Mono'; font-style: normal; font-weight: 400; font-display: swap; src: url('/fonts/ibm-plex-mono-400-latin.woff2') format('woff2'); }
     @font-face { font-family: 'IBM Plex Mono'; font-style: normal; font-weight: 500; font-display: swap; src: url('/fonts/ibm-plex-mono-500-latin.woff2') format('woff2'); }
@@ -43,27 +41,92 @@
     @font-face { font-family: 'IBM Plex Mono'; font-style: normal; font-weight: 700; font-display: swap; src: url('/fonts/ibm-plex-mono-700-latin.woff2') format('woff2'); }
 
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
     :root {
       --orange: #FF4D1F;
       --black: #000000;
       --white: #FFFFFF;
+      --font: 'IBM Plex Mono', monospace;
+      --lane-color: rgba(255, 255, 255, 0.12);
     }
-    html, body { height: 100%; }
+
+    html { scroll-behavior: smooth; }
+
     body {
-      font-family: 'IBM Plex Mono', monospace;
-      background: var(--orange);
-      color: var(--black);
-      /* overflow-x only — clipping y makes zoomed/reflowed content
-         unreachable (WCAG 1.4.4 / 1.4.10) */
+      font-family: var(--font);
+      background: var(--black);
+      color: var(--white);
       overflow-x: hidden;
       -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
     }
+
     a {
       text-decoration: none;
       color: inherit;
       -webkit-tap-highlight-color: transparent;
     }
-    a:hover { opacity: 0.6; transition: opacity 0.2s ease; }
+
+    .wordmark {
+      font-family: 'Fugaz One', 'Arial Black', sans-serif;
+      letter-spacing: -0.14em;
+    }
+
+    /* ---- TRACK LANES (background) ---- */
+    .track-lanes {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 0;
+      pointer-events: none;
+      display: flex;
+      justify-content: center;
+      gap: 0;
+    }
+
+    .lane {
+      width: calc(100% / 8);
+      height: 100%;
+      border-right: 1px solid var(--lane-color);
+    }
+
+    .lane:first-child { border-left: 1px solid var(--lane-color); }
+
+    /* ---- STAGGER MARKS ---- */
+    .stagger-marks {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .stagger-tri {
+      position: absolute;
+      width: calc(100% / 8);
+      aspect-ratio: 1 / 0.7;
+    }
+
+    .stagger-tri svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .stagger-tri.l1 { left: 0; }
+    .stagger-tri.l2 { left: 12.5%; }
+    .stagger-tri.l3 { left: 25%; }
+    .stagger-tri.l4 { left: 37.5%; }
+    .stagger-tri.l5 { left: 50%; }
+    .stagger-tri.l6 { left: 62.5%; }
+    .stagger-tri.l7 { left: 75%; }
+    .stagger-tri.l8 { left: 87.5%; }
+
+    /* ---- NAV ---- */
     nav {
       position: fixed;
       top: 0;
@@ -77,6 +140,7 @@
       font-size: 13px;
       letter-spacing: 0.05em;
     }
+
     nav .nav-left {
       font-family: 'Fugaz One', 'Arial Black', sans-serif;
       font-size: 18px;
@@ -84,6 +148,7 @@
       position: absolute;
       left: 40px;
     }
+
     nav .nav-center {
       display: flex;
       gap: 28px;
@@ -134,6 +199,216 @@
       .menu-toggle { display: block !important; }
     }
 
+    nav a:hover { opacity: 0.6; transition: opacity 0.2s ease; }
+
+    /* ---- PAGE LAYOUT ---- */
+    .page {
+      position: relative;
+      z-index: 10;
+      min-height: 100vh;
+      padding: 140px 40px 80px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .page-header {
+      width: 100%;
+      max-width: 900px;
+      margin-bottom: 40px;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeUp 0.7s ease 0.1s forwards;
+    }
+
+    .page-eyebrow {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      color: var(--orange);
+      margin-bottom: 16px;
+      display: block;
+    }
+
+    .page-title {
+      font-family: 'Fugaz One', 'Arial Black', sans-serif;
+      letter-spacing: -0.10em;
+      font-size: clamp(60px, 12vw, 160px);
+      line-height: 0.85;
+      color: var(--orange);
+    }
+
+    .page-sub {
+      margin-top: 18px;
+      font-size: clamp(14px, 1.5vw, 16px);
+      letter-spacing: 0.02em;
+      line-height: 1.55;
+      color: rgba(255, 255, 255, 0.7);
+      max-width: 620px;
+    }
+
+    /* ---- CONTROLS (search + discipline filter) ---- */
+    .podium-controls {
+      width: 100%;
+      max-width: 900px;
+      margin-bottom: 36px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeUp 0.7s ease 0.2s forwards;
+    }
+
+    .podium-search {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      color: var(--white);
+      font-family: var(--font);
+      font-size: 15px;
+      letter-spacing: 0.02em;
+      padding: 14px 16px;
+      outline: none;
+      transition: border-color 0.2s ease, background 0.2s ease;
+    }
+    .podium-search::placeholder { color: rgba(255, 255, 255, 0.4); }
+    .podium-search:focus { border-color: var(--orange); background: rgba(255, 255, 255, 0.06); }
+
+    .podium-filters { display: flex; flex-wrap: wrap; gap: 10px; }
+    .filter-row { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+    .filter-label { flex-shrink: 0; min-width: 52px; font-size: 11px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(255, 255, 255, 0.45); }
+    .filter-chip {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      color: var(--white);
+      font-family: var(--font);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 9px 16px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .filter-chip:hover { border-color: rgba(255, 255, 255, 0.4); opacity: 1; }
+    .filter-chip.is-active { background: var(--orange); border-color: var(--orange); color: var(--black); }
+    .filter-chip:focus-visible { outline: 2px solid var(--orange); outline-offset: 2px; }
+
+    /* ---- RESULTS LIST ---- */
+    .podium-list {
+      width: 100%;
+      max-width: 900px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .meet-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      padding: 32px 36px;
+      transition: border-color 0.3s ease, background 0.3s ease;
+    }
+    .meet-card:hover { border-color: rgba(255, 77, 31, 0.3); background: rgba(255, 255, 255, 0.04); }
+
+    .meet-head { margin-bottom: 16px; }
+    .meet-name {
+      font-family: var(--font);
+      font-weight: 700;
+      font-size: clamp(22px, 3vw, 30px);
+      letter-spacing: -0.01em;
+      line-height: 1.1;
+    }
+    .meet-meta {
+      margin-top: 6px;
+      font-size: 13px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.55);
+    }
+
+    .meet-results { display: flex; flex-direction: column; }
+    .result-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      padding: 14px 0;
+      border-top: 1px solid rgba(255, 255, 255, 0.07);
+    }
+    .result-row:first-child { border-top: none; padding-top: 2px; }
+
+    .place-badge {
+      flex-shrink: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 50px;
+      padding: 6px 10px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      line-height: 1;
+    }
+    .place-1 { background: var(--orange); color: var(--black); }
+    .place-2 { background: transparent; border: 1px solid var(--orange); color: var(--white); }
+    .place-3 { background: transparent; border: 1px solid rgba(255, 255, 255, 0.5); color: var(--white); }
+    .place-x { background: transparent; color: rgba(255, 255, 255, 0.6); min-width: 0; padding-left: 0; justify-content: flex-start; }
+
+    .result-body { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+    .result-event { font-size: 15px; font-weight: 600; letter-spacing: 0.04em; }
+    .result-cat { color: rgba(255, 255, 255, 0.6); font-weight: 500; }
+    .result-team { font-size: 14px; line-height: 1.5; color: rgba(255, 255, 255, 0.8); }
+
+    /* ---- EMPTY STATE ---- */
+    .empty-state {
+      width: 100%;
+      padding: 48px 20px;
+      text-align: center;
+      font-size: 14px;
+      letter-spacing: 0.05em;
+      color: rgba(255, 255, 255, 0.5);
+      border: 1px dashed rgba(255, 255, 255, 0.12);
+    }
+
+    /* ---- FINISH LINE ---- */
+    .finish {
+      position: relative;
+      z-index: 10;
+      height: 60px;
+      background: repeating-linear-gradient(
+        90deg,
+        var(--white) 0, var(--white) 20px,
+        var(--black) 20px, var(--black) 40px
+      );
+      opacity: 0.08;
+      margin-top: 80px;
+    }
+
+    /* ---- BOTTOM FOOTER ---- */
+    footer {
+      position: relative;
+      z-index: 10;
+      padding: 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      opacity: 0.55;
+    }
+    .socials { display: flex; align-items: center; gap: 6px; }
+    .socials a {
+      display: inline-flex; align-items: center; justify-content: center;
+      padding: 11px;
+    }
+    .socials svg { width: 18px; height: 18px; fill: currentColor; display: block; }
+
+    @keyframes fadeUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
     /* ---- MOBILE MENU TOGGLE ---- */
     .menu-toggle {
       display: none;
@@ -145,7 +420,7 @@
       cursor: pointer;
       padding: 0;
       z-index: 200;
-      color: var(--black);
+      color: var(--white);
     }
 
     .menu-toggle span {
@@ -161,19 +436,9 @@
     .menu-toggle span:nth-child(2) { top: 16px; }
     .menu-toggle span:nth-child(3) { top: 22px; }
 
-    .menu-toggle.is-open {
-      color: var(--white);
-    }
-
-    .menu-toggle.is-open span:nth-child(1) {
-      top: 16px;
-      transform: rotate(45deg);
-    }
+    .menu-toggle.is-open span:nth-child(1) { top: 16px; transform: rotate(45deg); }
     .menu-toggle.is-open span:nth-child(2) { opacity: 0; }
-    .menu-toggle.is-open span:nth-child(3) {
-      top: 16px;
-      transform: rotate(-45deg);
-    }
+    .menu-toggle.is-open span:nth-child(3) { top: 16px; transform: rotate(-45deg); }
 
     /* ---- MOBILE MENU OVERLAY ---- */
     .mobile-menu {
@@ -189,10 +454,6 @@
       overflow-y: auto;
     }
     .mobile-menu.is-open { display: flex; opacity: 1; }
-    /* Header: wordmark (-> home) + explicit close X. Lives INSIDE the overlay
-       so the close control is always above the overlay content (the old
-       hamburger-morph X was buried under this overlay by a z-index stacking
-       trap: nav's z-index:100 context capped the toggle below the 150 overlay). */
     .mobile-menu-header {
       display: flex; align-items: center; justify-content: space-between;
       width: 100%; flex-shrink: 0;
@@ -239,6 +500,7 @@
       font-size: 10px; letter-spacing: 0.3em;
       opacity: 0.4; font-weight: 600; color: var(--white);
     }
+
     /* ---- MOBILE EVENTS ACCORDION ---- */
     .mobile-menu.is-open .mobile-menu-links > *:nth-child(6) { transition-delay: 0.40s; }
     .mobile-menu.is-open .mobile-menu-links > *:nth-child(7) { transition-delay: 0.47s; }
@@ -257,41 +519,7 @@
     .mobile-accordion-panel a:hover { color: var(--orange); }
     body.menu-open { overflow: hidden; }
 
-    .page {
-      width: 100%;
-      height: 100vh;
-      height: 100dvh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      padding: 40px;
-    }
-    .subtitle {
-      font-size: clamp(24px, 4vw, 48px);
-      font-family: 'Fugaz One', 'Arial Black', sans-serif;
-      font-weight: normal;
-      line-height: 1;
-      margin-bottom: 8px;
-    }
-    .year {
-      font-size: clamp(80px, 18vw, 240px);
-      font-family: 'Fugaz One', 'Arial Black', sans-serif;
-      letter-spacing: -0.14em;
-      line-height: 0.85;
-      margin-bottom: 24px;
-      padding-right: 0.14em;
-    }
-    .coming {
-      font-size: clamp(12px, 1.4vw, 16px);
-      letter-spacing: 0.3em;
-      margin-top: 40px;
-      /* Dark warm-black instead of opacity 0.4 — same dim feel, but
-         ~5.9:1 contrast on the orange bg (WCAG AA needs 4.5:1) */
-      color: #1a0700;
-      font-weight: 600;
-    }
+    /* ---- RESPONSIVE ---- */
     @media (max-width: 768px) {
       nav {
         padding: 16px 20px;
@@ -302,45 +530,69 @@
         font-size: 16px;
         flex-shrink: 0;
       }
-      nav .nav-center {
-        display: none;
-      }
-      .menu-toggle {
-        display: block;
+      nav .nav-center { display: none; }
+      .menu-toggle { display: block; }
+
+      .page { padding: 100px 20px 60px; }
+      .page-header { margin-bottom: 28px; }
+      .page-eyebrow { margin-bottom: 12px; }
+      .page-title { font-size: clamp(48px, 16vw, 90px); }
+
+      .podium-controls { margin-bottom: 28px; }
+      .meet-card { padding: 24px 20px; }
+      .result-row { gap: 12px; }
+
+      footer {
+        padding: 32px 20px;
+        flex-direction: column;
+        gap: 8px;
       }
     }
+
     @media (max-width: 420px) {
       nav .nav-left { font-size: 14px; }
+      .page-title { font-size: clamp(40px, 18vw, 72px); }
     }
-    /* ---- SOCIAL FOOTER ---- */
-    .site-footer {
-      position: fixed;
-      bottom: 18px;
-      left: 0;
-      right: 0;
-      z-index: 50; /* under the mobile-menu overlay (150) */
-      display: flex;
-      justify-content: center;
-    }
-    /* ---- SOCIAL ICONS ---- */
-    .socials { display: flex; align-items: center; gap: 6px; }
-    .socials a {
-      display: inline-flex; align-items: center; justify-content: center;
-      padding: 11px; /* 18px icon + padding = 40px touch target */
-    }
-    .socials svg { width: 18px; height: 18px; fill: currentColor; display: block; }
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after {
         animation-duration: 0.01ms !important;
         animation-iteration-count: 1 !important;
         transition-duration: 0.01ms !important;
       }
+      html { scroll-behavior: auto !important; }
     }
   </style>
 </head>
+
 <body>
+
+  <!-- FIXED TRACK LANES -->
+  <div class="track-lanes">
+    <div class="lane"></div>
+    <div class="lane"></div>
+    <div class="lane"></div>
+    <div class="lane"></div>
+    <div class="lane"></div>
+    <div class="lane"></div>
+    <div class="lane"></div>
+    <div class="lane"></div>
+  </div>
+
+  <!-- STAGGER MARKS -->
+  <div class="stagger-marks" aria-hidden="true">
+    <div class="stagger-tri l1" style="top:78%"><svg viewBox="0 0 100 90" preserveAspectRatio="none"><polygon points="0,0 100,0 50,90" fill="rgba(230,190,50,0.12)"/></svg></div>
+    <div class="stagger-tri l2" style="top:68%"><svg viewBox="0 0 100 90" preserveAspectRatio="none"><polygon points="0,0 100,0 50,90" fill="rgba(230,190,50,0.12)"/></svg></div>
+    <div class="stagger-tri l3" style="top:58%"><svg viewBox="0 0 100 90" preserveAspectRatio="none"><polygon points="0,0 100,0 50,90" fill="rgba(230,190,50,0.12)"/></svg></div>
+    <div class="stagger-tri l4" style="top:48%"><svg viewBox="0 0 100 90" preserveAspectRatio="none"><polygon points="0,0 100,0 50,90" fill="rgba(230,190,50,0.12)"/></svg></div>
+    <div class="stagger-tri l5" style="top:38%"><svg viewBox="0 0 100 90" preserveAspectRatio="none"><polygon points="0,0 100,0 50,90" fill="rgba(230,190,50,0.12)"/></svg></div>
+    <div class="stagger-tri l6" style="top:28%"><svg viewBox="0 0 100 90" preserveAspectRatio="none"><polygon points="0,0 100,0 50,90" fill="rgba(230,190,50,0.12)"/></svg></div>
+    <div class="stagger-tri l7" style="top:18%"><svg viewBox="0 0 100 90" preserveAspectRatio="none"><polygon points="0,0 100,0 50,90" fill="rgba(230,190,50,0.12)"/></svg></div>
+    <div class="stagger-tri l8" style="top:8%"><svg viewBox="0 0 100 90" preserveAspectRatio="none"><polygon points="0,0 100,0 50,90" fill="rgba(230,190,50,0.12)"/></svg></div>
+  </div>
+
+  <!-- NAV -->
   <nav>
-    <a href="/" class="nav-left">TRACKRAT</a>
+    <a href="/" class="nav-left wordmark">TRACKRAT</a>
     <div class="nav-center">
       <a href="https://shop.trackratsprint.club" target="_blank" rel="noopener">[ SHOP ]</a>
       <a href="/schedule">[ SCHEDULE ]</a>
@@ -394,13 +646,36 @@
     <div class="mobile-menu-footer">TRACKRAT SPRINT CLUB</div>
   </div>
 
+  <!-- PAGE -->
   <main class="page">
-    <h1 class="subtitle"><span style="letter-spacing: -0.14em;">TRACKRAT</span> <span style="letter-spacing: -0.10em;">INVITATIONAL</span></h1>
-    <div class="year">2026</div>
-    <p class="coming">DETAILS COMING SOON</p>
+
+    <div class="page-header">
+      <h1 class="page-title">PODIUM</h1>
+      <p class="page-sub">Every meet we've raced together as a club.</p>
+    </div>
+
+    <div class="podium-controls">
+      <input type="search" class="podium-search" id="podiumSearch" placeholder="Search meet, athlete, venue, year…" aria-label="Search results" autocomplete="off" />
+      <div class="filter-row">
+        <span class="filter-label">Event</span>
+        <div class="podium-filters" id="podiumFilters" role="group" aria-label="Filter by discipline"></div>
+      </div>
+      <div class="filter-row">
+        <span class="filter-label">Team</span>
+        <div class="podium-filters" id="podiumCatFilters" role="group" aria-label="Filter by team"></div>
+      </div>
+    </div>
+
+    <div class="podium-list" id="podiumList"></div>
+
   </main>
 
-  <footer class="site-footer">
+  <!-- FINISH LINE -->
+  <div class="finish"></div>
+
+  <!-- FOOTER -->
+  <footer>
+    <span>TRACKRAT SPRINT CLUB</span>
     <div class="socials">
       <a href="https://instagram.com/trackratsprintclub/" target="_blank" rel="noopener" aria-label="TRACKRAT on Instagram">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0C8.74 0 8.333.015 7.053.072 5.775.132 4.905.333 4.14.63c-.789.306-1.459.717-2.126 1.384S.935 3.35.63 4.14C.333 4.905.131 5.775.072 7.053.012 8.333 0 8.74 0 12s.015 3.667.072 4.947c.06 1.277.261 2.148.558 2.913.306.788.717 1.459 1.384 2.126.667.666 1.336 1.079 2.126 1.384.766.296 1.636.499 2.913.558C8.333 23.988 8.74 24 12 24s3.667-.015 4.947-.072c1.277-.06 2.148-.262 2.913-.558.788-.306 1.459-.718 2.126-1.384.666-.667 1.079-1.335 1.384-2.126.296-.765.499-1.636.558-2.913.06-1.28.072-1.687.072-4.947s-.015-3.667-.072-4.947c-.06-1.277-.262-2.149-.558-2.913-.306-.789-.718-1.459-1.384-2.126C21.319 1.347 20.651.935 19.86.63c-.765-.297-1.636-.499-2.913-.558C15.667.012 15.26 0 12 0zm0 2.16c3.203 0 3.585.016 4.85.071 1.17.055 1.805.249 2.227.415.562.217.96.477 1.382.896.419.42.679.819.896 1.381.164.422.36 1.057.413 2.227.057 1.266.07 1.646.07 4.85s-.015 3.585-.074 4.85c-.061 1.17-.256 1.805-.421 2.227-.224.562-.479.96-.899 1.382-.419.419-.824.679-1.38.896-.42.164-1.065.36-2.235.413-1.274.057-1.649.07-4.859.07-3.211 0-3.586-.015-4.859-.074-1.171-.061-1.816-.256-2.236-.421-.569-.224-.96-.479-1.379-.899-.421-.419-.69-.824-.9-1.38-.165-.42-.359-1.065-.42-2.235-.045-1.26-.061-1.649-.061-4.844 0-3.196.016-3.586.061-4.861.061-1.17.255-1.814.42-2.234.21-.57.479-.96.9-1.381.419-.419.81-.689 1.379-.898.42-.166 1.051-.361 2.221-.421 1.275-.045 1.65-.06 4.859-.06l.045.03zm0 3.678c-3.405 0-6.162 2.76-6.162 6.162 0 3.405 2.76 6.162 6.162 6.162 3.405 0 6.162-2.76 6.162-6.162 0-3.405-2.76-6.162-6.162-6.162zM12 16c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4zm7.846-10.405c0 .795-.646 1.44-1.44 1.44-.795 0-1.44-.646-1.44-1.44 0-.794.646-1.439 1.44-1.439.793-.001 1.44.645 1.44 1.439z"/></svg>
@@ -418,9 +693,11 @@
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
       </a>
     </div>
+    <span>PODIUM</span>
   </footer>
 
   <script>
+    // ---- NAV (mobile menu + Events dropdown/accordion) — same behavior as every page ----
     const menuToggle = document.getElementById('menuToggle');
     const mobileMenu = document.getElementById('mobileMenu');
     const menuClose = document.getElementById('menuClose');
@@ -445,7 +722,6 @@
     menuClose.addEventListener('click', closeMenu);
     mobileMenu.querySelectorAll('a').forEach(link => link.addEventListener('click', closeMenu));
 
-    // Desktop Events dropdown — hover/focus is CSS; this adds click + a11y.
     const navDropdown = document.querySelector('.nav-dropdown');
     const navDropdownTrigger = navDropdown && navDropdown.querySelector('.nav-dropdown-trigger');
     if (navDropdown) {
@@ -462,7 +738,6 @@
       });
     }
 
-    // Mobile Events accordion.
     const accTrigger = document.querySelector('.mobile-accordion-trigger');
     if (accTrigger) {
       accTrigger.addEventListener('click', () => {
@@ -481,6 +756,127 @@
         navDropdownTrigger.setAttribute('aria-expanded', 'false');
       }
     });
+
+    // ---- PODIUM DATA ----
+    // Competition history. To add a meet, add an object here (any order — the
+    // page sorts newest-first by `date`). `date` is ISO (YYYY-MM-DD).
+    // Each result: { discipline, category (optional), place, athletes:[...] }.
+    const MEETS = [
+      {
+        meet: "Track Night Austin", date: "2026-06-27", venue: "Yellow Jacket Stadium",
+        results: [
+          { discipline: "4x400", category: "Women's", place: 1, athletes: ["Davicia Weekly", "Georgia Fillmore", "Natalie Monroe", "Vanessa Bacorn"] },
+          { discipline: "4x400", category: "Men's",   place: 2, athletes: ["Bennie Jones", "Isiah Weekly", "Issac Nelson", "Myles Cooper"] }
+        ]
+      },
+      {
+        meet: "Spring Shakeout", date: "2026-04-29", venue: "Southwestern University",
+        results: [
+          { discipline: "4x100", category: "Men's", place: 1, athletes: ["David Perez", "Myles Cooper", "Isiah Weekly", "Isaac Kaufman"] }
+        ]
+      },
+      {
+        meet: "Rave Relays", date: "2025-11-08", venue: "Ann Richards Stadium",
+        results: [
+          { discipline: "4x400", category: "Men's", place: 2, athletes: ["Kaushik Sahoo", "Stephanie McElwee", "Isiah Weekly", "Myles Cooper"] }
+        ]
+      }
+    ];
+
+    // ---- PODIUM RENDER + FILTER ----
+    function escapeHtml(s) {
+      return String(s)
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    }
+    const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    function fmtDate(iso) { const p = iso.split('-'); return MONTHS[(+p[1]) - 1] + ' ' + (+p[2]) + ', ' + p[0]; }
+    function dispDisc(d) { return d.replace(/x/i, '×'); }
+    function placeLabel(p) { if (p === 1) return '1ST'; if (p === 2) return '2ND'; if (p === 3) return '3RD'; return p + 'TH'; }
+    function placeClass(p) { return (p >= 1 && p <= 3) ? ('place-' + p) : 'place-x'; }
+
+    const sorted = MEETS.slice().sort((a, b) => (a.date < b.date ? 1 : (a.date > b.date ? -1 : 0)));
+
+    const disciplines = [];
+    sorted.forEach(m => m.results.forEach(r => { if (!disciplines.includes(r.discipline)) disciplines.push(r.discipline); }));
+    disciplines.sort();
+
+    const categories = [];
+    sorted.forEach(m => m.results.forEach(r => { if (r.category && !categories.includes(r.category)) categories.push(r.category); }));
+    categories.sort();
+
+    let activeDisc = 'all';
+    let activeCat = 'all';
+    let query = '';
+
+    const listEl = document.getElementById('podiumList');
+    const filtersEl = document.getElementById('podiumFilters');
+    const catFiltersEl = document.getElementById('podiumCatFilters');
+    const searchEl = document.getElementById('podiumSearch');
+
+    function chipHtml(value, label, active) {
+      return `<button type="button" class="filter-chip${active ? ' is-active' : ''}" data-val="${escapeHtml(value)}" aria-pressed="${active ? 'true' : 'false'}">${escapeHtml(label)}</button>`;
+    }
+    filtersEl.innerHTML = chipHtml('all', 'All', activeDisc === 'all') + disciplines.map(d => chipHtml(d, dispDisc(d), activeDisc === d)).join('');
+    catFiltersEl.innerHTML = chipHtml('all', 'All', activeCat === 'all') + categories.map(c => chipHtml(c, c, activeCat === c)).join('');
+
+    function meetMatchesSearch(m) {
+      if (!query) return true;
+      const parts = [m.meet, m.venue, fmtDate(m.date), m.date.slice(0, 4)];
+      m.results.forEach(r => { parts.push(r.discipline, dispDisc(r.discipline), r.category); r.athletes.forEach(a => parts.push(a)); });
+      return parts.join(' ').toLowerCase().includes(query);
+    }
+    function resultRowHtml(r) {
+      const cat = r.category ? ` <span class="result-cat">&middot; ${escapeHtml(r.category)}</span>` : '';
+      return `<div class="result-row">
+        <span class="place-badge ${placeClass(r.place)}">${escapeHtml(placeLabel(r.place))}</span>
+        <div class="result-body">
+          <div class="result-event">${escapeHtml(dispDisc(r.discipline))}${cat}</div>
+          <div class="result-team">${escapeHtml(r.athletes.join(', '))}</div>
+        </div>
+      </div>`;
+    }
+    function meetCardHtml(m, results) {
+      return `<article class="meet-card">
+        <header class="meet-head">
+          <h2 class="meet-name">${escapeHtml(m.meet)}</h2>
+          <p class="meet-meta">${escapeHtml(fmtDate(m.date))} &middot; ${escapeHtml(m.venue)}</p>
+        </header>
+        <div class="meet-results">${results.map(resultRowHtml).join('')}</div>
+      </article>`;
+    }
+    function render() {
+      const cards = [];
+      sorted.forEach(m => {
+        if (!meetMatchesSearch(m)) return;
+        const passing = m.results.filter(r =>
+          (activeDisc === 'all' || r.discipline === activeDisc) &&
+          (activeCat === 'all' || r.category === activeCat)
+        );
+        if (!passing.length) return;
+        cards.push(meetCardHtml(m, passing));
+      });
+      listEl.innerHTML = cards.length
+        ? cards.join('')
+        : `<div class="empty-state">No results match that. Try a different search or filter.</div>`;
+    }
+    function wireChips(el, getActive, setActive) {
+      el.addEventListener('click', e => {
+        const btn = e.target.closest('.filter-chip');
+        if (!btn) return;
+        setActive(btn.dataset.val);
+        el.querySelectorAll('.filter-chip').forEach(c => {
+          const on = c.dataset.val === getActive();
+          c.classList.toggle('is-active', on);
+          c.setAttribute('aria-pressed', on ? 'true' : 'false');
+        });
+        render();
+      });
+    }
+    searchEl.addEventListener('input', () => { query = searchEl.value.trim().toLowerCase(); render(); });
+    wireChips(filtersEl, () => activeDisc, v => { activeDisc = v; });
+    wireChips(catFiltersEl, () => activeCat, v => { activeCat = v; });
+    render();
   </script>
 
 </body>

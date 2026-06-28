@@ -122,6 +122,15 @@
     }
     .nav-dropdown-panel a:hover { color: var(--orange); opacity: 1; }
 
+    /* Collapse nav to the hamburger before the centered link bar crowds the
+       absolute wordmark (the multi-item nav overlaps it from ~770-900px). */
+    @media (max-width: 940px) {
+      nav { justify-content: space-between; padding: 16px 20px; }
+      nav .nav-left { position: static; font-size: 16px; flex-shrink: 0; }
+      nav .nav-center { display: none !important; }
+      .menu-toggle { display: block !important; }
+    }
+
     /* ---- PAGE ---- */
     .page {
       position: relative; z-index: 10; min-height: 100vh;
@@ -544,6 +553,7 @@
     }
     /* ---- MOBILE EVENTS ACCORDION ---- */
     .mobile-menu.is-open .mobile-menu-links > *:nth-child(6) { transition-delay: 0.40s; }
+    .mobile-menu.is-open .mobile-menu-links > *:nth-child(7) { transition-delay: 0.47s; }
     .mobile-accordion-trigger .acc-caret { width: 18px; height: 18px; flex-shrink: 0; transition: transform 0.2s ease; }
     .mobile-accordion-trigger[aria-expanded="true"] .acc-caret { transform: rotate(180deg); }
     .mobile-accordion-panel {
@@ -727,6 +737,7 @@
       <a href="https://shop.trackratsprint.club" target="_blank" rel="noopener">[ SHOP ]</a>
       <a href="/schedule">[ SCHEDULE ]</a>
       <a href="/brand">[ BRAND ]</a>
+      <a href="/podium">[ PODIUM ]</a>
       <div class="nav-dropdown">
         <button class="nav-dropdown-trigger" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="eventsMenu">
           [ EVENTS ]
@@ -759,6 +770,7 @@
       <a href="https://shop.trackratsprint.club" target="_blank" rel="noopener">SHOP</a>
       <a href="/schedule">SCHEDULE</a>
       <a href="/brand">BRAND</a>
+      <a href="/podium">PODIUM</a>
       <button class="mobile-accordion-trigger" type="button" aria-expanded="false" aria-controls="mobileEvents">
         EVENTS
         <svg class="acc-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
