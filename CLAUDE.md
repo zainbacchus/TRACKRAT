@@ -14,7 +14,10 @@ Pages:
 - `/schedule` — weekly schedule with `.ics` calendar export
 - `/brand` — brand guide
 - `/podium` — competition results: meets TRACKRAT raced as a team, the relay squads, and placements (newest first; client-side search + discipline filter; static data array)
-- `/invitational` — 2026 Invitational event page (RSVP via Sweatpals)
+- `/invitational` — 2026 Invitational event page: October 18, 2026 at
+  4401 Tilley St (has Event JSON-LD with a date-only `startDate`; no RSVP
+  yet — when it exists, add an `offers` block with the RSVP URL and a
+  start time, mirroring offtrack.html's Event)
 - `/offtrack` — OFFTRACK demo night, presented by TRACKRAT (grouped under the **Events** nav dropdown)
 - `/dashboard` — member dashboard (Google sign-in): a **Personal Records** tab
   (per-user PRs via Supabase) + a **Promotions** tab (member perks from the
@@ -47,7 +50,7 @@ TRACKRAT/
 ├── schedule.html           # /schedule              — weekly schedule + .ics + Event JSON-LD
 ├── brand.html              # /brand                 — brand guide
 ├── podium.html             # /podium                — competition results (search + discipline filter)
-├── invitational.html       # /invitational          — 2026 Invitational (Sweatpals RSVP)
+├── invitational.html       # /invitational          — 2026 Invitational (Oct 18, 2026 · Tilley St; RSVP TBD)
 ├── offtrack.html           # /offtrack              — OFFTRACK demo night (under Events dropdown)
 ├── dashboard.html          # /dashboard             — member dashboard: PRs + Promotions (Google sign-in)
 ├── 404.html                # branded 404 (served automatically by Vercel)
@@ -59,7 +62,9 @@ TRACKRAT/
 │   ├── ibm-plex-mono-{400,500,600,700}-latin.woff2
 │   └── LICENSE-*.txt
 ├── promos/                 # Partner logos for the Dashboard → Promotions tab
-├── og.png                  # 1200×630 Open Graph image (shared by all pages)
+├── og.png                  # default 1200×630 Open Graph image
+├── og-invitational.png     # /invitational OG image
+├── og-offtrack.png         # /offtrack OG image
 ├── vercel.json             # cleanUrls, security headers, redirects, cache headers
 ├── robots.txt              # Crawl rules (/dashboard handled by noindex meta, NOT Disallow)
 ├── sitemap.xml             # Public-page sitemap (excludes /dashboard; includes /offtrack)
@@ -87,10 +92,10 @@ status (a catch-all to index.html would make every typo a soft-404).
 Redirects: apex → `www.trackratsprint.club` (canonical host),
 `/2026-invitational` → `/invitational`, and `/pr` + `/prs` → `/dashboard`.
 
-Headers: security baseline on `/(.*)`(nosniff, `X-Frame-Options: DENY`,
-CSP `frame-ancestors 'none'; object-src 'none'; base-uri 'none'`,
+Headers: security baseline on `/(.*)`(HSTS, nosniff, `X-Frame-Options:
+DENY`, CSP `frame-ancestors 'none'; object-src 'none'; base-uri 'none'`,
 Referrer-Policy, Permissions-Policy); immutable year cache on `/fonts/*`
-and `/js/vendor/*`; daily cache on `og.png` + `favicon.ico`. Don't add a
+and `/js/vendor/*`; daily cache on `og*.png` + `favicon.ico`. Don't add a
 `script-src` CSP directive casually — the pages run inline module
 scripts and would need hashes.
 
@@ -120,7 +125,9 @@ Every public page ships with:
   TRACKRAT — Austin Sprint Club`).
 - A descriptive `meta name="description"`.
 - A `rel="canonical"` link pointing at the **`www.trackratsprint.club`** host.
-- Open Graph + Twitter Card meta tags pointing at `/og.png`.
+- Open Graph + Twitter Card meta tags pointing at the page's OG image —
+  `/og.png` by default; `/invitational` and `/offtrack` have their own
+  `og-*.png`.
 - Geo meta (`US-TX`, `Austin`).
 
 `index.html` additionally has:
@@ -143,6 +150,11 @@ Google from ever seeing the noindex meta.
 address — **Sunday** at 4401 Tilley St, Austin TX 78723 and **Thursday**
 at 201 E Mary St, Austin TX 78704 — fixed, already-public locations; the
 addresses make each event eligible for Google's local/event surfaces.
+Each Event also carries a concrete `startDate`/`endDate` for an upcoming
+occurrence — Google requires `startDate` for Event rich results
+(`eventSchedule` alone doesn't qualify). **Those dates go stale once the
+occurrence passes — refresh them periodically** to the next
+Sunday/Thursday (CDT is `-05:00`, CST is `-06:00`).
 
 The OG image is rendered in actual Fugaz One (black wordmark on Sprint
 Orange `#FF4D1F`, 1200×630, palette-optimized PNG).
@@ -396,7 +408,8 @@ don't apply to plain file servers.
    menu, track lanes if applicable, **full SEO meta block**, **the two
    `<link rel="preload" as="font" ... crossorigin>` tags**, and **all five
    `@font-face` declarations** at the top of `<style>`).
-2. Add a `/newpage` rewrite to `vercel.json`.
+2. No `vercel.json` route change needed — `cleanUrls` serves `/newpage`
+   from `newpage.html` automatically.
 3. Add the link to **every** page's nav (desktop `.nav-center` and mobile
    `.mobile-menu-links`) — and update the
    `.mobile-menu.is-open .mobile-menu-links > *:nth-child(N)` stagger delays

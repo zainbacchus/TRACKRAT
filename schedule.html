@@ -927,7 +927,7 @@
         startMinute: 0,
         durationHours: 2,
         location: '4401 Tilley St, Austin, TX 78723',
-        description: 'Weekly Sunday sprints with TRACKRAT. All speeds welcome. No sign ups. Just show up.\\n\\nhttps://trackratsprint.club',
+        description: 'Weekly Sunday sprints with TRACKRAT. All speeds welcome. No sign ups. Just show up.\n\nhttps://www.trackratsprint.club',
         byday: 'SU'
       },
       thursday: {
@@ -937,7 +937,7 @@
         startMinute: 30,
         durationHours: 1.5,
         location: '201 E Mary St, Austin, TX 78704',
-        description: 'Weekly Thursday midweek workout with TRACKRAT at 201 E Mary St, Austin, TX 78704. All speeds welcome. No sign ups. Just show up.\\n\\nhttps://trackratsprint.club',
+        description: 'Weekly Thursday midweek workout with TRACKRAT at 201 E Mary St, Austin, TX 78704. All speeds welcome. No sign ups. Just show up.\n\nhttps://www.trackratsprint.club',
         byday: 'TH'
       }
     };
@@ -983,6 +983,15 @@
       );
     }
 
+    function icsEscape(text) {
+      // RFC 5545 §3.3.11: backslash, comma and semicolon must be escaped
+      // in TEXT values; real newlines become a literal \n sequence.
+      return String(text)
+        .replace(/\\/g, '\\\\')
+        .replace(/\n/g, '\\n')
+        .replace(/[,;]/g, m => '\\' + m);
+    }
+
     function buildICS(key) {
       const ev = EVENTS[key];
       const start = nextOccurrence(ev.weekday, ev.startHour, ev.startMinute);
@@ -1025,9 +1034,9 @@
         `DTSTART;TZID=America/Chicago:${formatLocal(start)}`,
         `DTEND;TZID=America/Chicago:${formatLocal(end)}`,
         `RRULE:FREQ=WEEKLY;BYDAY=${ev.byday}`,
-        `SUMMARY:${ev.title}`,
-        `LOCATION:${ev.location}`,
-        `DESCRIPTION:${ev.description}`,
+        `SUMMARY:${icsEscape(ev.title)}`,
+        `LOCATION:${icsEscape(ev.location)}`,
+        `DESCRIPTION:${icsEscape(ev.description)}`,
         'STATUS:CONFIRMED',
         'TRANSP:OPAQUE',
         'END:VEVENT',
@@ -1061,7 +1070,11 @@
   <!-- Structured data: the two recurring weekly sessions. Both carry the
        full street address (fixed, public on this page and in the .ics
        files) — the address makes each event eligible for Google's
-       local/event surfaces. -->
+       local/event surfaces. Google requires a concrete startDate for Event
+       rich results, so each Event also carries startDate/endDate for an
+       upcoming occurrence alongside eventSchedule — refresh those dates
+       periodically (they go stale once the occurrence passes; use the
+       next Sunday/Thursday, CDT is -05:00, CST is -06:00). -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -1081,6 +1094,17 @@
         "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
         "eventStatus": "https://schema.org/EventScheduled",
         "isAccessibleForFree": true,
+        "image": "https://www.trackratsprint.club/og.png",
+        "url": "https://www.trackratsprint.club/schedule",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD",
+          "availability": "https://schema.org/InStock",
+          "url": "https://www.trackratsprint.club/schedule"
+        },
+        "startDate": "2026-07-05T08:00:00-05:00",
+        "endDate": "2026-07-05T10:00:00-05:00",
         "location": {
           "@type": "Place",
           "name": "4401 Tilley St",
@@ -1110,6 +1134,17 @@
         "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
         "eventStatus": "https://schema.org/EventScheduled",
         "isAccessibleForFree": true,
+        "image": "https://www.trackratsprint.club/og.png",
+        "url": "https://www.trackratsprint.club/schedule",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD",
+          "availability": "https://schema.org/InStock",
+          "url": "https://www.trackratsprint.club/schedule"
+        },
+        "startDate": "2026-07-09T18:30:00-05:00",
+        "endDate": "2026-07-09T20:00:00-05:00",
         "location": {
           "@type": "Place",
           "name": "201 E Mary St",

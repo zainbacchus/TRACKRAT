@@ -468,7 +468,7 @@
 </head>
 <body>
   <nav>
-    <a href="/" class="nav-left">TRACKRAT</a>
+    <a href="/" class="nav-left wordmark">TRACKRAT</a>
     <div class="nav-center">
       <a href="https://shop.trackratsprint.club" target="_blank" rel="noopener">[ SHOP ]</a>
       <a href="/schedule">[ SCHEDULE ]</a>
@@ -547,6 +547,11 @@
 
       <h3>What a workout looks like</h3>
       <p>We open with mobility to loosen up the hips and hamstrings — optional, but highly recommended — then a dynamic warm-up focused on the day's movement patterns. From there the workout ranges from 400s down to 200s and 100s, covering about a mile of net distance. We cool down together at the end.</p>
+
+      <h3>Common questions</h3>
+      <p><strong>Do I need spikes?</strong> No — normal running shoes are fine. Some members use spikes for time trials.</p>
+      <p><strong>Is there parking?</strong> Yes — there's parking at the meet locations.</p>
+      <p><strong>What if it rains?</strong> We meet every week, rain or shine. Check <a href="https://instagram.com/trackratsprintclub/" target="_blank" rel="noopener">Instagram</a> for the latest.</p>
     </section>
 
     <footer class="site-footer">
@@ -641,12 +646,13 @@
     });
   </script>
 
-  <!-- Structured data: SportsClub (no explicit street address — meet
-       location is intentionally omitted from JSON-LD per brand preference) -->
+  <!-- Structured data: SportsClub — includes the full Sunday meet address
+       (4401 Tilley St) per the published-address policy in CLAUDE.md tip 9 -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "SportsClub",
+    "@id": "https://www.trackratsprint.club/#club",
     "name": "TRACKRAT",
     "alternateName": "TRACKRAT Sprint Club",
     "description": "Free community sprint club based in Austin, Texas. Weekly track workouts for all levels. No sign-ups, just show up.",
@@ -677,6 +683,7 @@
     ],
     "sameAs": [
       "https://instagram.com/trackratsprintclub",
+      "https://www.tiktok.com/@trackratsprintclub",
       "https://discord.gg/X8EXhHR9f",
       "https://x.com/trackratsprints",
       "https://shop.trackratsprint.club",
@@ -702,7 +709,7 @@
         "@type": "Question",
         "name": "Where does TRACKRAT meet?",
         "acceptedAnswer": { "@type": "Answer",
-          "text": "Sunday Sprints meet at a public track in Austin. Thursday Midweek Workouts meet at 201 E Mary St, Austin. Full details are on the schedule page." }
+          "text": "Sunday Sprints meet at 4401 Tilley St, Austin, TX 78723. Thursday Midweek Workouts meet at 201 E Mary St, Austin, TX 78704. Full details are on the schedule page." }
       },
       {
         "@type": "Question",
@@ -733,6 +740,24 @@
         "name": "What does a TRACKRAT workout look like?",
         "acceptedAnswer": { "@type": "Answer",
           "text": "We open with mobility for the hips and hamstrings (optional but highly recommended), then a dynamic warm-up focused on the day's movement patterns. The workout ranges from 400s down to 200s and 100s, covering about a mile of net distance, followed by a group cool-down." }
+      },
+      {
+        "@type": "Question",
+        "name": "Do I need spikes to run with TRACKRAT?",
+        "acceptedAnswer": { "@type": "Answer",
+          "text": "No — normal running shoes are fine. Some members use spikes for time trials." }
+      },
+      {
+        "@type": "Question",
+        "name": "Is there parking at TRACKRAT meets?",
+        "acceptedAnswer": { "@type": "Answer",
+          "text": "Yes — there's parking at the meet locations." }
+      },
+      {
+        "@type": "Question",
+        "name": "Does TRACKRAT meet if it rains?",
+        "acceptedAnswer": { "@type": "Answer",
+          "text": "Yes — TRACKRAT meets every week, rain or shine. Check Instagram (@trackratsprintclub) for the latest updates." }
       }
     ]
   }

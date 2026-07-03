@@ -4,13 +4,13 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>2026 Invitational · TRACKRAT — Austin Sprint Club</title>
-  <meta name="description" content="The 2026 TRACKRAT Invitational in Austin, Texas. A community sprint meet. Details coming soon." />
+  <meta name="description" content="The 2026 TRACKRAT Invitational — a community sprint meet on October 18, 2026 at 4401 Tilley St, Austin, TX. RSVP and full schedule coming soon." />
   <link rel="canonical" href="https://www.trackratsprint.club/invitational" />
 
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="TRACKRAT" />
   <meta property="og:title" content="2026 Invitational · TRACKRAT" />
-  <meta property="og:description" content="The 2026 TRACKRAT Invitational — Austin, TX. Details coming soon." />
+  <meta property="og:description" content="October 18, 2026 · 4401 Tilley St, Austin, TX. A community sprint meet. RSVP coming soon." />
   <meta property="og:url" content="https://www.trackratsprint.club/invitational" />
   <meta property="og:image" content="https://www.trackratsprint.club/og-invitational.png" />
   <meta property="og:image:width" content="1200" />
@@ -20,7 +20,7 @@
 
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="2026 Invitational · TRACKRAT" />
-  <meta name="twitter:description" content="The 2026 TRACKRAT Invitational — Austin, TX." />
+  <meta name="twitter:description" content="October 18, 2026 · 4401 Tilley St, Austin, TX. RSVP coming soon." />
   <meta name="twitter:image" content="https://www.trackratsprint.club/og-invitational.png" />
 
   <meta name="geo.region" content="US-TX" />
@@ -283,6 +283,12 @@
       margin-bottom: 24px;
       padding-right: 0.14em;
     }
+    .when {
+      font-size: clamp(14px, 1.8vw, 20px);
+      letter-spacing: 0.24em;
+      margin-top: 40px;
+      font-weight: 700;
+    }
     .coming {
       font-size: clamp(12px, 1.4vw, 16px);
       letter-spacing: 0.3em;
@@ -292,6 +298,7 @@
       color: #1a0700;
       font-weight: 600;
     }
+    .when + .coming { margin-top: 14px; }
     @media (max-width: 768px) {
       nav {
         padding: 16px 20px;
@@ -340,7 +347,7 @@
 </head>
 <body>
   <nav>
-    <a href="/" class="nav-left">TRACKRAT</a>
+    <a href="/" class="nav-left wordmark">TRACKRAT</a>
     <div class="nav-center">
       <a href="https://shop.trackratsprint.club" target="_blank" rel="noopener">[ SHOP ]</a>
       <a href="/schedule">[ SCHEDULE ]</a>
@@ -397,8 +404,44 @@
   <main class="page">
     <h1 class="subtitle"><span style="letter-spacing: -0.14em;">TRACKRAT</span> <span style="letter-spacing: -0.10em;">INVITATIONAL</span></h1>
     <div class="year">2026</div>
-    <p class="coming">DETAILS COMING SOON</p>
+    <p class="when">OCTOBER 18, 2026 · 4401 TILLEY ST, AUSTIN, TX</p>
+    <p class="coming">RSVP + FULL SCHEDULE COMING SOON</p>
   </main>
+
+  <!-- Structured data: the Invitational as a schema.org Event. startDate is
+       date-only until a start time is announced; add offers with the RSVP
+       URL once it exists (mirror offtrack.html's Event block). -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Event",
+    "name": "2026 TRACKRAT Invitational",
+    "description": "The 2026 TRACKRAT Invitational — a community sprint meet hosted by TRACKRAT in Austin, TX. RSVP and full schedule coming soon.",
+    "startDate": "2026-10-18",
+    "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
+    "eventStatus": "https://schema.org/EventScheduled",
+    "image": "https://www.trackratsprint.club/og-invitational.png",
+    "url": "https://www.trackratsprint.club/invitational",
+    "location": {
+      "@type": "Place",
+      "name": "4401 Tilley St",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "4401 Tilley St",
+        "addressLocality": "Austin",
+        "addressRegion": "TX",
+        "postalCode": "78723",
+        "addressCountry": "US"
+      }
+    },
+    "organizer": {
+      "@type": "SportsClub",
+      "@id": "https://www.trackratsprint.club/#club",
+      "name": "TRACKRAT",
+      "url": "https://www.trackratsprint.club/"
+    }
+  }
+  </script>
 
   <footer class="site-footer">
     <div class="socials">

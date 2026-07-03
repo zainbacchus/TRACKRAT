@@ -23,7 +23,8 @@ TRACKRAT/
 ├── index.html              # /                      — landing (with SEO/AEO content + JSON-LD)
 ├── schedule.html           # /schedule              — weekly schedule + .ics export + Event JSON-LD
 ├── brand.html              # /brand                 — brand guide
-├── invitational.html       # /invitational          — 2026 Invitational (Sweatpals RSVP)
+├── podium.html             # /podium                — competition results (search + discipline filter)
+├── invitational.html       # /invitational          — 2026 Invitational (Oct 18, 2026 · Tilley St; RSVP TBD)
 ├── offtrack.html           # /offtrack              — OFFTRACK demo night, presented by TRACKRAT (under Events)
 ├── dashboard.html          # /dashboard             — member Dashboard: PRs + Promotions (Google sign-in)
 ├── 404.html                # branded not-found page (Vercel serves it with status 404)
@@ -36,7 +37,9 @@ TRACKRAT/
 │   └── LICENSE-*.txt       # SIL OFL 1.1 notices for both font families
 ├── promos/                 # Partner logos for the Dashboard → Promotions tab
 ├── vercel.json             # cleanUrls, security headers, redirects, cache headers
-├── og.png                  # 1200×630 Open Graph image (shared across all pages)
+├── og.png                  # default 1200×630 Open Graph image
+├── og-invitational.png     # /invitational OG image
+├── og-offtrack.png         # /offtrack OG image
 ├── robots.txt              # Crawl rules (/dashboard is noindexed via meta, not Disallowed)
 ├── sitemap.xml             # Public-page sitemap
 ├── llms.txt                # LLM-facing site description
@@ -53,8 +56,8 @@ Each public page ships with:
 
 - A specific `<title>` and meta description (e.g. *"TRACKRAT — Austin Sprint Club"*).
 - A canonical link to the `www.trackratsprint.club` host.
-- Open Graph + Twitter Card tags pointing at `/og.png` (the shared 1200×630
-  brand image).
+- Open Graph + Twitter Card tags pointing at the page's OG image — `/og.png`
+  by default; `/invitational` and `/offtrack` ship their own `og-*.png`.
 - Geo meta (`US-TX`, `Austin`).
 
 The home page (`index.html`) additionally has:
@@ -73,10 +76,13 @@ be able to crawl the page to see the noindex.) `offtrack.html` is a normal
 public, indexable page and is listed in `sitemap.xml`.
 
 `schedule.html` ships `Event` JSON-LD for both weekly sessions
-(`eventSchedule` with weekly recurrence). The Sunday session carries the
-full street address (fixed location, already public, matches Google
-Business Profile — required for Google's local/event surfaces). Thursday
-stays city-level because its location genuinely varies week to week.
+(`eventSchedule` with weekly recurrence, plus a concrete
+`startDate`/`endDate` for an upcoming occurrence — Google requires
+`startDate` for Event rich results, so refresh those dates periodically).
+Both sessions carry their full street address (fixed, already-public
+locations, matching Google Business Profile — required for Google's
+local/event surfaces): Sunday at 4401 Tilley St and Thursday at
+201 E Mary St.
 
 The OG image (`og.png`) is rendered in actual Fugaz One (black wordmark on
 brand orange, 1200×630, palette-optimized).
@@ -113,10 +119,11 @@ Redirects:
 - `/pr` and `/prs` → `/dashboard` (legacy URLs — the PR tracker is now the
   Dashboard's Personal Records tab)
 
-Headers: security baseline on every response (`X-Content-Type-Options`,
-`X-Frame-Options: DENY`, CSP `frame-ancestors 'none'`, `Referrer-Policy`,
-`Permissions-Policy`), immutable year-long cache on `/fonts/*` and
-`/js/vendor/*`, daily cache on `og.png`/`favicon.ico`.
+Headers: security baseline on every response (`Strict-Transport-Security`,
+`X-Content-Type-Options`, `X-Frame-Options: DENY`, CSP
+`frame-ancestors 'none'`, `Referrer-Policy`, `Permissions-Policy`),
+immutable year-long cache on `/fonts/*` and `/js/vendor/*`, daily cache
+on `og*.png`/`favicon.ico`.
 
 ## Supabase SDK (vendored)
 

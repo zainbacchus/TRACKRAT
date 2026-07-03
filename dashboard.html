@@ -751,7 +751,9 @@
       <a href="/dashboard">[ DASHBOARD ]</a>
     </div>
     <button class="menu-toggle" id="menuToggle" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
-      <span></span><span></span><span></span>
+      <span></span>
+      <span></span>
+      <span></span>
     </button>
   </nav>
 
@@ -1217,6 +1219,9 @@
 
     // ---- FORM STATE ----
     let selectedEvent = null;
+    // True while a save/update is in flight — backs the double-submit guard
+    // and stops showForEvent() from re-arming the button mid-save.
+    let isSaving = false;
     const eventGrid = document.getElementById('eventGrid');
     const timeRow = document.getElementById('timeRow');
     const weightRow = document.getElementById('weightRow');
@@ -1265,7 +1270,7 @@
       }
       dateRow.style.display = 'grid';
       notesRow.style.display = 'grid';
-      submitBtn.disabled = false;
+      submitBtn.disabled = isSaving;
       formMsg.textContent = '';
     }
 
@@ -1361,7 +1366,9 @@
 
     // ---- FORMATTING ----
     function fmtSeconds(totalSec) {
-      const t = Number(totalSec);
+      // Round to display precision (2 dp) BEFORE decomposing into h/m/s so
+      // the carry propagates — 119.999 renders as 2:00.00, not 1:60.00.
+      const t = Math.round(Number(totalSec) * 100) / 100;
       const h = Math.floor(t / 3600);
       const m = Math.floor((t % 3600) / 60);
       const s = t - h * 3600 - m * 60;
@@ -1549,104 +1556,125 @@
 
     // ---- SUBMIT ----
     submitBtn.addEventListener('click', async () => {
-      // Guard against double-submit: disable immediately, before any await.
-      if (submitBtn.disabled) return;
+      // Guard against double-submit. isSaving (not the disabled attribute)
+      // backs the guard because showForEvent() re-syncs the button state
+      // and must not re-arm it mid-save; the finally block is the single
+      // place the form is re-enabled.
+      if (isSaving) return;
+      isSaving = true;
       submitBtn.disabled = true;
       formMsg.textContent = '';
       formMsg.className = 'form-msg';
-      if (!selectedEvent) {
+      try {
+        if (!selectedEvent) {
+          formMsg.textContent = 'Pick an event.';
+          formMsg.classList.add('error');
+          return;
+        }
+
+        const { data: sess } = await supabase.auth.getSession();
+        if (!sess.session) {
+          formMsg.textContent = 'Not signed in.';
+          formMsg.classList.add('error');
+          return;
+        }
+
+        // Build a fully-specified payload — all value columns, sets/reps,
+        // and notes are set every time (one populated, the rest null). This
+        // keeps UPDATEs constraint-safe even if we ever allow event changes.
+        const noteRaw = (document.getElementById('inpNotes').value || '').trim();
+        const payload = {
+          user_id: sess.session.user.id,
+          event: selectedEvent,
+          achieved_on: `${yearSel.value}-${monthSel.value}-${daySel.value}`,
+          value_seconds: null,
+          value_pounds: null,
+          value_metric: null,
+          sets: null,
+          reps: null,
+          notes: noteRaw ? noteRaw.slice(0, 280) : null
+        };
+
+        // The year select stops at the current year, but month/day can still
+        // point past today — reject future dates (select values are
+        // zero-padded, so ISO strings compare correctly).
+        const now = new Date();
+        const pad2 = n => String(n).padStart(2, '0');
+        const todayISO = `${now.getFullYear()}-${pad2(now.getMonth() + 1)}-${pad2(now.getDate())}`;
+        if (payload.achieved_on > todayISO) {
+          formMsg.textContent = "PR date can't be in the future.";
+          formMsg.classList.add('error');
+          return;
+        }
+
+        if (RUN_EVENTS.has(selectedEvent)) {
+          const h = parseFloat(document.getElementById('inpHours').value || '0');
+          const m = parseFloat(document.getElementById('inpMinutes').value || '0');
+          const s = parseFloat(document.getElementById('inpSeconds').value || '0');
+          // The inputs carry min/max attributes, but browsers don't stop
+          // typed out-of-range values — enforce the same bounds here.
+          if (h < 0 || m < 0 || s < 0 || m > 59 || s >= 60) {
+            formMsg.textContent = 'Minutes and seconds must be 0–59, no negatives.';
+            formMsg.classList.add('error');
+            return;
+          }
+          const total = (h * 3600) + (m * 60) + s;
+          if (!(total > 0)) {
+            formMsg.textContent = 'Enter a time greater than zero.';
+            formMsg.classList.add('error');
+            return;
+          }
+          payload.value_seconds = Number(total.toFixed(3));
+        } else if (METRIC_SET.has(selectedEvent)) {
+          const v = parseFloat(document.getElementById('inpMetric').value);
+          if (!(v > 0)) {
+            formMsg.textContent = 'Enter a value greater than zero.';
+            formMsg.classList.add('error');
+            return;
+          }
+          payload.value_metric = Number(v.toFixed(3));
+        } else {
+          const lbs = parseFloat(document.getElementById('inpPounds').value || '0');
+          // Pull-ups can be logged with 0 lbs (bodyweight); other lifts must be > 0.
+          const isPullups = selectedEvent === 'pullups';
+          if (isPullups ? !(lbs >= 0) || Number.isNaN(lbs) : !(lbs > 0)) {
+            formMsg.textContent = isPullups
+              ? 'Enter added weight (0 or more).'
+              : 'Enter a weight greater than zero.';
+            formMsg.classList.add('error');
+            return;
+          }
+          const sets = parseInt(document.getElementById('inpSets').value, 10);
+          const reps = parseInt(document.getElementById('inpReps').value, 10);
+          if (!(sets >= 1) || !(reps >= 1)) {
+            formMsg.textContent = 'Enter at least 1 set and 1 rep.';
+            formMsg.classList.add('error');
+            return;
+          }
+          payload.value_pounds = Number(lbs.toFixed(2));
+          payload.sets = sets;
+          payload.reps = reps;
+        }
+
+        const resp = editingId
+          ? await supabase.from('prs').update(payload).eq('id', editingId)
+          : await supabase.from('prs').insert(payload);
+
+        if (resp.error) {
+          formMsg.textContent = resp.error.message;
+          formMsg.classList.add('error');
+          return;
+        }
+
+        const wasEditing = !!editingId;
+        cancelEdit();
+        formMsg.textContent = wasEditing ? 'UPDATED.' : 'SAVED.';
+        formMsg.classList.add('success');
+        await refreshHistory({ silent: true });
+      } finally {
+        isSaving = false;
         submitBtn.disabled = false;
-        formMsg.textContent = 'Pick an event.';
-        formMsg.classList.add('error');
-        return;
       }
-
-      const { data: sess } = await supabase.auth.getSession();
-      if (!sess.session) {
-        submitBtn.disabled = false;
-        formMsg.textContent = 'Not signed in.';
-        formMsg.classList.add('error');
-        return;
-      }
-
-      // Build a fully-specified payload — all value columns, sets/reps,
-      // and notes are set every time (one populated, the rest null). This
-      // keeps UPDATEs constraint-safe even if we ever allow event changes.
-      const noteRaw = (document.getElementById('inpNotes').value || '').trim();
-      const payload = {
-        user_id: sess.session.user.id,
-        event: selectedEvent,
-        achieved_on: `${yearSel.value}-${monthSel.value}-${daySel.value}`,
-        value_seconds: null,
-        value_pounds: null,
-        value_metric: null,
-        sets: null,
-        reps: null,
-        notes: noteRaw ? noteRaw.slice(0, 280) : null
-      };
-
-      if (RUN_EVENTS.has(selectedEvent)) {
-        const h = parseFloat(document.getElementById('inpHours').value || '0');
-        const m = parseFloat(document.getElementById('inpMinutes').value || '0');
-        const s = parseFloat(document.getElementById('inpSeconds').value || '0');
-        const total = (h * 3600) + (m * 60) + s;
-        if (!(total > 0)) {
-          submitBtn.disabled = false;
-          formMsg.textContent = 'Enter a time greater than zero.';
-          formMsg.classList.add('error');
-          return;
-        }
-        payload.value_seconds = Number(total.toFixed(3));
-      } else if (METRIC_SET.has(selectedEvent)) {
-        const v = parseFloat(document.getElementById('inpMetric').value);
-        if (!(v > 0)) {
-          submitBtn.disabled = false;
-          formMsg.textContent = 'Enter a value greater than zero.';
-          formMsg.classList.add('error');
-          return;
-        }
-        payload.value_metric = Number(v.toFixed(3));
-      } else {
-        const lbs = parseFloat(document.getElementById('inpPounds').value || '0');
-        // Pull-ups can be logged with 0 lbs (bodyweight); other lifts must be > 0.
-        const isPullups = selectedEvent === 'pullups';
-        if (isPullups ? !(lbs >= 0) || Number.isNaN(lbs) : !(lbs > 0)) {
-          submitBtn.disabled = false;
-          formMsg.textContent = isPullups
-            ? 'Enter added weight (0 or more).'
-            : 'Enter a weight greater than zero.';
-          formMsg.classList.add('error');
-          return;
-        }
-        const sets = parseInt(document.getElementById('inpSets').value, 10);
-        const reps = parseInt(document.getElementById('inpReps').value, 10);
-        if (!(sets >= 1) || !(reps >= 1)) {
-          submitBtn.disabled = false;
-          formMsg.textContent = 'Enter at least 1 set and 1 rep.';
-          formMsg.classList.add('error');
-          return;
-        }
-        payload.value_pounds = Number(lbs.toFixed(2));
-        payload.sets = sets;
-        payload.reps = reps;
-      }
-
-      const resp = editingId
-        ? await supabase.from('prs').update(payload).eq('id', editingId)
-        : await supabase.from('prs').insert(payload);
-      submitBtn.disabled = false;
-
-      if (resp.error) {
-        formMsg.textContent = resp.error.message;
-        formMsg.classList.add('error');
-        return;
-      }
-
-      const wasEditing = !!editingId;
-      cancelEdit();
-      formMsg.textContent = wasEditing ? 'UPDATED.' : 'SAVED.';
-      formMsg.classList.add('success');
-      await refreshHistory({ silent: true });
     });
 
     // ---- AUTH UI ----

@@ -412,11 +412,21 @@
         "name": "OFFTRACK demo night",
         "description": "A casual demo night in Austin, TX. Builders, founders, and creatives give short 5 to 10 minute demos of personal tech projects.",
         "startDate": "2026-07-22T19:00:00-05:00",
+        "endDate": "2026-07-22T20:30:00-05:00",
         "doorTime": "2026-07-22T18:30:00-05:00",
         "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
         "eventStatus": "https://schema.org/EventScheduled",
         "isAccessibleForFree": true,
         "inLanguage": "en-US",
+        "image": "https://www.trackratsprint.club/og-offtrack.png",
+        "url": "https://www.trackratsprint.club/offtrack",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD",
+          "availability": "https://schema.org/InStock",
+          "url": "https://luma.com/dmb7o78s"
+        },
         "location": {
           "@type": "Place",
           "name": "Austin, TX (venue to be announced)",
@@ -434,7 +444,7 @@
 <body>
   <!-- NAV -->
   <nav>
-    <a href="/" class="nav-left">TRACKRAT</a>
+    <a href="/" class="nav-left wordmark">TRACKRAT</a>
     <div class="nav-center">
       <a href="https://shop.trackratsprint.club" target="_blank" rel="noopener">[ SHOP ]</a>
       <a href="/schedule">[ SCHEDULE ]</a>
@@ -453,7 +463,9 @@
       <a href="/dashboard">[ DASHBOARD ]</a>
     </div>
     <button class="menu-toggle" id="menuToggle" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
-      <span></span><span></span><span></span>
+      <span></span>
+      <span></span>
+      <span></span>
     </button>
   </nav>
 
@@ -543,13 +555,14 @@
          ============================================================ -->
     <section class="demos">
       <h2>Past demos</h2>
+      <p class="demos-empty">Nothing here yet — the first OFFTRACK is July 22, 2026. Demos land here after the night wraps.</p>
+      <!-- Once an event happens, replace the line above with a .demo-event
+           block (newest first), one .demo-row per demo:
       <div class="demo-event">
         <div class="demo-event-title">July 22, 2026</div>
-        <p class="demos-empty">Coming soon.</p>
-        <!-- Replace the line above with rows like this once the event happens:
         <div class="demo-row"><span class="demo-name">Project title</span><span class="demo-author">Presenter name</span></div>
-        -->
       </div>
+      -->
     </section>
   </main>
 
