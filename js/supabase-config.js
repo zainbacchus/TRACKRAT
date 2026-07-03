@@ -10,7 +10,7 @@ export const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiO
 // Supabase JS SDK v2.108.1, vendored (self-hosted) in /js/vendor — a
 // dependency-inlined ESM bundle plus its Node polyfills (buffer, process,
 // events, tty, async_hooks), so no third-party CDN runs code on the
-// authenticated /pr page. To upgrade: fetch a new bundle, rewrite its
+// authenticated /dashboard page. To upgrade: fetch a new bundle, rewrite its
 // /node/*.mjs imports to the local ./node-*.mjs files, replace the vendor
 // file, and update the version in this path.
 import { createClient } from '/js/vendor/supabase-js-2.108.1.bundle.mjs';
