@@ -566,7 +566,20 @@
     .swatch-box.sw-white { background: var(--white); }
 
     .swatch-label { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; }
-    .swatch-hex { font-size: 11px; opacity: 0.5; }
+    .swatch-hex { font-size: 11px; display: inline-flex; align-items: center; gap: 6px; }
+    .hex-value { opacity: 0.6; letter-spacing: 0.02em; }
+    /* Copy-to-clipboard button (COLOR swatches). color:inherit so it reads
+       black on the orange section; an orange accent would be invisible there. */
+    .copy-btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 22px; height: 22px; padding: 0;
+      background: none; border: none; cursor: pointer;
+      color: inherit; opacity: 0.55;
+      transition: opacity 0.15s ease;
+    }
+    .copy-btn:hover, .copy-btn:focus-visible { opacity: 1; }
+    .copy-btn.copied { opacity: 1; }
+    .copy-btn svg { width: 14px; height: 14px; }
 
     /* ---- DETAILS GRID ---- */
     .details-grid {
@@ -575,6 +588,34 @@
       grid-template-columns: repeat(4, 1fr);
       gap: 2px;
     }
+
+    /* ---- CULTURE GRID (4 principles, reuses .detail-card; one clean row) ---- */
+    .culture-grid {
+      margin-top: 48px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2px;
+    }
+
+    /* Download button (DETAILS wordmark) — on the black section, so orange invert on hover. */
+    .download-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 24px;
+      padding: 10px 18px;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: var(--white);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+    }
+    .download-btn:hover { background: var(--orange); border-color: var(--orange); color: var(--black); }
+    .download-btn svg { width: 15px; height: 15px; }
+
+    /* Deep-link anchors: offset for the fixed nav so section tops aren't hidden. */
+    .section[id], .manifesto[id] { scroll-margin-top: 84px; }
 
     .detail-card {
       background: rgba(255, 255, 255, 0.03);
@@ -730,6 +771,10 @@
         grid-template-columns: repeat(2, 1fr);
       }
 
+      .culture-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
       .manifesto { padding: 80px 24px; }
 
       .runner, .runner-trail { display: none; }
@@ -743,6 +788,7 @@
 
     @media (max-width: 420px) {
       nav .nav-left { font-size: 14px; }
+      .culture-grid { grid-template-columns: 1fr; }
     }
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after {
@@ -854,7 +900,7 @@
   </div>
 
   <!-- 01 — TRACKRAT -->
-  <div class="section lane-2" data-lane="2">
+  <div class="section lane-2" data-lane="2" id="name">
     <div class="section-content">
       <span class="section-number">01 &mdash; THE NAME</span>
       <h2 class="section-title">TRACKRAT</h2>
@@ -888,21 +934,44 @@
     </div>
   </div>
 
-  <!-- 02 — SPRINT CLUB -->
-  <div class="section lane-6" data-lane="6">
+  <!-- 02 — CULTURE -->
+  <div class="section lane-6" data-lane="6" id="culture" style="min-height: auto; padding-top: 120px; padding-bottom: 24px;">
     <div class="section-content">
-      <span class="section-number">02 &mdash; IDENTITY</span>
+      <span class="section-number">02 &mdash; CULTURE</span>
       <h2 class="section-title">SPRINT CLUB<br />&gt; RUN CLUB</h2>
       <div class="section-body">
         <p>TRACKRAT EXISTS FOR PEOPLE WHO WANT TO GO FAST. NOT JOG. MAX EFFORT.</p>
         <p>THERE'S NOTHING WRONG WITH RUNNING CLUBS. BUT THAT'S NOT WHAT WE ARE. WE MEET ON THE TRACK. WE SPRINT. WE GROW TOGETHER. WE DO IT AGAIN.</p>
-        <p>ON SUNDAYS, WE SPRINT.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 02 — CULTURE: the principles (full-width grid, mirrors the DETAILS pattern) -->
+  <div class="section lane-2" data-lane="4" style="min-height: auto; padding-top: 24px; padding-bottom: 120px;">
+    <div class="section-content" style="max-width: 100%; width: 100%;">
+      <div class="culture-grid">
+        <div class="detail-card">
+          <span class="detail-value">MAX EFFORT</span>
+          <span class="detail-note">YOUR 100% TODAY MIGHT LOOK DIFFERENT THAN YOUR 100% TOMORROW, BUT WHAT MATTERS IS WE SHOW UP WITH 100% EFFORT.</span>
+        </div>
+        <div class="detail-card">
+          <span class="detail-value">OPINIONATED</span>
+          <span class="detail-note">STRONG TAKES, NO APOLOGIES. AGENCY OVER EGO.</span>
+        </div>
+        <div class="detail-card">
+          <span class="detail-value">HIGH ENERGY</span>
+          <span class="detail-note">CHEER LOUD, RUN LOUD. IF YOU CAN HEAR US FROM THE LOT, WE'RE DOING IT RIGHT.</span>
+        </div>
+        <div class="detail-card">
+          <span class="detail-value">WELCOMING</span>
+          <span class="detail-note">FIRST-TIMER OR FORMER D1 ATHLETE, YOU LINE UP WITH US. NO GATEKEEPING.</span>
+        </div>
       </div>
     </div>
   </div>
 
   <!-- 03 — SPRINT ORANGE -->
-  <div class="section orange-section lane-3" data-lane="3">
+  <div class="section orange-section lane-3" data-lane="3" id="color">
     <div class="lane-overlay">
       <div class="lane-o"></div><div class="lane-o"></div><div class="lane-o"></div><div class="lane-o"></div>
       <div class="lane-o"></div><div class="lane-o"></div><div class="lane-o"></div><div class="lane-o"></div>
@@ -918,24 +987,39 @@
         <div class="swatch">
           <div class="swatch-box sw-orange"></div>
           <div class="swatch-label">SPRINT ORANGE</div>
-          <div class="swatch-hex">#FF4D1F</div>
+          <div class="swatch-hex">
+            <span class="hex-value">#FF4D1F</span>
+            <button class="copy-btn" type="button" data-copy="#FF4D1F" aria-label="Copy #FF4D1F" title="Copy hex">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            </button>
+          </div>
         </div>
         <div class="swatch">
           <div class="swatch-box sw-black"></div>
           <div class="swatch-label">BLACK</div>
-          <div class="swatch-hex">#000000</div>
+          <div class="swatch-hex">
+            <span class="hex-value">#000000</span>
+            <button class="copy-btn" type="button" data-copy="#000000" aria-label="Copy #000000" title="Copy hex">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            </button>
+          </div>
         </div>
         <div class="swatch">
           <div class="swatch-box sw-white"></div>
           <div class="swatch-label">WHITE</div>
-          <div class="swatch-hex">#FFFFFF</div>
+          <div class="swatch-hex">
+            <span class="hex-value">#FFFFFF</span>
+            <button class="copy-btn" type="button" data-copy="#FFFFFF" aria-label="Copy #FFFFFF" title="Copy hex">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            </button>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
   <!-- 04 — DETAILS -->
-  <div class="section lane-2" data-lane="2" style="min-height: auto; padding-top: 120px; padding-bottom: 40px;">
+  <div class="section lane-2" data-lane="2" id="details" style="min-height: auto; padding-top: 120px; padding-bottom: 40px;">
     <div class="section-content" style="max-width: 900px;">
       <span class="section-number">04 &mdash; DETAILS</span>
       <h2 class="section-title">DETAILS</h2>
@@ -944,6 +1028,10 @@
         <div class="detail-label" style="margin-bottom: 16px;">WORDMARK</div>
         <div class="wordmark-large">TRACKRAT</div>
         <div class="wordmark-meta">FUGAZ ONE &middot; &minus;14% LETTER SPACING</div>
+        <a class="download-btn" href="/trackrat-wordmark.svg" download="trackrat-wordmark.svg">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+          DOWNLOAD WORDMARK
+        </a>
       </div>
 
       <div class="detail-label" style="margin-bottom: 16px;">BODY FONT</div>
@@ -1084,6 +1172,28 @@
         navDropdown.classList.remove('is-open');
         navDropdownTrigger.setAttribute('aria-expanded', 'false');
       }
+    });
+
+    // ---- COPY HEX TO CLIPBOARD (COLOR swatches) ----
+    const CHECK_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+    document.querySelectorAll('.copy-btn').forEach(btn => {
+      const original = btn.innerHTML;
+      btn.addEventListener('click', async () => {
+        const hex = btn.dataset.copy;
+        try {
+          await navigator.clipboard.writeText(hex);
+        } catch (e) {
+          return; // Clipboard API needs a secure context; fail quietly.
+        }
+        btn.innerHTML = CHECK_SVG;
+        btn.classList.add('copied');
+        btn.setAttribute('aria-label', 'Copied ' + hex);
+        setTimeout(() => {
+          btn.innerHTML = original;
+          btn.classList.remove('copied');
+          btn.setAttribute('aria-label', 'Copy ' + hex);
+        }, 1200);
+      });
     });
 
     // ---- SCROLL PROGRESS + RUNNER ----
