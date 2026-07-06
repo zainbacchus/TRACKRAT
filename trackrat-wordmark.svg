@@ -10,5 +10,5 @@
       text { font-family: 'Fugaz One', 'Arial Black', sans-serif; }
     </style>
   </defs>
-  <text x="0" y="250" text-anchor="start" font-size="200" letter-spacing="-0.14em" fill="#000000">TRACKRAT</text>
+  <text x="0" y="250" text-anchor="start" font-size="200" letter-spacing="-28" fill="#000000">TRACKRAT</text>
 </svg>
