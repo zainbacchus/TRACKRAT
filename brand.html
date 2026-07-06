@@ -590,11 +590,11 @@
       gap: 2px;
     }
 
-    /* ---- CULTURE GRID (4 principles, reuses .detail-card; one clean row) ---- */
+    /* ---- CULTURE GRID (5 principles, reuses .detail-card; one clean row) ---- */
     .culture-grid {
       margin-top: 48px;
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(5, 1fr);
       gap: 2px;
     }
 
@@ -772,8 +772,20 @@
         grid-template-columns: repeat(2, 1fr);
       }
 
+      /* Mobile/tablet: horizontal swipe carousel so 5 cards don't become a
+         tall vertical stack. Cards snap; a peek of the next signals swipe. */
       .culture-grid {
-        grid-template-columns: repeat(2, 1fr);
+        display: flex;
+        grid-template-columns: none;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+      }
+      .culture-grid::-webkit-scrollbar { display: none; }
+      .culture-grid .detail-card {
+        flex: 0 0 78%;
+        scroll-snap-align: start;
       }
 
       .manifesto { padding: 80px 24px; }
@@ -796,7 +808,6 @@
 
     @media (max-width: 420px) {
       nav .nav-left { font-size: 14px; }
-      .culture-grid { grid-template-columns: 1fr; }
     }
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after {
@@ -960,7 +971,7 @@
       <div class="culture-grid">
         <div class="detail-card">
           <span class="detail-value">UNCOMPROMISING</span>
-          <span class="detail-note">YOUR 100% TODAY MIGHT LOOK DIFFERENT THAN YOUR 100% TOMORROW, BUT WHAT MATTERS IS WE SHOW UP WITH 100% EFFORT.</span>
+          <span class="detail-note">YOUR 100% SHIFTS DAY TO DAY. WE BRING ALL OF IT, EVERY TIME.</span>
         </div>
         <div class="detail-card">
           <span class="detail-value">DEFIANT</span>
@@ -973,6 +984,10 @@
         <div class="detail-card">
           <span class="detail-value">WELCOMING</span>
           <span class="detail-note">FIRST-TIMER OR FORMER D1 ATHLETE, WE LINE UP TOGETHER.</span>
+        </div>
+        <div class="detail-card">
+          <span class="detail-value">IRON</span>
+          <span class="detail-note">SPRINT, CAREER, OR LIFE, WE'RE BEHIND EACH OTHER NO MATTER HOW BIG THE GOAL. IRON SHARPENS IRON.</span>
         </div>
       </div>
     </div>
