@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="format-detection" content="telephone=no, date=no, address=no, email=no" />
   <title>Dashboard · TRACKRAT</title>
-  <meta name="description" content="Your TRACKRAT member dashboard — log personal records (sprints, distance, lifts) and view member promotions. Sign in with Google." />
+  <meta name="description" content="Your TRACKRAT member dashboard. Log personal records (sprints, distance, lifts) and view member promotions. Sign in with Google." />
   <meta name="robots" content="noindex, follow" />
   <link rel="canonical" href="https://www.trackratsprint.club/dashboard" />
 
@@ -1071,7 +1071,7 @@
     // Copy-to-clipboard for promo codes (delegated — cards render dynamically).
     promoList.addEventListener('click', async (e) => {
       const btn = e.target.closest('.promo-copy');
-      if (!btn) return;
+      if (!btn || btn.classList.contains('copied')) return;
       const code = btn.dataset.code || '';
       try {
         await navigator.clipboard.writeText(code);
@@ -1083,10 +1083,12 @@
         try { document.execCommand('copy'); } catch (__) {}
         document.body.removeChild(ta);
       }
-      const label = btn.querySelector('.promo-copy-label');
+      // Standard clicked affordance (matches the copy buttons on /brand):
+      // swap the icon to a checkmark + 'Copied' for 1.2s, then restore.
+      const original = btn.innerHTML;
       btn.classList.add('copied');
-      if (label) label.textContent = 'Copied';
-      setTimeout(() => { btn.classList.remove('copied'); if (label) label.textContent = 'Copy'; }, 1600);
+      btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg><span class="promo-copy-label">Copied</span>';
+      setTimeout(() => { btn.classList.remove('copied'); btn.innerHTML = original; }, 1200);
     });
 
     // Only allow safe http(s) links; anything else renders as plain text.
@@ -1151,7 +1153,7 @@
     const METRIC_EVENTS = {
       'verticaljump':  { inputLabel: 'HEIGHT (INCHES)',        unit: 'in', step: '0.1',   placeholder: '30',    better: 'higher', decimals: 1 },
       'rsi':           { inputLabel: 'RSI',                    unit: '',   step: '0.01',  placeholder: '2.50',  better: 'higher', decimals: 2 },
-      'peakpower':     { inputLabel: 'PEAK POWER — CMJ (WATTS)', unit: 'W', step: '1',    placeholder: '4500',  better: 'higher', decimals: 0 },
+      'peakpower':     { inputLabel: 'PEAK POWER, CMJ (WATTS)', unit: 'W', step: '1',    placeholder: '4500',  better: 'higher', decimals: 0 },
       'groundcontact': { inputLabel: 'CONTACT TIME (SECONDS)', unit: 's',  step: '0.001', placeholder: '0.180', better: 'lower',  decimals: 3 }
     };
     const METRIC_SET = new Set(Object.keys(METRIC_EVENTS));

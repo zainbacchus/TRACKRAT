@@ -1,6 +1,6 @@
 # TRACKRAT
 
-> TRACKRAT is a free community sprint club based in Austin, Texas. We meet for track workouts every Sunday morning and Thursday evening. All levels, all speeds welcome. No membership fees, no sign-ups — just show up.
+> TRACKRAT is a free community sprint club based in Austin, Texas. We meet for track workouts every Sunday morning and Thursday evening. All speeds welcome. No membership fees, no sign-ups, just show up.
 
 
 ## Identity
@@ -14,8 +14,8 @@
 
 ## Meeting Times
 
-- **Sunday Sprints** — 8:00–10:00 AM, weekly, at the track at 4401 Tilley St, Austin, TX 78723
-- **Thursday Midweek Workout** — 6:30–8:00 PM, weekly, at 201 E Mary St, Austin, TX 78704
+- **Sunday Sprints:** 8:00–10:00 AM, weekly, at the track at 4401 Tilley St, Austin, TX 78723
+- **Thursday Midweek Workout:** 6:30–8:00 PM, weekly, at 201 E Mary St, Austin, TX 78704
 
 Both sessions run year-round.
 
@@ -29,7 +29,7 @@ TRACKRAT is structured but not coached competitively. Beginners line up next to 
 - **Uncompromising:** your 100% today might look different than your 100% tomorrow, but what matters is you show up with 100% effort.
 - **Defiant:** we don't follow the pack, we set the pace.
 - **High energy:** cheer loud, run loud. If you can hear us from the lot, we're doing it right.
-- **Welcoming:** first-timer or former D1 athlete, you line up with us. No gatekeeping.
+- **Welcoming:** first-timer or former D1 athlete, we line up together.
 
 Also true of the club:
 
@@ -42,14 +42,14 @@ Also true of the club:
 
 ## Pages
 
-- [Home](https://www.trackratsprint.club/) — Landing page with about/FAQ content
-- [Schedule](https://www.trackratsprint.club/schedule) — Weekly meet times, locations, .ics calendar download, Google Maps links
-- [Brand](https://www.trackratsprint.club/brand) — Brand guide (voice, naming conventions, visual identity)
-- [Podium](https://www.trackratsprint.club/podium) — Race results: meets TRACKRAT has competed in as a team, the relay squads, and final placements (searchable, filterable by discipline)
-- [2026 Invitational](https://www.trackratsprint.club/invitational) — TRACKRAT's hosted community sprint meet: October 18, 2026 at 4401 Tilley St, Austin, TX (RSVP and full schedule to be announced; under the Events menu)
-- [OFFTRACK](https://www.trackratsprint.club/offtrack) — Demo night in Austin presented by TRACKRAT (under the Events menu)
-- [Dashboard](https://www.trackratsprint.club/dashboard) — Authenticated member dashboard: log PRs and view member promotions (Google sign-in required; private per user)
-- [Shop](https://shop.trackratsprint.club) — Apparel and merchandise
+- [Home](https://www.trackratsprint.club/): Landing page with about/FAQ content
+- [Schedule](https://www.trackratsprint.club/schedule): Weekly meet times, locations, .ics calendar download, Google Maps links
+- [Brand](https://www.trackratsprint.club/brand): Brand guide (voice, naming conventions, visual identity)
+- [Podium](https://www.trackratsprint.club/podium): Race results: meets TRACKRAT has competed in as a team, the relay squads, and final placements (searchable, filterable by discipline)
+- [2026 Invitational](https://www.trackratsprint.club/invitational): TRACKRAT's hosted community sprint meet: October 18, 2026 at 4401 Tilley St, Austin, TX (RSVP and full schedule to be announced; under the Events menu)
+- [OFFTRACK](https://www.trackratsprint.club/offtrack): Demo night in Austin presented by TRACKRAT (under the Events menu)
+- [Dashboard](https://www.trackratsprint.club/dashboard): Authenticated member dashboard: log PRs and view member promotions (Google sign-in required; private per user)
+- [Shop](https://shop.trackratsprint.club): Apparel and merchandise
 
 
 ## Contact

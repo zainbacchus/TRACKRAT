@@ -65,6 +65,8 @@ TRACKRAT/
 ├── og.png                  # default 1200×630 Open Graph image
 ├── og-invitational.png     # /invitational OG image
 ├── og-offtrack.png         # /offtrack OG image
+├── trackrat-wordmark.svg   # downloadable wordmark, black (DETAILS section on /brand)
+├── trackrat-wordmark-orange.svg  # downloadable wordmark, Sprint Orange
 ├── vercel.json             # cleanUrls, security headers, redirects, cache headers
 ├── robots.txt              # Crawl rules (/dashboard handled by noindex meta, NOT Disallow)
 ├── sitemap.xml             # Public-page sitemap (excludes /dashboard; includes /offtrack)
