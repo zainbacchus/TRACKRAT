@@ -40,8 +40,12 @@ TRACKRAT/
 ├── og.png                  # default 1200×630 Open Graph image
 ├── og-invitational.png     # /invitational OG image
 ├── og-offtrack.png         # /offtrack OG image
-├── trackrat-wordmark.svg   # downloadable wordmark, black (DETAILS section on /brand)
-├── trackrat-wordmark-orange.svg  # downloadable wordmark, Sprint Orange
+├── trackrat-wordmark.svg   # wordmark, black (outlined paths, no font; /brand DETAILS kit)
+├── trackrat-wordmark-white.svg   # wordmark, white
+├── trackrat-wordmark-orange.svg  # wordmark, Sprint Orange
+├── trackrat-wordmark-black.png   # wordmark PNGs (transparent, 2000px): black / white / orange
+├── trackrat-wordmark-white.png
+├── trackrat-wordmark-orange.png
 ├── robots.txt              # Crawl rules (/dashboard is noindexed via meta, not Disallowed)
 ├── sitemap.xml             # Public-page sitemap
 ├── llms.txt                # LLM-facing site description

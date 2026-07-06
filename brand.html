@@ -598,22 +598,19 @@
       gap: 2px;
     }
 
-    /* Download buttons (DETAILS wordmark) — on the black section, so orange invert on hover. */
-    .wordmark-downloads { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 24px; }
-    .download-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 10px 18px;
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      color: var(--white);
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.15em;
+    /* Wordmark download kit (DETAILS): SVG + PNG per color. */
+    .wordmark-downloads { display: flex; flex-direction: column; align-items: flex-start; gap: 16px; margin-top: 24px; }
+    .asset-kit { display: flex; flex-direction: column; gap: 8px; }
+    .asset-row { display: flex; align-items: center; gap: 8px; }
+    .asset-name { width: 74px; font-size: 11px; font-weight: 700; letter-spacing: 0.15em; }
+    .asset-btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      min-width: 54px; padding: 6px 14px;
+      border: 1px solid rgba(255, 255, 255, 0.3); color: var(--white);
+      font-size: 11px; font-weight: 600; letter-spacing: 0.12em;
       transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
     }
-    .download-btn:hover { background: var(--orange); border-color: var(--orange); color: var(--black); }
-    .download-btn svg { width: 15px; height: 15px; }
+    .asset-btn:hover { background: var(--orange); border-color: var(--orange); color: var(--black); }
 
     /* Deep-link anchors: small breathing room above a jumped-to section. */
     .section[id], .manifesto[id] { scroll-margin-top: 24px; }
@@ -797,13 +794,6 @@
         flex-direction: column;
         gap: 8px;
       }
-    }
-
-    @media (max-width: 480px) {
-      /* Stack the wordmark download buttons full-width so they're equal
-         length instead of wrapping to two uneven rows. */
-      .wordmark-downloads { flex-direction: column; align-items: stretch; }
-      .wordmark-downloads .download-btn { justify-content: center; }
     }
 
     @media (max-width: 420px) {
@@ -1052,14 +1042,23 @@
         <div class="wordmark-large">TRACKRAT</div>
         <div class="wordmark-meta">FUGAZ ONE &middot; &minus;14% LETTER SPACING</div>
         <div class="wordmark-downloads">
-          <a class="download-btn" href="/trackrat-wordmark.svg" download="trackrat-wordmark-black.svg">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-            DOWNLOAD BLACK
-          </a>
-          <a class="download-btn" href="/trackrat-wordmark-orange.svg" download="trackrat-wordmark-orange.svg">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-            DOWNLOAD ORANGE
-          </a>
+          <div class="asset-kit">
+            <div class="asset-row">
+              <span class="asset-name">BLACK</span>
+              <a class="asset-btn" href="/trackrat-wordmark.svg" download="trackrat-wordmark-black.svg">SVG</a>
+              <a class="asset-btn" href="/trackrat-wordmark-black.png" download>PNG</a>
+            </div>
+            <div class="asset-row">
+              <span class="asset-name">WHITE</span>
+              <a class="asset-btn" href="/trackrat-wordmark-white.svg" download>SVG</a>
+              <a class="asset-btn" href="/trackrat-wordmark-white.png" download>PNG</a>
+            </div>
+            <div class="asset-row">
+              <span class="asset-name">ORANGE</span>
+              <a class="asset-btn" href="/trackrat-wordmark-orange.svg" download>SVG</a>
+              <a class="asset-btn" href="/trackrat-wordmark-orange.png" download>PNG</a>
+            </div>
+          </div>
         </div>
       </div>
 
