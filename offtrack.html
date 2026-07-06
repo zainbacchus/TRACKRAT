@@ -75,6 +75,7 @@
       overflow-x: hidden;
       -webkit-font-smoothing: antialiased;
       min-height: 100vh;
+      min-height: 100dvh; /* dvh: avoid overscroll past the footer on mobile toolbars */
     }
     a { text-decoration: none; color: inherit; -webkit-tap-highlight-color: transparent; }
     a:hover { opacity: 0.6; transition: opacity 0.2s ease; }
