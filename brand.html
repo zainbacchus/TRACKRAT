@@ -3,6 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="format-detection" content="telephone=no, date=no, address=no, email=no" />
   <title>Brand · TRACKRAT — Austin Sprint Club</title>
   <meta name="description" content="The TRACKRAT brand guide — voice, naming conventions, and visual identity for the Austin sprint club." />
   <link rel="canonical" href="https://www.trackratsprint.club/brand" />
@@ -157,7 +158,7 @@
 
     /* ---- NAV ---- */
     nav {
-      position: fixed;
+      position: absolute;
       top: 0;
       left: 0;
       right: 0;
@@ -597,12 +598,12 @@
       gap: 2px;
     }
 
-    /* Download button (DETAILS wordmark) — on the black section, so orange invert on hover. */
+    /* Download buttons (DETAILS wordmark) — on the black section, so orange invert on hover. */
+    .wordmark-downloads { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 24px; }
     .download-btn {
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      margin-top: 24px;
       padding: 10px 18px;
       border: 1px solid rgba(255, 255, 255, 0.3);
       color: var(--white);
@@ -614,8 +615,8 @@
     .download-btn:hover { background: var(--orange); border-color: var(--orange); color: var(--black); }
     .download-btn svg { width: 15px; height: 15px; }
 
-    /* Deep-link anchors: offset for the fixed nav so section tops aren't hidden. */
-    .section[id], .manifesto[id] { scroll-margin-top: 84px; }
+    /* Deep-link anchors: small breathing room above a jumped-to section. */
+    .section[id], .manifesto[id] { scroll-margin-top: 24px; }
 
     .detail-card {
       background: rgba(255, 255, 255, 0.03);
@@ -951,12 +952,12 @@
     <div class="section-content" style="max-width: 100%; width: 100%;">
       <div class="culture-grid">
         <div class="detail-card">
-          <span class="detail-value">MAX EFFORT</span>
+          <span class="detail-value">UNCOMPROMISING</span>
           <span class="detail-note">YOUR 100% TODAY MIGHT LOOK DIFFERENT THAN YOUR 100% TOMORROW, BUT WHAT MATTERS IS WE SHOW UP WITH 100% EFFORT.</span>
         </div>
         <div class="detail-card">
-          <span class="detail-value">OPINIONATED</span>
-          <span class="detail-note">STRONG TAKES, NO APOLOGIES. AGENCY OVER EGO.</span>
+          <span class="detail-value">DEFIANT</span>
+          <span class="detail-note">WE DON'T FOLLOW THE PACK, WE SET THE PACE.</span>
         </div>
         <div class="detail-card">
           <span class="detail-value">HIGH ENERGY</span>
@@ -1028,10 +1029,16 @@
         <div class="detail-label" style="margin-bottom: 16px;">WORDMARK</div>
         <div class="wordmark-large">TRACKRAT</div>
         <div class="wordmark-meta">FUGAZ ONE &middot; &minus;14% LETTER SPACING</div>
-        <a class="download-btn" href="/trackrat-wordmark.svg" download="trackrat-wordmark.svg">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-          DOWNLOAD WORDMARK
-        </a>
+        <div class="wordmark-downloads">
+          <a class="download-btn" href="/trackrat-wordmark.svg" download="trackrat-wordmark-black.svg">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            DOWNLOAD BLACK
+          </a>
+          <a class="download-btn" href="/trackrat-wordmark-orange.svg" download="trackrat-wordmark-orange.svg">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            DOWNLOAD ORANGE
+          </a>
+        </div>
       </div>
 
       <div class="detail-label" style="margin-bottom: 16px;">BODY FONT</div>
@@ -1176,23 +1183,57 @@
 
     // ---- COPY HEX TO CLIPBOARD (COLOR swatches) ----
     const CHECK_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+
+    // iOS-safe clipboard: try the async API, fall back to execCommand with a
+    // selection range (mobile Safari rejects/omits navigator.clipboard in some
+    // contexts, which previously left the checkmark from ever showing).
+    function fallbackCopy(text) {
+      try {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.contentEditable = 'true';
+        ta.readOnly = false;
+        ta.style.position = 'fixed';
+        ta.style.top = '0';
+        ta.style.left = '0';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        const range = document.createRange();
+        range.selectNodeContents(ta);
+        const sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(range);
+        ta.setSelectionRange(0, text.length);
+        const ok = document.execCommand('copy');
+        document.body.removeChild(ta);
+        return ok;
+      } catch (e) {
+        return false;
+      }
+    }
+
     document.querySelectorAll('.copy-btn').forEach(btn => {
       const original = btn.innerHTML;
-      btn.addEventListener('click', async () => {
-        const hex = btn.dataset.copy;
-        try {
-          await navigator.clipboard.writeText(hex);
-        } catch (e) {
-          return; // Clipboard API needs a secure context; fail quietly.
-        }
+      function showCopied() {
         btn.innerHTML = CHECK_SVG;
         btn.classList.add('copied');
-        btn.setAttribute('aria-label', 'Copied ' + hex);
+        btn.setAttribute('aria-label', 'Copied ' + btn.dataset.copy);
         setTimeout(() => {
           btn.innerHTML = original;
           btn.classList.remove('copied');
-          btn.setAttribute('aria-label', 'Copy ' + hex);
+          btn.setAttribute('aria-label', 'Copy ' + btn.dataset.copy);
         }, 1200);
+      }
+      btn.addEventListener('click', async () => {
+        const hex = btn.dataset.copy;
+        try {
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            await navigator.clipboard.writeText(hex);
+            showCopied();
+            return;
+          }
+        } catch (e) { /* fall through to execCommand */ }
+        if (fallbackCopy(hex)) showCopied();
       });
     });
 
