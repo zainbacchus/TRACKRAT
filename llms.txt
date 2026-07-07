@@ -49,7 +49,7 @@ Also true of the club:
 - [Podium](https://www.trackratsprint.club/podium): Race results: meets TRACKRAT has competed in as a team, the relay squads, and final placements (searchable, filterable by discipline)
 - [2026 Invitational](https://www.trackratsprint.club/invitational): TRACKRAT's hosted community sprint meet: October 18, 2026 at 4401 Tilley St, Austin, TX (RSVP and full schedule to be announced; under the Events menu)
 - [OFFTRACK](https://www.trackratsprint.club/offtrack): Demo night in Austin presented by TRACKRAT (under the Events menu)
-- [Dashboard](https://www.trackratsprint.club/dashboard): Authenticated member dashboard: log PRs and view member promotions (Google sign-in required; private per user)
+- [Dashboard](https://www.trackratsprint.club/dashboard): Authenticated member dashboard: log PRs, view partner promotions, and browse the members-only club photo/video gallery (Google sign-in required; private per user; gallery needs a member-allowlisted email)
 - [Shop](https://shop.trackratsprint.club): Apparel and merchandise
 
 

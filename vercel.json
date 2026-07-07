@@ -90,6 +90,7 @@
     },
     { "source": "/2026-invitational", "destination": "/invitational", "permanent": true },
     { "source": "/pr", "destination": "/dashboard", "permanent": true },
-    { "source": "/prs", "destination": "/dashboard", "permanent": true }
+    { "source": "/prs", "destination": "/dashboard", "permanent": true },
+    { "source": "/gallery", "destination": "/dashboard#gallery", "permanent": true }
   ]
 }

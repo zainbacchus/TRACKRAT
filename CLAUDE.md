@@ -13,15 +13,19 @@ Pages:
 - `/` — landing (with about/FAQ content + structured data for SEO/AEO)
 - `/schedule` — weekly schedule with `.ics` calendar export
 - `/brand` — brand guide
-- `/podium` — competition results: meets TRACKRAT raced as a team, the relay squads, and placements (newest first; client-side search + discipline filter; static data array)
+- `/podium` — competition results: meets TRACKRAT raced as a team, the relay squads, and placements (newest first; client-side search + discipline filter; static data array; grouped under the **Club** nav dropdown)
 - `/invitational` — 2026 Invitational event page: October 18, 2026 at
   4401 Tilley St (has Event JSON-LD with a date-only `startDate`; no RSVP
   yet — when it exists, add an `offers` block with the RSVP URL and a
   start time, mirroring offtrack.html's Event)
 - `/offtrack` — OFFTRACK demo night, presented by TRACKRAT (grouped under the **Events** nav dropdown)
 - `/dashboard` — member dashboard (Google sign-in): a **Personal Records** tab
-  (per-user PRs via Supabase) + a **Promotions** tab (member perks from the
-  `promotions` table)
+  (per-user PRs via Supabase), a **Partners** tab (member perks from the
+  `promotions` table; deep link `/dashboard#PARTNERS`), and a **Gallery**
+  tab (members-only club photos/videos from the shared Google Drive
+  folder; deep link `/dashboard#gallery` — see the **Gallery** section
+  below). `/gallery` used to be its own page; it now 301-redirects to
+  `/dashboard#gallery`.
 
 > Note: the dashboard is `/dashboard`. It used to be `/pr` (and `/prs` before
 > that); both now 301-redirect to `/dashboard`. If you see `/pr` or `pr.html`
@@ -52,11 +56,13 @@ TRACKRAT/
 ├── podium.html             # /podium                — competition results (search + discipline filter)
 ├── invitational.html       # /invitational          — 2026 Invitational (Oct 18, 2026 · Tilley St; RSVP TBD)
 ├── offtrack.html           # /offtrack              — OFFTRACK demo night (under Events dropdown)
-├── dashboard.html          # /dashboard             — member dashboard: PRs + Promotions (Google sign-in)
+├── dashboard.html          # /dashboard             — member dashboard: PRs + Partners + Gallery (Google sign-in)
 ├── 404.html                # branded 404 (served automatically by Vercel)
 ├── js/
 │   ├── supabase-config.js  # Shared Supabase client (URL + anon key)
 │   └── vendor/             # Vendored Supabase JS SDK (dep-inlined ESM bundle + node-*.mjs polyfills)
+├── apps-script/
+│   └── gallery/            # Apps Script web app behind /gallery (Code.gs + manifest; deployed manually)
 ├── fonts/                  # Self-hosted webfonts (woff2, latin subset) + OFL licenses
 │   ├── fugaz-one-latin.woff2
 │   ├── ibm-plex-mono-{400,500,600,700}-latin.woff2
@@ -73,7 +79,7 @@ TRACKRAT/
 ├── trackrat-wordmark-orange.png
 ├── vercel.json             # cleanUrls, security headers, redirects, cache headers
 ├── robots.txt              # Crawl rules (/dashboard handled by noindex meta, NOT Disallow)
-├── sitemap.xml             # Public-page sitemap (excludes /dashboard; includes /offtrack)
+├── sitemap.xml             # Public-page sitemap (excludes /dashboard + /gallery; includes /offtrack)
 ├── llms.txt                # LLM-facing site description
 ├── favicon.ico
 ├── LICENSE                 # MIT for code; brand assets all rights reserved
@@ -96,7 +102,9 @@ rewrite**: unknown URLs return the branded `404.html` with a real 404
 status (a catch-all to index.html would make every typo a soft-404).
 
 Redirects: apex → `www.trackratsprint.club` (canonical host),
-`/2026-invitational` → `/invitational`, and `/pr` + `/prs` → `/dashboard`.
+`/2026-invitational` → `/invitational`, `/pr` + `/prs` → `/dashboard`,
+and `/gallery` → `/dashboard#gallery` (the gallery used to be its own
+page).
 
 Headers: security baseline on `/(.*)`(HSTS, nosniff, `X-Frame-Options:
 DENY`, CSP `frame-ancestors 'none'; object-src 'none'; base-uri 'none'`,
@@ -147,9 +155,10 @@ Every public page ships with:
   Search, Perplexity, etc. Every FAQ answer must stay grounded in visible
   page copy (invisible-answer FAQ markup can be treated as spam).
 
-`dashboard.html` carries `noindex, follow`; it's a private dashboard. It is
-deliberately NOT `Disallow`ed in robots.txt — blocking crawl would prevent
-Google from ever seeing the noindex meta.
+`dashboard.html` carries `noindex, follow`; it's a member-private page
+(and excluded from sitemap.xml). It is deliberately NOT `Disallow`ed in
+robots.txt — blocking crawl would prevent Google from ever seeing the
+noindex meta.
 
 `schedule.html` ships `Event` JSON-LD for both weekly sessions
 (`eventSchedule`, weekly recurrence). Both sessions carry a full street
@@ -189,7 +198,7 @@ the same filename into `/fonts/`.
 
 ### Track-lane background
 
-`schedule.html`, `brand.html`, and `dashboard.html` use a fixed 8-lane track backdrop:
+`schedule.html`, `brand.html`, `podium.html`, and `dashboard.html` use a fixed 8-lane track backdrop:
 
 ```html
 <div class="track-lanes">
@@ -206,22 +215,35 @@ without lanes.
 The only per-page difference is the `.menu-toggle` color (black on the orange/
 paper pages, white on the black pages) — the rest of the nav markup, CSS, and
 JS must stay identical everywhere. There is **no HOME link** — the `TRACKRAT`
-wordmark on the left is the home link everywhere. The `[ DASHBOARD ]` slot is
-**not** state-aware: it shows regardless of session; `/dashboard` handles
-signed-out vs signed-in.
+wordmark on the left is the home link everywhere. There is also **no
+top-level DASHBOARD link** — the dashboard is reached via CLUB →
+PERSONAL RECORDS / PROMOTIONS; those links are not state-aware
+(`/dashboard` handles signed-out vs signed-in).
 
-Desktop order: `SHOP · SCHEDULE · BRAND · PODIUM · EVENTS ▾ · DASHBOARD`
+Desktop order: `SHOP · SCHEDULE · BRAND · CLUB ▾ · EVENTS ▾`
 
-**Events is a dropdown, not a page** (there is intentionally no `/events`
-route). It groups the two event pages: **2026 Invitational** and
-**OFFTRACK** (`/offtrack`). Desktop: a `.nav-dropdown` whose `.nav-dropdown-panel`
-opens on `:hover` / `:focus-within` (CSS) plus click-toggle + click-outside +
-Escape (JS); the panel is always solid black with a hairline border so it reads
-the same on the orange pages and the black pages. Mobile: a
-`.mobile-accordion-trigger` button (a direct child of `.mobile-menu-links`, so
-the slide-in stagger still works — note the stagger now runs to `:nth-child(7)`)
-that toggles `.mobile-accordion-panel.is-open`. If you add another nav item,
-replicate the whole block across all pages and re-check the stagger count.
+The centered bar collapses to the hamburger at **≤880px** (the
+breakpoint is tuned to where the bar starts crowding the
+absolute-positioned wordmark, so re-tune it on every page if the bar
+gets wider or narrower).
+
+**CLUB and EVENTS are dropdowns, not pages** (there are intentionally no
+`/club` or `/events` routes). CLUB groups the member-facing destinations:
+GALLERY (`/dashboard#gallery`), PODIUM, PERSONAL RECORDS (`/dashboard`),
+and PARTNERS (`/dashboard#PARTNERS`) — the hashes deep-link to dashboard
+tabs (matched case-insensitively; the legacy `#promotions` still works).
+EVENTS groups the two event pages: **2026 Invitational** and **OFFTRACK**
+(`/offtrack`). Desktop: `.nav-dropdown`s whose `.nav-dropdown-panel`
+opens on `:hover` / `:focus-within` (CSS) plus click-toggle +
+click-outside + Escape (JS — the shared nav script handles any number of
+dropdowns and closes the others when one opens); the panel is always
+solid black with a hairline border so it reads the same on the orange
+pages and the black pages. Mobile: one `.mobile-accordion-trigger`
+button per group (direct children of `.mobile-menu-links`, so the
+slide-in stagger still works — the stagger runs to `:nth-child(7)`)
+toggling `.mobile-accordion-panel.is-open`. If you add another nav item,
+replicate the whole block across all pages and re-check the stagger
+count.
 
 Mobile menu is a full-screen overlay with its own **header** — the TRACKRAT
 wordmark (→ home) on the left and an explicit **close X** (`#menuClose`) on the
@@ -230,19 +252,99 @@ buried by a z-index stacking trap (nav's `z-index:100` context capped the
 toggle below the `150` overlay). Don't move the close control back into `<nav>`.
 The hamburger (`#menuToggle`) only opens; `#menuClose`, tapping a link, and
 Escape all close. Focus moves to the X on open, back to the hamburger on close.
-Stagger fade-ins run on `.mobile-menu-links > *:nth-child(1…7)` (7 since the
-Events accordion + the Podium link were added).
+Stagger fade-ins run on `.mobile-menu-links > *:nth-child(1…7)` (7: SHOP,
+SCHEDULE, BRAND, the CLUB accordion trigger + panel, the EVENTS accordion
+trigger + panel).
+
+## Gallery (Dashboard → GALLERY tab)
+
+Members-only photo + video gallery served straight from the club's
+shared **Google Drive** folder. It lives as the third tab of
+`/dashboard` (`#galleryPanel` in dashboard.html; deep link
+`/dashboard#gallery`; the old `/gallery` route 301-redirects there). No
+API key, no build step; the dashboard's Google sign-in + Supabase gate
+who gets in:
+
+- **Backend** — a Google Apps Script **web app** (source committed at
+  `apps-script/gallery/Code.gs` + `appsscript.json`; deployed manually at
+  script.google.com — steps in README's *Photo gallery* section). Deployed
+  "Execute as: Me" / access "Anyone", so it runs as the club's Google
+  account: GET returns the folder listing as JSON, POST accepts an upload
+  — both require the view token (below). Deploy it from the account that
+  owns the photo folder — website uploads are created by (and billed to
+  the storage of) that account.
+- **Config** — `GALLERY_CONFIG.scriptUrl` at the top of the GALLERY TAB
+  block in dashboard.html's script (the `/exec` URL; empty string = the
+  tab shows setup instructions), plus optional `folderUrl`. `FOLDER_ID`
+  and `VIEW_TOKEN` live only in the *deployed* Code.gs — the repo copy
+  keeps placeholders (the repo is public).
+- **Members gate** — the gallery code is a block-scoped section of
+  dashboard.html's module script (its only exports are the
+  `openGalleryTab` / `resetGalleryTab` hooks used by `selectTab` and the
+  auth listener). Lazy like the Partners tab: on first open it reads the
+  **view token** from Supabase's `gallery_access` table — RLS lets the
+  row through only when `is_member()` (a security-definer function
+  checking the JWT email against the `members` allowlist; DDL in
+  README's *Photo gallery* section; both tables + real values live only
+  in Supabase). Zero rows = a "MEMBERS ONLY / not on the list yet" note
+  inside the tab. The token rides every listing/upload request
+  (`?token=` / body `token`) and must equal `VIEW_TOKEN` in the deployed
+  Code.gs — rotate both together. `resetGalleryTab` runs on sign-out /
+  user switch so one member's roll never lingers for the next account.
+- **Images** — Drive's public thumbnail CDN:
+  `https://drive.google.com/thumbnail?id=<id>&sz=w400` for tiles, `w1600`
+  for the lightbox. This only works while the folder is shared **"Anyone
+  with the link · Viewer"** (files inherit). Exactly two size buckets on
+  purpose — keeps the CDN cache hot. Videos play in the lightbox via a
+  `https://drive.google.com/file/d/<id>/preview` iframe (Drive's own
+  player); the page CSP doesn't restrict child frames, only being framed.
+- **Albums** — one level of subfolders inside the photo folder. Root-level
+  files appear under ALL only. The upload form can create a new album
+  (server-side, with a lock to avoid duplicate folders). Chips are
+  ordered newest-event-first by the `M.DD.YY-` date prefix in the folder
+  name (`albumCompare` in gallery.html; undated names fall back to Z→A),
+  and the row collapses to ALL + the three newest + a `+ N MORE` toggle
+  (`CHIPS_COLLAPSED`); the active album always stays visible even when
+  it's behind the fold.
+- **Uploads** — members-only via the same view token; there is no
+  separate upload code. The POST body is JSON sent as
+  `Content-Type: text/plain` **on purpose**: Apps Script web apps can't
+  answer a CORS preflight, and text/plain keeps the request "simple".
+  ~40MB/file cap (Apps Script's POST limit is ~50MB of base64); bigger
+  files go through the Drive folder link shown in the form. Uploads are
+  stored byte-for-byte — **never add client-side recompression**;
+  preserving quality is the whole reason the club moved to Drive.
+- **Caching** — the script caches its listing for 5 minutes
+  (CacheService) and busts the cache on every successful upload, so page
+  uploads appear immediately; files added directly in Drive can take up
+  to 5 minutes.
+- **Privacy** — this is a club gate, not cryptographic privacy. The
+  Drive folder stays link-shared ("Anyone with the link · Viewer") so
+  Drive's thumbnail CDN can serve images anonymously — meaning any
+  individual file/folder Drive link still works for whoever it's
+  forwarded to, exactly like sharing from Drive directly. The website
+  layer (sign-in + allowlist + token) gates *discovery and listing*.
+  The dashboard page carrying the tab is `noindex` and excluded from
+  sitemap.xml (deliberately not robots-Disallowed). Locking the folder
+  itself would require proxying every image through an authorized
+  backend and losing Drive's CDN — deliberately not done.
 
 ## Dashboard (`/dashboard`)
 
 Authenticated member dashboard backed by Supabase (`dashboard.html`, formerly
-`pr.html` / `/pr`). Two tabs inside the signed-in view, toggled by
-`.dash-tab` buttons (`selectTab('pr'|'promo')`):
+`pr.html` / `/pr`). Three tabs inside the signed-in view, toggled by
+`.dash-tab` buttons (`selectTab('pr'|'promo'|'gallery')`); the nav's CLUB
+dropdown deep-links via hashes handled by `applyTabHash()` (initial load
++ `hashchange`, case-insensitive): `#PARTNERS` (legacy `#promotions`
+too) → Partners, `#gallery` → Gallery, anything else → Personal Records.
 
 - **Personal Records** (default) — the PR tracker described below, wrapped in
   `#prPanel`.
-- **Promotions** — `#promoPanel`. Lazy-loads on first open from the Supabase
-  `promotions` table and renders `.promo-card`s. See **Promotions** below.
+- **Partners** — `#promoPanel` (promotions under the hood). Lazy-loads on
+  first open from the Supabase `promotions` table and renders
+  `.promo-card`s. See **Promotions** below.
+- **Gallery** — `#galleryPanel`. The Drive-backed club gallery; see the
+  **Gallery** section above.
 
 ### Promotions tab
 
@@ -419,7 +521,8 @@ don't apply to plain file servers.
 3. Add the link to **every** page's nav (desktop `.nav-center` and mobile
    `.mobile-menu-links`) — and update the
    `.mobile-menu.is-open .mobile-menu-links > *:nth-child(N)` stagger delays
-   accordingly. (Or add it under the Events dropdown if it's an event.)
+   accordingly. (Or add it under the Club or Events dropdown if it
+   belongs in one of those groups.)
 4. If indexable, add to `sitemap.xml` with a `<lastmod>`. If user-private,
    set `<meta name="robots" content="noindex, follow">` in the page head —
    and do NOT also `Disallow` it in robots.txt (a crawl block would stop
@@ -468,10 +571,11 @@ Static files + edge functions only.
 4. **Match the existing style.** Black background, orange accent, Fugaz One +
    IBM Plex Mono, ALL-CAPS labels with letter-spacing on UI chrome, track
    lanes for dashboard-style pages.
-5. **Keep the nav in lockstep across all seven nav pages** (index, schedule,
-   brand, podium, invitational, offtrack, dashboard). A change to nav markup, the
-   Events dropdown/accordion, or stagger delays must be applied everywhere or
-   pages will drift. (404.html has no nav.)
+5. **Keep the nav in lockstep across all eight nav pages** (index, schedule,
+   brand, podium, gallery, invitational, offtrack, dashboard). A change to nav
+   markup, the Club/Events dropdowns/accordions, stagger delays, or the
+   1060px collapse breakpoint must be applied everywhere or pages will
+   drift. (404.html has no nav.)
 6. **For PR features, trust RLS.** Don't add server-side authorization logic
    — it's already in Postgres. The client talks to Supabase directly.
 7. **Mobile-first.** Test at 375px before declaring done.

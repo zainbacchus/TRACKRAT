@@ -13,6 +13,7 @@ and JS. Hosted on Vercel.
 | Pages | One self-contained `.html` per route (inline CSS + JS) |
 | Auth (PR tracker) | Supabase Auth (Google OAuth) |
 | Database (PR tracker) | Supabase Postgres with Row Level Security |
+| Photo gallery | Google Drive folder + Apps Script web app (no API key — see [Photo gallery](#photo-gallery-google-drive)) |
 | Fonts | Self-hosted Fugaz One (display) + IBM Plex Mono (UI), latin subset, woff2 in `/fonts` |
 | Build step | None |
 
@@ -31,6 +32,8 @@ TRACKRAT/
 ├── js/
 │   ├── supabase-config.js  # Shared Supabase client (URL + anon key)
 │   └── vendor/             # Vendored (self-hosted) Supabase JS SDK bundle
+├── apps-script/
+│   └── gallery/            # Apps Script web app behind /gallery (Code.gs + manifest; deployed manually)
 ├── fonts/                  # Self-hosted webfonts (woff2, latin subset) + OFL license texts
 │   ├── fugaz-one-latin.woff2
 │   ├── ibm-plex-mono-{400,500,600,700}-latin.woff2
@@ -148,6 +151,160 @@ import (recursively — polyfills import each other) to the local
 the import path in `js/supabase-config.js`, and test sign-in + a PR save
 on production before calling it done.
 
+## Photo gallery (Google Drive)
+
+The Dashboard's **GALLERY tab** (`/dashboard#gallery` — the old
+`/gallery` route redirects there) renders the club's shared Google Drive
+photo folder as a mobile-first, **members-only** gallery — album chips
+from subfolders, a swipeable lightbox, Drive-hosted video playback — and
+lets members add photos from the page itself. Photos never leave Drive
+(full quality preserved), and the site needs **no Google API key**: a
+tiny Google Apps Script web app sits in front of the folder, listing it
+and receiving uploads while running as the Google account that deployed
+it.
+
+**Access model**: viewing requires Google sign-in (Supabase) *and* an
+email on the `members` allowlist. Members' browsers read a shared
+`view_token` from Supabase (RLS: allowlisted members only) and send it
+with every request; the Apps Script rejects requests without it. The
+Drive folder itself stays link-shared ("Anyone with the link · Viewer")
+so Drive's thumbnail CDN can serve images — so treat this as a club
+gate, not secrecy: any individual file's Drive link still works for
+whoever it's forwarded to, exactly like sharing from Drive directly.
+
+```
+gallery.html ──sign-in────▶ Supabase: members allowlist → view_token
+gallery.html ──GET+token──▶ Apps Script /exec ──▶ folder listing (JSON)
+gallery.html ──POST+token─▶ Apps Script /exec ──▶ file created in the folder
+<img> tiles ──────────────▶ drive.google.com/thumbnail?id=…  (Drive's public CDN)
+```
+
+### One-time setup (~10 minutes)
+
+1. **Pick the Drive folder** members already use. Optional but nice:
+   organize photos into subfolders — each subfolder becomes an album
+   filter on the site. Do everything below **from the Google account that
+   should own the photos** — website uploads are created by that account
+   and count against its storage quota.
+2. **Share the folder**: Share → *Anyone with the link · Viewer*. Drive's
+   thumbnail CDN only serves link-public files; skip this and the gallery
+   renders broken tiles.
+3. **Create the script**: go to [script.new](https://script.new), name it
+   "TRACKRAT Gallery", and paste in
+   [`apps-script/gallery/Code.gs`](apps-script/gallery/Code.gs). Set
+   `FOLDER_ID` (the long id in the folder's URL) and `VIEW_TOKEN` (a
+   long random string — the same value goes into Supabase in step 7).
+4. **Set the manifest**: Project Settings (gear) → check *Show
+   "appsscript.json" manifest file in editor* → replace its contents with
+   [`apps-script/gallery/appsscript.json`](apps-script/gallery/appsscript.json).
+   It only pins the timezone + web-app access; OAuth scopes are
+   auto-detected from the code (don't hand-list `oauthScopes` — a mangled
+   scope string causes `Error 400: invalid_scope` at authorization).
+5. **Deploy**: Deploy → New deployment → type **Web app** → *Execute as:*
+   **Me** · *Who has access:* **Anyone** → Deploy, authorize when
+   prompted, and copy the `.../exec` URL. On a personal account expect
+   the *"Google hasn't verified this app"* interstitial — that's normal
+   for a self-owned script: Advanced → *Go to TRACKRAT Gallery (unsafe)*
+   → Allow.
+6. **Wire the site**: paste the `/exec` URL into
+   `GALLERY_CONFIG.scriptUrl` at the top of the GALLERY TAB block in
+   `dashboard.html`'s `<script>` (optionally the folder's share link into
+   `folderUrl`), and deploy.
+7. **Create the Supabase tables** (SQL Editor → New query). Replace the
+   placeholder token with the real `VIEW_TOKEN` value and add real member
+   emails — **run only in the SQL editor, never commit real values** (this
+   repo is public):
+
+   ```sql
+   -- Who can see the gallery. Deny-all RLS + no grants: clients never
+   -- read this table directly — is_member() (security definer) does.
+   create table if not exists public.members (
+     email      text primary key,
+     note       text,
+     created_at timestamptz not null default now()
+   );
+   alter table public.members enable row level security;
+
+   -- True when the signed-in user's email is on the allowlist.
+   create or replace function public.is_member()
+   returns boolean
+   language sql
+   stable
+   security definer
+   set search_path = public
+   as $$
+     select exists (
+       select 1 from public.members
+       where lower(email) = lower(coalesce(auth.jwt() ->> 'email', ''))
+     );
+   $$;
+
+   -- One row holding the gallery view token; readable by signed-in
+   -- members only. The gallery page forwards it to the Apps Script.
+   create table if not exists public.gallery_access (
+     id         int primary key default 1 check (id = 1),
+     view_token text not null
+   );
+   alter table public.gallery_access enable row level security;
+   grant select on public.gallery_access to authenticated;
+   create policy "gallery_access_members_only" on public.gallery_access
+     for select to authenticated using (public.is_member());
+
+   -- ⚠️ Placeholders — swap in the real token + member emails before
+   -- running; keep them out of this repo.
+   insert into public.gallery_access (id, view_token)
+     values (1, 'REPLACE-WITH-THE-SAME-TOKEN-AS-VIEW_TOKEN')
+     on conflict (id) do update set view_token = excluded.view_token;
+
+   insert into public.members (email, note) values
+     ('you@example.com', 'founder')
+   on conflict (email) do nothing;
+   ```
+
+8. **Add members**: insert each member's Google email into `members`
+   (Table Editor or SQL). Matching is case-insensitive. Removing a row
+   revokes access on their next visit. (No new Supabase redirect URLs
+   are needed — sign-in happens on `/dashboard`, which is already
+   allowlisted.)
+
+Until steps 5–7 are done the page shows sign-in but members see errors.
+
+### Day-to-day
+
+- **Adding photos**: `+ ADD PHOTOS` on the page (members only — no code
+  to remember; pick an album or create a new one), or drop files straight
+  into the Drive folder / Drive app. Page uploads appear immediately;
+  files added directly in Drive show up within ~5 minutes (the script
+  caches its listing for 5 minutes; page uploads bust the cache).
+- **Adding / removing a member**: insert or delete their Google email in
+  the Supabase `members` table. That's the whole membership system.
+- **Rotating the view token**: update `view_token` in `gallery_access`
+  AND `VIEW_TOKEN` in the Apps Script (publish a new version) — they
+  must match.
+- **Albums** are subfolders of the photo folder, one level deep. Files in
+  the folder root appear under ALL only.
+- **Videos** play in the lightbox via Drive's own player. The in-page
+  form accepts files up to ~40MB (Apps Script POST limit) — bigger
+  videos go straight into the Drive folder.
+- **Quality**: uploads are stored byte-for-byte — no client-side
+  recompression, that's the point of using Drive.
+- **Changing the script** (including `UPLOAD_CODE`): edit in the Apps
+  Script editor, then Deploy → **Manage deployments** → pencil →
+  Version: **New version**. Editing alone doesn't ship, and a brand-new
+  deployment would mint a different `/exec` URL.
+
+### Troubleshooting
+
+| Symptom | Likely cause / fix |
+|---|---|
+| `Error 400: invalid_scope` when authorizing | A hand-edited `oauthScopes` list in the manifest got mangled (use the repo manifest — it has none; scopes auto-infer), or a Workspace admin blocks the Drive scope for unverified apps — deploy from the personal/club Gmail that owns the folder instead. |
+| "Backend answered with something that isn't JSON" | Web app not deployed with access **Anyone** (it's returning a Google sign-in page). Redeploy with the right access. |
+| Broken / blank tiles | Folder isn't shared *Anyone with the link · Viewer*. |
+| Member sees "NOT ON THE LIST YET" after sign-in | Their Google email isn't in `members` (matching is case-insensitive), or the gallery SQL from setup step 7 hasn't been run. |
+| "COULDN'T LOAD… unauthorized" or upload `UNAUTHORIZED` | `view_token` in Supabase's `gallery_access` ≠ `VIEW_TOKEN` in the *deployed* script version. Fix one, publish a new version if the script changed. |
+| New Drive uploads not on the site | Listing cache — up to 5 min. Page uploads bust it instantly. |
+| Script edits have no effect | Publish a **new version** via Manage deployments — saving the editor isn't deploying. |
+
 ## Local Development
 
 ```bash
@@ -168,13 +325,16 @@ files + edge functions only.
 
 # Dashboard (`/dashboard`)
 
-Authenticated member dashboard at `/dashboard` (Google sign-in). It has two
-tabs:
+Authenticated member dashboard at `/dashboard` (Google sign-in). It has three
+tabs (the nav's CLUB menu deep-links to them via `#PARTNERS` / `#gallery`):
 
 - **Personal Records** (default) — log PRs across 16 events (below).
-- **Promotions** — member discount codes / perks, loaded from the Supabase
+- **Partners** — member discount codes / perks, loaded from the Supabase
   `promotions` table (see [Promotions](#promotions) below). Visible only to
   signed-in users; the codes are not committed to this public repo.
+- **Gallery** — the members-only club photo gallery (see
+  [Photo gallery](#photo-gallery-google-drive) above; requires an email on
+  the `members` allowlist).
 
 The old `/pr` route 301-redirects to `/dashboard`.
 

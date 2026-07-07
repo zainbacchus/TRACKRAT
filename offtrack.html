@@ -133,8 +133,8 @@
     .nav-dropdown-panel a:hover { color: var(--orange); opacity: 1; }
 
     /* Collapse nav to the hamburger before the centered link bar crowds the
-       absolute wordmark (the multi-item nav overlaps it from ~770-900px). */
-    @media (max-width: 940px) {
+       absolute wordmark (the multi-item nav overlaps it below ~860px). */
+    @media (max-width: 880px) {
       nav { justify-content: space-between; padding: 16px 20px; }
       nav .nav-left { position: static; font-size: 16px; flex-shrink: 0; }
       nav .nav-center { display: none !important; }
@@ -451,7 +451,18 @@
       <a href="https://shop.trackratsprint.club" target="_blank" rel="noopener">[ SHOP ]</a>
       <a href="/schedule">[ SCHEDULE ]</a>
       <a href="/brand">[ BRAND ]</a>
-      <a href="/podium">[ PODIUM ]</a>
+      <div class="nav-dropdown">
+        <button class="nav-dropdown-trigger" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="clubMenu">
+          [ CLUB ]
+          <svg class="nav-dropdown-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
+        </button>
+        <div class="nav-dropdown-panel" id="clubMenu" role="menu">
+          <a href="/dashboard#gallery" role="menuitem">GALLERY</a>
+          <a href="/podium" role="menuitem">PODIUM</a>
+          <a href="/dashboard" role="menuitem">PERSONAL RECORDS</a>
+          <a href="/dashboard#PARTNERS" role="menuitem">PARTNERS</a>
+        </div>
+      </div>
       <div class="nav-dropdown">
         <button class="nav-dropdown-trigger" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="eventsMenu">
           [ EVENTS ]
@@ -462,7 +473,6 @@
           <a href="/offtrack" role="menuitem">OFFTRACK</a>
         </div>
       </div>
-      <a href="/dashboard">[ DASHBOARD ]</a>
     </div>
     <button class="menu-toggle" id="menuToggle" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
       <span></span>
@@ -486,7 +496,16 @@
       <a href="https://shop.trackratsprint.club" target="_blank" rel="noopener">SHOP</a>
       <a href="/schedule">SCHEDULE</a>
       <a href="/brand">BRAND</a>
-      <a href="/podium">PODIUM</a>
+      <button class="mobile-accordion-trigger" type="button" aria-expanded="false" aria-controls="mobileClub">
+        CLUB
+        <svg class="acc-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
+      </button>
+      <div class="mobile-accordion-panel" id="mobileClub">
+        <a href="/dashboard#gallery">GALLERY</a>
+        <a href="/podium">PODIUM</a>
+        <a href="/dashboard">PERSONAL RECORDS</a>
+        <a href="/dashboard#PARTNERS">PARTNERS</a>
+      </div>
       <button class="mobile-accordion-trigger" type="button" aria-expanded="false" aria-controls="mobileEvents">
         EVENTS
         <svg class="acc-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -495,7 +514,6 @@
         <a href="/invitational">2026 INVITATIONAL</a>
         <a href="/offtrack">OFFTRACK</a>
       </div>
-      <a href="/dashboard">DASHBOARD</a>
     </div>
     <div class="mobile-menu-footer">TRACKRAT SPRINT CLUB</div>
   </div>
@@ -618,41 +636,46 @@
     // so it's intentionally not matched here).
     mobileMenu.querySelectorAll('a').forEach(link => link.addEventListener('click', closeMenu));
 
-    // Desktop Events dropdown — hover/focus is CSS; this adds click + a11y.
-    const navDropdown = document.querySelector('.nav-dropdown');
-    const navDropdownTrigger = navDropdown && navDropdown.querySelector('.nav-dropdown-trigger');
-    if (navDropdown) {
-      navDropdownTrigger.addEventListener('click', e => {
-        e.stopPropagation();
-        const open = navDropdown.classList.toggle('is-open');
-        navDropdownTrigger.setAttribute('aria-expanded', open ? 'true' : 'false');
-      });
-      document.addEventListener('click', e => {
-        if (!navDropdown.contains(e.target)) {
-          navDropdown.classList.remove('is-open');
-          navDropdownTrigger.setAttribute('aria-expanded', 'false');
-        }
+    // Desktop dropdowns (Club + Events) — hover/focus is CSS; this adds click + a11y.
+    const navDropdowns = Array.from(document.querySelectorAll('.nav-dropdown'));
+    function closeNavDropdowns() {
+      navDropdowns.forEach(dd => {
+        dd.classList.remove('is-open');
+        dd.querySelector('.nav-dropdown-trigger').setAttribute('aria-expanded', 'false');
       });
     }
+    navDropdowns.forEach(dd => {
+      const trigger = dd.querySelector('.nav-dropdown-trigger');
+      trigger.addEventListener('click', e => {
+        e.stopPropagation();
+        const open = dd.classList.toggle('is-open');
+        trigger.setAttribute('aria-expanded', open ? 'true' : 'false');
+        navDropdowns.forEach(other => {
+          if (other !== dd) {
+            other.classList.remove('is-open');
+            other.querySelector('.nav-dropdown-trigger').setAttribute('aria-expanded', 'false');
+          }
+        });
+      });
+    });
+    document.addEventListener('click', e => {
+      if (!navDropdowns.some(dd => dd.contains(e.target))) closeNavDropdowns();
+    });
 
     // Mobile Events accordion.
-    const accTrigger = document.querySelector('.mobile-accordion-trigger');
-    if (accTrigger) {
+    document.querySelectorAll('.mobile-accordion-trigger').forEach(accTrigger => {
       accTrigger.addEventListener('click', () => {
         const panel = document.getElementById(accTrigger.getAttribute('aria-controls'));
         const open = accTrigger.getAttribute('aria-expanded') === 'true';
         accTrigger.setAttribute('aria-expanded', open ? 'false' : 'true');
         if (panel) panel.classList.toggle('is-open', !open);
       });
-    }
+    });
 
     document.addEventListener('keydown', e => {
       if (e.key !== 'Escape') return;
       if (mobileMenu.classList.contains('is-open')) closeMenu();
-      if (navDropdown && navDropdown.classList.contains('is-open')) {
-        navDropdown.classList.remove('is-open');
-        navDropdownTrigger.setAttribute('aria-expanded', 'false');
-      }
+      closeNavDropdowns();
     });
   </script>
 
