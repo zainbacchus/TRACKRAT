@@ -81,7 +81,11 @@ TRACKRAT/
 ├── robots.txt              # Crawl rules (/dashboard handled by noindex meta, NOT Disallow)
 ├── sitemap.xml             # Public-page sitemap (excludes /dashboard + /gallery; includes /offtrack)
 ├── llms.txt                # LLM-facing site description
-├── favicon.ico
+├── favicon.ico             # browser-tab icon (TR monogram on Sprint Orange; 16/32px)
+├── apple-touch-icon.png    # iOS home-screen icon (180×180, non-transparent)
+├── icon-192.png            # PWA/Android home-screen icon (192×192)
+├── icon-512.png            # PWA/Android icon + splash (512×512; also the icon master)
+├── site.webmanifest        # Web app manifest (home-screen name/icons/theme)
 ├── LICENSE                 # MIT for code; brand assets all rights reserved
 ├── SECURITY.md             # Vulnerability disclosure policy
 ├── README.md               # User-facing setup docs
@@ -109,7 +113,8 @@ page).
 Headers: security baseline on `/(.*)`(HSTS, nosniff, `X-Frame-Options:
 DENY`, CSP `frame-ancestors 'none'; object-src 'none'; base-uri 'none'`,
 Referrer-Policy, Permissions-Policy); immutable year cache on `/fonts/*`
-and `/js/vendor/*`; daily cache on `og*.png` + `favicon.ico`. Don't add a
+and `/js/vendor/*`; daily cache on `og*.png` + `favicon.ico` + the
+home-screen icons; the `.webmanifest` MIME is set explicitly. Don't add a
 `script-src` CSP directive casually — the pages run inline module
 scripts and would need hashes.
 
@@ -173,6 +178,31 @@ Sunday/Thursday (CDT is `-05:00`, CST is `-06:00`).
 
 The OG image is rendered in actual Fugaz One (black wordmark on Sprint
 Orange `#FF4D1F`, 1200×630, palette-optimized PNG).
+
+### Favicon + home-screen icons
+
+Every page's `<head>` carries the same four-line icon block (right after
+the `<link rel="icon">`): `apple-touch-icon`, `manifest`, and the
+`apple-mobile-web-app-title` meta. Keep it identical across all pages
+(same lockstep rule as the nav) — whichever page a member "adds to home
+screen" must resolve the icons.
+
+- `favicon.ico` — browser tab only. **iOS ignores it for the home
+  screen** (falls back to a page screenshot without an
+  `apple-touch-icon`), which is why the block below is required.
+- `apple-touch-icon.png` (180×180) — iOS home screen. **Must be
+  non-transparent** (iOS composites transparency to black and applies
+  its own rounded-corner mask; design full-bleed and let iOS round).
+- `site.webmanifest` → `icon-192.png` / `icon-512.png` — Android/Chrome
+  home screen + install + splash. Icons are `purpose: "any maskable"`;
+  the TR sits well inside the center safe zone so adaptive masks don't
+  clip it. `theme_color`/`background_color` are `#000000`.
+- All icons are the **TR monogram (white, Fugaz One) on Sprint Orange**,
+  matching favicon.ico. `icon-512.png` is the master; the 192 and 180
+  are downscales. To regenerate: render `TR` in Fugaz One centered on a
+  512×512 `#FF4D1F` square (headless Chrome or any renderer), then
+  `sips -Z 192` / `-Z 180`. vercel.json sets the manifest MIME
+  (`application/manifest+json`) and a daily cache on the icons.
 
 ## Shared Patterns Across Pages
 
@@ -513,9 +543,11 @@ don't apply to plain file servers.
 ### Adding a new page
 
 1. Create `newpage.html` mirroring an existing page's skeleton (nav, mobile
-   menu, track lanes if applicable, **full SEO meta block**, **the two
-   `<link rel="preload" as="font" ... crossorigin>` tags**, and **all five
-   `@font-face` declarations** at the top of `<style>`).
+   menu, track lanes if applicable, **full SEO meta block**, **the icon
+   block** — `favicon`/`apple-touch-icon`/`manifest`/
+   `apple-mobile-web-app-title` (see *Favicon + home-screen icons*),
+   **the two `<link rel="preload" as="font" ... crossorigin>` tags**, and
+   **all five `@font-face` declarations** at the top of `<style>`).
 2. No `vercel.json` route change needed — `cleanUrls` serves `/newpage`
    from `newpage.html` automatically.
 3. Add the link to **every** page's nav (desktop `.nav-center` and mobile

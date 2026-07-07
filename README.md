@@ -52,7 +52,11 @@ TRACKRAT/
 ├── robots.txt              # Crawl rules (/dashboard is noindexed via meta, not Disallowed)
 ├── sitemap.xml             # Public-page sitemap
 ├── llms.txt                # LLM-facing site description
-├── favicon.ico
+├── favicon.ico             # browser-tab icon (TR on Sprint Orange)
+├── apple-touch-icon.png    # iOS home-screen icon (180×180)
+├── icon-192.png            # PWA/Android home-screen icon
+├── icon-512.png            # PWA/Android icon + splash (icon master)
+├── site.webmanifest        # Web app manifest (home-screen name/icons/theme)
 ├── LICENSE                 # MIT for code; brand assets excluded (all rights reserved)
 ├── SECURITY.md             # Vulnerability disclosure policy
 ├── README.md               # This file

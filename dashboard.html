@@ -28,6 +28,9 @@
   <meta name="theme-color" content="#000000" />
 
   <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <meta name="apple-mobile-web-app-title" content="TRACKRAT">
   <!-- Self-hosted fonts (see @font-face in inline <style>). -->
   <link rel="preload" as="font" type="font/woff2" href="/fonts/fugaz-one-latin.woff2" crossorigin>
   <link rel="preload" as="font" type="font/woff2" href="/fonts/ibm-plex-mono-400-latin.woff2" crossorigin>
@@ -610,6 +613,41 @@
     .g-note a { color: var(--orange); }
     .g-note a:hover { opacity: 0.75; }
     .g-note .g-btn { margin-top: 14px; }
+
+    /* Animated loading state — the Drive pull takes ~10s, so a static
+       "LOADING…" reads as a hang. An indeterminate orange bar sweeps
+       like a runner down a lane, with a line setting the expectation. */
+    .g-loader { display: flex; flex-direction: column; align-items: center; gap: 16px; }
+    .g-loader-label {
+      font-size: 12px; font-weight: 600; letter-spacing: 0.22em;
+      text-transform: uppercase; color: rgba(255, 255, 255, 0.7);
+    }
+    .g-loader-label .dots::after {
+      content: ''; animation: gdots 1.4s steps(4, end) infinite;
+    }
+    @keyframes gdots { 0% { content: ''; } 25% { content: '.'; } 50% { content: '..'; } 75% { content: '...'; } }
+    .g-loader-track {
+      position: relative; width: min(300px, 78%); height: 3px;
+      background: rgba(255, 255, 255, 0.12); overflow: hidden;
+    }
+    .g-loader-track::before {
+      content: ''; position: absolute; top: 0; left: 0; height: 100%; width: 40%;
+      background: var(--orange); animation: gsweep 1.25s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+    }
+    @keyframes gsweep {
+      0% { transform: translateX(-110%); }
+      100% { transform: translateX(360%); }
+    }
+    .g-loader-sub {
+      font-size: 11px; letter-spacing: 0.04em; line-height: 1.6;
+      color: rgba(255, 255, 255, 0.4); max-width: 300px;
+    }
+    /* Reduced motion: hold a steady partial bar + drop the dot cycle,
+       so it still reads "working" without movement. */
+    @media (prefers-reduced-motion: reduce) {
+      .g-loader-track::before { animation: none; transform: none; width: 55%; }
+      .g-loader-label .dots::after { animation: none; content: '…'; }
+    }
 
     .lightbox {
       position: fixed;
@@ -1341,7 +1379,7 @@
             <div class="gallery-filters" id="albumChips" role="group" aria-label="Filter by album"></div>
           </div>
         </div>
-        <div class="g-note" id="galleryNote">LOADING&hellip;</div>
+        <div class="g-note" id="galleryNote"><div class="g-loader"><div class="g-loader-label">LOADING PHOTOS<span class="dots"></span></div><div class="g-loader-track"></div><div class="g-loader-sub">Pulling from the club Drive — this can take a few seconds.</div></div></div>
         <div class="gallery-grid" id="galleryGrid" hidden></div>
         <div class="g-sentinel" id="gallerySentinel" aria-hidden="true"></div>
       </div>
@@ -2278,7 +2316,7 @@
         activeAlbum = 'ALL'; chipsExpanded = false; renderedCount = 0;
         gridEl.innerHTML = ''; gridEl.hidden = true;
         controlsEl.hidden = true;
-        showNote('LOADING&hellip;');
+        showLoading();
       };
 
       // ---- HELPERS ----
@@ -2329,6 +2367,15 @@
         noteEl.innerHTML = html;
         noteEl.hidden = false;
       }
+      function showLoading() {
+        showNote(
+          '<div class="g-loader">' +
+            '<div class="g-loader-label">LOADING PHOTOS<span class="dots"></span></div>' +
+            '<div class="g-loader-track"></div>' +
+            '<div class="g-loader-sub">Pulling from the club Drive — this can take a few seconds.</div>' +
+          '</div>'
+        );
+      }
 
       // ---- LOAD ----
       async function loadGallery() {
@@ -2342,7 +2389,7 @@
           );
           return;
         }
-        showNote('LOADING&hellip;');
+        showLoading();
         try {
           const resp = await fetch(GALLERY_CONFIG.scriptUrl + '?token=' + encodeURIComponent(viewToken), { redirect: 'follow' });
           const text = await resp.text();
