@@ -2640,7 +2640,11 @@
         upGo.textContent = 'UPLOAD';
         upModal.classList.add('is-open');
         document.body.classList.add('no-scroll');
-        upAlbumSel.focus();
+        // Focus the close button, NOT the album <select> — focusing a
+        // native select on mobile auto-opens its picker the instant the
+        // modal appears. This keeps focus inside the modal (Escape/a11y)
+        // without popping the wheel.
+        upClose.focus();
       }
       function closeUpload() {
         if (uploading) return; // don't lose in-flight uploads to a stray tap
