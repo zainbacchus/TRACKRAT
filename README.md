@@ -52,7 +52,8 @@ TRACKRAT/
 ├── robots.txt              # Crawl rules (/dashboard is noindexed via meta, not Disallowed)
 ├── sitemap.xml             # Public-page sitemap
 ├── llms.txt                # LLM-facing site description
-├── favicon.ico             # browser-tab icon (TR on Sprint Orange)
+├── favicon.ico             # browser-tab + Google SERP icon (TR; 16/32/48/64px)
+├── favicon.svg             # vector favicon (TR; crisp at any size)
 ├── apple-touch-icon.png    # iOS home-screen icon (180×180)
 ├── icon-192.png            # PWA/Android home-screen icon
 ├── icon-512.png            # PWA/Android icon + splash (icon master)

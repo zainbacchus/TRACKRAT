@@ -81,7 +81,8 @@ TRACKRAT/
 ├── robots.txt              # Crawl rules (/dashboard handled by noindex meta, NOT Disallow)
 ├── sitemap.xml             # Public-page sitemap (excludes /dashboard + /gallery; includes /offtrack)
 ├── llms.txt                # LLM-facing site description
-├── favicon.ico             # browser-tab icon (TR monogram on Sprint Orange; 16/32px)
+├── favicon.ico             # browser-tab + Google SERP icon (TR monogram; 16/32/48/64px frames)
+├── favicon.svg             # vector favicon (TR monogram; crisp at any size, modern browsers)
 ├── apple-touch-icon.png    # iOS home-screen icon (180×180, non-transparent)
 ├── icon-192.png            # PWA/Android home-screen icon (192×192)
 ├── icon-512.png            # PWA/Android icon + splash (512×512; also the icon master)
@@ -181,15 +182,24 @@ Orange `#FF4D1F`, 1200×630, palette-optimized PNG).
 
 ### Favicon + home-screen icons
 
-Every page's `<head>` carries the same four-line icon block (right after
-the `<link rel="icon">`): `apple-touch-icon`, `manifest`, and the
-`apple-mobile-web-app-title` meta. Keep it identical across all pages
-(same lockstep rule as the nav) — whichever page a member "adds to home
-screen" must resolve the icons.
+Every page's `<head>` carries the same icon block (right after the first
+`<link rel="icon">`): the SVG favicon, `apple-touch-icon`, `manifest`,
+and the `apple-mobile-web-app-title` meta. Keep it identical across all
+pages (same lockstep rule as the nav) — whichever page a member "adds to
+home screen" must resolve the icons.
 
-- `favicon.ico` — browser tab only. **iOS ignores it for the home
-  screen** (falls back to a page screenshot without an
-  `apple-touch-icon`), which is why the block below is required.
+- `favicon.ico` — browser tab + **Google search-result favicon**. Holds
+  16/32/48/64px frames; the 48+ frames matter because Google upscales
+  anything smaller in the SERP (a 32px-max .ico rendered grainy). **iOS
+  ignores it for the home screen** (falls back to a page screenshot
+  without an `apple-touch-icon`), which is why the block below is
+  required.
+- `favicon.svg` — vector tab icon for modern browsers (crisp at any
+  DPI). White TR reusing the outlined letterforms from
+  `trackrat-wordmark.svg` (subpaths 0–2 = T + R), scaled to match the
+  raster icons. No font dependency. Regenerate the raster set from
+  `icon-512.png`; the .ico is assembled with a small ICO writer
+  (PNG-in-ICO frames) since there's no ImageMagick.
 - `apple-touch-icon.png` (180×180) — iOS home screen. **Must be
   non-transparent** (iOS composites transparency to black and applies
   its own rounded-corner mask; design full-bleed and let iOS round).
