@@ -842,6 +842,9 @@
     .up-row .st-done { color: var(--orange); }
     .up-row .st-fail { color: rgba(255, 255, 255, 0.55); text-decoration: line-through; }
     .up-go { width: 100%; }
+    .up-note { font-size: 11px; line-height: 1.7; color: rgba(255, 255, 255, 0.5); }
+    .up-note a { color: var(--orange); }
+    .up-note a:hover { opacity: 0.75; }
     body.no-scroll { overflow: hidden; }
     @keyframes gpulse { 50% { opacity: 0.35; } }
 
@@ -1372,6 +1375,7 @@
         <div class="gallery-controls" id="galleryControls" hidden>
           <div class="g-actions">
             <button class="g-btn" id="addBtn" type="button">+ ADD PHOTOS</button>
+            <a class="g-btn-ghost" id="driveLink" href="#" target="_blank" rel="noopener" hidden>OPEN DRIVE ↗</a>
             <span class="g-meta" id="galleryMeta"></span>
           </div>
           <div class="filter-row" id="albumRow" hidden>
@@ -1446,6 +1450,8 @@
       <div class="up-list" id="upList"></div>
 
       <button class="g-btn up-go" id="upGo" type="button" disabled>UPLOAD</button>
+
+      <p class="up-note">Files larger than 40MB (longer videos) can't go through this form — add those <a id="upDriveLink" href="#" target="_blank" rel="noopener">directly to the Drive folder</a>.</p>
     </div>
   </div>
 
@@ -2289,6 +2295,7 @@
       const sentinelEl = document.getElementById('gallerySentinel');
       const noteEl = document.getElementById('galleryNote');
       const addBtn = document.getElementById('addBtn');
+      const driveLinkEl = document.getElementById('driveLink');
 
       // ---- TAB ENTRY / RESET (the module-scope hooks) ----
       openGalleryTab = async function () {
@@ -2417,6 +2424,11 @@
         });
         if (!folderUrl && data.folderId) {
           folderUrl = `https://drive.google.com/drive/folders/${encodeURIComponent(data.folderId)}`;
+        }
+        if (folderUrl) {
+          driveLinkEl.href = folderUrl;
+          driveLinkEl.hidden = false;
+          document.getElementById('upDriveLink').href = folderUrl;
         }
 
         // Albums = unique subfolder names, newest event first (see
