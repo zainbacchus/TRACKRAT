@@ -2287,6 +2287,7 @@
       let folderUrl = GALLERY_CONFIG.folderUrl;
       let brokenTiles = 0;
       let sharingHintShown = false;
+      let anyTileLoaded = false;
 
       const controlsEl = document.getElementById('galleryControls');
       const metaEl = document.getElementById('galleryMeta');
@@ -2530,15 +2531,24 @@
         img.referrerPolicy = 'no-referrer';
         img.alt = p.name;
         img.src = thumbUrl(p, THUMB_W);
-        img.addEventListener('load', () => img.classList.add('is-loaded'));
+        img.addEventListener('load', () => {
+          img.classList.add('is-loaded');
+          anyTileLoaded = true;
+          // A tile loaded → the folder IS shared and the CDN works. Clear the
+          // sharing hint if it briefly fired (e.g. a few video posters 404'd
+          // before the first photo painted).
+          if (sharingHintShown && photos.length) noteEl.hidden = true;
+        });
         img.addEventListener('error', () => {
           btn.classList.add('is-broken');
           brokenTiles++;
-          // Many broken thumbnails in a row = the folder isn't link-shared,
-          // so Drive's CDN is refusing anonymous requests.
-          if (brokenTiles >= 6 && !sharingHintShown) {
+          // Only the true "folder not shared" case fails EVERY tile. Individual
+          // misses (videos with no Drive poster frame, transient CDN hiccups)
+          // are normal across a big folder, so only warn when NOTHING has
+          // loaded — otherwise this false-fires on a working, shared folder.
+          if (!anyTileLoaded && brokenTiles >= 6 && !sharingHintShown) {
             sharingHintShown = true;
-            showNote('THUMBNAILS AREN\'T LOADING.<br>Most likely the Drive folder isn\'t shared as &ldquo;Anyone with the link · Viewer&rdquo; yet — flip that in Drive and reload.');
+            showNote('THUMBNAILS AREN\'T LOADING.<br>Most likely the Drive folder isn\'t shared as &ldquo;Anyone with the link · Viewer&rdquo; yet. Flip that in Drive and reload.');
           }
         });
         btn.appendChild(img);
