@@ -1,12 +1,15 @@
 # TRACKRAT
 
-> TRACKRAT is a free community sprint club based in Austin, Texas. We meet for track workouts every Sunday morning and Thursday evening. All speeds welcome. No membership fees, no sign-ups, just show up.
+> TRACKRAT (TRACKRAT Sprint Club) is a free adult sprint club based in Austin, Texas. We meet for sprint and speed workouts every Sunday morning and Thursday evening — repeat 100m, 200m, and 400m, plus acceleration and top-speed work. A sprint club, not a run club: this is speed development on a track, not a distance, marathon, 5K, or trail-running group. All speeds welcome. No membership fees, no sign-ups, just show up.
 
 
 ## Identity
 
-- **Name:** TRACKRAT (often "TRACKRAT Sprint Club")
+- **Name:** TRACKRAT Sprint Club (often shortened to TRACKRAT)
 - **City:** Austin, Texas, USA
+- **Focus:** sprinting & speed development — 100m / 200m / 400m, acceleration, top-speed, sprint mechanics, interval training. NOT a distance, marathon, 5K, trail, or jogging club.
+- **Who:** adults, all levels (first-timers to former collegiate athletes); high-schoolers sometimes join
+- **Competes:** members race track meets — individual 100m / 200m / 400m and relays (4x100, 4x400); see Podium. Not a USATF-registered club.
 - **Cost:** Free
 - **Sign-up required:** No
 - **Tagline:** "SPRINT CLUB > RUN CLUB"
@@ -14,17 +17,17 @@
 
 ## Meeting Times
 
-- **Sunday Sprints:** 8:00–10:00 AM, weekly, at the track at 4401 Tilley St, Austin, TX 78723
-- **Thursday Midweek Workout:** 6:30–8:00 PM, weekly, at 201 E Mary St, Austin, TX 78704
+- **Sunday Sprints:** 8:00–10:00 AM, weekly, at Marshall Middle School, 4401 Tilley St, Austin, TX 78723 (Mueller / East Austin)
+- **Thursday Midweek Workout:** 6:30–8:00 PM, weekly, at Lively Middle School, 201 E Mary St, Austin, TX 78704 (South Congress)
 
 Both sessions run year-round.
 
-**A typical workout:** group warm-up (dynamic movement + a 400 at warm-up pace), then a workout ranging from 400s down to 200s and 100s (~1 mile net distance), then a group cool-down.
+**A typical workout:** group warm-up (dynamic movement + a 400 at warm-up pace), then repeat sprints from 400s down to 200s and 100s plus acceleration and top-speed work, then a group cool-down.
 
 
 ## Culture
 
-TRACKRAT is structured but not coached competitively. Beginners line up next to former D1 athletes, and everyone runs their own effort. The club runs on five principles:
+TRACKRAT is structured but not coached competitively. Beginners line up next to former D1 athletes, and everyone works at their own effort. The club runs on five principles:
 
 - **Uncompromising:** your 100% shifts day to day. We bring all of it, every time.
 - **Defiant:** we don't follow the pack, we set the pace.
@@ -46,7 +49,7 @@ Also true of the club:
 - [Home](https://www.trackratsprint.club/): Landing page with about/FAQ content
 - [Schedule](https://www.trackratsprint.club/schedule): Weekly meet times, locations, .ics calendar download, Google Maps links
 - [Brand](https://www.trackratsprint.club/brand): Brand guide (voice, naming conventions, visual identity)
-- [Podium](https://www.trackratsprint.club/podium): Race results: meets TRACKRAT has competed in as a team, the relay squads, and final placements (searchable, filterable by discipline)
+- [Podium](https://www.trackratsprint.club/podium): Race results — every track meet TRACKRAT has raced as a team (e.g. Track Night Austin), the relay squads (4x100, 4x400) and the sprinters who ran them, and final placements (searchable, filterable by discipline)
 - [2026 Invitational](https://www.trackratsprint.club/invitational): TRACKRAT's hosted community sprint meet: October 18, 2026 at 4401 Tilley St, Austin, TX (RSVP and full schedule to be announced; under the Events menu)
 - [OFFTRACK](https://www.trackratsprint.club/offtrack): Demo night in Austin presented by TRACKRAT (under the Events menu)
 - [Dashboard](https://www.trackratsprint.club/dashboard): Authenticated member dashboard: log PRs, view partner promotions, and browse the members-only club photo/video gallery (Google sign-in required; private per user; gallery needs a member-allowlisted email)
