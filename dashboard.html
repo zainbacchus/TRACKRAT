@@ -2611,8 +2611,12 @@
           (fmtDate(p.ts) ? ` · ${escapeHtml(fmtDate(p.ts))}` : '') +
           `<span class="lb-count">${lbIndex + 1} / ${viewList.length}</span>`;
         lbDrive.href = downloadUrl(p);
-        lbPrev.classList.toggle('is-hidden', lbIndex <= 0);
-        lbNext.classList.toggle('is-hidden', lbIndex >= viewList.length - 1);
+        // Hide our own nav chevrons over a video: they overlay Drive's player
+        // for the whole clip and read like skip/seek buttons. On a video you
+        // navigate by closing and opening the next item (a swipe can't reach
+        // through the cross-origin iframe anyway). Photos keep end-aware arrows.
+        lbPrev.classList.toggle('is-hidden', p.video || lbIndex <= 0);
+        lbNext.classList.toggle('is-hidden', p.video || lbIndex >= viewList.length - 1);
         // Warm the neighbors so swipes feel instant.
         [lbIndex - 1, lbIndex + 1].forEach(i => {
           const n = viewList[i];
