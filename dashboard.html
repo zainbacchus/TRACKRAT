@@ -733,6 +733,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      gap: 10px;
       padding: 14px 16px calc(14px + env(safe-area-inset-bottom));
       flex-shrink: 0;
     }
@@ -1417,6 +1418,7 @@
     </div>
     <div class="lb-bottom">
       <a class="lb-drive" id="lbDrive" href="#" target="_blank" rel="noopener">DOWNLOAD ↓</a>
+      <a class="lb-drive" id="lbOpen" href="#" target="_blank" rel="noopener" hidden>OPEN IN DRIVE ↗</a>
     </div>
   </div>
 
@@ -2372,6 +2374,11 @@
       function downloadUrl(p) {
         return `https://drive.google.com/uc?export=download&id=${encodeURIComponent(p.id)}`;
       }
+      // Drive's own file page — a clean single-player experience (working
+      // fullscreen) for videos, which the inline cross-origin iframe can't give.
+      function driveViewUrl(p) {
+        return `https://drive.google.com/file/d/${encodeURIComponent(p.id)}/view`;
+      }
       function showNote(html) {
         noteEl.innerHTML = html;
         noteEl.hidden = false;
@@ -2570,6 +2577,7 @@
       const lbPrev = document.getElementById('lbPrev');
       const lbNext = document.getElementById('lbNext');
       const lbDrive = document.getElementById('lbDrive');
+      const lbOpen = document.getElementById('lbOpen');
       let lbIndex = -1;
       let lbReturnFocus = null;
 
@@ -2611,6 +2619,9 @@
           (fmtDate(p.ts) ? ` · ${escapeHtml(fmtDate(p.ts))}` : '') +
           `<span class="lb-count">${lbIndex + 1} / ${viewList.length}</span>`;
         lbDrive.href = downloadUrl(p);
+        // Videos also get "Open in Drive" for a clean, fullscreen-capable player.
+        lbOpen.href = driveViewUrl(p);
+        lbOpen.hidden = !p.video;
         // Hide our own nav chevrons over a video: they overlay Drive's player
         // for the whole clip and read like skip/seek buttons. On a video you
         // navigate by closing and opening the next item (a swipe can't reach
