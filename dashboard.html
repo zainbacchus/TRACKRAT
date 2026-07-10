@@ -695,11 +695,13 @@
       justify-content: center;
       padding: 0 6px;
     }
-    .lb-stage img {
+    .lb-stage img,
+    .lb-stage video {
       max-width: 100%;
       max-height: 100%;
       object-fit: contain;
       display: block;
+      background: var(--black);
     }
     .lb-stage iframe {
       width: 100%;
@@ -2367,12 +2369,16 @@
       function thumbUrl(p, w) {
         return `https://drive.google.com/thumbnail?id=${encodeURIComponent(p.id)}&sz=w${w}`;
       }
-      // Direct download of the ORIGINAL bytes (Content-Disposition:
-      // attachment). Files over ~100MB get Drive's "can't virus-scan"
-      // interstitial with its own Download button — acceptable for the
-      // occasional long video.
+      // Direct link to the ORIGINAL bytes on Drive's download host. Serves
+      // HTTP 206 byte ranges, anonymously, with no cookies (verified against
+      // club files), so it does double duty: as the Download link
+      // (Content-Disposition: attachment applies to navigations) AND as a
+      // native <video> src (media loads ignore the disposition and stream
+      // ranges). confirm=t skips the ~100MB "can't virus-scan" interstitial.
+      // Don't revert to legacy drive.google.com/uc?export=download — it
+      // 303-redirects here and adds a hop to every range request.
       function downloadUrl(p) {
-        return `https://drive.google.com/uc?export=download&id=${encodeURIComponent(p.id)}`;
+        return `https://drive.usercontent.google.com/download?id=${encodeURIComponent(p.id)}&export=download&confirm=t`;
       }
       // Drive's own file page — a clean single-player experience (working
       // fullscreen) for videos, which the inline cross-origin iframe can't give.
@@ -2589,24 +2595,53 @@
         showLbItem();
         lbClose.focus();
       }
+      function clearStage() {
+        lbStage.querySelectorAll('img, iframe, video').forEach(el => {
+          // Detached <video> elements can keep buffering/playing audio —
+          // pause and drop the src before removal.
+          if (el.tagName === 'VIDEO') { el.pause(); el.removeAttribute('src'); el.load(); }
+          el.remove();
+        });
+      }
+      // Drive's transcoding /preview player — the fallback when a file
+      // can't play natively (exotic codec, download-quota 403, MIME quirks
+      // on some .MOVs). Doubled controls on iOS, but it always plays.
+      function makePreviewFrame(p) {
+        const frame = document.createElement('iframe');
+        frame.src = `https://drive.google.com/file/d/${encodeURIComponent(p.id)}/preview`;
+        frame.allow = 'autoplay; fullscreen';
+        frame.allowFullscreen = true;
+        frame.title = p.name;
+        return frame;
+      }
       function closeLightbox() {
         lbRoot.classList.remove('is-open');
         document.body.classList.remove('no-scroll');
-        lbStage.querySelectorAll('img, iframe').forEach(el => el.remove());
+        clearStage();
         if (lbReturnFocus) lbReturnFocus.focus();
       }
       function showLbItem() {
         const p = viewList[lbIndex];
         if (!p) return;
-        lbStage.querySelectorAll('img, iframe').forEach(el => el.remove());
+        clearStage();
         if (p.video) {
-          // Drive's own player streams link-public videos — no re-hosting.
-          const frame = document.createElement('iframe');
-          frame.src = `https://drive.google.com/file/d/${encodeURIComponent(p.id)}/preview`;
-          frame.allow = 'autoplay; fullscreen';
-          frame.allowFullscreen = true;
-          frame.title = p.name;
-          lbStage.appendChild(frame);
+          // Native player first: ONE control set on iOS (the /preview
+          // iframe stacks Drive's controls under Safari's native inline
+          // controls) and working fullscreen. Streams the original bytes
+          // from Drive's download host (206 ranges, no cookies — verified).
+          const vid = document.createElement('video');
+          vid.controls = true;
+          vid.playsInline = true;
+          vid.preload = 'metadata';
+          vid.poster = thumbUrl(p, FULL_W); // instant frame while metadata loads
+          vid.title = p.name;
+          vid.src = downloadUrl(p);
+          vid.addEventListener('error', () => {
+            // Stale handler after navigating away — the element was removed.
+            if (!vid.isConnected) return;
+            vid.replaceWith(makePreviewFrame(p));
+          });
+          lbStage.appendChild(vid);
         } else {
           const img = document.createElement('img');
           img.decoding = 'async';

@@ -336,8 +336,17 @@ who gets in:
   for the lightbox. This only works while the folder is shared **"Anyone
   with the link · Viewer"** (files inherit). Exactly two size buckets on
   purpose — keeps the CDN cache hot. Videos play in the lightbox via a
-  `https://drive.google.com/file/d/<id>/preview` iframe (Drive's own
-  player); the page CSP doesn't restrict child frames, only being framed.
+  native `<video>` streaming the original bytes from
+  `https://drive.usercontent.google.com/download?id=<id>&export=download&confirm=t`
+  (serves anonymous HTTP 206 byte ranges, no cookies; `confirm=t` skips
+  the ~100MB virus-scan interstitial) — one control set on iOS, working
+  fullscreen. On the `<video>`'s `error` event (exotic codec,
+  download-quota 403, MIME quirk) it falls back to Drive's transcoding
+  `https://drive.google.com/file/d/<id>/preview` iframe, which always
+  plays but double-stacks controls on iOS — don't "simplify" back to
+  iframe-only. The same usercontent URL doubles as the DOWNLOAD link
+  (Content-Disposition only affects navigations, not media loads). The
+  page CSP doesn't restrict child frames, only being framed.
 - **Albums** — one level of subfolders inside the photo folder. Root-level
   files appear under ALL only. The upload form can create a new album
   (server-side, with a lock to avoid duplicate folders). Chips are
