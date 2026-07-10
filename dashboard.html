@@ -711,6 +711,74 @@
       border: 0;
       background: var(--black);
     }
+    /* Custom video controls — the `controls` attribute is deliberately OFF:
+       iOS Safari stacks its system media overlay on top of the built-in
+       inline controls, doubling the UI even on a plain <video>. One
+       brand-styled set, drawn by us, everywhere. */
+    .lb-player {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      min-height: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .lb-player video {
+      max-width: 100%;
+      max-height: 100%;
+      display: block;
+      background: var(--black);
+    }
+    .lbp-center {
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+      width: 72px; height: 72px; border-radius: 50%;
+      background: rgba(0, 0, 0, 0.55); border: 1px solid rgba(255, 255, 255, 0.25);
+      color: var(--white); cursor: pointer;
+      display: none; align-items: center; justify-content: center;
+    }
+    .lb-player.is-paused .lbp-center { display: flex; }
+    .lbp-center svg { width: 30px; height: 30px; fill: currentColor; margin-left: 3px; }
+    .lbp-center:hover { color: var(--orange); }
+    .lbp-bar {
+      position: absolute; left: 8px; right: 8px; bottom: 8px;
+      display: flex; align-items: center; gap: 8px;
+      padding: 6px 10px; background: rgba(0, 0, 0, 0.7);
+      opacity: 1; transition: opacity 0.25s ease;
+    }
+    .lb-player.is-idle .lbp-bar { opacity: 0; pointer-events: none; }
+    .lbp-btn {
+      background: none; border: none; color: var(--white); cursor: pointer;
+      width: 36px; height: 36px; padding: 0; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .lbp-btn svg { width: 20px; height: 20px; fill: currentColor; display: block; }
+    .lbp-btn:hover { color: var(--orange); }
+    .lbp-play .i-pause { display: none; }
+    .lb-player:not(.is-paused) .lbp-play .i-play { display: none; }
+    .lb-player:not(.is-paused) .lbp-play .i-pause { display: block; }
+    .lbp-mute .i-muted { display: none; }
+    .lb-player.is-muted .lbp-mute .i-vol { display: none; }
+    .lb-player.is-muted .lbp-mute .i-muted { display: block; }
+    .lbp-time {
+      font-size: 11px; letter-spacing: 0.06em; color: rgba(255, 255, 255, 0.8);
+      white-space: nowrap; flex-shrink: 0; font-variant-numeric: tabular-nums;
+    }
+    .lbp-range {
+      flex: 1; min-width: 40px; height: 4px; cursor: pointer;
+      appearance: none; -webkit-appearance: none; border-radius: 0;
+      --fill: 0%;
+      background: linear-gradient(to right, var(--orange) var(--fill), rgba(255, 255, 255, 0.25) var(--fill));
+    }
+    .lbp-range::-webkit-slider-thumb {
+      -webkit-appearance: none; appearance: none;
+      width: 14px; height: 14px; border-radius: 50%;
+      background: var(--white); border: none;
+    }
+    .lbp-range::-moz-range-thumb {
+      width: 14px; height: 14px; border-radius: 50%;
+      background: var(--white); border: none;
+    }
     .lb-nav {
       position: absolute;
       top: 50%;
@@ -2596,12 +2664,10 @@
         lbClose.focus();
       }
       function clearStage() {
-        lbStage.querySelectorAll('img, iframe, video').forEach(el => {
-          // Detached <video> elements can keep buffering/playing audio —
-          // pause and drop the src before removal.
-          if (el.tagName === 'VIDEO') { el.pause(); el.removeAttribute('src'); el.load(); }
-          el.remove();
-        });
+        // Detached <video> elements can keep buffering/playing audio —
+        // pause and drop the src before removal.
+        lbStage.querySelectorAll('video').forEach(v => { v.pause(); v.removeAttribute('src'); v.load(); });
+        lbStage.querySelectorAll('img, iframe, video, .lb-player').forEach(el => el.remove());
       }
       // Drive's transcoding /preview player — the fallback when a file
       // can't play natively (exotic codec, download-quota 403, MIME quirks
@@ -2614,6 +2680,116 @@
         frame.title = p.name;
         return frame;
       }
+      // Native <video> wrapped in the gallery's own controls. The `controls`
+      // attribute stays OFF on purpose: iOS Safari stacks its system media
+      // overlay on top of the built-in inline controls, doubling the UI even
+      // on a plain native video — custom controls are the only reliable cure
+      // (same pattern YouTube/Vimeo/Mux embeds use). Streams the original
+      // bytes from Drive's download host (206 ranges, no cookies — verified);
+      // falls back to the /preview iframe if the file can't play natively.
+      function makeNativePlayer(p) {
+        const wrap = document.createElement('div');
+        wrap.className = 'lb-player is-paused';
+        wrap.innerHTML =
+          '<button class="lbp-center" type="button" aria-label="Play">' +
+            '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>' +
+          '</button>' +
+          '<div class="lbp-bar">' +
+            '<button class="lbp-btn lbp-play" type="button" aria-label="Play or pause">' +
+              '<svg class="i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>' +
+              '<svg class="i-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5h4v14H7zM13 5h4v14h-4z"/></svg>' +
+            '</button>' +
+            '<span class="lbp-time">0:00 / 0:00</span>' +
+            '<input class="lbp-range" type="range" min="0" max="100" step="0.01" value="0" aria-label="Seek" />' +
+            '<button class="lbp-btn lbp-mute" type="button" aria-label="Mute or unmute">' +
+              '<svg class="i-vol" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9v6h4l5 5V4L7 9H3z"/><path d="M14 7.97v8.05c1.48-.73 2.5-2.25 2.5-4.02 0-1.77-1.02-3.29-2.5-4.03z"/></svg>' +
+              '<svg class="i-muted" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9v6h4l5 5V4L7 9H3z"/><path d="M19.56 8.38l-1.06-1.06-2.25 2.25-2.25-2.25-1.06 1.06L15.19 10.63l-2.25 2.25 1.06 1.06 2.25-2.25 2.25 2.25 1.06-1.06-2.25-2.25 2.25-2.25z"/></svg>' +
+            '</button>' +
+            '<button class="lbp-btn lbp-fs" type="button" aria-label="Fullscreen">' +
+              '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 14H5v5h5v-2H7v-3zm0-4h2V7h3V5H7v5zm10 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>' +
+            '</button>' +
+          '</div>';
+
+        const vid = document.createElement('video');
+        vid.playsInline = true;
+        vid.preload = 'metadata';
+        vid.poster = thumbUrl(p, FULL_W); // instant frame while metadata loads
+        vid.title = p.name;
+        vid.src = downloadUrl(p);
+        wrap.prepend(vid);
+
+        const bar = wrap.querySelector('.lbp-bar');
+        const timeEl = wrap.querySelector('.lbp-time');
+        const range = wrap.querySelector('.lbp-range');
+        let hideTimer = null;
+        let scrubbing = false;
+
+        const fmt = s => { s = Math.max(0, Math.round(s || 0)); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); };
+        function syncUI() {
+          wrap.classList.toggle('is-paused', vid.paused);
+          timeEl.textContent = fmt(vid.currentTime) + ' / ' + (isFinite(vid.duration) ? fmt(vid.duration) : '0:00');
+          if (isFinite(vid.duration) && vid.duration > 0 && !scrubbing) {
+            const pct = (vid.currentTime / vid.duration) * 100;
+            range.value = pct;
+            range.style.setProperty('--fill', pct + '%');
+          }
+        }
+        function showBar() {
+          wrap.classList.remove('is-idle');
+          clearTimeout(hideTimer);
+          if (!vid.paused) hideTimer = setTimeout(() => wrap.classList.add('is-idle'), 2500);
+        }
+        function toggle() {
+          if (vid.paused) { const pr = vid.play(); if (pr && pr.catch) pr.catch(() => {}); }
+          else vid.pause();
+        }
+
+        vid.addEventListener('play', () => { syncUI(); showBar(); });
+        vid.addEventListener('pause', () => { syncUI(); showBar(); });
+        vid.addEventListener('timeupdate', syncUI);
+        vid.addEventListener('loadedmetadata', syncUI);
+        wrap.querySelector('.lbp-center').addEventListener('click', toggle);
+        wrap.querySelector('.lbp-play').addEventListener('click', toggle);
+        vid.addEventListener('click', () => {
+          // While playing with the bar hidden, the first tap just reveals it
+          // (matches native behavior); otherwise tap toggles play/pause.
+          if (wrap.classList.contains('is-idle')) showBar(); else toggle();
+        });
+        range.addEventListener('pointerdown', () => { scrubbing = true; });
+        range.addEventListener('pointerup', () => { scrubbing = false; });
+        range.addEventListener('touchstart', () => { scrubbing = true; }, { passive: true });
+        range.addEventListener('touchend', () => { scrubbing = false; });
+        range.addEventListener('input', () => {
+          if (isFinite(vid.duration) && vid.duration > 0) {
+            vid.currentTime = (range.value / 100) * vid.duration;
+            range.style.setProperty('--fill', range.value + '%');
+          }
+          showBar();
+        });
+        wrap.querySelector('.lbp-mute').addEventListener('click', () => {
+          vid.muted = !vid.muted;
+          wrap.classList.toggle('is-muted', vid.muted);
+          showBar();
+        });
+        wrap.querySelector('.lbp-fs').addEventListener('click', () => {
+          // iPhone: hand off to iOS's native fullscreen player (the clean,
+          // single-control experience). Elsewhere: fullscreen the wrapper so
+          // our controls come along.
+          if (vid.webkitEnterFullscreen) { try { vid.webkitEnterFullscreen(); return; } catch (e) { /* fall through */ } }
+          const rf = wrap.requestFullscreen || wrap.webkitRequestFullscreen;
+          if (rf) rf.call(wrap);
+        });
+        // Tap on the letterbox area (the wrapper itself) closes, like photos.
+        wrap.addEventListener('click', e => { if (e.target === wrap) closeLightbox(); });
+        vid.addEventListener('error', () => {
+          // Can't play natively (codec, quota 403, MIME quirk) — swap in
+          // Drive's transcoding player. Guard against stale handlers after
+          // navigating away (the wrapper was removed).
+          if (!wrap.isConnected) return;
+          wrap.replaceWith(makePreviewFrame(p));
+        });
+        return wrap;
+      }
       function closeLightbox() {
         lbRoot.classList.remove('is-open');
         document.body.classList.remove('no-scroll');
@@ -2625,23 +2801,7 @@
         if (!p) return;
         clearStage();
         if (p.video) {
-          // Native player first: ONE control set on iOS (the /preview
-          // iframe stacks Drive's controls under Safari's native inline
-          // controls) and working fullscreen. Streams the original bytes
-          // from Drive's download host (206 ranges, no cookies — verified).
-          const vid = document.createElement('video');
-          vid.controls = true;
-          vid.playsInline = true;
-          vid.preload = 'metadata';
-          vid.poster = thumbUrl(p, FULL_W); // instant frame while metadata loads
-          vid.title = p.name;
-          vid.src = downloadUrl(p);
-          vid.addEventListener('error', () => {
-            // Stale handler after navigating away — the element was removed.
-            if (!vid.isConnected) return;
-            vid.replaceWith(makePreviewFrame(p));
-          });
-          lbStage.appendChild(vid);
+          lbStage.appendChild(makeNativePlayer(p));
         } else {
           const img = document.createElement('img');
           img.decoding = 'async';
@@ -2680,13 +2840,17 @@
       lbNext.addEventListener('click', () => lbStep(1));
       lbStage.addEventListener('click', e => { if (e.target === lbStage) closeLightbox(); });
 
-      // Swipe left/right to move through the roll.
-      let swipeX = 0, swipeDX = 0;
-      lbStage.addEventListener('touchstart', e => { swipeX = e.touches[0].clientX; swipeDX = 0; }, { passive: true });
+      // Swipe left/right to move through the roll. Gestures that start on
+      // the video control bar (scrubbing!) must never trigger navigation.
+      let swipeX = 0, swipeDX = 0, swipeIgnore = false;
+      lbStage.addEventListener('touchstart', e => {
+        swipeX = e.touches[0].clientX; swipeDX = 0;
+        swipeIgnore = !!(e.target.closest && e.target.closest('.lbp-bar'));
+      }, { passive: true });
       lbStage.addEventListener('touchmove', e => { swipeDX = e.touches[0].clientX - swipeX; }, { passive: true });
       lbStage.addEventListener('touchend', () => {
-        if (Math.abs(swipeDX) > 48) lbStep(swipeDX < 0 ? 1 : -1);
-        swipeDX = 0;
+        if (!swipeIgnore && Math.abs(swipeDX) > 48) lbStep(swipeDX < 0 ? 1 : -1);
+        swipeDX = 0; swipeIgnore = false;
       });
 
       // ---- UPLOAD MODAL ----
