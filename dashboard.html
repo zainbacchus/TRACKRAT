@@ -740,15 +740,6 @@
     .lb-player.is-paused .lbp-center { display: flex; }
     .lbp-center svg { width: 30px; height: 30px; fill: currentColor; margin-left: 3px; }
     .lbp-center:hover { color: var(--orange); }
-    /* Progress readout while the blob fallback downloads the file. */
-    .lbp-status {
-      position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-      padding: 10px 16px; background: rgba(0, 0, 0, 0.7);
-      border: 1px solid rgba(255, 255, 255, 0.25);
-      font-size: 11px; letter-spacing: 0.14em; color: var(--white);
-      white-space: nowrap; font-variant-numeric: tabular-nums;
-    }
-    .lb-player.is-fetching .lbp-center { display: none; }
     .lbp-bar {
       position: absolute; left: 8px; right: 8px; bottom: 8px;
       display: flex; align-items: center; gap: 8px;
@@ -2400,6 +2391,11 @@
         loadGallery();
       };
       resetGalleryTab = function () {
+        // Kill any open overlays first — a lightbox video would otherwise
+        // keep streaming (and sit above the sign-in screen) after
+        // sign-out / user switch.
+        if (lbRoot.classList.contains('is-open')) closeLightbox();
+        if (upModal.classList.contains('is-open')) closeUpload();
         galleryStarted = false;
         viewToken = '';
         photos = []; albums = []; viewList = [];
@@ -2446,18 +2442,23 @@
       function thumbUrl(p, w) {
         return `https://drive.google.com/thumbnail?id=${encodeURIComponent(p.id)}&sz=w${w}`;
       }
-      // Direct link to the ORIGINAL bytes on Drive's download host. Serves
-      // HTTP 206 byte ranges anonymously with ACAO:* (verified against club
-      // files), so it does double duty: as the Download link
-      // (Content-Disposition: attachment applies to navigations) AND as the
-      // video byte source — used as a native <video> src where the device's
-      // media engine accepts Drive's response, and re-fetched by the page
-      // itself for blob playback where it doesn't (see makeNativePlayer).
+      // Direct link to the ORIGINAL bytes on Drive's download host — the
+      // DOWNLOAD button only. Google gates this host on Fetch Metadata:
+      // navigations (Sec-Fetch-Mode: navigate) get the file, but any
+      // cross-site subresource request — a <video> src (Sec-Fetch-Dest:
+      // video) or a fetch() (Sec-Fetch-Mode: cors) — gets a 403 HTML page,
+      // and pages can't strip those headers. So this URL must NEVER be used
+      // as a media src; playback goes through /api/video (see streamUrl).
       // confirm=t skips the ~100MB "can't virus-scan" interstitial.
-      // Don't revert to legacy drive.google.com/uc?export=download — it
-      // 303-redirects here and adds a hop to every range request.
       function downloadUrl(p) {
         return `https://drive.usercontent.google.com/download?id=${encodeURIComponent(p.id)}&export=download&confirm=t`;
+      }
+      // Same-origin streaming proxy (api/video.js) — fetches the Drive
+      // bytes server-side (no Sec-Fetch headers there) and pipes them
+      // through with Range support, so <video> streams and seeks natively.
+      // The view token rides along for the proxy's hardened mode.
+      function streamUrl(p) {
+        return `/api/video?id=${encodeURIComponent(p.id)}&token=${encodeURIComponent(viewToken || '')}`;
       }
       // Drive's own file page — a clean single-player experience (working
       // fullscreen) for videos, which the inline cross-origin iframe can't give.
@@ -2676,19 +2677,13 @@
       }
       function clearStage() {
         // Detached <video> elements can keep buffering/playing audio —
-        // pause and drop the src before removal. Blob sources hold the whole
-        // downloaded file in memory until revoked.
-        lbStage.querySelectorAll('video').forEach(v => {
-          v.pause();
-          if (v.src && v.src.startsWith('blob:')) URL.revokeObjectURL(v.src);
-          v.removeAttribute('src');
-          v.load();
-        });
+        // pause and drop the src before removal.
+        lbStage.querySelectorAll('video').forEach(v => { v.pause(); v.removeAttribute('src'); v.load(); });
         lbStage.querySelectorAll('img, iframe, video, .lb-player').forEach(el => el.remove());
       }
       // Drive's transcoding /preview player — the fallback when a file
-      // can't play natively (exotic codec, download-quota 403, MIME quirks
-      // on some .MOVs). Doubled controls on iOS, but it always plays.
+      // can't play natively (exotic codec, download quota, proxy trouble).
+      // Doubled controls on iOS, but it always plays.
       function makePreviewFrame(p) {
         const frame = document.createElement('iframe');
         frame.src = `https://drive.google.com/file/d/${encodeURIComponent(p.id)}/preview`;
@@ -2701,23 +2696,14 @@
       // attribute stays OFF on purpose: iOS Safari stacks its system media
       // overlay on top of the built-in inline controls, doubling the UI even
       // on a plain native video — custom controls are the only reliable cure
-      // (same pattern YouTube/Vimeo/Mux embeds use). Playback source chain:
-      //   1. direct stream from Drive's download host (206 ranges) — but
-      //      iOS's media engine rejects Drive's response on-device (verified
-      //      on iPhone; curl of the same URL is fine), so
-      //   2. on error the page CORS-fetches the file itself (ACAO:* —
-      //      verified) and plays it from a local blob with the MIME fixed up
-      //      from the filename — immune to the attachment disposition,
-      //      octet-stream .MOVs, and media-stack UA sniffing; capped at
-      //      BLOB_MAX_BYTES with a progress readout;
-      //   3. only if THAT fails (a codec this device can't decode, quota
-      //      403, an oversize file) do we fall back to Drive's /preview
-      //      iframe, which always plays but double-stacks controls on iOS.
-      const BLOB_MAX_BYTES = 150 * 1024 * 1024;
-      function videoMime(name) {
-        const ext = String(name || '').toLowerCase().split('.').pop();
-        return { mov: 'video/quicktime', m4v: 'video/mp4', webm: 'video/webm' }[ext] || 'video/mp4';
-      }
+      // (same pattern YouTube/Vimeo/Mux embeds use). The src is the
+      // same-origin /api/video proxy (Drive's own host 403s any cross-site
+      // media/fetch request — see downloadUrl); if the proxy can't help
+      // (function not deployed, Drive's 200-HTML quota/interstitial pages
+      // — the proxy turns those into an uncacheable 502 — or a codec this
+      // device can't decode) the error handler swaps in Drive's
+      // transcoding /preview iframe, which always plays but double-stacks
+      // controls on iOS — the fallback of last resort, not the primary.
       function makeNativePlayer(p) {
         const wrap = document.createElement('div');
         wrap.className = 'lb-player is-paused';
@@ -2739,18 +2725,16 @@
             '<button class="lbp-btn lbp-fs" type="button" aria-label="Fullscreen">' +
               '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 14H5v5h5v-2H7v-3zm0-4h2V7h3V5H7v5zm10 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>' +
             '</button>' +
-          '</div>' +
-          '<div class="lbp-status" hidden></div>';
+          '</div>';
 
         const vid = document.createElement('video');
         vid.playsInline = true;
         vid.preload = 'metadata';
         vid.poster = thumbUrl(p, FULL_W); // instant frame while metadata loads
         vid.title = p.name;
-        vid.src = downloadUrl(p);
+        vid.src = streamUrl(p);
         wrap.prepend(vid);
 
-        const bar = wrap.querySelector('.lbp-bar');
         const timeEl = wrap.querySelector('.lbp-time');
         const range = wrap.querySelector('.lbp-range');
         let hideTimer = null;
@@ -2789,8 +2773,12 @@
         });
         range.addEventListener('pointerdown', () => { scrubbing = true; });
         range.addEventListener('pointerup', () => { scrubbing = false; });
+        range.addEventListener('pointercancel', () => { scrubbing = false; });
         range.addEventListener('touchstart', () => { scrubbing = true; }, { passive: true });
         range.addEventListener('touchend', () => { scrubbing = false; });
+        // An interrupted touch (notification, call, system gesture) fires
+        // cancel INSTEAD of end — without this the bar freezes mid-clip.
+        range.addEventListener('touchcancel', () => { scrubbing = false; }, { passive: true });
         range.addEventListener('input', () => {
           if (isFinite(vid.duration) && vid.duration > 0) {
             vid.currentTime = (range.value / 100) * vid.duration;
@@ -2813,68 +2801,12 @@
         });
         // Tap on the letterbox area (the wrapper itself) closes, like photos.
         wrap.addEventListener('click', e => { if (e.target === wrap) closeLightbox(); });
-
-        // Stage 2: download the file through the page's own network stack
-        // and hand the media engine local bytes instead of Drive's response.
-        const statusEl = wrap.querySelector('.lbp-status');
-        let source = 'direct'; // 'direct' → 'blob-loading' → 'blob' → iframe
-        async function tryBlobSource() {
-          wrap.classList.add('is-fetching');
-          statusEl.hidden = false;
-          statusEl.textContent = 'LOADING VIDEO…';
-          const res = await fetch(downloadUrl(p)); // no cookies cross-origin — the verified anonymous path
-          if (!res.ok) throw new Error('HTTP ' + res.status);
-          const total = Number(res.headers.get('content-length')) || 0;
-          if (total > BLOB_MAX_BYTES) throw new Error('too large for inline playback');
-          let blob;
-          if (res.body && res.body.getReader) {
-            const reader = res.body.getReader();
-            const chunks = [];
-            let got = 0;
-            for (;;) {
-              const { done, value } = await reader.read();
-              if (done) break;
-              if (!wrap.isConnected) { reader.cancel(); return; } // lightbox closed mid-download
-              chunks.push(value);
-              got += value.length;
-              if (got > BLOB_MAX_BYTES) { reader.cancel(); throw new Error('too large for inline playback'); }
-              statusEl.textContent = total
-                ? 'LOADING VIDEO… ' + Math.round((got / total) * 100) + '%'
-                : 'LOADING VIDEO… ' + (got / (1024 * 1024)).toFixed(1) + ' MB';
-            }
-            blob = new Blob(chunks, { type: videoMime(p.name) });
-          } else {
-            const raw = await res.blob();
-            blob = raw.slice(0, raw.size, videoMime(p.name));
-          }
-          if (!wrap.isConnected) return;
-          source = 'blob';
-          vid.src = URL.createObjectURL(blob); // revoked by clearStage
-          vid.load();
-          wrap.classList.remove('is-fetching');
-          statusEl.hidden = true;
-          // Resume for the member automatically where autoplay policy lets
-          // us (the gesture that errored the direct load has expired on
-          // iOS); otherwise the poster + play button are already showing.
-          const pr = vid.play();
-          if (pr && pr.catch) pr.catch(() => {});
-        }
-
         vid.addEventListener('error', () => {
-          // Guard against stale handlers after navigating away
-          // (the wrapper was removed).
+          // The proxy couldn't serve it (not deployed yet, upstream quota
+          // 403, a codec this device can't decode) — swap in Drive's
+          // transcoding player. Guard against stale handlers after
+          // navigating away (the wrapper was removed).
           if (!wrap.isConnected) return;
-          if (source === 'direct') {
-            source = 'blob-loading';
-            tryBlobSource().catch(() => {
-              if (!wrap.isConnected) return;
-              wrap.replaceWith(makePreviewFrame(p));
-            });
-            return;
-          }
-          if (source === 'blob-loading') return; // late event from the dead direct load
-          // Blob playback failed too (codec this device can't decode) —
-          // Drive's transcoding player is the last resort.
           wrap.replaceWith(makePreviewFrame(p));
         });
         return wrap;
@@ -2906,10 +2838,11 @@
         // Videos also get "Open in Drive" for a clean, fullscreen-capable player.
         lbOpen.href = driveViewUrl(p);
         lbOpen.hidden = !p.video;
-        // Hide our own nav chevrons over a video: they overlay Drive's player
-        // for the whole clip and read like skip/seek buttons. On a video you
-        // navigate by closing and opening the next item (a swipe can't reach
-        // through the cross-origin iframe anyway). Photos keep end-aware arrows.
+        // Hide our own nav chevrons over a video: they sit on top of the
+        // player controls and read like skip/seek buttons (and over the
+        // iframe fallback they'd overlay Drive's player too). On a video
+        // you navigate by closing and opening the next item. Photos keep
+        // end-aware arrows.
         lbPrev.classList.toggle('is-hidden', p.video || lbIndex <= 0);
         lbNext.classList.toggle('is-hidden', p.video || lbIndex >= viewList.length - 1);
         // Warm the neighbors so swipes feel instant.

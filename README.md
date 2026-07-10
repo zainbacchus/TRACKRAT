@@ -178,11 +178,19 @@ gate, not secrecy: any individual file's Drive link still works for
 whoever it's forwarded to, exactly like sharing from Drive directly.
 
 ```
-gallery.html ──sign-in────▶ Supabase: members allowlist → view_token
-gallery.html ──GET+token──▶ Apps Script /exec ──▶ folder listing (JSON)
-gallery.html ──POST+token─▶ Apps Script /exec ──▶ file created in the folder
-<img> tiles ──────────────▶ drive.google.com/thumbnail?id=…  (Drive's public CDN)
+dashboard.html ──sign-in────▶ Supabase: members allowlist → view_token
+dashboard.html ──GET+token──▶ Apps Script /exec ──▶ folder listing (JSON)
+dashboard.html ──POST+token─▶ Apps Script /exec ──▶ file created in the folder
+<img> tiles ────────────────▶ drive.google.com/thumbnail?id=…  (Drive's public CDN)
+<video> src ──same-origin──▶ /api/video?id=… ──▶ Drive download host (proxied 206 ranges)
 ```
+
+Videos can't stream straight from Drive: Google 403s any cross-site
+`<video>` or `fetch()` request to its download host (Fetch Metadata
+gating), so the small zero-dependency Vercel function
+[`api/video.js`](api/video.js) proxies the bytes same-origin with Range
+support intact. It deploys automatically with the site — no extra setup
+required — but see step 9 below to harden it.
 
 ### One-time setup (~10 minutes)
 
@@ -271,6 +279,16 @@ gallery.html ──POST+token─▶ Apps Script /exec ──▶ file created in 
    revokes access on their next visit. (No new Supabase redirect URLs
    are needed — sign-in happens on `/dashboard`, which is already
    allowlisted.)
+9. **Harden the video proxy** (do this as part of launch, not later):
+   Vercel → Project → Settings → Environment Variables → add
+   `GALLERY_VIEW_TOKEN` with the same value as `VIEW_TOKEN`, then
+   redeploy. With it set, `/api/video` only answers requests carrying
+   the member view token (the dashboard already sends it — zero client
+   changes). Without it the proxy still works but falls back to a
+   same-site Referer check, which any script can spoof — acceptable
+   briefly, since the gate guards bandwidth, not secrecy (the Drive
+   files are link-shared anyway). If you rotate the token, rotate all
+   three copies together (Apps Script, Supabase, Vercel).
 
 Until steps 5–7 are done the page shows sign-in but members see errors.
 
@@ -288,15 +306,16 @@ Until steps 5–7 are done the page shows sign-in but members see errors.
   must match.
 - **Albums** are subfolders of the photo folder, one level deep. Files in
   the folder root appear under ALL only.
-- **Videos** play in the lightbox via Drive's own player. The in-page
-  form accepts files up to ~40MB (Apps Script POST limit) — bigger
-  videos go straight into the Drive folder.
+- **Videos** play in the lightbox in the site's own player, streamed
+  through `/api/video` (with Drive's transcoding player as an automatic
+  fallback). The in-page form accepts files up to ~40MB (Apps Script
+  POST limit) — bigger videos go straight into the Drive folder.
 - **Quality**: uploads are stored byte-for-byte — no client-side
   recompression, that's the point of using Drive.
-- **Changing the script** (including `UPLOAD_CODE`): edit in the Apps
-  Script editor, then Deploy → **Manage deployments** → pencil →
-  Version: **New version**. Editing alone doesn't ship, and a brand-new
-  deployment would mint a different `/exec` URL.
+- **Changing the script**: edit in the Apps Script editor, then Deploy →
+  **Manage deployments** → pencil → Version: **New version**. Editing
+  alone doesn't ship, and a brand-new deployment would mint a different
+  `/exec` URL.
 
 ### Troubleshooting
 
@@ -309,6 +328,7 @@ Until steps 5–7 are done the page shows sign-in but members see errors.
 | "COULDN'T LOAD… unauthorized" or upload `UNAUTHORIZED` | `view_token` in Supabase's `gallery_access` ≠ `VIEW_TOKEN` in the *deployed* script version. Fix one, publish a new version if the script changed. |
 | New Drive uploads not on the site | Listing cache — up to 5 min. Page uploads bust it instantly. |
 | Script edits have no effect | Publish a **new version** via Manage deployments — saving the editor isn't deploying. |
+| Videos open in Drive's player (doubled controls on iOS) instead of the site's | The `<video>` errored and fell back to the `/preview` iframe: `/api/video` isn't deployed (did `api/video.js` make it into the repo?), `GALLERY_VIEW_TOKEN` in Vercel doesn't match the member `view_token`, or the file's codec can't play on that device (the fallback is then correct — Drive transcodes it). |
 
 ## Local Development
 
@@ -324,7 +344,8 @@ don't apply to plain file servers.
 ## Deployment
 
 Push to `main`. Vercel builds and deploys automatically. No build step; static
-files + edge functions only.
+files plus the zero-config Node serverless function under `/api`
+([`api/video.js`](api/video.js) — dependency-free, no `package.json`).
 
 ---
 

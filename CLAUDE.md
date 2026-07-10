@@ -36,7 +36,7 @@ Pages:
 
 | Concern | Choice |
 |---|---|
-| Hosting | Vercel (static) |
+| Hosting | Vercel (static pages + one zero-dep Node serverless function under `/api`) |
 | Pages | One self-contained HTML file per route (inline CSS + JS) |
 | Auth | Supabase Auth (Google OAuth provider) |
 | Database | Supabase Postgres with Row Level Security |
@@ -61,6 +61,8 @@ TRACKRAT/
 ├── js/
 │   ├── supabase-config.js  # Shared Supabase client (URL + anon key)
 │   └── vendor/             # Vendored Supabase JS SDK (dep-inlined ESM bundle + node-*.mjs polyfills)
+├── api/
+│   └── video.js            # /api/video — same-origin Drive video streaming proxy (zero-dep Vercel Node function)
 ├── apps-script/
 │   └── gallery/            # Apps Script web app behind /gallery (Code.gs + manifest; deployed manually)
 ├── fonts/                  # Self-hosted webfonts (woff2, latin subset) + OFL licenses
@@ -341,35 +343,41 @@ who gets in:
   OFF — iOS Safari stacks its system media overlay on top of the
   built-in inline controls, doubling the UI even on a plain native
   `<video controls>`; custom controls are the only reliable
-  single-control-set cure (the YouTube/Vimeo/Mux pattern). The byte
-  source is
+  single-control-set cure (the YouTube/Vimeo/Mux pattern). The `<video>`
+  src is the **same-origin streaming proxy** `/api/video?id=<id>&token=`
+  (`api/video.js`, a dependency-free Vercel Node function): it fetches
   `https://drive.usercontent.google.com/download?id=<id>&export=download&confirm=t`
-  (anonymous HTTP 206 byte ranges, no cookies, `ACAO: *`; `confirm=t`
-  skips the ~100MB virus-scan interstitial), tried in a THREE-STAGE
-  chain: (1) directly as the `<video>` src — but iOS's on-device media
-  engine rejects Drive's response (verified on iPhone; curl of the same
-  URL with the `AppleCoreMedia` UA is fine, so it's the response's
-  attachment disposition / MIME handling, not the transport); so (2) on
-  `error` the page CORS-fetches the file itself and plays it from a
-  local blob, MIME corrected from the filename (`videoMime`; .MOVs come
-  back `application/octet-stream`), capped at `BLOB_MAX_BYTES` (150MB)
-  with a `LOADING VIDEO… n%` readout, blob revoked in `clearStage`; (3)
-  only if THAT fails (a codec the device can't decode, download-quota
-  403, oversize) does it fall back to Drive's transcoding
+  server-side and pipes the bytes through with Range/206 passthrough
+  (plus an explicit `Accept-Ranges: bytes`, `Content-Disposition:
+  inline`, and MIME corrected from the filename Drive reports — .MOVs
+  come back `application/octet-stream`). The proxy exists because
+  **Google gates the usercontent host on Fetch Metadata** (verified
+  2026-07 by header bisection): any cross-site browser subresource
+  request — `<video>` src (`Sec-Fetch-Dest: video`) or `fetch()`
+  (`Sec-Fetch-Mode: cors`) — gets a 403 HTML page; only navigations
+  (`Sec-Fetch-Mode: navigate`) pass. Browsers attach those headers
+  unconditionally and JS can't strip them, so **no client-side approach
+  (direct src, CORS-fetch-to-blob, lh3 =m22 transcodes — all tested) can
+  ever stream Drive bytes** — don't re-attempt one; curl "verifying" the
+  endpoint without Sec-Fetch headers is a false positive. On `error`
+  (proxy not deployed, upstream quota 403, a codec the device can't
+  decode) the player falls back to Drive's transcoding
   `https://drive.google.com/file/d/<id>/preview` iframe, which always
-  plays but double-stacks controls on iOS — don't "simplify" back to
-  iframe-only or to native `controls`, and don't assume the direct src
-  works on iOS just because curl says the endpoint is healthy.
-  Fullscreen hands off to `webkitEnterFullscreen` on iPhone (iOS's clean
-  native fullscreen player), `requestFullscreen` elsewhere. The same
-  usercontent URL doubles as the DOWNLOAD link (Content-Disposition
-  applies to navigations). The page CSP doesn't restrict child frames,
-  only being framed.
+  plays but double-stacks controls on iOS — the last resort, never the
+  primary. The proxy's gate protects bandwidth, not secrecy (files are
+  link-shared): with a `GALLERY_VIEW_TOKEN` env var set in Vercel
+  (same value as the Apps Script `VIEW_TOKEN`) it requires the token;
+  without it, it falls back to a same-site `Sec-Fetch-Site`/Referer
+  check. Fullscreen hands off to `webkitEnterFullscreen` on iPhone
+  (iOS's clean native fullscreen player), `requestFullscreen` elsewhere.
+  The usercontent URL is still the DOWNLOAD link (navigations pass the
+  gate and Content-Disposition applies). The page CSP doesn't restrict
+  child frames, only being framed.
 - **Albums** — one level of subfolders inside the photo folder. Root-level
   files appear under ALL only. The upload form can create a new album
   (server-side, with a lock to avoid duplicate folders). Chips are
   ordered newest-event-first by the `M.DD.YY-` date prefix in the folder
-  name (`albumCompare` in gallery.html; undated names fall back to Z→A),
+  name (`albumCompare` in dashboard.html; undated names fall back to Z→A),
   and the row collapses to ALL + the three newest + a `+ N MORE` toggle
   (`CHIPS_COLLAPSED`); the active album always stays visible even when
   it's behind the fold.
@@ -618,7 +626,9 @@ Three places to keep in sync:
 ### Deployment
 
 Push to the default branch (`main`) → Vercel auto-deploys. No build step.
-Static files + edge functions only.
+Static files plus the zero-config Node serverless function(s) under
+`/api` (currently just `api/video.js` — keep them dependency-free; no
+`package.json`).
 
 ## Browser Compatibility
 
