@@ -335,26 +335,36 @@ who gets in:
   `https://drive.google.com/thumbnail?id=<id>&sz=w400` for tiles, `w1600`
   for the lightbox. This only works while the folder is shared **"Anyone
   with the link · Viewer"** (files inherit). Exactly two size buckets on
-  purpose — keeps the CDN cache hot. Videos play in the lightbox via a
-  native `<video>` streaming the original bytes from
+  purpose — keeps the CDN cache hot. Videos play in the lightbox inside
+  the gallery's own custom controls (`makeNativePlayer`:
+  play/scrub/mute/fullscreen). The `controls` attribute is deliberately
+  OFF — iOS Safari stacks its system media overlay on top of the
+  built-in inline controls, doubling the UI even on a plain native
+  `<video controls>`; custom controls are the only reliable
+  single-control-set cure (the YouTube/Vimeo/Mux pattern). The byte
+  source is
   `https://drive.usercontent.google.com/download?id=<id>&export=download&confirm=t`
-  (serves anonymous HTTP 206 byte ranges, no cookies; `confirm=t` skips
-  the ~100MB virus-scan interstitial), wrapped in the gallery's own
-  custom controls (`makeNativePlayer`: play/scrub/mute/fullscreen). The
-  `controls` attribute is deliberately OFF — iOS Safari stacks its
-  system media overlay on top of the built-in inline controls, doubling
-  the UI even on a plain native `<video controls>`; custom controls are
-  the only reliable single-control-set cure (the YouTube/Vimeo/Mux
-  pattern). Fullscreen hands off to `webkitEnterFullscreen` on iPhone
-  (iOS's clean native fullscreen player), `requestFullscreen` elsewhere.
-  On the `<video>`'s `error` event (exotic codec, download-quota 403,
-  MIME quirk) it falls back to Drive's transcoding
+  (anonymous HTTP 206 byte ranges, no cookies, `ACAO: *`; `confirm=t`
+  skips the ~100MB virus-scan interstitial), tried in a THREE-STAGE
+  chain: (1) directly as the `<video>` src — but iOS's on-device media
+  engine rejects Drive's response (verified on iPhone; curl of the same
+  URL with the `AppleCoreMedia` UA is fine, so it's the response's
+  attachment disposition / MIME handling, not the transport); so (2) on
+  `error` the page CORS-fetches the file itself and plays it from a
+  local blob, MIME corrected from the filename (`videoMime`; .MOVs come
+  back `application/octet-stream`), capped at `BLOB_MAX_BYTES` (150MB)
+  with a `LOADING VIDEO… n%` readout, blob revoked in `clearStage`; (3)
+  only if THAT fails (a codec the device can't decode, download-quota
+  403, oversize) does it fall back to Drive's transcoding
   `https://drive.google.com/file/d/<id>/preview` iframe, which always
   plays but double-stacks controls on iOS — don't "simplify" back to
-  iframe-only or to native `controls`. The same usercontent URL doubles
-  as the DOWNLOAD link (Content-Disposition only affects navigations,
-  not media loads). The page CSP doesn't restrict child frames, only
-  being framed.
+  iframe-only or to native `controls`, and don't assume the direct src
+  works on iOS just because curl says the endpoint is healthy.
+  Fullscreen hands off to `webkitEnterFullscreen` on iPhone (iOS's clean
+  native fullscreen player), `requestFullscreen` elsewhere. The same
+  usercontent URL doubles as the DOWNLOAD link (Content-Disposition
+  applies to navigations). The page CSP doesn't restrict child frames,
+  only being framed.
 - **Albums** — one level of subfolders inside the photo folder. Root-level
   files appear under ALL only. The upload form can create a new album
   (server-side, with a lock to avoid duplicate folders). Chips are
