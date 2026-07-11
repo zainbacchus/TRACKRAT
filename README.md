@@ -96,7 +96,7 @@ public, indexable page and is listed in `sitemap.xml`.
 Both sessions carry their full street address (fixed, already-public
 locations, matching Google Business Profile — required for Google's
 local/event surfaces): Sunday at 4401 Tilley St and Thursday at
-201 E Mary St.
+3101-3189 Hargrave St (Yellow Jacket Stadium).
 
 The OG image (`og.png`) is rendered in actual Fugaz One (black wordmark on
 brand orange, 1200×630, palette-optimized).

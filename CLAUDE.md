@@ -171,7 +171,7 @@ noindex meta.
 `schedule.html` ships `Event` JSON-LD for both weekly sessions
 (`eventSchedule`, weekly recurrence). Both sessions carry a full street
 address — **Sunday** at 4401 Tilley St, Austin TX 78723 and **Thursday**
-at 201 E Mary St, Austin TX 78704 — fixed, already-public locations; the
+at Yellow Jacket Stadium, 3101-3189 Hargrave St, Austin TX 78702 — fixed, already-public locations; the
 addresses make each event eligible for Google's local/event surfaces.
 Each Event also carries a concrete `startDate`/`endDate` for an upcoming
 occurrence — Google requires `startDate` for Event rich results
@@ -662,7 +662,7 @@ Static files plus the zero-config Node serverless function(s) under
    canonical, OG, Twitter card, and geo meta. Copy the head block from
    `schedule.html` as a starting point.
 9. **Address policy: both meet locations are fixed and published** —
-   Sunday at 4401 Tilley St and Thursday at 201 E Mary St — in JSON-LD,
+   Sunday at 4401 Tilley St and Thursday at 3101-3189 Hargrave St (Yellow Jacket Stadium) — in JSON-LD,
    llms.txt, and visible copy with full street addresses (each is already
    public on the schedule page + in the .ics files, and the address makes
    the event eligible for Google's local/event surfaces). Keep structured
