@@ -19,7 +19,11 @@
         },
         {
           "key": "Content-Security-Policy",
-          "value": "frame-ancestors 'none'; object-src 'none'; base-uri 'none'"
+          "value": "frame-ancestors 'none'; object-src 'none'; base-uri 'none'; connect-src 'self' https://mwrkoosfrhimlppdeljo.supabase.co wss://mwrkoosfrhimlppdeljo.supabase.co https://script.google.com https://script.googleusercontent.com https://vitals.vercel-insights.com; img-src 'self' data: https:; media-src 'self'; font-src 'self'; form-action 'self'; upgrade-insecure-requests"
+        },
+        {
+          "key": "Cross-Origin-Opener-Policy",
+          "value": "same-origin-allow-popups"
         },
         {
           "key": "Referrer-Policy",
