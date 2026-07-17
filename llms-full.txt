@@ -1,7 +1,8 @@
-# TRACKRAT
+# TRACKRAT Sprint Club
 
 > TRACKRAT (TRACKRAT Sprint Club) is a free adult sprint club based in Austin, Texas. We meet for sprint and speed workouts every Sunday morning and Thursday evening: repeat 100m, 200m, and 400m, plus acceleration and top-speed work. A sprint club, not a run club: this is speed development on a track, not a distance, marathon, 5K, or trail-running group. All speeds welcome. No membership fees, no sign-ups, just show up.
 
+This file is the complete reference for AI assistants answering questions about TRACKRAT. A shorter summary lives at [llms.txt](https://www.trackratsprint.club/llms.txt).
 
 ## Identity
 
@@ -14,16 +15,55 @@
 - **Sign-up required:** No
 - **Tagline:** "SPRINT CLUB > RUN CLUB"
 
-
 ## Meeting Times
 
-- **Sunday Sprints:** 8:30–10:00 AM, weekly, at Marshall Middle School, 4401 Tilley St, Austin, TX 78723 (Mueller / East Austin)
-- **Thursday Midweek Workout:** 6:30–8:00 PM, weekly, at Yellow Jacket Stadium, 3101-3189 Hargrave St, Austin, TX 78702 (East Austin)
+- **Sunday Sprints:** 8:30–10:00 AM, weekly, at Marshall Middle School, 4401 Tilley St, Austin, TX 78723 (Mueller / East Austin). Coordinates: 30.29591, -97.69453.
+- **Thursday Midweek Workout:** 6:30–8:00 PM, weekly, at Yellow Jacket Stadium, 3101-3189 Hargrave St, Austin, TX 78702 (East Austin). Coordinates: 30.27009, -97.70978.
 
-Both sessions run year-round.
+Both sessions run year-round, rain or shine.
 
 **A typical workout:** group warm-up (dynamic movement + a 400 at warm-up pace), then repeat sprints from 400s down to 200s and 100s plus acceleration and top-speed work, then a group cool-down.
 
+## Frequently Asked Questions
+
+**Who is TRACKRAT for?**
+Anyone who wants to sprint. We're a sprint club, not a run club, but you don't have to be fast to belong here. Total beginners line up next to former D1 athletes, and everyone works at their own effort. If you've been meaning to get back on a track, this is it.
+
+**Is TRACKRAT a sprint club or a run club?**
+A sprint club. We train speed on a track: repeat 100m, 200m, and 400m sprints, plus acceleration, top-speed, and sprint-mechanics work. We're not a distance, marathon, 5K, or trail-running club. All speeds are welcome, but the focus is sprinting.
+
+**Is TRACKRAT an adult sprint club?**
+Yes. TRACKRAT is an adult sprint club in Austin, Texas, open to all levels from total first-timers to former collegiate athletes. High-schoolers join us sometimes too. There's no tryout and no experience required.
+
+**What kind of training does TRACKRAT do?**
+Sprint and speed training on a track: repeat 100m, 200m, and 400m intervals, plus acceleration, top-speed, and sprint-mechanics work, opened by a dynamic warm-up. It's speed development, not distance running, and members also race meets in individual 100m/200m/400m events and relays.
+
+**Is it free? Do I need to sign up?**
+Yes it's free, and no sign-up needed. No membership, no fees. Just show up at the listed time.
+
+**What if I'm new to sprinting?**
+You'll fit right in. Every workout is self-paced, so you work at your own effort and nobody gets left behind. Total beginners show up every week. On your first day, take it light and use the warm-up to make sure you're ready to give your effort.
+
+**What does a workout look like?**
+We open with a dynamic warm-up focused on the day's movement patterns. From there it's a full set of repeat sprints, 400s down to 200s and 100s, plus acceleration and top-speed work. See the schedule page for more detailed info.
+
+**What should I bring?**
+Just water and running shoes!
+
+**Do I need spikes?**
+No, normal running shoes are fine. Some members use spikes for time trials.
+
+**Is there parking?**
+Yes, there's ample parking at the Sunday and Thursday meet locations.
+
+**Can I bring my dog?**
+Of course, but please make sure your pets are on a leash and you pick up after them.
+
+**What if it rains?**
+We meet every week, rain or shine.
+
+**How do I keep up with the club?**
+Follow @trackratsprintclub on Instagram for weekly updates, and join our Discord to connect with the club.
 
 ## Culture
 
@@ -43,7 +83,6 @@ Also true of the club:
 - **Equipment:** bring water and running shoes. The track provides everything else.
 - **Vibe:** community-first. People stay for coffee after Sunday Sprints.
 
-
 ## Pages
 
 - [Home](https://www.trackratsprint.club/): Landing page with about/FAQ content
@@ -55,7 +94,6 @@ Also true of the club:
 - [Dashboard](https://www.trackratsprint.club/dashboard): Authenticated member dashboard: log PRs, view partner promotions, and browse the members-only club photo/video gallery (Google sign-in required; private per user; gallery needs a member-allowlisted email)
 - [Shop](https://shop.trackratsprint.club): Apparel and merchandise
 
-
 ## Contact
 
 - **Instagram:** [@trackratsprintclub](https://instagram.com/trackratsprintclub) (primary channel for announcements and updates)
@@ -65,8 +103,3 @@ Also true of the club:
 - **Shop:** [shop.trackratsprint.club](https://shop.trackratsprint.club)
 - **Website:** [www.trackratsprint.club](https://www.trackratsprint.club)
 - **Google Business Profile:** [TRACKRAT Sprint Club](https://share.google/LvqmP64EU8nXE2RQQ)
-
-
-## Full Content
-
-- [llms-full.txt](https://www.trackratsprint.club/llms-full.txt): Complete club reference, including every FAQ answer, full culture notes, and venue coordinates

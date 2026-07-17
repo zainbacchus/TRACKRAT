@@ -24,6 +24,8 @@
   <meta name="twitter:title" content="Dashboard · TRACKRAT" />
   <meta name="twitter:description" content="Log your PRs and view member promotions." />
   <meta name="twitter:image" content="https://www.trackratsprint.club/og.png" />
+  <meta name="twitter:site" content="@trackratsprints" />
+  <meta name="twitter:creator" content="@trackratsprints" />
 
   <meta name="theme-color" content="#000000" />
 
@@ -35,7 +37,10 @@
   <!-- Self-hosted fonts (see @font-face in inline <style>). -->
   <link rel="preload" as="font" type="font/woff2" href="/fonts/fugaz-one-latin.woff2" crossorigin>
   <link rel="preload" as="font" type="font/woff2" href="/fonts/ibm-plex-mono-400-latin.woff2" crossorigin>
+  <!-- Start the TLS handshake with Supabase before the module script runs. -->
+  <link rel="preconnect" href="https://mwrkoosfrhimlppdeljo.supabase.co" crossorigin>
   <script defer src="/_vercel/insights/script.js"></script>
+  <script defer src="/_vercel/speed-insights/script.js"></script>
   <style>
     /* Self-hosted fonts (latin subset). */
     @font-face { font-family: 'Fugaz One';     font-style: normal; font-weight: 400; font-display: swap; src: url('/fonts/fugaz-one-latin.woff2') format('woff2'); }
@@ -1287,7 +1292,7 @@
     <div class="auth-panel">
       <div class="auth-inner">
         <span class="auth-eyebrow">MEMBER DASHBOARD</span>
-        <h1 class="auth-title">LOG IN</h1>
+        <h2 class="auth-title">LOG IN</h2>
         <p class="auth-sub">Sign in to log your PRs, see partner promotions, and view club photos and videos.</p>
         <button class="google-btn" id="googleSignIn">
           <svg viewBox="0 0 24 24" aria-hidden="true">
