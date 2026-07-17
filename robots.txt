@@ -4,4 +4,30 @@
 User-agent: *
 Allow: /
 
+# AI assistants / answer engines are explicitly welcome. (The group above
+# already permits them; these named groups just make the intent unambiguous.)
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Perplexity-User
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
 Sitemap: https://www.trackratsprint.club/sitemap.xml
