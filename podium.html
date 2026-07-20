@@ -5,13 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="format-detection" content="telephone=no, date=no, address=no, email=no" />
   <title>Race Results · TRACKRAT Sprint Club · Austin, TX</title>
-  <meta name="description" content="TRACKRAT Sprint Club's competitive sprint results — every track meet the Austin sprint club has raced as a team, our relay squads (4x100, 4x400) and the sprinters who ran them, and where we placed. Most recent first." />
+  <meta name="description" content="TRACKRAT Sprint Club race results: every track meet the Austin sprint club has raced, relay squads (4x100, 4x400), and final placements." />
   <link rel="canonical" href="https://www.trackratsprint.club/podium" />
 
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="TRACKRAT Sprint Club" />
   <meta property="og:title" content="Race Results · TRACKRAT Sprint Club · Austin, TX" />
-  <meta property="og:description" content="TRACKRAT Sprint Club's competitive sprint results — every track meet we've raced as a team, our relay squads and sprinters, and where we placed." />
+  <meta property="og:description" content="TRACKRAT Sprint Club race results: every track meet the Austin sprint club has raced, relay squads (4x100, 4x400), and final placements." />
   <meta property="og:url" content="https://www.trackratsprint.club/podium" />
   <meta property="og:image" content="https://www.trackratsprint.club/og.png" />
   <meta property="og:image:width" content="1200" />
@@ -21,7 +21,7 @@
 
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Race Results · TRACKRAT Sprint Club · Austin, TX" />
-  <meta name="twitter:description" content="TRACKRAT Sprint Club's competitive sprint results — meets, relay squads, and placements." />
+  <meta name="twitter:description" content="TRACKRAT Sprint Club race results: every track meet the Austin sprint club has raced, relay squads (4x100, 4x400), and final placements." />
   <meta name="twitter:image" content="https://www.trackratsprint.club/og.png" />
   <meta name="twitter:site" content="@trackratsprints" />
   <meta name="twitter:creator" content="@trackratsprints" />
@@ -311,6 +311,18 @@
       display: flex;
       flex-direction: column;
       gap: 20px;
+    }
+
+    /* Static no-JS fallback (removed by the script once the list renders). */
+    #podiumStatic h2 { font-size: 18px; letter-spacing: 0.02em; }
+    #podiumStatic ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      font-size: 14px;
+      line-height: 1.6;
+      color: rgba(255, 255, 255, 0.8);
     }
 
     .meet-card {
@@ -697,18 +709,18 @@
 
     <!-- Static fallback for non-JS crawlers (AI answer engines like GPTBot /
          ClaudeBot / PerplexityBot largely don't execute JS, so the JS-rendered
-         list above is invisible to them). Keep this in sync with the MEETS
-         array in the script below. Hidden for JS users (noscript). -->
-    <noscript>
-      <div class="podium-list">
-        <h2>TRACKRAT Sprint Club race results</h2>
-        <ul>
-          <li><strong>Track Night Austin</strong>, June 27, 2026 · Yellow Jacket Stadium: Women's 4×400 relay, 1st; Men's 4×400 relay, 2nd.</li>
-          <li><strong>Spring Shakeout</strong>, April 29, 2026 · Southwestern University (Georgetown, TX): Men's 4×100 relay, 1st.</li>
-          <li><strong>Rave Relays</strong>, November 8, 2025 · Ann Richards Stadium: Men's 4×400 relay, 2nd.</li>
-        </ul>
-      </div>
-    </noscript>
+         list above is invisible to them). Served as visible HTML so every
+         crawler counts it as real page content; the script below removes it
+         before the interactive list renders. Keep this in sync with the MEETS
+         array in the script below. -->
+    <div class="podium-list" id="podiumStatic">
+      <h2>TRACKRAT Sprint Club race results</h2>
+      <ul>
+        <li><strong>Track Night Austin</strong>, June 27, 2026 · Yellow Jacket Stadium: Women's 4×400 relay, 1st; Men's 4×400 relay, 2nd.</li>
+        <li><strong>Spring Shakeout</strong>, April 29, 2026 · Southwestern University (Georgetown, TX): Men's 4×100 relay, 1st.</li>
+        <li><strong>Rave Relays</strong>, November 8, 2025 · Ann Richards Stadium: Men's 4×400 relay, 2nd.</li>
+      </ul>
+    </div>
 
   </main>
 
@@ -926,6 +938,7 @@
     searchEl.addEventListener('input', () => { query = searchEl.value.trim().toLowerCase(); render(); });
     wireChips(filtersEl, () => activeDisc, v => { activeDisc = v; });
     wireChips(catFiltersEl, () => activeCat, v => { activeCat = v; });
+    document.getElementById('podiumStatic').remove();
     render();
   </script>
 
