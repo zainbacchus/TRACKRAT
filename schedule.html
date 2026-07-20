@@ -5,13 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="format-detection" content="telephone=no, date=no, address=no, email=no" />
   <title>Schedule · TRACKRAT Sprint Club · Austin, TX</title>
-  <meta name="description" content="Weekly sprint workouts in Austin, TX with TRACKRAT Sprint Club — speed training and sprint intervals (100m / 200m / 400m). Sunday Sprints 8:30 AM at Marshall Middle School (Mueller), Thursday Midweek Workout 6:30 PM at Yellow Jacket Stadium (East Austin). All levels, no sign-ups." />
+  <meta name="description" content="TRACKRAT sprint workouts in Austin, TX: Sunday Sprints 8:30 AM at Marshall Middle School, Thursday 6:30 PM at Yellow Jacket Stadium. All levels, no sign-ups." />
   <link rel="canonical" href="https://www.trackratsprint.club/schedule" />
 
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="TRACKRAT Sprint Club" />
   <meta property="og:title" content="Schedule · TRACKRAT Sprint Club · Austin, TX" />
-  <meta property="og:description" content="Weekly sprint workouts and speed training in Austin, TX. Sunday Sprints 8:30 AM (Marshall Middle School), Thursday Midweek Workout 6:30 PM (Yellow Jacket Stadium). Sprint intervals — 100m / 200m / 400m. No sign-ups." />
+  <meta property="og:description" content="TRACKRAT sprint workouts in Austin, TX: Sunday Sprints 8:30 AM at Marshall Middle School, Thursday 6:30 PM at Yellow Jacket Stadium. All levels, no sign-ups." />
   <meta property="og:url" content="https://www.trackratsprint.club/schedule" />
   <meta property="og:image" content="https://www.trackratsprint.club/og.png" />
   <meta property="og:image:width" content="1200" />
@@ -21,7 +21,7 @@
 
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Schedule · TRACKRAT Sprint Club · Austin, TX" />
-  <meta name="twitter:description" content="Weekly sprint workouts + speed training in Austin, TX. Sunday 8:30 AM, Thursday 6:30 PM. Sprint intervals — 100m / 200m / 400m. No sign-ups." />
+  <meta name="twitter:description" content="TRACKRAT sprint workouts in Austin, TX: Sunday Sprints 8:30 AM at Marshall Middle School, Thursday 6:30 PM at Yellow Jacket Stadium. All levels, no sign-ups." />
   <meta name="twitter:image" content="https://www.trackratsprint.club/og.png" />
   <meta name="twitter:site" content="@trackratsprints" />
   <meta name="twitter:creator" content="@trackratsprints" />
@@ -393,6 +393,31 @@
     }
 
     .footer-line .hi { color: var(--orange); }
+
+    /* ---- SESSION NOTES ---- */
+    .session-notes {
+      width: 100%;
+      max-width: 900px;
+      margin-top: 72px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      opacity: 0;
+      animation: fadeUp 0.7s ease 0.6s forwards;
+    }
+    .session-notes h2 {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.3em;
+      color: var(--orange);
+    }
+    .session-notes h2:not(:first-child) { margin-top: 18px; }
+    .session-notes p {
+      font-size: 15px;
+      line-height: 1.7;
+      color: rgba(255, 255, 255, 0.78);
+      max-width: 72ch;
+    }
 
     /* ---- FINISH LINE ---- */
     .finish {
@@ -844,6 +869,16 @@
       </div>
 
     </div>
+
+    <!-- Indexable prose about the sessions (the cards + JSON-LD alone read
+         as thin content to crawlers). Keep facts in sync with the FAQ on
+         index.html and llms.txt. -->
+    <section class="session-notes">
+      <h2>WHAT A SESSION LOOKS LIKE</h2>
+      <p>Every TRACKRAT session starts together: a dynamic warm-up built around the day's movement patterns, plus a 400 at warm-up pace. From there it's repeat sprints, working down from 400s to 200s and 100s, with acceleration and top-speed work mixed in. We close with a group cool-down. Everything is self-paced. You run your effort, on your rest, so total beginners and former collegiate sprinters train side by side.</p>
+      <h2>FIRST TIME?</h2>
+      <p>Bring water and normal running shoes. No spikes needed, no fees, no sign-up: just show up a few minutes early and introduce yourself. There's ample parking at both tracks, and we meet every week, rain or shine. Take your first day light and use the warm-up to make sure you're ready to give your effort. Most Sundays the club sticks around for coffee after.</p>
+    </section>
 
     <div class="footer-line">
       ALL SPEEDS WELCOME.<br />
