@@ -169,10 +169,13 @@ robots.txt — blocking crawl would prevent Google from ever seeing the
 noindex meta.
 
 `schedule.html` ships `Event` JSON-LD for both weekly sessions
-(`eventSchedule`, weekly recurrence). Both sessions carry a full street
-address — **Sunday** at 4401 Tilley St, Austin TX 78723 and **Thursday**
-at Yellow Jacket Stadium, 3101-3189 Hargrave St, Austin TX 78702 — fixed, already-public locations; the
-addresses make each event eligible for Google's local/event surfaces.
+(`eventSchedule`, weekly recurrence). **Sunday** carries its full street
+address (4401 Tilley St, Austin TX 78723, a fixed, already-public
+location; the address makes it eligible for Google's local/event
+surfaces). **Thursday's location varies week to week** (announced on the
+Instagram story and Discord), so its JSON-LD `location` stays city-level
+(`Austin, TX`, `name: "Location varies weekly (announced on Instagram
+and Discord)"`) with no street address.
 Each Event also carries a concrete `startDate`/`endDate` for an upcoming
 occurrence — Google requires `startDate` for Event rich results
 (`eventSchedule` alone doesn't qualify). **Those dates go stale once the
@@ -661,12 +664,15 @@ Static files plus the zero-config Node serverless function(s) under
 8. **SEO meta is not optional.** Every new public page needs a unique title,
    canonical, OG, Twitter card, and geo meta. Copy the head block from
    `schedule.html` as a starting point.
-9. **Address policy: both meet locations are fixed and published** —
-   Sunday at 4401 Tilley St and Thursday at 3101-3189 Hargrave St (Yellow Jacket Stadium) — in JSON-LD,
-   llms.txt, and visible copy with full street addresses (each is already
-   public on the schedule page + in the .ics files, and the address makes
-   the event eligible for Google's local/event surfaces). Keep structured
-   data, GBP, and visible copy consistent with each other (NAP consistency).
+9. **Address policy: Sunday is fixed and published, Thursday varies.**
+   Sunday at 4401 Tilley St appears with its full street address in
+   JSON-LD, llms.txt, and visible copy (already public on the schedule
+   page + in the .ics file; the address makes the event eligible for
+   Google's local/event surfaces). Thursday's location changes week to
+   week and is announced on the Instagram story and Discord, so it stays
+   city-level (Austin, TX) everywhere: no street address in JSON-LD,
+   llms.txt, .ics, or visible copy. Keep structured data, GBP, and
+   visible copy consistent with each other (NAP consistency).
 10. **Don't use `opacity` for "dim" text on the orange background.** Black
     at low opacity composites with `#FF4D1F` to a muddy mid-orange that
     fails WCAG AA contrast. On `index.html`, use the solid color
