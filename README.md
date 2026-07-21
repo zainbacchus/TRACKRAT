@@ -93,10 +93,11 @@ public, indexable page and is listed in `sitemap.xml`.
 (`eventSchedule` with weekly recurrence, plus a concrete
 `startDate`/`endDate` for an upcoming occurrence — Google requires
 `startDate` for Event rich results, so refresh those dates periodically).
-Both sessions carry their full street address (fixed, already-public
-locations, matching Google Business Profile — required for Google's
-local/event surfaces): Sunday at 4401 Tilley St and Thursday at
-3101-3189 Hargrave St (Yellow Jacket Stadium).
+Sunday carries its full street address (4401 Tilley St, a fixed,
+already-public location matching Google Business Profile, which makes it
+eligible for Google's local/event surfaces). Thursday's location varies
+week to week (announced on the Instagram story and Discord), so its
+JSON-LD stays city-level with no street address.
 
 The OG image (`og.png`) is rendered in actual Fugaz One (black wordmark on
 brand orange, 1200×630, palette-optimized).
