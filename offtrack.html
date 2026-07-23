@@ -358,7 +358,13 @@
     }
     .demo-row:last-child { border-bottom: none; }
     .demo-name { font-weight: 600; }
+    .demo-name a { text-decoration: underline; text-underline-offset: 3px; }
+    .demo-name a:hover { color: var(--orange); }
     .demo-author { color: var(--muted); font-weight: 600; text-align: right; white-space: nowrap; }
+    @media (max-width: 560px) {
+      .demo-row { flex-direction: column; gap: 2px; }
+      .demo-author { text-align: left; white-space: normal; }
+    }
     .demos-empty { color: var(--muted); font-style: italic; padding: 8px 0; font-size: 15px; }
 
     /* ---- FOOTER ---- */
@@ -415,36 +421,6 @@
           "@type": "City", "name": "Austin",
           "containedInPlace": { "@type": "AdministrativeArea", "name": "Texas, USA" }
         }
-      },
-      {
-        "@type": "Event",
-        "name": "OFFTRACK demo night",
-        "description": "A casual demo night in Austin, TX. Builders, founders, and creatives give short 5 to 10 minute demos of personal tech projects.",
-        "startDate": "2026-07-22T19:00:00-05:00",
-        "endDate": "2026-07-22T20:30:00-05:00",
-        "doorTime": "2026-07-22T18:30:00-05:00",
-        "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
-        "eventStatus": "https://schema.org/EventScheduled",
-        "isAccessibleForFree": true,
-        "inLanguage": "en-US",
-        "image": "https://www.trackratsprint.club/og-offtrack.png",
-        "url": "https://www.trackratsprint.club/offtrack",
-        "offers": {
-          "@type": "Offer",
-          "price": "0",
-          "priceCurrency": "USD",
-          "availability": "https://schema.org/InStock",
-          "url": "https://luma.com/dmb7o78s"
-        },
-        "location": {
-          "@type": "Place",
-          "name": "Austin, TX (venue to be announced)",
-          "address": {
-            "@type": "PostalAddress",
-            "addressLocality": "Austin", "addressRegion": "TX", "addressCountry": "US"
-          }
-        },
-        "organizer": { "@type": "Organization", "name": "TRACKRAT Sprint Club", "url": "https://www.trackratsprint.club/" }
       }
     ]
   }
@@ -547,19 +523,22 @@
         <p>TRACKRAT was started by founders, investors, and operators building in tech. The track taught us something simple: you get better, faster, around people who push you. OFFTRACK takes that same energy off the track and into the things we make.</p>
       </section>
 
-      <!-- NEXT EVENT -->
+      <!-- NEXT EVENT: none scheduled right now. When the next OFFTRACK is
+           booked, re-add the card here (CSS for it is kept below under
+           NEXT EVENT) and restore the Event node in the JSON-LD up top:
       <section class="card">
         <span class="card-label label-orange">Next event</span>
         <div class="session-line">
           <span>Wed · July 22</span>
         </div>
         <p class="session-sub">Doors 6:30 PM CT · demos start ~7 PM</p>
-        <p class="session-rsvp"><a href="https://luma.com/dmb7o78s" target="_blank" rel="noopener">RSVP →</a></p>
+        <p class="session-rsvp"><a href="..." target="_blank" rel="noopener">RSVP →</a></p>
       </section>
+      -->
 
       <!-- GET NOTIFIED -->
       <section class="card">
-        <span class="card-label label-ink">Get notified</span>
+        <span class="card-label label-orange">Get notified</span>
         <h2>Get notified about the next one</h2>
         <p>Drop your email and we'll let you know when the next event is.</p>
         <form class="signup-form" id="signupForm" novalidate>
@@ -582,14 +561,14 @@
          ============================================================ -->
     <section class="demos">
       <h2>Past demos</h2>
-      <p class="demos-empty">Nothing here yet. The first OFFTRACK is July 22, 2026. Demos land here after the night wraps.</p>
-      <!-- Once an event happens, replace the line above with a .demo-event
-           block (newest first), one .demo-row per demo:
       <div class="demo-event">
-        <div class="demo-event-title">July 22, 2026</div>
-        <div class="demo-row"><span class="demo-name">Project title</span><span class="demo-author">Presenter name</span></div>
+        <div class="demo-event-title">OFFTRACK #1 · July 22, 2026</div>
+        <div class="demo-row"><span class="demo-name"><a href="https://github.com/zainbacchus/local-mood-mcp/blob/main/docs/why-i-built-this-demo.pdf" target="_blank" rel="noopener">local-mood</a> · a Spotify tool that proves better memory beats a better model, using your own music as the evidence</span><span class="demo-author">Zain Bacchus</span></div>
+        <div class="demo-row"><span class="demo-name">Nello AI · a peptide and GLP-1 tracking app built for women</span><span class="demo-author">Kirtana Reddy</span></div>
+        <div class="demo-row"><span class="demo-name"><a href="https://www.instagram.com/sidehustleatx" target="_blank" rel="noopener">Side Hustle ATX</a> · lessons learned creating a modular community platform with a Kei truck</span><span class="demo-author">Kelly Ferraro &amp; Brandon Bloch</span></div>
+        <div class="demo-row"><span class="demo-name"><a href="https://echonos.ai/" target="_blank" rel="noopener">echonos.ai</a> · generate beat-synced visuals in minutes</span><span class="demo-author">Ali Syed</span></div>
+        <div class="demo-row"><span class="demo-name"><a href="https://kaushiksahoo2000.github.io/fitness-data-journey/#slide-1" target="_blank" rel="noopener">AI fitness and health analytics</a> · from Zapier to agentic workflows</span><span class="demo-author">Kaushik Sahoo</span></div>
       </div>
-      -->
     </section>
   </main>
 
