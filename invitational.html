@@ -5,13 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="format-detection" content="telephone=no, date=no, address=no, email=no" />
   <title>2026 Invitational · TRACKRAT Sprint Club · Austin, TX</title>
-  <meta name="description" content="The 2026 TRACKRAT Invitational, a community sprint meet on October 18, 2026 at 4401 Tilley St, Austin, TX. RSVP and full schedule coming soon." />
+  <meta name="description" content="The 2026 TRACKRAT Invitational, a community sprint meet on October 18, 2026, 9:00–11:00 AM at 4401 Tilley St, Austin, TX. RSVP open on Sweatpals; full schedule coming soon." />
   <link rel="canonical" href="https://www.trackratsprint.club/invitational" />
 
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="TRACKRAT Sprint Club" />
   <meta property="og:title" content="2026 Invitational · TRACKRAT Sprint Club" />
-  <meta property="og:description" content="October 18, 2026 · 4401 Tilley St, Austin, TX. A community sprint meet. RSVP coming soon." />
+  <meta property="og:description" content="October 18, 2026 · 9:00–11:00 AM · 4401 Tilley St, Austin, TX. A community sprint meet. RSVP open." />
   <meta property="og:url" content="https://www.trackratsprint.club/invitational" />
   <meta property="og:image" content="https://www.trackratsprint.club/og-invitational.png" />
   <meta property="og:image:width" content="1200" />
@@ -21,7 +21,7 @@
 
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="2026 Invitational · TRACKRAT Sprint Club" />
-  <meta name="twitter:description" content="October 18, 2026 · 4401 Tilley St, Austin, TX. RSVP coming soon." />
+  <meta name="twitter:description" content="October 18, 2026 · 9:00–11:00 AM · 4401 Tilley St, Austin, TX. RSVP open." />
   <meta name="twitter:image" content="https://www.trackratsprint.club/og-invitational.png" />
   <meta name="twitter:site" content="@trackratsprints" />
   <meta name="twitter:creator" content="@trackratsprints" />
@@ -304,17 +304,26 @@
       letter-spacing: 0.24em;
       margin-top: 40px;
       font-weight: 700;
+      line-height: 1.8;
     }
-    .coming {
-      font-size: clamp(12px, 1.4vw, 16px);
-      letter-spacing: 0.3em;
-      margin-top: 40px;
-      /* Dark warm-black instead of opacity 0.4 — same dim feel, but
-         ~5.9:1 contrast on the orange bg (WCAG AA needs 4.5:1) */
-      color: #1a0700;
-      font-weight: 600;
+    .rsvp {
+      display: inline-block;
+      margin-top: 36px;
+      padding: 14px 22px;
+      background: var(--black);
+      color: var(--orange);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      transition: transform 0.15s ease, opacity 0.2s ease;
     }
-    .when + .coming { margin-top: 14px; }
+    .rsvp:hover { transform: translateY(-1px); opacity: 0.95; }
+    .when .w-seg { white-space: nowrap; }
+    @media (max-width: 768px) {
+      .when .w-dot { display: none; }
+      .when .w-time { display: block; }
+    }
     @media (max-width: 768px) {
       nav {
         padding: 16px 20px;
@@ -438,24 +447,32 @@
   <main class="page">
     <h1 class="subtitle"><span style="letter-spacing: -0.14em;">TRACKRAT</span> <span style="letter-spacing: -0.10em;">INVITATIONAL</span></h1>
     <div class="year">2026</div>
-    <p class="when">OCTOBER 18, 2026 · 4401 TILLEY ST, AUSTIN, TX</p>
-    <p class="coming">RSVP + FULL SCHEDULE COMING SOON</p>
+    <p class="when"><span class="w-seg">OCTOBER 18, 2026</span><span class="w-dot"> · </span><span class="w-seg w-time">9:00 – 11:00 AM</span><br><span class="w-seg">4401 TILLEY ST, AUSTIN, TX</span></p>
+    <a class="rsvp" href="https://events.sweatpals.com/ca3b412e" target="_blank" rel="noopener">RSVP ON SWEATPALS</a>
   </main>
 
-  <!-- Structured data: the Invitational as a schema.org Event. startDate is
-       date-only until a start time is announced; add offers with the RSVP
-       URL once it exists (mirror offtrack.html's Event block). -->
+  <!-- Structured data: the Invitational as a schema.org Event. RSVP is live
+       on Sweatpals (offers.url below); startDate/endDate carry the announced
+       9:00–11:00 AM CDT window. -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "Event",
     "name": "2026 TRACKRAT Invitational",
-    "description": "The 2026 TRACKRAT Invitational, a community sprint meet hosted by TRACKRAT in Austin, TX. RSVP and full schedule coming soon.",
-    "startDate": "2026-10-18",
+    "description": "The 2026 TRACKRAT Invitational, a community sprint meet hosted by TRACKRAT in Austin, TX. RSVP open on Sweatpals; full schedule coming soon.",
+    "startDate": "2026-10-18T09:00:00-05:00",
+    "endDate": "2026-10-18T11:00:00-05:00",
     "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
     "eventStatus": "https://schema.org/EventScheduled",
     "image": "https://www.trackratsprint.club/og-invitational.png",
     "url": "https://www.trackratsprint.club/invitational",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD",
+      "availability": "https://schema.org/InStock",
+      "url": "https://events.sweatpals.com/ca3b412e"
+    },
     "location": {
       "@type": "Place",
       "name": "4401 Tilley St",
