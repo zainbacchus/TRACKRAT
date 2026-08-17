@@ -16,7 +16,7 @@
   <meta property="og:image" content="https://www.trackratsprint.club/og-invitational.png" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
-  <meta property="og:image:alt" content="TRACKRAT Invitational 2026, a community sprint meet in Austin, TX" />
+  <meta property="og:image:alt" content="TR/SC. Greatness is calling. The 2026 TRACKRAT Invitational in Austin, TX: 60m, 100m, 200m, 400m, 4x100 and 4x400." />
   <meta property="og:locale" content="en_US" />
 
   <meta name="twitter:card" content="summary_large_image" />
@@ -305,6 +305,17 @@
       margin-bottom: 24px;
       padding-right: 0.14em;
     }
+    /* Trailing padding offsets the letter-spacing added after the last
+       glyph, so the line stays optically centered. */
+    .tagline {
+      /* The vw cap keeps the tracked-out line on one line below ~366px;
+         it does not bind at any wider viewport. */
+      font-size: min(clamp(15px, 2vw, 22px), calc(5.4vw - 4.5px));
+      font-weight: 700;
+      letter-spacing: 0.3em;
+      padding-left: 0.3em;
+      line-height: 1.4;
+    }
     .when {
       font-size: clamp(14px, 1.8vw, 20px);
       letter-spacing: 0.24em;
@@ -463,6 +474,7 @@
   <main class="page">
     <h1 class="subtitle"><span style="letter-spacing: -0.14em;">TRACKRAT</span> <span style="letter-spacing: -0.10em;">INVITATIONAL</span></h1>
     <div class="year">2026</div>
+    <p class="tagline">GREATNESS IS CALLING</p>
     <p class="when"><span class="w-seg">OCTOBER 18, 2026</span><span class="w-dot"> · </span><span class="w-seg w-time">9:00 – 11:00 AM</span><br><span class="w-seg">4401 TILLEY ST, AUSTIN, TX</span></p>
     <p class="events">60M&nbsp;· 100M&nbsp;· 200M&nbsp;· 400M&nbsp;· 4×100&nbsp;· 4×400</p>
     <a class="rsvp" href="https://events.sweatpals.com/ca3b412e" target="_blank" rel="noopener">RSVP ON SWEATPALS</a>
