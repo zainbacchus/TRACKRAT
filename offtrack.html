@@ -360,19 +360,81 @@
       padding-bottom: 8px; margin-bottom: 8px;
       border-bottom: 3px solid var(--black);
     }
-    .demo-row {
-      display: flex; justify-content: space-between; align-items: baseline; gap: 16px;
-      padding: 12px 0; border-bottom: 1px solid var(--line); font-size: 15px;
+    /* Presenter cards on a horizontal snap rail. Card width is tuned so
+       two and a half cards show at the 820px wrap, which lets the cut-off
+       third card advertise that there are more people to scroll to. The
+       scrollbar is left visible and styled: with a mouse (no swipe, no
+       trackpad gesture) it is the only obvious way to move the rail. */
+    .demo-people {
+      display: flex; gap: 14px; margin-top: 14px;
+      overflow-x: auto; overscroll-behavior-x: contain;
+      scroll-snap-type: x mandatory;
+      padding-bottom: 14px;
+      scrollbar-width: thin;
+      scrollbar-color: var(--orange) var(--line);
     }
-    .demo-row:last-child { border-bottom: none; }
-    .demo-name { font-weight: 600; }
-    .demo-name a { text-decoration: underline; text-underline-offset: 3px; }
-    .demo-name a:hover { color: var(--orange); }
-    .demo-author { color: var(--muted); font-weight: 600; text-align: right; white-space: nowrap; }
-    @media (max-width: 560px) {
-      .demo-row { flex-direction: column; gap: 2px; }
-      .demo-author { text-align: left; white-space: normal; }
+    .demo-people::-webkit-scrollbar { height: 8px; }
+    .demo-people::-webkit-scrollbar-track { background: var(--line); }
+    .demo-people::-webkit-scrollbar-thumb { background: var(--orange); }
+    .person {
+      flex: 0 0 min(300px, 82%);      /* 82% leaves a peek card on phones */
+      scroll-snap-align: start;
+      background: var(--white); border: 1px solid var(--line);
+      box-shadow: 0 10px 22px -18px rgba(20,20,27,0.45);
+      padding: 18px; display: flex; flex-direction: column;
     }
+    .person-avatar {
+      width: 56px; height: 56px; border-radius: 50%;
+      background: var(--orange); color: #1a0700;
+      display: grid; place-items: center;
+      font-weight: 700; font-size: 17px; overflow: hidden;
+      margin-bottom: 12px;
+    }
+    .person-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .person-name { font-weight: 700; font-size: 16px; line-height: 1.25; color: var(--ink); }
+    /* Names link out to LinkedIn. A name isn't normally clickable, so the
+       arrow glyph does the work of saying "this leaves the page". */
+    .person-name a { text-decoration: underline; text-underline-offset: 3px; }
+    .person-name a:hover { color: var(--orange); }
+    .person-name .ext { width: 11px; height: 11px; margin-left: 5px; opacity: 0.5; }
+    .person-name a:hover .ext { opacity: 1; }
+    /* The title is the payload of this section, so it is set in full ink,
+       bold and tracked rather than as muted supporting text. Every current
+       title fits one line at this card width (the longest, SENIOR
+       ENGINEERING MANAGER, measures 240px of the 262px available), so the
+       floor is one line. A longer title would wrap and push that card's
+       divider below its neighbours'. */
+    .person-role {
+      font-size: 14px; font-weight: 700; line-height: 1.35;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      color: var(--ink); margin-top: 6px; min-height: 1.35em;
+    }
+    /* Employer sits under the title, quieter, so the title stays the loudest
+       thing on the card while GitHub / Meta / Whole Foods still register.
+       Two-line floor because Kelly's line wraps; without it her divider
+       would sit lower than the cards beside her on the rail. */
+    .person-company {
+      font-size: 13px; line-height: 1.4; color: var(--muted);
+      margin-top: 3px; min-height: 2.8em;
+    }
+    /* Cards narrow on phones and the longest title starts to wrap. Shaving
+       the size and tracking keeps every title on one line down to ~360px. */
+    @media (max-width: 480px) {
+      .person-role { font-size: 13px; letter-spacing: 0.04em; }
+    }
+    .person-work { border-top: 1px solid var(--line); padding-top: 12px; margin-top: 13px; }
+    .work-tag {
+      display: inline-block; font-size: 10px; font-weight: 700;
+      letter-spacing: 0.16em; text-transform: uppercase;
+      padding: 3px 8px; margin-bottom: 9px;
+    }
+    .tag-primary { background: var(--orange); color: #1a0700; }
+    .tag-side { border: 1px solid var(--ink); color: var(--ink); }
+    .work-title { font-weight: 700; font-size: 15px; color: var(--ink); }
+    .work-title a { text-decoration: underline; text-underline-offset: 3px; }
+    .work-title a:hover { color: var(--orange); }
+    .work-desc { font-size: 14px; line-height: 1.5; color: var(--muted); margin-top: 5px; }
+    .work-note { font-size: 12px; line-height: 1.4; color: var(--muted); margin-top: 7px; }
     .demos-empty { color: var(--muted); font-style: italic; padding: 8px 0; font-size: 15px; }
 
     /* ---- FOOTER ---- */
@@ -564,18 +626,91 @@
     <!-- ============================================================
          PAST DEMOS ARCHIVE
          To add an event after it happens, COPY a .demo-event block and
-         place it ABOVE the others (newest first). Each demo is one
-         .demo-row: project title — presenter name.
+         place it ABOVE the others (newest first). Inside it, one .person
+         card per presenter.
+
+         Headshot: square source image, exported to /people/first-last.jpg
+         at 256x256 (rendered at 46px, so this covers 3x displays). Keep
+         alt="" -- the name sits right beside it, so the photo is
+         decorative. No photo yet? Use initials instead:
+           <div class="person-avatar"><span aria-hidden="true">XX</span></div>
+
+         Tag: .tag-side "Side project" or .tag-primary "Primary work".
          ============================================================ -->
     <section class="demos">
       <h2>Past demos</h2>
       <div class="demo-event">
         <div class="demo-event-title">OFFTRACK #1 · July 22, 2026</div>
-        <div class="demo-row"><span class="demo-name"><a href="https://github.com/zainbacchus/local-mood-mcp/blob/main/docs/why-i-built-this-demo.pdf" target="_blank" rel="noopener">local-mood</a> · a Spotify tool that proves better memory beats a better model, using your own music as the evidence</span><span class="demo-author">Zain Bacchus</span></div>
-        <div class="demo-row"><span class="demo-name">Nello AI · a peptide and GLP-1 tracking app built for women</span><span class="demo-author">Kirtana Reddy</span></div>
-        <div class="demo-row"><span class="demo-name"><a href="https://www.instagram.com/sidehustleatx" target="_blank" rel="noopener">Side Hustle ATX</a> · lessons learned creating a modular community platform with a Kei truck</span><span class="demo-author">Kelly Ferraro &amp; Brandon Bloch</span></div>
-        <div class="demo-row"><span class="demo-name"><a href="https://echonos.ai/" target="_blank" rel="noopener">echonos.ai</a> · generate beat-synced visuals in minutes</span><span class="demo-author">Ali Syed</span></div>
-        <div class="demo-row"><span class="demo-name"><a href="https://kaushiksahoo2000.github.io/fitness-data-journey/#slide-1" target="_blank" rel="noopener">AI fitness and health analytics</a> · from Zapier to agentic workflows</span><span class="demo-author">Kaushik Sahoo</span></div>
+        <div class="demo-people">
+        <article class="person">
+          <div class="person-avatar"><img src="/people/zain-bacchus.jpg" alt="" width="56" height="56"></div>
+          <div class="person-name"><a href="https://www.linkedin.com/in/zainbacchus/" target="_blank" rel="noopener" aria-label="Zain Bacchus on LinkedIn">Zain Bacchus<svg class="ext" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg></a></div>
+          <div class="person-role">Chief Product Officer</div>
+          <div class="person-company">Cronos Labs</div>
+          <div class="person-work">
+            <span class="work-tag tag-side">Side project</span>
+            <div class="work-title"><a href="https://github.com/zainbacchus/local-mood-mcp/blob/main/docs/why-i-built-this-demo.pdf" target="_blank" rel="noopener">local-mood</a></div>
+            <p class="work-desc">A Spotify tool that proves better memory beats a better model, using your own music as the evidence.</p>
+          </div>
+        </article>
+        <article class="person">
+          <div class="person-avatar"><img src="/people/kaushik-sahoo.jpg" alt="" width="56" height="56"></div>
+          <div class="person-name"><a href="https://www.linkedin.com/in/kaushik-sahoo-39114274/" target="_blank" rel="noopener" aria-label="Kaushik Sahoo on LinkedIn">Kaushik Sahoo<svg class="ext" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg></a></div>
+          <div class="person-role">Senior Engineering Manager</div>
+          <div class="person-company">GitHub</div>
+          <div class="person-work">
+            <span class="work-tag tag-side">Side project</span>
+            <div class="work-title"><a href="https://kaushiksahoo2000.github.io/fitness-data-journey/#slide-1" target="_blank" rel="noopener">AI fitness and health analytics</a></div>
+            <p class="work-desc">From Zapier to agentic workflows.</p>
+          </div>
+        </article>
+        <article class="person">
+          <div class="person-avatar"><img src="/people/kirtana-vedire.jpg" alt="" width="56" height="56"></div>
+          <div class="person-name"><a href="https://www.linkedin.com/in/kirtanavedire/" target="_blank" rel="noopener" aria-label="Kirtana Vedire on LinkedIn">Kirtana Vedire<svg class="ext" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg></a></div>
+          <div class="person-role">Chief Operating Officer</div>
+          <div class="person-company">Sevaro</div>
+          <div class="person-work">
+            <span class="work-tag tag-side">Side project</span>
+            <div class="work-title">Nello AI</div>
+            <p class="work-desc">A peptide and GLP-1 tracking app built for women.</p>
+          </div>
+        </article>
+        <article class="person">
+          <div class="person-avatar"><img src="/people/kelly-ferraro.jpg" alt="" width="56" height="56"></div>
+          <div class="person-name"><a href="https://www.linkedin.com/in/kelly-ferraro-030802/" target="_blank" rel="noopener" aria-label="Kelly Ferraro on LinkedIn">Kelly Ferraro<svg class="ext" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg></a></div>
+          <div class="person-role">Founder</div>
+          <div class="person-company">Ferraro Growth Partners · Former Meta and Whole Foods</div>
+          <div class="person-work">
+            <span class="work-tag tag-side">Side project</span>
+            <div class="work-title"><a href="https://www.instagram.com/sidehustleatx" target="_blank" rel="noopener">Side Hustle ATX</a></div>
+            <p class="work-desc">Lessons learned creating a modular community platform with a Kei truck.</p>
+            <p class="work-note">Demoed with Brandon Bloch.</p>
+          </div>
+        </article>
+        <article class="person">
+          <div class="person-avatar"><img src="/people/brandon-bloch.jpg" alt="" width="56" height="56"></div>
+          <div class="person-name"><a href="https://www.linkedin.com/in/brandonbloch/" target="_blank" rel="noopener" aria-label="Brandon Bloch on LinkedIn">Brandon Bloch<svg class="ext" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg></a></div>
+          <div class="person-role">Founder</div>
+          <div class="person-company">Hometown</div>
+          <div class="person-work">
+            <span class="work-tag tag-side">Side project</span>
+            <div class="work-title"><a href="https://www.instagram.com/sidehustleatx" target="_blank" rel="noopener">Side Hustle ATX</a></div>
+            <p class="work-desc">Lessons learned creating a modular community platform with a Kei truck.</p>
+            <p class="work-note">Demoed with Kelly Ferraro.</p>
+          </div>
+        </article>
+        <article class="person">
+          <div class="person-avatar"><img src="/people/ali-syed.jpg" alt="" width="56" height="56"></div>
+          <div class="person-name"><a href="https://www.linkedin.com/in/syedali-/" target="_blank" rel="noopener" aria-label="Ali Syed on LinkedIn">Ali Syed<svg class="ext" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg></a></div>
+          <div class="person-role">Founder</div>
+          <div class="person-company">echonos.ai</div>
+          <div class="person-work">
+            <span class="work-tag tag-primary">Primary work</span>
+            <div class="work-title"><a href="https://echonos.ai/" target="_blank" rel="noopener">echonos.ai</a></div>
+            <p class="work-desc">Generate beat-synced visuals in minutes.</p>
+          </div>
+        </article>
+        </div>
       </div>
     </section>
   </main>
