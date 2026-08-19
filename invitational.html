@@ -347,6 +347,15 @@
       transition: transform 0.15s ease, opacity 0.2s ease;
     }
     .rsvp:hover { transform: translateY(-1px); opacity: 0.95; }
+    /* Swap TBA for the sponsor name once signed. Mirrors offtrack.html's
+       .demo-sponsor; the sponsorship one-pager's QR lands on this page. */
+    .sponsor {
+      margin-top: 26px;
+      font-size: 12px; font-weight: 700; letter-spacing: 0.16em;
+      text-transform: uppercase;
+      /* solid dark ink, never opacity, on the orange ground */
+      color: #1a0700;
+    }
     .when .w-seg { white-space: nowrap; }
     @media (max-width: 768px) {
       .when .w-dot { display: none; }
@@ -479,6 +488,7 @@
     <p class="events">60M&nbsp;· 100M&nbsp;· 200M&nbsp;· 400M&nbsp;· 4×100&nbsp;· 4×400</p>
     <p class="when"><span class="w-seg">OCTOBER 18, 2026</span><span class="w-dot"> · </span><span class="w-seg w-time">9:00 – 11:00 AM</span><br><span class="w-seg">4401 TILLEY ST, AUSTIN, TX</span></p>
     <a class="rsvp" href="https://events.sweatpals.com/ca3b412e" target="_blank" rel="noopener">RSVP ON SWEATPALS</a>
+    <p class="sponsor">Presenting sponsor: TBA</p>
   </main>
 
   <!-- Structured data: the Invitational as a schema.org Event. RSVP is live
