@@ -312,17 +312,6 @@
     .card p { font-size: 16px; line-height: 1.6; margin-bottom: 14px; }
     .card p:last-child { margin-bottom: 0; }
 
-    /* ---- NEXT EVENT ---- */
-    .session-line {
-      display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 16px;
-      font-family: 'IBM Plex Mono', monospace; font-weight: 700; letter-spacing: -0.02em;
-      font-size: clamp(24px, 4.5vw, 34px); color: var(--ink); margin-bottom: 12px;
-    }
-    .session-sub { font-size: 14px; color: var(--muted); font-weight: 600; line-height: 1.5; }
-    .session-rsvp {
-      margin-top: 16px; font-size: 12px; font-weight: 700;
-      letter-spacing: 0.18em; text-transform: uppercase; color: var(--orange);
-    }
 
     /* ---- SIGNUP ---- */
     .signup-form { display: flex; gap: 12px; margin-top: 20px; flex-wrap: wrap; }
@@ -390,6 +379,11 @@
        third card advertise that there are more people to scroll to. The
        scrollbar is left visible and styled: with a mouse (no swipe, no
        trackpad gesture) it is the only obvious way to move the rail. */
+    /* Presenting-sponsor credit. Swap TBA for the sponsor name once signed. */
+    .demo-sponsor {
+      font-size: 12px; font-weight: 700; letter-spacing: 0.16em;
+      text-transform: uppercase; color: var(--muted);
+    }
     .demo-people {
       display: flex; gap: 14px; margin-top: 14px;
       overflow-x: auto; overscroll-behavior-x: contain;
@@ -398,6 +392,7 @@
       scrollbar-width: thin;
       scrollbar-color: var(--orange) var(--line);
     }
+    .demo-people:focus-visible { outline: 2px solid var(--orange); outline-offset: 3px; }
     .demo-people::-webkit-scrollbar { height: 8px; }
     .demo-people::-webkit-scrollbar-track { background: var(--line); }
     .demo-people::-webkit-scrollbar-thumb { background: var(--orange); }
@@ -435,12 +430,12 @@
       color: var(--ink); margin-top: 6px; min-height: 1.35em;
     }
     /* Employer sits under the title, quieter, so the title stays the loudest
-       thing on the card while GitHub / Meta / Whole Foods still register.
-       Two-line floor because Kelly's line wraps; without it her divider
-       would sit lower than the cards beside her on the rail. */
+       thing on the card while GitHub and the rest still register. Every
+       company now fits one line, so that is the floor; a longer one would
+       wrap and push its divider below its neighbours' on the rail. */
     .person-company {
       font-size: 13px; line-height: 1.4; color: var(--muted);
-      margin-top: 3px; min-height: 2.8em;
+      margin-top: 3px; min-height: 1.4em;
     }
     /* Cards narrow on phones and the longest title starts to wrap. Shaving
        the size and tracking keeps every title on one line down to ~360px. */
@@ -460,6 +455,24 @@
     .work-title a:hover { color: var(--orange); }
     .work-desc { font-size: 14px; line-height: 1.5; color: var(--muted); margin-top: 5px; }
     .work-note { font-size: 12px; line-height: 1.4; color: var(--muted); margin-top: 7px; }
+    /* Unfilled demo slots. Same white card and same top-left avatar-then-name
+       layout as a real presenter, so the rail reads as one system and a slot
+       previews what it becomes once filled. The dashed border and muted text
+       are what keep it reading as pending rather than as a real person whose
+       details failed to load. */
+    .person.is-tba {
+      border: 1px dashed #D5D1C8; box-shadow: none;
+    }
+    .tba-mark {
+      width: 56px; height: 56px; border-radius: 50%;
+      border: 1px dashed #D5D1C8; margin-bottom: 12px;
+      display: grid; place-items: center;
+      font-weight: 700; font-size: 20px; color: #A9A49A;
+    }
+    .tba-text {
+      font-weight: 700; font-size: 13px; line-height: 1.55;
+      letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted);
+    }
     .demos-empty { color: var(--muted); font-style: italic; padding: 8px 0; font-size: 15px; }
 
     /* ---- FOOTER ---- */
@@ -651,19 +664,6 @@
         </div>
       </section>
 
-      <!-- NEXT EVENT: none scheduled right now. When the next OFFTRACK is
-           booked, re-add the card here (CSS for it is kept below under
-           NEXT EVENT) and restore the Event node in the JSON-LD up top:
-      <section class="card">
-        <span class="card-label label-orange">Next event</span>
-        <div class="session-line">
-          <span>Wed · July 22</span>
-        </div>
-        <p class="session-sub">Doors 6:30 PM CT · demos start ~7 PM</p>
-        <p class="session-rsvp"><a href="..." target="_blank" rel="noopener">RSVP →</a></p>
-      </section>
-      -->
-
       <!-- GET NOTIFIED -->
       <section class="card">
         <span class="card-label label-orange">Get notified</span>
@@ -682,7 +682,7 @@
     </div>
 
     <!-- ============================================================
-         PAST DEMOS ARCHIVE
+         DEMOS ARCHIVE
          To add an event after it happens, COPY a .demo-event block and
          place it ABOVE the others (newest first). Inside it, one .person
          card per presenter.
@@ -696,10 +696,36 @@
          Tag: .tag-side "Side project" or .tag-primary "Primary work".
          ============================================================ -->
     <section class="demos">
-      <h2>Past demos</h2>
+      <h2>Demos</h2>
+      <div class="demo-event">
+        <div class="demo-event-title">OFFTRACK #2 · September 30, 2026</div>
+        <p class="demo-sponsor">Presenting sponsor: TBA</p>
+        <div class="demo-people" tabindex="0" role="group" aria-label="OFFTRACK #2 presenters">
+        <article class="person is-tba">
+          <div class="tba-mark" aria-hidden="true">?</div>
+          <div class="tba-text">To be announced</div>
+        </article>
+        <article class="person is-tba">
+          <div class="tba-mark" aria-hidden="true">?</div>
+          <div class="tba-text">To be announced</div>
+        </article>
+        <article class="person is-tba">
+          <div class="tba-mark" aria-hidden="true">?</div>
+          <div class="tba-text">To be announced</div>
+        </article>
+        <article class="person is-tba">
+          <div class="tba-mark" aria-hidden="true">?</div>
+          <div class="tba-text">To be announced</div>
+        </article>
+        <article class="person is-tba">
+          <div class="tba-mark" aria-hidden="true">?</div>
+          <div class="tba-text">To be announced</div>
+        </article>
+        </div>
+      </div>
       <div class="demo-event">
         <div class="demo-event-title">OFFTRACK #1 · July 22, 2026</div>
-        <div class="demo-people">
+        <div class="demo-people" tabindex="0" role="group" aria-label="OFFTRACK #1 presenters">
         <article class="person">
           <div class="person-avatar"><img src="/people/kirtana-vedire.jpg" alt="" width="56" height="56"></div>
           <div class="person-name"><a href="https://www.linkedin.com/in/kirtanavedire/" target="_blank" rel="noopener" aria-label="Kirtana Vedire on LinkedIn">Kirtana Vedire<svg class="ext" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg></a></div>
@@ -709,17 +735,6 @@
             <span class="work-tag tag-side">Side project</span>
             <div class="work-title">Nello AI</div>
             <p class="work-desc">A peptide and GLP-1 tracking app built for women.</p>
-          </div>
-        </article>
-        <article class="person">
-          <div class="person-avatar"><img src="/people/zain-bacchus.jpg" alt="" width="56" height="56"></div>
-          <div class="person-name"><a href="https://www.linkedin.com/in/zainbacchus/" target="_blank" rel="noopener" aria-label="Zain Bacchus on LinkedIn">Zain Bacchus<svg class="ext" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg></a></div>
-          <div class="person-role">Chief Product Officer</div>
-          <div class="person-company">Cronos Labs</div>
-          <div class="person-work">
-            <span class="work-tag tag-side">Side project</span>
-            <div class="work-title"><a href="https://github.com/zainbacchus/local-mood-mcp/blob/main/docs/why-i-built-this-demo.pdf" target="_blank" rel="noopener">local-mood</a></div>
-            <p class="work-desc">A Spotify tool that proves better memory beats a better model, using your own music as the evidence.</p>
           </div>
         </article>
         <article class="person">
@@ -734,10 +749,21 @@
           </div>
         </article>
         <article class="person">
+          <div class="person-avatar"><img src="/people/zain-bacchus.jpg" alt="" width="56" height="56"></div>
+          <div class="person-name"><a href="https://www.linkedin.com/in/zainbacchus/" target="_blank" rel="noopener" aria-label="Zain Bacchus on LinkedIn">Zain Bacchus<svg class="ext" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg></a></div>
+          <div class="person-role">Chief Product Officer</div>
+          <div class="person-company">Cronos Labs</div>
+          <div class="person-work">
+            <span class="work-tag tag-side">Side project</span>
+            <div class="work-title"><a href="https://github.com/zainbacchus/local-mood-mcp/blob/main/docs/why-i-built-this-demo.pdf" target="_blank" rel="noopener">local-mood</a></div>
+            <p class="work-desc">A Spotify tool that proves better memory beats a better model, using your own music as the evidence.</p>
+          </div>
+        </article>
+        <article class="person">
           <div class="person-avatar"><img src="/people/kelly-ferraro.jpg" alt="" width="56" height="56"></div>
           <div class="person-name"><a href="https://www.linkedin.com/in/kelly-ferraro-030802/" target="_blank" rel="noopener" aria-label="Kelly Ferraro on LinkedIn">Kelly Ferraro<svg class="ext" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg></a></div>
           <div class="person-role">Founder</div>
-          <div class="person-company">Ferraro Growth Partners · Former Meta and Whole Foods</div>
+          <div class="person-company">Ferraro Growth Partners</div>
           <div class="person-work">
             <span class="work-tag tag-side">Side project</span>
             <div class="work-title"><a href="https://www.instagram.com/sidehustleatx" target="_blank" rel="noopener">Side Hustle ATX</a></div>
