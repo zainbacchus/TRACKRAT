@@ -360,6 +360,31 @@
       padding-bottom: 8px; margin-bottom: 8px;
       border-bottom: 3px solid var(--black);
     }
+    /* Hosts. Deliberately lighter than the presenter cards: this row backs
+       up the claim in the paragraph above it, it isn't the main event. */
+    .hosts { margin-top: 20px; border-top: 1px solid var(--line); padding-top: 16px; }
+    .hosts-label {
+      font-family: var(--font); font-weight: 700; font-size: 11px;
+      letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 14px;
+    }
+    .host-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 14px 20px;
+    }
+    .host { display: flex; align-items: center; gap: 11px; }
+    .host-avatar {
+      width: 40px; height: 40px; flex-shrink: 0; border-radius: 50%;
+      background: var(--orange); color: #1a0700;
+      display: grid; place-items: center; overflow: hidden;
+      font-weight: 700; font-size: 13px;
+    }
+    .host-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .host-name { font-weight: 700; font-size: 14px; line-height: 1.3; color: var(--ink); }
+    .host-name a { text-decoration: underline; text-underline-offset: 3px; }
+    .host-name a:hover { color: var(--orange); }
+    .host-role { font-size: 12px; line-height: 1.35; color: var(--muted); margin-top: 2px; }
+
     /* Presenter cards on a horizontal snap rail. Card width is tuned so
        two and a half cards show at the 820px wrap, which lets the cut-off
        third card advertise that there are more people to scroll to. The
@@ -396,8 +421,8 @@
        arrow glyph does the work of saying "this leaves the page". */
     .person-name a { text-decoration: underline; text-underline-offset: 3px; }
     .person-name a:hover { color: var(--orange); }
-    .person-name .ext { width: 11px; height: 11px; margin-left: 5px; opacity: 0.5; }
-    .person-name a:hover .ext { opacity: 1; }
+    .ext { width: 11px; height: 11px; margin-left: 5px; opacity: 0.5; }
+    a:hover .ext { opacity: 1; }
     /* The title is the payload of this section, so it is set in full ink,
        bold and tracked rather than as muted supporting text. Every current
        title fits one line at this card width (the longest, SENIOR
@@ -582,7 +607,7 @@
       <!-- THE DIFF -->
       <section class="card">
         <span class="card-label label-orange">The diff</span>
-        <h2>Dinner &amp; demos for builders</h2>
+        <h2>Dinner, dessert &amp; demos for builders</h2>
         <p>Unlike your typical networking events, OFFTRACK is a small, once-every-couple-months event put on by TRACKRAT Sprint Club. It's for people doing creative things with technology to show off the cool stuff they've built.</p>
         <p>The first 45 minutes are dinner and a chance to meet other high-caliber builders in Austin. The remaining 75 minutes are the demos, 5 to 10 minutes each, plus discussion.</p>
       </section>
@@ -591,6 +616,39 @@
       <section class="card">
         <span class="card-label label-ink">Iron sharpens iron</span>
         <p>TRACKRAT was started by founders, investors, and operators building in tech. The track taught us something simple: you get better and faster around people who push you. OFFTRACK takes that same energy off the track and into the things we make.</p>
+        <div class="hosts">
+          <div class="hosts-label">Your hosts</div>
+          <div class="host-grid">
+          <div class="host">
+            <div class="host-avatar"><img src="/people/zain-bacchus.jpg" alt="" width="40" height="40"></div>
+            <div>
+              <div class="host-name"><a href="https://www.linkedin.com/in/zainbacchus/" target="_blank" rel="noopener" aria-label="Zain Bacchus on LinkedIn">Zain Bacchus<svg class="ext" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg></a></div>
+              <div class="host-role">Chief Product Officer, Cronos Labs</div>
+            </div>
+          </div>
+          <div class="host">
+            <div class="host-avatar"><img src="/people/kaushik-sahoo.jpg" alt="" width="40" height="40"></div>
+            <div>
+              <div class="host-name"><a href="https://www.linkedin.com/in/kaushik-sahoo-39114274/" target="_blank" rel="noopener" aria-label="Kaushik Sahoo on LinkedIn">Kaushik Sahoo<svg class="ext" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg></a></div>
+              <div class="host-role">Senior Engineering Manager, GitHub</div>
+            </div>
+          </div>
+          <div class="host">
+            <div class="host-avatar"><img src="/people/ankith-harathi.jpg" alt="" width="40" height="40"></div>
+            <div>
+              <div class="host-name"><a href="https://www.linkedin.com/in/ankithharathi/" target="_blank" rel="noopener" aria-label="Ankith Harathi on LinkedIn">Ankith Harathi<svg class="ext" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg></a></div>
+              <div class="host-role">Co-founder &amp; CEO, Closing Theory Studios</div>
+            </div>
+          </div>
+          <div class="host">
+            <div class="host-avatar"><img src="/people/david-perez.jpg" alt="" width="40" height="40"></div>
+            <div>
+              <div class="host-name"><a href="https://www.linkedin.com/in/daviddjperez/" target="_blank" rel="noopener" aria-label="David Perez on LinkedIn">David Perez<svg class="ext" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg></a></div>
+              <div class="host-role">Partner, Roble Ventures</div>
+            </div>
+          </div>
+          </div>
+        </div>
       </section>
 
       <!-- NEXT EVENT: none scheduled right now. When the next OFFTRACK is
