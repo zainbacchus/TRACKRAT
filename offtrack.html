@@ -18,7 +18,7 @@
   <meta property="og:image" content="https://www.trackratsprint.club/og-offtrack.png" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
-  <meta property="og:image:alt" content="OFFTRACK, a demo night in Austin, TX, presented by TRACKRAT" />
+  <meta property="og:image:alt" content="OFFTRACK on notebook paper, labelled demo night, Austin, TX: dinner, dessert and demos with other builders" />
   <meta property="og:locale" content="en_US" />
 
   <!-- Twitter Card -->
@@ -308,6 +308,8 @@
       font-family: 'IBM Plex Mono', monospace; font-weight: 700;
       letter-spacing: -0.02em; font-size: clamp(22px, 3.4vw, 32px);
       line-height: 1.08; margin-bottom: 14px; color: var(--ink);
+      /* Split a wrapped heading evenly instead of orphaning its last word. */
+      text-wrap: balance;
     }
     .card p { font-size: 16px; line-height: 1.6; margin-bottom: 14px; }
     .card p:last-child { margin-bottom: 0; }
@@ -522,7 +524,7 @@
       {
         "@type": "Organization",
         "name": "OFFTRACK",
-        "description": "A demo night in Austin, Texas, presented by TRACKRAT, where builders, founders, and creatives show off personal tech projects.",
+        "description": "A demo night in Austin, Texas, presented by TRACKRAT. Dinner, dessert, and demos: builders show what they've made, 5 to 10 minutes each, then discussion.",
         "url": "https://www.trackratsprint.club/offtrack",
         "parentOrganization": { "@type": "SportsClub", "@id": "https://www.trackratsprint.club/#club", "name": "TRACKRAT Sprint Club", "url": "https://www.trackratsprint.club/" },
         "areaServed": {
@@ -620,7 +622,7 @@
       <!-- THE DIFF -->
       <section class="card">
         <span class="card-label label-orange">The diff</span>
-        <h2>Dinner, dessert &amp; demos for builders</h2>
+        <h2>Dinner, dessert &amp; demos with other builders</h2>
         <p>Unlike your typical networking events, OFFTRACK is a small, once-every-couple-months event put on by TRACKRAT Sprint Club. It's for people doing creative things with technology to show off the cool stuff they've built.</p>
         <p>The first 45 minutes are dinner and a chance to meet other high-caliber builders in Austin. The remaining 75 minutes are the demos, 5 to 10 minutes each, plus discussion.</p>
       </section>
