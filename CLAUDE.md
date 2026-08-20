@@ -79,6 +79,7 @@ TRACKRAT/
 ├── trackrat-wordmark-black.png   # wordmark PNGs (transparent, 2000px): black / white / orange
 ├── trackrat-wordmark-white.png
 ├── trackrat-wordmark-orange.png
+├── lockup-tri26.svg        # TRACKRAT INVITATIONAL / 2026 lockup (outlined paths)
 ├── vercel.json             # cleanUrls, security headers, redirects, cache headers
 ├── robots.txt              # Crawl rules (/dashboard handled by noindex meta, NOT Disallow)
 ├── sitemap.xml             # Public-page sitemap (excludes /dashboard + /gallery; includes /offtrack)
@@ -679,7 +680,22 @@ Static files plus the zero-config Node serverless function(s) under
     `#1a0700` (or darker) instead — same visual feel, ~5.9:1 contrast.
     On the black-background pages (`schedule`/`brand`/`dashboard`) white text is
     fine.
-11. **Don't reintroduce Google Fonts.** Fonts are self-hosted in `/fonts/`
+11. **`lockup-tri26.svg` is canonical, and it has one copy that must track
+    it.** The TRACKRAT INVITATIONAL / 2026 lockup is outlined paths, so it
+    needs no font. `invitational.html` **inlines** those paths in its `<h1>`
+    rather than pointing at the file: the site has no build step, and
+    SVG-as-`<img>` can render blank on iOS Safari, which is not a risk worth
+    taking on that page's hero. `print/invitational-sponsorship/build_onepager.py`
+    reads the canonical file and **asserts the page's inline copy matches**, so
+    building the sponsorship PDF fails loudly if the two drift. If you revise
+    the artwork: update the root file, re-inline both paths into
+    `invitational.html`, then re-run that build to confirm. Note the file's
+    canvas is 1123x941 while the ink is only 1100.9x478.3 at (13.4, 205.6), so
+    every consumer re-crops the viewBox to the ink; dropped in raw it renders
+    with nearly half its height as empty padding. The `<h1>` also carries a
+    visually hidden text copy of the name, because artwork alone would leave
+    the page with no heading text for crawlers.
+12. **Don't reintroduce Google Fonts.** Fonts are self-hosted in `/fonts/`
     and preloaded per page. Reverting to `fonts.googleapis.com/css2?...`
     brings back render-blocking + a network-dependency chain that
     Lighthouse will flag. If you need a new weight, fetch the matching
