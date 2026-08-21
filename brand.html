@@ -677,10 +677,25 @@
       opacity: 0.62; /* was 0.4 — ≥4.5:1 on black for WCAG AA */
     }
 
+    /* Wordmark and monogram sit side by side on desktop. The wordmark column
+       is content-sized because its type is vw-based and cannot reflow (one
+       long word); the monogram takes the remainder, capped as below.
+       Below 860px the pair stacks. */
+    .mark-row { display: flex; gap: 56px; align-items: flex-start; }
+    .mark-row > .wordmark-display:first-child { flex: 0 0 auto; }
+    .mark-row > .wordmark-display:last-child { flex: 1 1 auto; min-width: 0; }
+    @media (max-width: 860px) {
+      .mark-row { display: block; }
+      .mark-row > .wordmark-display:last-child { margin-top: 0; }
+    }
+
     /* Monogram: outlined artwork, so it is inlined rather than used as
        <img src> (SVG-as-img can render blank on iOS Safari). currentColor
        lets it take the page ink. Canonical copy: /trackrat-monogram.svg */
-    .monogram-large { width: min(360px, 100%); color: var(--white); }
+    /* Scales with the viewport like the wordmark does (whose type is 9vw),
+       so the monogram stays ~75-80% of its width at every size instead of
+       overtaking it in the narrow half of the two-column range. */
+    .monogram-large { width: min(clamp(150px, 29vw, 340px), 100%); color: var(--white); }
     .monogram-large svg { width: 100%; height: auto; display: block; }
 
     /* ---- FONT SPECIMEN ---- */
@@ -1088,63 +1103,65 @@
       <span class="section-number">04 &mdash; DETAILS</span>
       <h2 class="section-title">DETAILS</h2>
 
-      <div class="wordmark-display">
-        <div class="detail-label" style="margin-bottom: 16px;">WORDMARK</div>
-        <div class="wordmark-large">TRACKRAT</div>
-        <div class="wordmark-meta">FUGAZ ONE &middot; &minus;14% LETTER SPACING</div>
-        <div class="wordmark-downloads">
-          <div class="asset-kit">
-            <div class="asset-row">
-              <span class="asset-name">BLACK</span>
-              <a class="asset-btn" href="/trackrat-wordmark.svg" download="trackrat-wordmark-black.svg">SVG</a>
-              <a class="asset-btn" href="/trackrat-wordmark-black.png" download>PNG</a>
-            </div>
-            <div class="asset-row">
-              <span class="asset-name">WHITE</span>
-              <a class="asset-btn" href="/trackrat-wordmark-white.svg" download>SVG</a>
-              <a class="asset-btn" href="/trackrat-wordmark-white.png" download>PNG</a>
-            </div>
-            <div class="asset-row">
-              <span class="asset-name">ORANGE</span>
-              <a class="asset-btn" href="/trackrat-wordmark-orange.svg" download>SVG</a>
-              <a class="asset-btn" href="/trackrat-wordmark-orange.png" download>PNG</a>
+      <div class="mark-row">
+        <div class="wordmark-display">
+          <div class="detail-label" style="margin-bottom: 16px;">WORDMARK</div>
+          <div class="wordmark-large">TRACKRAT</div>
+          <div class="wordmark-meta">FUGAZ ONE &middot; &minus;14% LETTER SPACING</div>
+          <div class="wordmark-downloads">
+            <div class="asset-kit">
+              <div class="asset-row">
+                <span class="asset-name">BLACK</span>
+                <a class="asset-btn" href="/trackrat-wordmark.svg" download="trackrat-wordmark-black.svg">SVG</a>
+                <a class="asset-btn" href="/trackrat-wordmark-black.png" download>PNG</a>
+              </div>
+              <div class="asset-row">
+                <span class="asset-name">WHITE</span>
+                <a class="asset-btn" href="/trackrat-wordmark-white.svg" download>SVG</a>
+                <a class="asset-btn" href="/trackrat-wordmark-white.png" download>PNG</a>
+              </div>
+              <div class="asset-row">
+                <span class="asset-name">ORANGE</span>
+                <a class="asset-btn" href="/trackrat-wordmark-orange.svg" download>SVG</a>
+                <a class="asset-btn" href="/trackrat-wordmark-orange.png" download>PNG</a>
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <div class="wordmark-display">
-        <div class="detail-label" style="margin-bottom: 16px;">MONOGRAM</div>
-        <!-- Inlined from /trackrat-monogram.svg, the canonical copy. If that
-             file changes, re-inline this path: the sponsorship build asserts
-             the two match. fill-rule="evenodd" is required or the counters
-             in the R and S fill solid. -->
-        <div class="monogram-large">
-          <svg viewBox="45.5 70.63 626.14 186.5" role="img" aria-label="TR slash SC monogram" xmlns="http://www.w3.org/2000/svg">
-            <path fill="currentColor" fill-rule="evenodd" d="M486.64 78.75L499.51 78.88L508.51 79.88L519.01 82.38L527.26 85.88L534.26 90.63L539.39 96L542.64 101.25L545.01 108.38L550.14 101.25L554.51 96.63L560.26 91.88L565.26 88.63L573.51 84.63L580.01 82.38L593.26 79.63L600.51 78.88L612.76 78.63L622.51 79.38L629.51 80.63L636.51 82.63L644.26 86.13L649.76 89.88L653.64 93.5L656.39 96.75L659.39 101.5L662.14 108.5L663.64 117L663.64 125.75L662.39 134.5L660.14 142.75L657.64 149.5L653.39 157.5L613.01 157.63L612.89 157.25L616.14 152.75L617.64 149.5L619.89 140.5L620.39 133.25L620.14 129L619.39 125.5L617.64 121.5L614.01 117.38L611.01 115.63L607.76 114.63L599.26 114.38L596.01 114.88L591.76 116.13L586.26 119.13L582.64 122.5L579.64 126.75L577.39 131.75L575.39 139.25L566.89 188.25L566.14 195L566.14 200L566.64 203L568.14 206.75L569.64 208.75L572.26 210.88L576.26 212.63L580.26 213.38L588.01 213.38L591.01 212.88L595.76 211.38L600.76 208.38L603.89 205.25L606.64 201.25L608.39 197.5L610.76 188.88L651.76 188.88L651.39 192.75L649.39 202.5L647.39 209L645.14 214.5L642.39 219.75L639.64 224L636.64 227.75L631.26 233.13L627.51 236.13L621.51 239.88L615.26 242.88L609.76 244.88L603.26 246.63L596.51 247.88L582.01 249.13L569.01 248.88L560.01 247.88L552.01 246.13L545.51 243.88L540.01 241.13L535.76 238.13L530.14 232L526.51 225.13L522.64 230.25L517.51 235.13L511.26 239.38L505.76 242.13L498.26 244.88L492.51 246.38L484.26 247.88L477.51 248.63L468.51 249.13L453.51 248.88L443.26 247.88L436.26 246.63L427.51 244.13L422.26 241.88L416.01 237.88L411.64 233.5L409.39 230.25L406.89 225.25L405.64 221.5L404.64 216.25L404.39 205L405.14 198.25L406.51 191.88L447.51 191.88L446.89 196.25L446.89 201.25L447.89 205L448.89 207L452.01 210.38L453.51 211.38L456.01 212.63L461.51 214.13L466.01 214.63L473.26 214.63L481.51 213.38L485.01 212.13L488.01 210.38L491.39 206.5L492.64 202.25L492.64 198.75L492.14 196.5L490.64 193.25L486.76 189.13L481.01 185.63L475.01 182.88L453.01 175.88L441.01 171.38L435.76 168.63L429.26 163.88L422.64 156.75L419.64 151.5L417.64 145.5L416.64 137.25L416.89 129.75L417.89 122.5L419.14 117.25L421.39 111L423.89 106L426.89 101.5L429.39 98.5L434.26 93.88L441.51 88.88L447.01 86.13L454.26 83.38L460.76 81.63L468.76 80.13L477.26 79.13ZM59.63 80.5L274.25 80.38L284.5 81.63L290.5 83.13L295.75 85.13L301 88.13L303 89.63L307.63 94.5L309.88 98L312.13 103.25L313.13 107.5L313.63 112.75L313.38 119L312.38 125.5L307.88 148.5L305.88 154.5L303.13 160.5L299.63 166L295.38 171L289.75 175.88L285.25 178.38L284.88 179.25L305.63 245.75L259.5 245.88L258.13 242.5L240.13 184.25L239.75 183.88L226 183.88L225.38 185.25L216.38 245.75L172.25 245.88L195.13 116.25L151.75 116.13L128.88 245.75L87.5 245.88L88.13 240.5L110.13 116.25L53.5 116.13L53.63 113.5ZM375.59 85.25L378.21 85.63L393.96 89.88L394.59 90.25L394.59 90.75L353.34 244.75L353.09 245.5L352.46 245.63L334.71 240.88L334.09 240.25ZM480.01 113.13L472.51 114.13L467.76 115.63L463.26 118.38L461.14 120.75L459.64 123.75L458.89 129L459.39 132.5L460.14 134.5L461.89 137.25L466.01 140.88L475.26 145.38L482.01 147.63L497.01 151.38L512.26 156.63L517.76 159.63L521.26 162.13L527.14 167.75L528.76 169.88L533.89 141.5L498.51 141.38L501.64 136.5L503.14 131L503.14 125.75L502.64 123.25L501.39 120.25L498.76 117.13L495.01 114.88L489.01 113.38ZM236.25 116.13L230.38 156L250.25 156.13L256.75 154.88L261 152.88L264.13 150.25L266.13 147.5L267.63 144.5L268.88 140L268.88 129.25L267.88 125.25L266.13 121.75L262.75 118.38L260.25 117.13L257.5 116.38Z"/>
-          </svg>
-        </div>
-        <div class="wordmark-meta">TR/SC &middot; THE COMPACT MARK</div>
-        <div class="wordmark-downloads">
-          <div class="asset-kit">
-            <div class="asset-row">
-              <span class="asset-name">BLACK</span>
-              <a class="asset-btn" href="/trackrat-monogram.svg" download="trackrat-monogram-black.svg">SVG</a>
-              <a class="asset-btn" href="/trackrat-monogram-black.png" download>PNG</a>
-            </div>
-            <div class="asset-row">
-              <span class="asset-name">WHITE</span>
-              <a class="asset-btn" href="/trackrat-monogram-white.svg" download>SVG</a>
-              <a class="asset-btn" href="/trackrat-monogram-white.png" download>PNG</a>
-            </div>
-            <div class="asset-row">
-              <span class="asset-name">ORANGE</span>
-              <a class="asset-btn" href="/trackrat-monogram-orange.svg" download>SVG</a>
-              <a class="asset-btn" href="/trackrat-monogram-orange.png" download>PNG</a>
+        <div class="wordmark-display">
+          <div class="detail-label" style="margin-bottom: 16px;">MONOGRAM</div>
+          <!-- Inlined from /trackrat-monogram.svg, the canonical copy. If that
+               file changes, re-inline this path: the sponsorship build asserts
+               the two match. fill-rule="evenodd" is required or the counters
+               in the R and S fill solid. -->
+          <div class="monogram-large">
+            <svg viewBox="45.5 70.63 626.14 186.5" role="img" aria-label="TR slash SC monogram" xmlns="http://www.w3.org/2000/svg">
+              <path fill="currentColor" fill-rule="evenodd" d="M486.64 78.75L499.51 78.88L508.51 79.88L519.01 82.38L527.26 85.88L534.26 90.63L539.39 96L542.64 101.25L545.01 108.38L550.14 101.25L554.51 96.63L560.26 91.88L565.26 88.63L573.51 84.63L580.01 82.38L593.26 79.63L600.51 78.88L612.76 78.63L622.51 79.38L629.51 80.63L636.51 82.63L644.26 86.13L649.76 89.88L653.64 93.5L656.39 96.75L659.39 101.5L662.14 108.5L663.64 117L663.64 125.75L662.39 134.5L660.14 142.75L657.64 149.5L653.39 157.5L613.01 157.63L612.89 157.25L616.14 152.75L617.64 149.5L619.89 140.5L620.39 133.25L620.14 129L619.39 125.5L617.64 121.5L614.01 117.38L611.01 115.63L607.76 114.63L599.26 114.38L596.01 114.88L591.76 116.13L586.26 119.13L582.64 122.5L579.64 126.75L577.39 131.75L575.39 139.25L566.89 188.25L566.14 195L566.14 200L566.64 203L568.14 206.75L569.64 208.75L572.26 210.88L576.26 212.63L580.26 213.38L588.01 213.38L591.01 212.88L595.76 211.38L600.76 208.38L603.89 205.25L606.64 201.25L608.39 197.5L610.76 188.88L651.76 188.88L651.39 192.75L649.39 202.5L647.39 209L645.14 214.5L642.39 219.75L639.64 224L636.64 227.75L631.26 233.13L627.51 236.13L621.51 239.88L615.26 242.88L609.76 244.88L603.26 246.63L596.51 247.88L582.01 249.13L569.01 248.88L560.01 247.88L552.01 246.13L545.51 243.88L540.01 241.13L535.76 238.13L530.14 232L526.51 225.13L522.64 230.25L517.51 235.13L511.26 239.38L505.76 242.13L498.26 244.88L492.51 246.38L484.26 247.88L477.51 248.63L468.51 249.13L453.51 248.88L443.26 247.88L436.26 246.63L427.51 244.13L422.26 241.88L416.01 237.88L411.64 233.5L409.39 230.25L406.89 225.25L405.64 221.5L404.64 216.25L404.39 205L405.14 198.25L406.51 191.88L447.51 191.88L446.89 196.25L446.89 201.25L447.89 205L448.89 207L452.01 210.38L453.51 211.38L456.01 212.63L461.51 214.13L466.01 214.63L473.26 214.63L481.51 213.38L485.01 212.13L488.01 210.38L491.39 206.5L492.64 202.25L492.64 198.75L492.14 196.5L490.64 193.25L486.76 189.13L481.01 185.63L475.01 182.88L453.01 175.88L441.01 171.38L435.76 168.63L429.26 163.88L422.64 156.75L419.64 151.5L417.64 145.5L416.64 137.25L416.89 129.75L417.89 122.5L419.14 117.25L421.39 111L423.89 106L426.89 101.5L429.39 98.5L434.26 93.88L441.51 88.88L447.01 86.13L454.26 83.38L460.76 81.63L468.76 80.13L477.26 79.13ZM59.63 80.5L274.25 80.38L284.5 81.63L290.5 83.13L295.75 85.13L301 88.13L303 89.63L307.63 94.5L309.88 98L312.13 103.25L313.13 107.5L313.63 112.75L313.38 119L312.38 125.5L307.88 148.5L305.88 154.5L303.13 160.5L299.63 166L295.38 171L289.75 175.88L285.25 178.38L284.88 179.25L305.63 245.75L259.5 245.88L258.13 242.5L240.13 184.25L239.75 183.88L226 183.88L225.38 185.25L216.38 245.75L172.25 245.88L195.13 116.25L151.75 116.13L128.88 245.75L87.5 245.88L88.13 240.5L110.13 116.25L53.5 116.13L53.63 113.5ZM375.59 85.25L378.21 85.63L393.96 89.88L394.59 90.25L394.59 90.75L353.34 244.75L353.09 245.5L352.46 245.63L334.71 240.88L334.09 240.25ZM480.01 113.13L472.51 114.13L467.76 115.63L463.26 118.38L461.14 120.75L459.64 123.75L458.89 129L459.39 132.5L460.14 134.5L461.89 137.25L466.01 140.88L475.26 145.38L482.01 147.63L497.01 151.38L512.26 156.63L517.76 159.63L521.26 162.13L527.14 167.75L528.76 169.88L533.89 141.5L498.51 141.38L501.64 136.5L503.14 131L503.14 125.75L502.64 123.25L501.39 120.25L498.76 117.13L495.01 114.88L489.01 113.38ZM236.25 116.13L230.38 156L250.25 156.13L256.75 154.88L261 152.88L264.13 150.25L266.13 147.5L267.63 144.5L268.88 140L268.88 129.25L267.88 125.25L266.13 121.75L262.75 118.38L260.25 117.13L257.5 116.38Z"/>
+            </svg>
+          </div>
+          <div class="wordmark-meta">TR/SC &middot; THE COMPACT MARK</div>
+          <div class="wordmark-downloads">
+            <div class="asset-kit">
+              <div class="asset-row">
+                <span class="asset-name">BLACK</span>
+                <a class="asset-btn" href="/trackrat-monogram.svg" download="trackrat-monogram-black.svg">SVG</a>
+                <a class="asset-btn" href="/trackrat-monogram-black.png" download>PNG</a>
+              </div>
+              <div class="asset-row">
+                <span class="asset-name">WHITE</span>
+                <a class="asset-btn" href="/trackrat-monogram-white.svg" download>SVG</a>
+                <a class="asset-btn" href="/trackrat-monogram-white.png" download>PNG</a>
+              </div>
+              <div class="asset-row">
+                <span class="asset-name">ORANGE</span>
+                <a class="asset-btn" href="/trackrat-monogram-orange.svg" download>SVG</a>
+                <a class="asset-btn" href="/trackrat-monogram-orange.png" download>PNG</a>
+              </div>
             </div>
           </div>
+          <div class="detail-note" style="margin-top: 20px; max-width: 52ch;">USE IT WHERE THE WORDMARK WON'T FIT: APPAREL TAGS, SMALL MERCH. NEVER PAIR IT WITH THE WORDMARK IN THE SAME LOCKUP.</div>
         </div>
-        <div class="detail-note" style="margin-top: 20px; max-width: 52ch;">USE IT WHERE THE WORDMARK WON'T READ: AVATARS, APPAREL TAGS, SMALL MERCH. NEVER PAIR IT WITH THE WORDMARK IN THE SAME LOCKUP.</div>
       </div>
 
       <div class="detail-label" style="margin-bottom: 16px;">BODY FONT</div>
