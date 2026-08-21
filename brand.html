@@ -679,9 +679,11 @@
 
     /* Wordmark and monogram sit side by side on desktop. The wordmark column
        is content-sized because its type is vw-based and cannot reflow (one
-       long word); the monogram takes the remainder, capped as below.
+       long word); the monogram takes the remainder, capped as below. The
+       gutter scales with the viewport because the pair is nearly as wide as
+       its container at full size, so a fixed gap reads as touching.
        Below 860px the pair stacks. */
-    .mark-row { display: flex; gap: 56px; align-items: flex-start; }
+    .mark-row { display: flex; gap: clamp(56px, 7vw, 150px); align-items: flex-start; }
     .mark-row > .wordmark-display:first-child { flex: 0 0 auto; }
     .mark-row > .wordmark-display:last-child { flex: 1 1 auto; min-width: 0; }
     @media (max-width: 860px) {
@@ -1099,7 +1101,7 @@
 
   <!-- 04 — DETAILS -->
   <div class="section lane-2" data-lane="2" id="details" style="min-height: auto; padding-top: 120px; padding-bottom: 40px;">
-    <div class="section-content" style="max-width: 900px;">
+    <div class="section-content" style="max-width: 1200px;">
       <span class="section-number">04 &mdash; DETAILS</span>
       <h2 class="section-title">DETAILS</h2>
 
