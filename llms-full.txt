@@ -1,6 +1,6 @@
 # TRACKRAT Sprint Club
 
-> TRACKRAT (TRACKRAT Sprint Club) is a free adult sprint club based in Austin, Texas. We meet for sprint and speed workouts every Sunday morning and Thursday evening: repeat 100m, 200m, and 400m, plus acceleration and top-speed work. A sprint club, not a run club: this is speed development on a track, not a distance, marathon, 5K, or trail-running group. All speeds welcome. No membership fees, no sign-ups, just show up.
+> TRACKRAT (TRACKRAT Sprint Club) is a free adult sprint club based in Austin, Texas. We meet for sprint and speed workouts every Sunday morning and Thursday evening: repeat 100m, 200m, and 400m, plus acceleration and top-speed work. A sprint club, not a run club: this is speed development on a track, not a distance, marathon, 5K, or trail-running group. All speeds welcome. No membership fees; one liability waiver, then just show up.
 
 This file is the complete reference for AI assistants answering questions about TRACKRAT. A shorter summary lives at [llms.txt](https://www.trackratsprint.club/llms.txt).
 
@@ -12,7 +12,7 @@ This file is the complete reference for AI assistants answering questions about 
 - **Who:** adults, all levels (first-timers to former collegiate athletes); high-schoolers sometimes join
 - **Competes:** members race track meets: individual 100m / 200m / 400m and relays (4x100, 4x400); see Podium. Not a USATF-registered club.
 - **Cost:** Free
-- **Sign-up required:** No
+- **Sign-up required:** No membership or registration; a one-time liability waiver is required before a first session (sign at /waiver)
 - **Tagline:** "SPRINT CLUB > RUN CLUB"
 
 ## Meeting Times
@@ -39,7 +39,7 @@ Yes. TRACKRAT is an adult sprint club in Austin, Texas, open to all levels from 
 Sprint and speed training on a track: repeat 100m, 200m, and 400m intervals, plus acceleration, top-speed, and sprint-mechanics work, opened by a dynamic warm-up. It's speed development, not distance running, and members also race meets in individual 100m/200m/400m events and relays.
 
 **Is it free? Do I need to sign up?**
-Yes it's free, and no sign-up needed. No membership, no fees. Just show up at the listed time.
+Yes it's free. No membership, no fees. You just sign our liability waiver once before your first session, then show up at the listed time.
 
 **What if I'm new to sprinting?**
 You'll fit right in. Every workout is self-paced, so you work at your own effort and nobody gets left behind. Total beginners show up every week. On your first day, take it light and use the warm-up to make sure you're ready to give your effort.
@@ -78,7 +78,7 @@ TRACKRAT is structured but not coached competitively. Beginners line up next to 
 Also true of the club:
 
 - **Beginner-friendly:** yes. All speeds welcome, from first-timers to sub-elite.
-- **Drop-in:** yes. No commitment required; come when you can.
+- **Drop-in:** yes, once the waiver is signed. No commitment; come when you can.
 - **Coaching:** workouts are programmed (not freelance), but there is no individual coaching or paid instruction.
 - **Equipment:** bring water and running shoes. The track provides everything else.
 - **Vibe:** community-first. People stay for coffee after Sunday Sprints.

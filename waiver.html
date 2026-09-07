@@ -1,0 +1,2053 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="format-detection" content="telephone=no, date=no, address=no, email=no" />
+  <title>Waiver · TRACKRAT Sprint Club · Austin, TX</title>
+  <meta name="description" content="Read the TRACKRAT club rules and liability waiver, and sign it online. Free adult sprint club in Austin, TX: no membership, no fees, one waiver." />
+  <link rel="canonical" href="https://www.trackratsprint.club/waiver" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="TRACKRAT Sprint Club" />
+  <meta property="og:title" content="Waiver · TRACKRAT Sprint Club · Austin, TX" />
+  <meta property="og:description" content="Read the TRACKRAT club rules and liability waiver, and sign it online. Free adult sprint club in Austin, TX: no membership, no fees, one waiver." />
+  <meta property="og:url" content="https://www.trackratsprint.club/waiver" />
+  <meta property="og:image" content="https://www.trackratsprint.club/og.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="TRACKRAT wordmark" />
+  <meta property="og:locale" content="en_US" />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Waiver · TRACKRAT Sprint Club · Austin, TX" />
+  <meta name="twitter:description" content="Read the TRACKRAT club rules and liability waiver, and sign it online. Free adult sprint club in Austin, TX: no membership, no fees, one waiver." />
+  <meta name="twitter:image" content="https://www.trackratsprint.club/og.png" />
+  <meta name="twitter:site" content="@trackratsprints" />
+  <meta name="twitter:creator" content="@trackratsprints" />
+
+  <meta name="geo.region" content="US-TX" />
+  <meta name="geo.placename" content="Austin" />
+  <meta name="theme-color" content="#000000" />
+
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <meta name="apple-mobile-web-app-title" content="TRACKRAT">
+  <!-- Self-hosted fonts (see @font-face in inline <style>). -->
+  <link rel="preload" as="font" type="font/woff2" href="/fonts/fugaz-one-latin.woff2" crossorigin>
+  <link rel="preload" as="font" type="font/woff2" href="/fonts/ibm-plex-mono-400-latin.woff2" crossorigin>
+  <!-- Start the TLS handshake with Supabase before the module script runs. -->
+  <link rel="preconnect" href="https://mwrkoosfrhimlppdeljo.supabase.co" crossorigin>
+  <script defer src="/_vercel/insights/script.js"></script>
+  <script defer src="/_vercel/speed-insights/script.js"></script>
+  <style>
+    /* Self-hosted fonts (latin subset). */
+    @font-face { font-family: 'Fugaz One';     font-style: normal; font-weight: 400; font-display: swap; src: url('/fonts/fugaz-one-latin.woff2') format('woff2'); }
+    @font-face { font-family: 'IBM Plex Mono'; font-style: normal; font-weight: 400; font-display: swap; src: url('/fonts/ibm-plex-mono-400-latin.woff2') format('woff2'); }
+    @font-face { font-family: 'IBM Plex Mono'; font-style: normal; font-weight: 500; font-display: swap; src: url('/fonts/ibm-plex-mono-500-latin.woff2') format('woff2'); }
+    @font-face { font-family: 'IBM Plex Mono'; font-style: normal; font-weight: 600; font-display: swap; src: url('/fonts/ibm-plex-mono-600-latin.woff2') format('woff2'); }
+    @font-face { font-family: 'IBM Plex Mono'; font-style: normal; font-weight: 700; font-display: swap; src: url('/fonts/ibm-plex-mono-700-latin.woff2') format('woff2'); }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --orange: #FF4D1F;
+      --black: #000000;
+      --white: #FFFFFF;
+      --font: 'IBM Plex Mono', monospace;
+      --lane-color: rgba(255, 255, 255, 0.12);
+      --field-bg: rgba(255, 255, 255, 0.04);
+      --field-border: rgba(255, 255, 255, 0.12);
+      --field-border-hover: rgba(255, 77, 31, 0.5);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font);
+      background: var(--black);
+      color: var(--white);
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      min-height: 100dvh; /* dvh: avoid overscroll past the footer on mobile toolbars */
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .wordmark {
+      font-family: 'Fugaz One', 'Arial Black', sans-serif;
+      letter-spacing: -0.14em;
+    }
+
+    /* ---- TRACK LANES (background) ---- */
+    .track-lanes {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 0;
+      pointer-events: none;
+      display: flex;
+      justify-content: center;
+      gap: 0;
+    }
+
+    .lane {
+      width: calc(100% / 8);
+      height: 100%;
+      border-right: 1px solid var(--lane-color);
+    }
+
+    .lane:first-child { border-left: 1px solid var(--lane-color); }
+
+    /* ---- STAGGER MARKS ---- */
+    .stagger-marks {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .stagger-tri {
+      position: absolute;
+      width: calc(100% / 8);
+      aspect-ratio: 1 / 0.7;
+    }
+
+    .stagger-tri svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .stagger-tri.l1 { left: 0; }
+    .stagger-tri.l2 { left: 12.5%; }
+    .stagger-tri.l3 { left: 25%; }
+    .stagger-tri.l4 { left: 37.5%; }
+    .stagger-tri.l5 { left: 50%; }
+    .stagger-tri.l6 { left: 62.5%; }
+    .stagger-tri.l7 { left: 75%; }
+    .stagger-tri.l8 { left: 87.5%; }
+
+    /* ---- NAV ---- */
+    nav {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 24px 40px;
+      font-size: 13px;
+      letter-spacing: 0.05em;
+    }
+
+    nav .nav-left {
+      font-family: 'Fugaz One', 'Arial Black', sans-serif;
+      font-size: 18px;
+      letter-spacing: -0.14em;
+      position: absolute;
+      left: 40px;
+    }
+
+    nav .nav-center {
+      display: flex;
+      gap: 28px;
+      font-weight: 500;
+      align-items: center;
+    }
+
+    /* ---- DESKTOP EVENTS DROPDOWN ---- */
+    .nav-dropdown { position: relative; display: inline-flex; align-items: center; }
+    .nav-dropdown-trigger {
+      background: transparent; border: none; cursor: pointer; color: inherit;
+      font-family: inherit; font-size: inherit; font-weight: inherit;
+      letter-spacing: inherit; padding: 0;
+      display: inline-flex; align-items: center; gap: 6px;
+    }
+    .nav-dropdown-trigger:hover { opacity: 0.6; transition: opacity 0.2s ease; }
+    .nav-dropdown-caret { width: 9px; height: 9px; display: block; transition: transform 0.2s ease; }
+    .nav-dropdown:hover .nav-dropdown-caret,
+    .nav-dropdown:focus-within .nav-dropdown-caret,
+    .nav-dropdown.is-open .nav-dropdown-caret { transform: rotate(180deg); }
+    .nav-dropdown-panel {
+      position: absolute; top: 100%; left: 50%;
+      transform: translateX(-50%) translateY(6px);
+      min-width: 230px; background: var(--black);
+      border: 1px solid rgba(255,255,255,0.16);
+      padding: 8px; display: flex; flex-direction: column;
+      opacity: 0; visibility: hidden; pointer-events: none;
+      transition: opacity 0.18s ease, transform 0.18s ease; z-index: 120;
+    }
+    .nav-dropdown:hover .nav-dropdown-panel,
+    .nav-dropdown:focus-within .nav-dropdown-panel,
+    .nav-dropdown.is-open .nav-dropdown-panel {
+      opacity: 1; visibility: visible; pointer-events: auto;
+      transform: translateX(-50%) translateY(0);
+    }
+    .nav-dropdown-panel a {
+      color: var(--white); font-size: 12px; letter-spacing: 0.08em;
+      font-weight: 500; padding: 11px 14px; white-space: nowrap;
+    }
+    .nav-dropdown-panel a:hover { color: var(--orange); opacity: 1; }
+
+    /* Collapse nav to the hamburger before the centered link bar crowds the
+       absolute wordmark (the multi-item nav overlaps it below ~860px). */
+    @media (max-width: 880px) {
+      nav { justify-content: space-between; padding: 16px 20px; }
+      nav .nav-left { position: static; font-size: 16px; flex-shrink: 0; }
+      nav .nav-center { display: none !important; }
+      .menu-toggle { display: block !important; }
+    }
+
+    nav a:hover { opacity: 0.6; transition: opacity 0.2s ease; }
+
+    /* ---- PAGE LAYOUT ---- */
+    .page {
+      position: relative;
+      z-index: 10;
+      min-height: 100vh;
+      padding: 140px 40px 80px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .page-header {
+      width: 100%;
+      max-width: 900px;
+      margin-bottom: 60px;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeUp 0.7s ease 0.1s forwards;
+    }
+
+    .page-eyebrow {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      color: var(--orange);
+      margin-bottom: 16px;
+      display: block;
+    }
+
+    .page-title {
+      font-family: 'Fugaz One', 'Arial Black', sans-serif;
+      letter-spacing: -0.10em;
+      font-size: clamp(60px, 12vw, 160px);
+      line-height: 0.85;
+      color: var(--orange);
+    }
+    @keyframes fadeUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ---- BOTTOM FOOTER ---- */
+    footer {
+      position: relative;
+      z-index: 10;
+      padding: 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      opacity: 0.55; /* was 0.3 — ≥4.5:1 on black for WCAG AA */
+    }
+    /* ---- SOCIAL ICONS ---- */
+    .socials { display: flex; align-items: center; gap: 6px; }
+    .socials a {
+      display: inline-flex; align-items: center; justify-content: center;
+      padding: 11px; /* 18px icon + padding = 40px touch target */
+    }
+    .socials svg { width: 18px; height: 18px; fill: currentColor; display: block; }
+
+    @keyframes fadeUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* ---- MOBILE MENU TOGGLE ---- */
+    .menu-toggle {
+      display: none;
+      position: relative;
+      width: 32px;
+      height: 32px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      z-index: 200;
+      color: var(--white);
+    }
+
+    .menu-toggle span {
+      position: absolute;
+      left: 4px;
+      right: 4px;
+      height: 2px;
+      background: currentColor;
+      transition: transform 0.3s ease, opacity 0.2s ease, top 0.3s ease;
+    }
+
+    .menu-toggle span:nth-child(1) { top: 10px; }
+    .menu-toggle span:nth-child(2) { top: 16px; }
+    .menu-toggle span:nth-child(3) { top: 22px; }
+
+    .menu-toggle.is-open span:nth-child(1) {
+      top: 16px;
+      transform: rotate(45deg);
+    }
+    .menu-toggle.is-open span:nth-child(2) { opacity: 0; }
+    .menu-toggle.is-open span:nth-child(3) {
+      top: 16px;
+      transform: rotate(-45deg);
+    }
+
+    /* ---- MOBILE MENU OVERLAY ---- */
+    .mobile-menu {
+      position: fixed;
+      inset: 0;
+      z-index: 150;
+      background: var(--black);
+      display: none;
+      flex-direction: column;
+      padding: 18px 32px 28px;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      overflow-y: auto;
+    }
+    .mobile-menu.is-open { display: flex; opacity: 1; }
+    /* Header: wordmark (-> home) + explicit close X. Lives INSIDE the overlay
+       so the close control is always above the overlay content (the old
+       hamburger-morph X was buried under this overlay by a z-index stacking
+       trap: nav's z-index:100 context capped the toggle below the 150 overlay). */
+    .mobile-menu-header {
+      display: flex; align-items: center; justify-content: space-between;
+      width: 100%; flex-shrink: 0;
+    }
+    .mobile-menu-wordmark {
+      font-family: 'Fugaz One', 'Arial Black', sans-serif; letter-spacing: -0.14em;
+      font-size: 18px; color: var(--white);
+    }
+    .mobile-menu-close {
+      background: transparent; border: none; cursor: pointer;
+      width: 44px; height: 44px; margin-right: -10px; padding: 0;
+      color: var(--white); display: flex; align-items: center; justify-content: center;
+    }
+    .mobile-menu-close svg { width: 26px; height: 26px; display: block; }
+    .mobile-menu-close:hover { color: var(--orange); }
+    /* flex: 1 0 auto, NOT `flex: 1; min-height: 0`: with both accordions
+       open the list is taller than the space left between header and footer.
+       A shrinkable box centers that overflow, spilling SHOP over the wordmark
+       and OFFTRACK over the footer line with no way to reach them. Growing to
+       content height instead lets .mobile-menu's overflow-y: auto scroll it.
+       `safe center` keeps the top edge reachable if a box is ever clamped. */
+    .mobile-menu-links {
+      flex: 1 0 auto;
+      display: flex; flex-direction: column; justify-content: center;
+      justify-content: safe center;
+      align-items: flex-start; width: 100%;
+      padding-bottom: 14px;
+    }
+    .mobile-menu-links > a,
+    .mobile-accordion-trigger {
+      font-size: clamp(30px, 7.5vw, 44px);
+      font-family: 'Fugaz One', 'Arial Black', sans-serif;
+      letter-spacing: -0.04em;
+      color: var(--white);
+      padding: 12px 0; width: 100%;
+      background: transparent; border: none; text-align: left; cursor: pointer;
+      display: flex; align-items: center; justify-content: space-between;
+      transform: translateX(-20px); opacity: 0;
+      transition: transform 0.4s ease, opacity 0.4s ease, color 0.2s ease;
+    }
+    .mobile-menu.is-open .mobile-menu-links > a,
+    .mobile-menu.is-open .mobile-accordion-trigger { transform: translateX(0); opacity: 1; }
+    .mobile-menu.is-open .mobile-menu-links > *:nth-child(1) { transition-delay: 0.05s; }
+    .mobile-menu.is-open .mobile-menu-links > *:nth-child(2) { transition-delay: 0.12s; }
+    .mobile-menu.is-open .mobile-menu-links > *:nth-child(3) { transition-delay: 0.19s; }
+    .mobile-menu.is-open .mobile-menu-links > *:nth-child(4) { transition-delay: 0.26s; }
+    .mobile-menu.is-open .mobile-menu-links > *:nth-child(5) { transition-delay: 0.33s; }
+    .mobile-menu-links a:hover, .mobile-menu-links a:active,
+    .mobile-accordion-trigger:hover { color: var(--orange); }
+    .mobile-menu-footer {
+      flex-shrink: 0;
+      font-size: 10px; letter-spacing: 0.3em;
+      opacity: 0.4; font-weight: 600; color: var(--white);
+    }
+
+    /* ---- MOBILE EVENTS ACCORDION ---- */
+    .mobile-menu.is-open .mobile-menu-links > *:nth-child(6) { transition-delay: 0.40s; }
+    .mobile-menu.is-open .mobile-menu-links > *:nth-child(7) { transition-delay: 0.47s; }
+    .mobile-accordion-trigger .acc-caret { width: 18px; height: 18px; flex-shrink: 0; transition: transform 0.2s ease; }
+    .mobile-accordion-trigger[aria-expanded="true"] .acc-caret { transform: rotate(180deg); }
+    .mobile-accordion-panel {
+      display: none; flex-direction: column; align-items: flex-start;
+      width: 100%; padding: 2px 0 10px 18px;
+    }
+    .mobile-accordion-panel.is-open { display: flex; }
+    .mobile-accordion-panel a {
+      font-family: 'Fugaz One', 'Arial Black', sans-serif; letter-spacing: -0.03em;
+      font-size: clamp(19px, 5vw, 26px); color: var(--white);
+      padding: 9px 0;
+    }
+    .mobile-accordion-panel a:hover { color: var(--orange); }
+    body.menu-open { overflow: hidden; }
+
+    /* ---- BUTTONS ----
+       Same shape as the dashboard's .g-btn / .g-btn-ghost. Duplicated rather
+       than shared because every page here carries its own styles; keep the two
+       in step if either changes. */
+    .g-btn {
+      display: inline-block;
+      background: var(--orange);
+      border: 1px solid var(--orange);
+      color: var(--black);
+      font-family: var(--font);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 12px 18px;
+      cursor: pointer;
+      transition: transform 0.15s ease, opacity 0.15s ease;
+    }
+    .g-btn:hover { transform: translateY(-1px); }
+    .g-btn:disabled { opacity: 0.5; cursor: default; transform: none; }
+    .g-btn:focus-visible { outline: 2px solid var(--white); outline-offset: 2px; }
+    .g-btn[aria-disabled="true"] { opacity: 0.45; pointer-events: none; }
+    .g-btn-ghost {
+      display: inline-block;
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      color: var(--white);
+      font-family: var(--font);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 12px 18px;
+      cursor: pointer;
+      transition: border-color 0.15s ease, color 0.15s ease;
+    }
+    .g-btn-ghost:hover { border-color: var(--orange); color: var(--orange); }
+    .g-btn-ghost:focus-visible { outline: 2px solid var(--orange); outline-offset: 2px; }
+
+    /* ---- INTRO ---- */
+    .wv-intro {
+      width: 100%;
+      max-width: 900px;
+      margin: 0 auto 44px;
+      font-size: 15px;
+      line-height: 1.75;
+      opacity: 0.8;
+    }
+    .wv-intro p + p { margin-top: 14px; }
+    .wv-intro strong { color: var(--white); opacity: 1; font-weight: 600; }
+
+    /* ---- DOCUMENT CARD ---- */
+    .wv-doc {
+      width: 100%;
+      max-width: 900px;
+      margin: 0 auto 40px;
+      background: var(--field-bg);
+      border: 1px solid var(--field-border);
+      padding: 28px 26px;
+    }
+    .wv-doc-top {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 4px;
+    }
+    .wv-doc-eyebrow {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      color: var(--orange);
+    }
+    .wv-doc-version {
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      opacity: 0.45;
+    }
+    .wv-doc-title {
+      font-family: 'Fugaz One', 'Arial Black', sans-serif;
+      letter-spacing: -0.04em;
+      font-size: clamp(22px, 3.4vw, 32px);
+      line-height: 1.05;
+      margin-bottom: 10px;
+    }
+    .wv-doc-meta {
+      font-size: 12px;
+      letter-spacing: 0.06em;
+      opacity: 0.5;
+      margin-bottom: 22px;
+    }
+    .wv-doc-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+
+    /* Read-on-page transcript. This is the accessible reading path: the PDF is
+       untagged and does not reflow, so it is the artifact and this is the text.
+       Both are generated from one source file so they cannot drift. */
+    .wv-read { margin-top: 24px; border-top: 1px solid var(--field-border); padding-top: 18px; }
+    .wv-read > summary {
+      cursor: pointer;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      list-style: none;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .wv-read > summary::-webkit-details-marker { display: none; }
+    .wv-read > summary::before {
+      content: '';
+      width: 7px; height: 7px;
+      border-right: 1.5px solid var(--orange);
+      border-bottom: 1.5px solid var(--orange);
+      transform: rotate(-45deg);
+      transition: transform 0.18s ease;
+      flex-shrink: 0;
+    }
+    .wv-read[open] > summary::before { transform: rotate(45deg); }
+    .wv-read > summary:hover { color: var(--orange); }
+    .wv-read > summary:focus-visible { outline: 2px solid var(--orange); outline-offset: 3px; }
+    .wv-text {
+      margin-top: 20px;
+      max-height: 420px;
+      overflow-y: auto;
+      padding-right: 14px;
+      font-size: 13px;
+      line-height: 1.8;
+      opacity: 0.85;
+    }
+    .wv-text h3 {
+      font-family: 'Fugaz One', 'Arial Black', sans-serif;
+      letter-spacing: -0.03em;
+      font-size: 18px;
+      font-weight: 400;
+      margin-bottom: 2px;
+    }
+    .wv-text h4 { font-size: 12px; letter-spacing: 0.12em; margin-bottom: 10px; }
+    .wv-text .wv-meta { font-size: 11px; opacity: 0.5; margin-bottom: 16px; }
+    .wv-text p + p { margin-top: 13px; }
+    .wv-text dl.wv-sig {
+      margin-top: 18px;
+      padding-top: 14px;
+      border-top: 1px solid var(--field-border);
+      font-size: 12px;
+    }
+    .wv-text dl.wv-sig dt { font-weight: 600; letter-spacing: 0.08em; margin-top: 8px; }
+    .wv-text dl.wv-sig dd { opacity: 0.55; }
+
+    /* ---- SIGNING PANEL ---- */
+    .wv-panel {
+      width: 100%;
+      max-width: 900px;
+      margin: 0 auto;
+      background: var(--field-bg);
+      border: 1px solid var(--field-border);
+      padding: 28px 26px 30px;
+    }
+    .wv-panel-title {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      color: var(--orange);
+      margin-bottom: 18px;
+    }
+    .wv-state { display: none; }
+    .wv-state.is-on { display: block; }
+
+    .wv-field { margin-bottom: 22px; }
+    .wv-label {
+      display: block;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      margin-bottom: 8px;
+    }
+    .wv-hint { font-size: 11px; opacity: 0.45; letter-spacing: 0.04em; margin-top: 7px; }
+    .wv-input {
+      width: 100%;
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid var(--field-border);
+      color: var(--white);
+      font-family: var(--font);
+      font-size: 15px;
+      padding: 13px 14px;
+      transition: border-color 0.15s ease;
+    }
+    .wv-input::placeholder { color: rgba(255, 255, 255, 0.28); }
+    .wv-input:focus { outline: none; border-color: var(--orange); }
+
+    /* ---- SIGNATURE PAD ---- */
+    .wv-pad-wrap {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 3 / 1;
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid var(--field-border);
+    }
+    /* touch-action:none ON THE CANVAS ONLY. Putting it on a container would
+       break page scrolling. This is the correct mechanism, not a non-passive
+       touchmove + preventDefault, and it also stops iOS edge-swipe navigation
+       from stealing a stroke that starts near the left edge. */
+    .wv-pad-wrap canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+      touch-action: none;
+      -webkit-user-select: none;
+      user-select: none;
+      -webkit-touch-callout: none;
+      cursor: crosshair;
+    }
+    .wv-pad-rule {
+      position: absolute;
+      left: 6%; right: 6%; bottom: 26%;
+      border-bottom: 1px dashed rgba(255, 255, 255, 0.18);
+      pointer-events: none;
+    }
+    .wv-pad-hint {
+      position: absolute;
+      left: 0; right: 0; bottom: 12%;
+      text-align: center;
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      opacity: 0.35;
+      pointer-events: none;
+      transition: opacity 0.15s ease;
+    }
+    .wv-pad-wrap.has-ink .wv-pad-hint { opacity: 0; }
+    .wv-pad-tools {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .wv-pad-tools button {
+      background: transparent;
+      border: 1px solid var(--field-border);
+      color: var(--white);
+      font-family: var(--font);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      padding: 8px 12px;
+      cursor: pointer;
+      transition: border-color 0.15s ease, color 0.15s ease, opacity 0.15s ease;
+    }
+    .wv-pad-tools button:hover:not(:disabled) { border-color: var(--orange); color: var(--orange); }
+    .wv-pad-tools button:disabled { opacity: 0.32; cursor: default; }
+    .wv-pad-tools button:focus-visible { outline: 2px solid var(--orange); outline-offset: 2px; }
+
+    /* ---- CHECKBOXES ---- */
+    .wv-check {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      margin-bottom: 14px;
+      cursor: pointer;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+    .wv-check input {
+      appearance: none;
+      -webkit-appearance: none;
+      flex-shrink: 0;
+      width: 18px; height: 18px;
+      margin-top: 2px;
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid var(--field-border);
+      cursor: pointer;
+      position: relative;
+      transition: border-color 0.15s ease, background 0.15s ease;
+    }
+    .wv-check input:checked { background: var(--orange); border-color: var(--orange); }
+    .wv-check input:checked::after {
+      content: '';
+      position: absolute;
+      left: 5px; top: 2px;
+      width: 5px; height: 9px;
+      border-right: 2px solid var(--black);
+      border-bottom: 2px solid var(--black);
+      transform: rotate(40deg);
+    }
+    .wv-check input:focus-visible { outline: 2px solid var(--orange); outline-offset: 2px; }
+    .wv-check:hover input:not(:checked) { border-color: var(--field-border-hover); }
+
+    /* ---- SUBMIT + STATUS ---- */
+    .wv-submit-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-top: 24px;
+      padding-top: 22px;
+      border-top: 1px solid var(--field-border);
+    }
+    .wv-msg {
+      font-size: 12px;
+      letter-spacing: 0.04em;
+      line-height: 1.6;
+      min-height: 1em;
+      flex: 1 1 220px;
+    }
+    .wv-msg.is-work { opacity: 0.6; }
+    .wv-msg.is-ok { color: #6fd08c; }
+    .wv-msg.is-err { color: #ff7a5e; }
+
+    /* ---- SIGNED-IN IDENTITY STRIP ---- */
+    .wv-who {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      margin-bottom: 24px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--field-border);
+      font-size: 12px;
+    }
+    .wv-who img {
+      width: 30px; height: 30px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      background: var(--field-bg);
+    }
+    .wv-who .wv-who-email { opacity: 0.5; letter-spacing: 0.04em; word-break: break-all; }
+
+    /* ---- DONE / ALREADY SIGNED ---- */
+    .wv-done-mark {
+      font-family: 'Fugaz One', 'Arial Black', sans-serif;
+      letter-spacing: -0.04em;
+      font-size: clamp(26px, 4.4vw, 40px);
+      color: var(--orange);
+      line-height: 1;
+      margin-bottom: 12px;
+    }
+    .wv-done p { font-size: 14px; line-height: 1.7; opacity: 0.75; margin-bottom: 22px; }
+    .wv-done-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+
+    /* ---- BLOCKED (document unavailable) ---- */
+    .wv-blocked {
+      border-left: 2px solid var(--orange);
+      padding: 18px 20px;
+      background: rgba(255, 77, 31, 0.06);
+      font-size: 13px;
+      line-height: 1.7;
+    }
+    .wv-blocked strong { display: block; letter-spacing: 0.12em; margin-bottom: 6px; }
+
+    /* ---- CLUB RULES ---- */
+    .wv-rules-lede { font-size: 14px; line-height: 1.75; opacity: 0.8; margin-bottom: 22px; }
+    .wv-rules dl { margin: 0; }
+    .wv-rules dt {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.13em;
+      color: var(--orange);
+      margin-top: 20px;
+    }
+    .wv-rules dt:first-of-type { margin-top: 0; }
+    .wv-rules dd { margin: 6px 0 0; font-size: 13.5px; line-height: 1.72; opacity: 0.78; }
+    .wv-rules-close {
+      margin-top: 22px;
+      font-size: 13px;
+      line-height: 1.7;
+      opacity: 0.6;
+    }
+    .wv-rules-foot {
+      margin-top: 26px;
+      padding-top: 18px;
+      border-top: 1px solid var(--field-border);
+      font-size: 13px;
+      line-height: 1.72;
+      opacity: 0.78;
+    }
+    .wv-rules-foot a, .wv-intro a, .wv-blocked a {
+      color: var(--orange);
+      border-bottom: 1px solid rgba(255, 77, 31, 0.4);
+    }
+    .wv-rules-foot a:hover, .wv-intro a:hover, .wv-blocked a:hover { border-bottom-color: var(--orange); }
+
+    /* ---- DATE OF BIRTH ---- */
+    /* Three selects rather than <input type="date">: it dodges iOS's styling
+       and locale handling, and it means the value never round-trips through a
+       Date string, which is where "2008-05-14 renders as May 13" comes from. */
+    .wv-dob { display: grid; grid-template-columns: 1.4fr 0.8fr 1fr; gap: 10px; }
+    select.wv-input {
+      appearance: none;
+      -webkit-appearance: none;
+      cursor: pointer;
+      background-image: linear-gradient(45deg, transparent 50%, rgba(255,255,255,0.5) 50%),
+                        linear-gradient(135deg, rgba(255,255,255,0.5) 50%, transparent 50%);
+      background-position: calc(100% - 18px) 50%, calc(100% - 13px) 50%;
+      background-size: 5px 5px, 5px 5px;
+      background-repeat: no-repeat;
+      padding-right: 34px;
+    }
+    select.wv-input option { background: #111; color: var(--white); }
+
+    .wv-auth-copy { font-size: 14px; line-height: 1.7; opacity: 0.75; margin-bottom: 22px; }
+
+    /* ---- RESPONSIVE (waiver) ---- */
+    @media (max-width: 768px) {
+      .wv-doc, .wv-panel { padding: 22px 18px 24px; }
+      .wv-intro { font-size: 14px; margin-bottom: 32px; }
+      /* Year needs the room; month and day wrap onto the first line. */
+      .wv-dob { grid-template-columns: 1.5fr 1fr; }
+      .wv-dob > :last-child { grid-column: 1 / -1; }
+      .wv-text { max-height: 340px; }
+      .wv-submit-row { flex-direction: column; align-items: stretch; }
+      .wv-submit-row .g-btn { width: 100%; }
+    }
+
+    /* ---- RESPONSIVE (shared chrome) ---- */
+    @media (max-width: 768px) {
+      nav {
+        padding: 16px 20px;
+        justify-content: space-between;
+      }
+      nav .nav-left {
+        position: static;
+        font-size: 16px;
+        flex-shrink: 0;
+      }
+      nav .nav-center { display: none; }
+      .menu-toggle { display: block; }
+
+      .page { padding: 100px 20px 60px; }
+      .page-header { margin-bottom: 40px; }
+      .page-eyebrow { margin-bottom: 12px; }
+      .page-title { font-size: clamp(48px, 16vw, 90px); }
+
+      footer {
+        padding: 32px 20px;
+        flex-direction: column;
+        gap: 8px;
+      }
+    }
+
+    @media (max-width: 420px) {
+      nav .nav-left { font-size: 14px; }
+      .page-title { font-size: clamp(40px, 18vw, 72px); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+      html { scroll-behavior: auto !important; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- FIXED TRACK LANES -->
+  <div class="track-lanes">
+    <div class="lane"></div>
+    <div class="lane"></div>
+    <div class="lane"></div>
+    <div class="lane"></div>
+    <div class="lane"></div>
+    <div class="lane"></div>
+    <div class="lane"></div>
+    <div class="lane"></div>
+  </div>
+
+  <!-- STAGGER MARKS -->
+  <div class="stagger-marks" aria-hidden="true">
+    <div class="stagger-tri l1" style="top:78%"><svg viewBox="0 0 100 90" preserveAspectRatio="none"><polygon points="0,0 100,0 50,90" fill="rgba(230,190,50,0.12)"/></svg></div>
+    <div class="stagger-tri l2" style="top:68%"><svg viewBox="0 0 100 90" preserveAspectRatio="none"><polygon points="0,0 100,0 50,90" fill="rgba(230,190,50,0.12)"/></svg></div>
+    <div class="stagger-tri l3" style="top:58%"><svg viewBox="0 0 100 90" preserveAspectRatio="none"><polygon points="0,0 100,0 50,90" fill="rgba(230,190,50,0.12)"/></svg></div>
+    <div class="stagger-tri l4" style="top:48%"><svg viewBox="0 0 100 90" preserveAspectRatio="none"><polygon points="0,0 100,0 50,90" fill="rgba(230,190,50,0.12)"/></svg></div>
+    <div class="stagger-tri l5" style="top:38%"><svg viewBox="0 0 100 90" preserveAspectRatio="none"><polygon points="0,0 100,0 50,90" fill="rgba(230,190,50,0.12)"/></svg></div>
+    <div class="stagger-tri l6" style="top:28%"><svg viewBox="0 0 100 90" preserveAspectRatio="none"><polygon points="0,0 100,0 50,90" fill="rgba(230,190,50,0.12)"/></svg></div>
+    <div class="stagger-tri l7" style="top:18%"><svg viewBox="0 0 100 90" preserveAspectRatio="none"><polygon points="0,0 100,0 50,90" fill="rgba(230,190,50,0.12)"/></svg></div>
+    <div class="stagger-tri l8" style="top:8%"><svg viewBox="0 0 100 90" preserveAspectRatio="none"><polygon points="0,0 100,0 50,90" fill="rgba(230,190,50,0.12)"/></svg></div>
+  </div>
+
+  <!-- NAV -->
+  <nav>
+    <a href="/" class="nav-left wordmark">TRACKRAT</a>
+    <div class="nav-center">
+      <a href="https://shop.trackratsprint.club" target="_blank" rel="noopener">[ SHOP ]</a>
+      <a href="/schedule">[ SCHEDULE ]</a>
+      <a href="/brand">[ BRAND ]</a>
+      <div class="nav-dropdown">
+        <button class="nav-dropdown-trigger" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="clubMenu">
+          [ CLUB ]
+          <svg class="nav-dropdown-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
+        </button>
+        <div class="nav-dropdown-panel" id="clubMenu" role="menu">
+          <a href="/dashboard#gallery" role="menuitem">GALLERY</a>
+          <a href="/podium" role="menuitem">PODIUM</a>
+          <a href="/dashboard" role="menuitem">PERSONAL RECORDS</a>
+          <a href="/dashboard#PARTNERS" role="menuitem">PARTNERS</a>
+          <a href="/waiver" role="menuitem">WAIVER</a>
+        </div>
+      </div>
+      <div class="nav-dropdown">
+        <button class="nav-dropdown-trigger" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="eventsMenu">
+          [ EVENTS ]
+          <svg class="nav-dropdown-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
+        </button>
+        <div class="nav-dropdown-panel" id="eventsMenu" role="menu">
+          <a href="/invitational" role="menuitem">INVITATIONAL</a>
+          <a href="/offtrack" role="menuitem">OFFTRACK</a>
+        </div>
+      </div>
+    </div>
+    <button class="menu-toggle" id="menuToggle" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </nav>
+
+  <!-- MOBILE MENU OVERLAY -->
+  <div class="mobile-menu" id="mobileMenu" aria-hidden="true">
+    <div class="mobile-menu-header">
+      <a href="/" class="mobile-menu-wordmark" aria-label="TRACKRAT — home">TRACKRAT</a>
+      <button class="mobile-menu-close" id="menuClose" type="button" aria-label="Close menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true">
+          <line x1="5" y1="5" x2="19" y2="19"></line>
+          <line x1="19" y1="5" x2="5" y2="19"></line>
+        </svg>
+      </button>
+    </div>
+    <div class="mobile-menu-links">
+      <a href="https://shop.trackratsprint.club" target="_blank" rel="noopener">SHOP</a>
+      <a href="/schedule">SCHEDULE</a>
+      <a href="/brand">BRAND</a>
+      <button class="mobile-accordion-trigger" type="button" aria-expanded="false" aria-controls="mobileClub">
+        CLUB
+        <svg class="acc-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
+      </button>
+      <div class="mobile-accordion-panel" id="mobileClub">
+        <a href="/dashboard#gallery">GALLERY</a>
+        <a href="/podium">PODIUM</a>
+        <a href="/dashboard">PERSONAL RECORDS</a>
+        <a href="/dashboard#PARTNERS">PARTNERS</a>
+        <a href="/waiver">WAIVER</a>
+      </div>
+      <button class="mobile-accordion-trigger" type="button" aria-expanded="false" aria-controls="mobileEvents">
+        EVENTS
+        <svg class="acc-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
+      </button>
+      <div class="mobile-accordion-panel" id="mobileEvents">
+        <a href="/invitational">INVITATIONAL</a>
+        <a href="/offtrack">OFFTRACK</a>
+      </div>
+    </div>
+    <div class="mobile-menu-footer">TRACKRAT SPRINT CLUB</div>
+  </div>
+
+  <!-- PAGE -->
+  <main class="page">
+
+    <div class="page-header">
+      <span class="page-eyebrow">CLUB</span>
+      <h1 class="page-title">WAIVER</h1>
+    </div>
+
+    <div class="wv-intro">
+      <p>Everyone who trains with TRACKRAT signs this once. It is still free, there
+        is still no membership and no fees, and you still do not have to tell us
+        you are coming. You sign the waiver one time, then you just show up.</p>
+      <p>Read the club rules and the waiver below, sign, and your signed copy
+        lands on your <a href="/dashboard#waiver" class="wv-link">dashboard</a>
+        where you can read it or download it any time. <strong>Once it is signed
+        it cannot be edited or deleted</strong>, by you or by us. That is the
+        point of a signed record.</p>
+    </div>
+
+    <!-- CODE OF CONDUCT. A SEPARATE agreement from the waiver, with its own
+         checkbox, its own version and its own hash on the signed row. RRCA
+         guidance is explicit that a club code of conduct must be its own
+         agreement question and must not be folded into the liability waiver,
+         so do not merge this with the waiver acknowledgement.
+         Anchored so /waiver#rules links straight here. -->
+    <section class="wv-doc" id="rules">
+      <div class="wv-doc-top">
+        <span class="wv-doc-eyebrow">FIRST</span>
+        <span class="wv-doc-version" id="conductVersion">&nbsp;</span>
+      </div>
+      <h2 class="wv-doc-title" id="conductTitle">CLUB RULES</h2>
+      <p class="wv-doc-meta">WHAT WE EXPECT FROM EVERYONE ON THE TRACK</p>
+
+      <div class="wv-rules" id="conductText"></div>
+
+      <p class="wv-rules-foot">If any of this is not being upheld, say so. Tell a
+        coach or an organiser at the session, or
+        <a id="concernLink" href="#" target="_blank" rel="noopener">send it to us
+        directly</a>. We would much rather hear it early.</p>
+    </section>
+
+    <!-- WAIVER DOCUMENT. There is no inline PDF viewer, and that is deliberate:
+         object-src 'none' blocks <object>/<embed>, and X-Frame-Options: DENY
+         plus frame-ancestors 'none' block <iframe> even same-origin. Opening
+         in a new tab hands the file to the platform's own reader, which beats
+         any embed on every device. The transcript below is the accessible
+         reading path, and both it and the PDF are generated from one source. -->
+    <section class="wv-doc" id="document">
+      <div class="wv-doc-top">
+        <span class="wv-doc-eyebrow">THEN</span>
+        <span class="wv-doc-version" id="docVersion">&nbsp;</span>
+      </div>
+      <h2 class="wv-doc-title" id="docTitle">THE WAIVER</h2>
+      <p class="wv-doc-meta" id="docMeta">CHECKING THE DOCUMENT&hellip;</p>
+
+      <div class="wv-doc-actions">
+        <a class="g-btn" id="docOpen" href="#" target="_blank" rel="noopener">OPEN THE WAIVER &#8599;</a>
+        <a class="g-btn-ghost" id="docDownload" href="#" download>DOWNLOAD</a>
+      </div>
+
+      <details class="wv-read" id="docRead" hidden>
+        <summary>READ THE FULL TEXT ON THIS PAGE</summary>
+        <div class="wv-text" id="docText" tabindex="0"></div>
+      </details>
+    </section>
+
+    <!-- SIGNING PANEL. Exactly one .wv-state carries .is-on at a time. -->
+    <section class="wv-panel" id="panel">
+      <p class="wv-panel-title" id="panelTitle">SIGN</p>
+
+      <!-- Booting: nothing decided yet. Avoids flashing the sign-in prompt at
+           someone who is already signed in. -->
+      <div class="wv-state is-on" id="stBoot">
+        <p class="wv-msg is-work">CHECKING&hellip;</p>
+      </div>
+
+      <!-- The document could not be fetched or is not a PDF. The form is not
+           rendered at all: never let someone draw a signature into a flow that
+           cannot complete. -->
+      <div class="wv-state" id="stBlocked">
+        <div class="wv-blocked">
+          <strong>THE WAIVER ISN'T AVAILABLE RIGHT NOW</strong>
+          This is on us, not on you. Try again in a few minutes, and if it keeps
+          happening tell us on
+          <a href="https://discord.gg/vrfmSKJX29" target="_blank" rel="noopener">Discord</a>.
+          You can still come to a session; we will sort the paperwork there.
+        </div>
+      </div>
+
+      <!-- Signed out. The document above stays readable either way; only this
+           panel is gated. -->
+      <div class="wv-state" id="stAuth">
+        <p class="wv-auth-copy">Sign in with Google so we can attach the signed
+          waiver to your account. It is the same sign-in as the dashboard.</p>
+        <div class="wv-done-actions">
+          <button class="g-btn" id="signInBtn" type="button">SIGN IN WITH GOOGLE</button>
+        </div>
+      </div>
+
+      <!-- Already signed the current version. -->
+      <div class="wv-state" id="stDone">
+        <div class="wv-done">
+          <p class="wv-done-mark">YOU'RE ALL SET.</p>
+          <p id="doneCopy">You signed the current waiver. Your copy is on your dashboard.</p>
+          <div class="wv-done-actions">
+            <a class="g-btn" href="/dashboard#waiver">VIEW YOUR WAIVER</a>
+            <a class="g-btn-ghost" href="/schedule">SEE THE SCHEDULE</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- The form. -->
+      <div class="wv-state" id="stForm">
+        <div class="wv-who" id="whoStrip">
+          <img id="whoAvatar" alt="" width="30" height="30">
+          <span class="wv-who-email" id="whoEmail"></span>
+        </div>
+
+        <form id="wvForm" novalidate>
+          <div class="wv-field">
+            <label class="wv-label" for="legalName">FULL LEGAL NAME OF THE ATHLETE</label>
+            <input class="wv-input" id="legalName" name="legalName" type="text"
+                   autocomplete="name" maxlength="120" required
+                   placeholder="As it appears on your ID">
+            <p class="wv-hint">This is the person the waiver covers.</p>
+          </div>
+
+          <div class="wv-field">
+            <label class="wv-label" for="dobMonth">DATE OF BIRTH</label>
+            <div class="wv-dob">
+              <select class="wv-input" id="dobMonth" required aria-label="Birth month"></select>
+              <select class="wv-input" id="dobDay" required aria-label="Birth day"></select>
+              <select class="wv-input" id="dobYear" required aria-label="Birth year"></select>
+            </div>
+            <p class="wv-hint" id="dobHint">Under 18s need a parent or legal guardian to sign.</p>
+          </div>
+
+          <!-- Revealed only when the date of birth puts the athlete under 18.
+               The database enforces the same rule from the date of birth, so a
+               tampered client cannot skip these. -->
+          <div id="guardianBlock" hidden>
+            <div class="wv-field">
+              <label class="wv-label" for="guardianName">PARENT OR LEGAL GUARDIAN, FULL LEGAL NAME</label>
+              <input class="wv-input" id="guardianName" name="guardianName" type="text"
+                     autocomplete="off" maxlength="120"
+                     placeholder="The adult signing on their behalf">
+            </div>
+            <div class="wv-field">
+              <label class="wv-label" for="guardianRelationship">RELATIONSHIP TO THE ATHLETE</label>
+              <select class="wv-input" id="guardianRelationship">
+                <option value="">Select&hellip;</option>
+                <option value="Parent">Parent</option>
+                <option value="Legal guardian">Legal guardian</option>
+                <option value="Grandparent with legal custody">Grandparent with legal custody</option>
+                <option value="Other legal guardian">Other legal guardian</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="wv-field">
+            <label class="wv-label" id="sigLabel" for="sigPad">YOUR SIGNATURE</label>
+            <div class="wv-pad-wrap" id="padWrap">
+              <canvas id="sigPad" aria-label="Signature pad. Draw your signature with a finger, stylus or mouse."></canvas>
+              <div class="wv-pad-rule" aria-hidden="true"></div>
+              <div class="wv-pad-hint" aria-hidden="true">DRAW YOUR SIGNATURE HERE</div>
+            </div>
+            <div class="wv-pad-tools">
+              <button type="button" id="padUndo" disabled>UNDO</button>
+              <button type="button" id="padClear" disabled>CLEAR</button>
+              <span class="wv-hint" id="padHint" style="margin-top:0"></span>
+            </div>
+          </div>
+
+          <div class="wv-field">
+            <!-- Three SEPARATE agreements. The code of conduct and the
+                 liability waiver are deliberately not combined into one
+                 checkbox: RRCA guidance requires the code of conduct to be its
+                 own agreement question. -->
+            <label class="wv-check">
+              <input type="checkbox" id="ackConduct">
+              <span>I have read the <strong>club rules</strong> above, and I agree
+                to follow them.</span>
+            </label>
+            <label class="wv-check">
+              <input type="checkbox" id="ackWaiver">
+              <span>I have read the <strong>waiver and release of liability</strong>
+                above in full, and I agree to it.</span>
+            </label>
+            <label class="wv-check">
+              <input type="checkbox" id="ackCapacity">
+              <span id="ackCapacityText">I am 18 years of age or older.</span>
+            </label>
+          </div>
+
+          <div class="wv-submit-row">
+            <button class="g-btn" id="submitBtn" type="submit" disabled>SIGN THE WAIVER</button>
+            <p class="wv-msg" id="msg" role="status" aria-live="polite"></p>
+          </div>
+        </form>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    <span>TRACKRAT SPRINT CLUB</span>
+    <div class="socials">
+      <a href="https://instagram.com/trackratsprintclub/" target="_blank" rel="noopener" aria-label="TRACKRAT on Instagram">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0C8.74 0 8.333.015 7.053.072 5.775.132 4.905.333 4.14.63c-.789.306-1.459.717-2.126 1.384S.935 3.35.63 4.14C.333 4.905.131 5.775.072 7.053.012 8.333 0 8.74 0 12s.015 3.667.072 4.947c.06 1.277.261 2.148.558 2.913.306.788.717 1.459 1.384 2.126.667.666 1.336 1.079 2.126 1.384.766.296 1.636.499 2.913.558C8.333 23.988 8.74 24 12 24s3.667-.015 4.947-.072c1.277-.06 2.148-.262 2.913-.558.788-.306 1.459-.718 2.126-1.384.666-.667 1.079-1.335 1.384-2.126.296-.765.499-1.636.558-2.913.06-1.28.072-1.687.072-4.947s-.015-3.667-.072-4.947c-.06-1.277-.262-2.149-.558-2.913-.306-.789-.718-1.459-1.384-2.126C21.319 1.347 20.651.935 19.86.63c-.765-.297-1.636-.499-2.913-.558C15.667.012 15.26 0 12 0zm0 2.16c3.203 0 3.585.016 4.85.071 1.17.055 1.805.249 2.227.415.562.217.96.477 1.382.896.419.42.679.819.896 1.381.164.422.36 1.057.413 2.227.057 1.266.07 1.646.07 4.85s-.015 3.585-.074 4.85c-.061 1.17-.256 1.805-.421 2.227-.224.562-.479.96-.899 1.382-.419.419-.824.679-1.38.896-.42.164-1.065.36-2.235.413-1.274.057-1.649.07-4.859.07-3.211 0-3.586-.015-4.859-.074-1.171-.061-1.816-.256-2.236-.421-.569-.224-.96-.479-1.379-.899-.421-.419-.69-.824-.9-1.38-.165-.42-.359-1.065-.42-2.235-.045-1.26-.061-1.649-.061-4.844 0-3.196.016-3.586.061-4.861.061-1.17.255-1.814.42-2.234.21-.57.479-.96.9-1.381.419-.419.81-.689 1.379-.898.42-.166 1.051-.361 2.221-.421 1.275-.045 1.65-.06 4.859-.06l.045.03zm0 3.678c-3.405 0-6.162 2.76-6.162 6.162 0 3.405 2.76 6.162 6.162 6.162 3.405 0 6.162-2.76 6.162-6.162 0-3.405-2.76-6.162-6.162-6.162zM12 16c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4zm7.846-10.405c0 .795-.646 1.44-1.44 1.44-.795 0-1.44-.646-1.44-1.44 0-.794.646-1.439 1.44-1.439.793-.001 1.44.645 1.44 1.439z"/></svg>
+      </a>
+      <a href="https://discord.gg/vrfmSKJX29" target="_blank" rel="noopener" aria-label="TRACKRAT on Discord">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189z"/></svg>
+      </a>
+      <a href="https://strava.app.link/gsKU2Bt654b" target="_blank" rel="noopener" aria-label="TRACKRAT on Strava">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.387 17.944l-2.089-4.116h-3.065L15.387 24l5.15-10.172h-3.066m-7.008-5.599l2.836 5.598h4.172L10.463 0l-7 13.828h4.169"/></svg>
+      </a>
+      <a href="https://www.tiktok.com/@trackratsprintclub" target="_blank" rel="noopener" aria-label="TRACKRAT on TikTok">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg>
+      </a>
+      <a href="https://maps.app.goo.gl/yoBk8ZwNajAHBNzt6" target="_blank" rel="noopener" aria-label="TRACKRAT on Google">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .307 5.387.307 12s5.56 12 12.173 12c3.573 0 6.267-1.173 8.373-3.36 2.16-2.16 2.84-5.213 2.84-7.667 0-.76-.053-1.467-.173-2.053H12.48z"/></svg>
+      </a>
+      <a href="https://github.com/zainbacchus/TRACKRAT" target="_blank" rel="noopener" aria-label="TRACKRAT on GitHub">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+      </a>
+    </div>
+    <span>SCHEDULE</span>
+  </footer>
+
+  <script>
+    const menuToggle = document.getElementById('menuToggle');
+    const mobileMenu = document.getElementById('mobileMenu');
+    const menuClose = document.getElementById('menuClose');
+
+    function closeMenu() {
+      menuToggle.classList.remove('is-open');
+      mobileMenu.classList.remove('is-open');
+      document.body.classList.remove('menu-open');
+      menuToggle.setAttribute('aria-expanded', 'false');
+      mobileMenu.setAttribute('aria-hidden', 'true');
+      menuToggle.focus();
+    }
+    function openMenu() {
+      menuToggle.classList.add('is-open');
+      mobileMenu.classList.add('is-open');
+      document.body.classList.add('menu-open');
+      menuToggle.setAttribute('aria-expanded', 'true');
+      mobileMenu.setAttribute('aria-hidden', 'false');
+      menuClose.focus();
+    }
+    menuToggle.addEventListener('click', openMenu);
+    menuClose.addEventListener('click', closeMenu);
+    mobileMenu.querySelectorAll('a').forEach(link => link.addEventListener('click', closeMenu));
+
+    // Desktop dropdowns (Club + Events) — hover/focus is CSS; this adds click + a11y.
+    const navDropdowns = Array.from(document.querySelectorAll('.nav-dropdown'));
+    function closeNavDropdowns() {
+      navDropdowns.forEach(dd => {
+        dd.classList.remove('is-open');
+        dd.querySelector('.nav-dropdown-trigger').setAttribute('aria-expanded', 'false');
+      });
+    }
+    navDropdowns.forEach(dd => {
+      const trigger = dd.querySelector('.nav-dropdown-trigger');
+      trigger.addEventListener('click', e => {
+        e.stopPropagation();
+        const open = dd.classList.toggle('is-open');
+        trigger.setAttribute('aria-expanded', open ? 'true' : 'false');
+        navDropdowns.forEach(other => {
+          if (other !== dd) {
+            other.classList.remove('is-open');
+            other.querySelector('.nav-dropdown-trigger').setAttribute('aria-expanded', 'false');
+          }
+        });
+      });
+    });
+    document.addEventListener('click', e => {
+      if (!navDropdowns.some(dd => dd.contains(e.target))) closeNavDropdowns();
+    });
+
+    // Mobile Events accordion.
+    document.querySelectorAll('.mobile-accordion-trigger').forEach(accTrigger => {
+      accTrigger.addEventListener('click', () => {
+        const panel = document.getElementById(accTrigger.getAttribute('aria-controls'));
+        const open = accTrigger.getAttribute('aria-expanded') === 'true';
+        accTrigger.setAttribute('aria-expanded', open ? 'false' : 'true');
+        if (panel) panel.classList.toggle('is-open', !open);
+      });
+    });
+
+    document.addEventListener('keydown', e => {
+      if (e.key !== 'Escape') return;
+      if (mobileMenu.classList.contains('is-open')) closeMenu();
+      closeNavDropdowns();
+    });
+  </script>
+
+  <!-- Waiver signing. Reads the source PDF, captures a typed name and a drawn
+       signature, generates the signed PDF in the browser, uploads it to a
+       private Supabase Storage bucket, and records an APPEND-ONLY row.
+
+       The row cannot be updated or deleted from here by design: there is no
+       update or delete policy and no update or delete grant on public.waivers.
+       See README.md for the schema. -->
+  <script type="module">
+    import { supabase } from '/js/supabase-config.js';
+    import { CURRENT_WAIVER_VERSION, currentWaiver,
+             CURRENT_CONDUCT_VERSION, currentConduct } from '/js/waiver-config.js';
+
+    /* Where "voice a concern" goes. One constant, so changing the destination
+       needs no copy change. */
+    const CONCERN_URL = 'https://forms.gle/bt9WedWNzbXvjMnu5';
+
+    const VER = currentWaiver();
+    const CONDUCT = currentConduct();
+    const $ = (id) => document.getElementById(id);
+
+    const STATES = ['stBoot', 'stBlocked', 'stAuth', 'stDone', 'stForm'];
+    function showState(id) {
+      for (const s of STATES) $(s).classList.toggle('is-on', s === id);
+    }
+    function escapeHtml(s) {
+      return String(s).replace(/[&<>"']/g, (c) => (
+        { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
+      ));
+    }
+    function setMsg(text, kind) {
+      const el = $('msg');
+      el.textContent = text || '';
+      el.className = 'wv-msg' + (kind ? ' is-' + kind : '');
+    }
+    function uuid() {
+      if (crypto.randomUUID) return crypto.randomUUID();   // Safari 15.4+
+      const b = crypto.getRandomValues(new Uint8Array(16));
+      b[6] = (b[6] & 0x0f) | 0x40; b[8] = (b[8] & 0x3f) | 0x80;
+      const h = Array.from(b, (x) => x.toString(16).padStart(2, '0')).join('');
+      return h.slice(0, 8) + '-' + h.slice(8, 12) + '-' + h.slice(12, 16) + '-' +
+             h.slice(16, 20) + '-' + h.slice(20);
+    }
+    async function sha256Hex(bytes) {
+      const d = await crypto.subtle.digest('SHA-256', bytes);
+      return Array.from(new Uint8Array(d), (b) => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    $('concernLink').href = CONCERN_URL;
+
+    /* ---------------- SOURCE DOCUMENT ---------------- */
+
+    let sourceBytes = null;
+    let sourceSha = null;
+    let docOk = false;
+    let conductSha = null;
+
+    /* The code of conduct is a separate agreement, so it gets the same
+       treatment as the waiver: a versioned file, hashed at read time, with the
+       hash recorded on the signed row. That pins exactly which conduct text
+       was agreed to, even after it is later revised. */
+    async function loadConduct() {
+      $('conductVersion').textContent = CURRENT_CONDUCT_VERSION.toUpperCase();
+      $('conductTitle').textContent = CONDUCT.label;
+      try {
+        const res = await fetch(CONDUCT.file, { cache: 'force-cache' });
+        if (!res.ok) throw new Error('status ' + res.status);
+        const buf = new Uint8Array(await res.arrayBuffer());
+        conductSha = await sha256Hex(buf);
+        // Same-origin generated file committed alongside the waiver, not user input.
+        $('conductText').innerHTML = new TextDecoder().decode(buf);
+        return true;
+      } catch (err) {
+        console.error('[waiver] code of conduct unavailable:', err);
+        return false;
+      }
+    }
+
+    async function loadDocument() {
+      $('docTitle').textContent = VER.label;
+      $('docVersion').textContent = CURRENT_WAIVER_VERSION.toUpperCase();
+      $('docOpen').href = VER.file;
+      $('docDownload').href = VER.file;
+
+      try {
+        const res = await fetch(VER.file, { cache: 'force-cache' });
+        const buf = new Uint8Array(await res.arrayBuffer());
+        // res.ok alone is not enough: a misconfigured rewrite can return HTML
+        // with a 200. Check the status, the type, and the magic bytes.
+        const type = (res.headers.get('content-type') || '').toLowerCase();
+        const isPdf = buf[0] === 0x25 && buf[1] === 0x50 && buf[2] === 0x44 &&
+                      buf[3] === 0x46 && buf[4] === 0x2D;               // "%PDF-"
+        if (!res.ok || !type.startsWith('application/pdf') || !isPdf) {
+          throw new Error('status ' + res.status + ', type ' + type + ', pdf ' + isPdf);
+        }
+        sourceBytes = buf;
+        sourceSha = await sha256Hex(buf);
+        docOk = true;
+
+        const { PDFDocument } = await pdfLib();
+        const probe = await PDFDocument.load(buf.slice(0), { ignoreEncryption: true });
+        const size = probe.getPages()[0].getSize();
+        const inches = (n) => (Math.round((n / 72) * 10) / 10);
+        $('docMeta').textContent =
+          probe.getPageCount() + (probe.getPageCount() === 1 ? ' PAGE' : ' PAGES') +
+          ' · ' + inches(size.width) + '×' + inches(size.height) + ' IN' +
+          ' · ' + Math.round(buf.length / 1024) + ' KB';
+      } catch (err) {
+        console.error('[waiver] source document unavailable:', err);
+        $('docMeta').textContent = 'UNAVAILABLE';
+        $('docOpen').setAttribute('aria-disabled', 'true');
+        return false;
+      }
+
+      if (VER.transcript) {
+        try {
+          const r = await fetch(VER.transcript, { cache: 'force-cache' });
+          if (r.ok) {
+            // Same-origin, generated from the same source text as the PDF and
+            // committed alongside it. Not user input.
+            $('docText').innerHTML = await r.text();
+            $('docRead').hidden = false;
+          }
+        } catch (err) {
+          console.warn('[waiver] transcript unavailable:', err);
+        }
+      }
+      return true;
+    }
+
+    let _pdfLib = null;
+    function pdfLib() {
+      // Dynamic so ~205 KB does not block the sign-in gate or first paint.
+      if (!_pdfLib) _pdfLib = import('/js/vendor/pdf-lib-1.17.1.bundle.mjs');
+      return _pdfLib;
+    }
+
+    /* ---------------- DATE OF BIRTH ---------------- */
+
+    const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June',
+                    'July', 'August', 'September', 'October', 'November', 'December'];
+
+    function fillDob() {
+      const m = $('dobMonth'), d = $('dobDay'), y = $('dobYear');
+      m.innerHTML = '<option value="">Month</option>' +
+        MONTHS.map((n, i) => '<option value="' + (i + 1) + '">' + n + '</option>').join('');
+      d.innerHTML = '<option value="">Day</option>';
+      const thisYear = new Date().getFullYear();
+      y.innerHTML = '<option value="">Year</option>';
+      for (let yr = thisYear; yr >= thisYear - 100; yr--) {
+        y.innerHTML += '<option value="' + yr + '">' + yr + '</option>';
+      }
+      syncDays();
+    }
+    function syncDays() {
+      const d = $('dobDay');
+      const mv = Number($('dobMonth').value), yv = Number($('dobYear').value);
+      // Day count depends on the month, and on the year for February.
+      const days = mv ? new Date(yv || 2024, mv, 0).getDate() : 31;
+      const keep = Number(d.value);
+      d.innerHTML = '<option value="">Day</option>';
+      for (let i = 1; i <= days; i++) d.innerHTML += '<option value="' + i + '">' + i + '</option>';
+      if (keep && keep <= days) d.value = String(keep);
+    }
+    function dobParts() {
+      const m = Number($('dobMonth').value), d = Number($('dobDay').value), y = Number($('dobYear').value);
+      return (m && d && y) ? { y: y, m: m, d: d } : null;
+    }
+    function dobIso() {
+      const p = dobParts();
+      if (!p) return null;
+      // Built from the parts, never parsed from or through a Date string: that
+      // is where "2008-05-14 shows as May 13" comes from.
+      return p.y + '-' + String(p.m).padStart(2, '0') + '-' + String(p.d).padStart(2, '0');
+    }
+    function isMinor() {
+      const p = dobParts();
+      if (!p) return false;
+      const now = new Date();
+      let age = now.getFullYear() - p.y;
+      const m = now.getMonth() + 1, d = now.getDate();
+      if (m < p.m || (m === p.m && d < p.d)) age--;   // calendar-correct, not /365.25
+      return age < 18;
+    }
+    function dobSane() {
+      const p = dobParts();
+      if (!p) return false;
+      const now = new Date();
+      const future = p.y > now.getFullYear() ||
+        (p.y === now.getFullYear() && (p.m > now.getMonth() + 1 ||
+          (p.m === now.getMonth() + 1 && p.d > now.getDate())));
+      return !future && p.y > 1900;
+    }
+
+    function syncGuardian() {
+      const minor = dobParts() && isMinor();
+      $('guardianBlock').hidden = !minor;
+      $('sigLabel').textContent = minor ? 'PARENT OR GUARDIAN SIGNATURE' : 'YOUR SIGNATURE';
+      $('ackCapacityText').textContent = minor
+        ? 'I am the parent or legal guardian of the athlete named above, and I have the authority to sign this on their behalf.'
+        : 'I am 18 years of age or older.';
+      $('dobHint').textContent = minor
+        ? 'Under 18: a parent or legal guardian signs below, not the athlete.'
+        : 'Under 18s need a parent or legal guardian to sign.';
+    }
+
+    /* ---------------- SIGNATURE PAD ---------------- */
+
+    /* The canvas is a view; this normalised stroke array is the truth. Every
+       coordinate is 0..1, so the drawing survives a resize or a rotation, undo
+       is one line, and the exported PNG has a fixed resolution instead of one
+       that depends on which phone drew it. */
+    const strokes = [];
+    const canvas = $('sigPad');
+    const wrap = $('padWrap');
+    const ctx = canvas.getContext('2d');
+    let cssW = 0, cssH = 0, activeId = null;
+
+    function resizePad() {
+      const r = wrap.getBoundingClientRect();
+      // A display:none ancestor reports 0 and would give us a 0x0 canvas that
+      // silently swallows every stroke. Bail and re-run when it is visible.
+      if (r.width < 1) return;
+      const dpr = Math.min(window.devicePixelRatio || 1, 3);
+      cssW = r.width; cssH = r.height;
+      canvas.style.width = cssW + 'px';
+      canvas.style.height = cssH + 'px';
+      canvas.width = Math.round(cssW * dpr);
+      canvas.height = Math.round(cssH * dpr);
+      // setTransform, not scale: scale COMPOUNDS if this runs twice.
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      redraw();
+    }
+
+    function strokePath(c, pts, w, h, lw, color) {
+      if (!pts.length) return;
+      c.beginPath();
+      c.lineWidth = lw;
+      c.lineCap = 'round';
+      c.lineJoin = 'round';
+      c.strokeStyle = color;
+      const X = (p) => p.x * w, Y = (p) => p.y * h;
+      if (pts.length === 1) {
+        c.arc(X(pts[0]), Y(pts[0]), lw / 2, 0, Math.PI * 2);
+        c.fillStyle = color; c.fill();
+        return;
+      }
+      c.moveTo(X(pts[0]), Y(pts[0]));
+      // Quadratic midpoint smoothing: night and day versus straight lineTo.
+      for (let i = 1; i < pts.length - 1; i++) {
+        const a = pts[i], b = pts[i + 1];
+        c.quadraticCurveTo(X(a), Y(a), (X(a) + X(b)) / 2, (Y(a) + Y(b)) / 2);
+      }
+      c.lineTo(X(pts[pts.length - 1]), Y(pts[pts.length - 1]));
+      c.stroke();
+    }
+
+    /* ResizeObserver is the normal path, but it is tied to rendering: a
+       background or non-rendered tab may never deliver the callback, which
+       would leave the canvas at its default 300x150 and scale every stroke
+       wrongly. Anything that depends on the measurement goes through here
+       first. resizePad() calls redraw(), but by then cssW is set, so this
+       returns immediately and cannot recurse. */
+    function ensureSized() {
+      if (cssW < 1) resizePad();
+      return cssW >= 1;
+    }
+
+    function redraw() {
+      if (!ensureSized()) return;
+      ctx.clearRect(0, 0, cssW, cssH);
+      const lw = Math.max(1.8, cssW * 0.005);
+      for (const s of strokes) strokePath(ctx, s, cssW, cssH, lw, '#FFFFFF');
+      wrap.classList.toggle('has-ink', strokes.length > 0);
+    }
+
+    function padPoint(e) {
+      const r = canvas.getBoundingClientRect();
+      return {
+        x: Math.min(1, Math.max(0, (e.clientX - r.left) / r.width)),
+        y: Math.min(1, Math.max(0, (e.clientY - r.top) / r.height)),
+      };
+    }
+
+    canvas.addEventListener('pointerdown', (e) => {
+      if (!e.isPrimary || activeId !== null) return;    // ignore palm and second finger
+      e.preventDefault();
+      activeId = e.pointerId;
+      try { canvas.setPointerCapture(e.pointerId); } catch (_) {}
+      strokes.push([padPoint(e)]);
+      redraw(); onPadChange();
+    });
+    canvas.addEventListener('pointermove', (e) => {
+      if (e.pointerId !== activeId) return;
+      const cur = strokes[strokes.length - 1];
+      if (!cur) return;
+      // Coalesced events give Chrome's sub-frame samples, which are visibly
+      // smoother on a fast stroke. Fall back to the event itself when the
+      // list comes back empty, which is permitted and would otherwise drop
+      // the point silently.
+      let batch = [e];
+      if (e.getCoalescedEvents) {
+        const co = e.getCoalescedEvents();
+        if (co && co.length) batch = co;
+      }
+      for (const ev of batch) cur.push(padPoint(ev));
+      redraw();
+    });
+    function endStroke(e) {
+      if (e.pointerId !== activeId) return;
+      activeId = null;
+      onPadChange();
+    }
+    canvas.addEventListener('pointerup', endStroke);
+    // Both are required: iOS fires pointercancel when the system takes the
+    // gesture, and without it the pad stays "drawing" for ever.
+    canvas.addEventListener('pointercancel', endStroke);
+    canvas.addEventListener('lostpointercapture', endStroke);
+
+    $('padClear').addEventListener('click', () => { strokes.length = 0; redraw(); onPadChange(); });
+    $('padUndo').addEventListener('click', () => { strokes.pop(); redraw(); onPadChange(); });
+
+    function padMetrics() {
+      let n = 0, ink = 0, x0 = 1, x1 = 0, y0 = 1, y1 = 0;
+      for (const s of strokes) {
+        for (let i = 0; i < s.length; i++) {
+          const p = s[i];
+          n++;
+          if (p.x < x0) x0 = p.x; if (p.x > x1) x1 = p.x;
+          if (p.y < y0) y0 = p.y; if (p.y > y1) y1 = p.y;
+          if (i) ink += Math.hypot(p.x - s[i - 1].x, p.y - s[i - 1].y);
+        }
+      }
+      return { n, ink, x0, x1, y0, y1, w: Math.max(0, x1 - x0), h: Math.max(0, y1 - y0) };
+    }
+    // Cheap gates in normalised space: no getImageData pixel scan needed.
+    function padSigned() {
+      const m = padMetrics();
+      return m.n >= 8 && m.ink >= 0.35 && m.w >= 0.12 && m.h >= 0.04;
+    }
+    function onPadChange() {
+      $('padClear').disabled = strokes.length === 0;
+      $('padUndo').disabled = strokes.length === 0;
+      $('padHint').textContent =
+        strokes.length && !padSigned() ? 'That is too small to be a signature.' : '';
+      syncSubmit();
+    }
+
+    /* Render the export from the STROKE MODEL, not from the visible canvas: a
+       375px pad at DPR 2 gives 750px and a desktop pad gives 900, and the
+       archived signature should not vary by device. Cropped to the ink so the
+       stamp width maps to visible signature rather than to whitespace.
+       PNG is forced, not chosen: pdf-lib only embeds PNG and JPEG, and JPEG
+       has no alpha, so it would paint a white box over the printed rule. */
+    function exportSignature(targetW) {
+      ensureSized();
+      const m = padMetrics();
+      const pad = 0.04;
+      const bx = Math.max(0, m.x0 - pad), by = Math.max(0, m.y0 - pad);
+      const bw = Math.min(1, m.x1 + pad) - bx, bh = Math.min(1, m.y1 + pad) - by;
+      const aspect = (bh * cssH) / (bw * cssW);
+      const w = targetW, h = Math.max(1, Math.round(targetW * aspect));
+      const off = document.createElement('canvas');
+      off.width = w; off.height = h;
+      const c = off.getContext('2d');
+      const lw = Math.max(2, w * 0.006);
+      for (const s of strokes) {
+        const shifted = s.map((p) => ({ x: (p.x - bx) / bw, y: (p.y - by) / bh }));
+        strokePath(c, shifted, w, h, lw, '#000000');
+      }
+      return off;
+    }
+    const canvasToBlob = (c) => new Promise((res) => c.toBlob(res, 'image/png'));
+
+    /* ---------------- VALIDATION ---------------- */
+
+    function formValues() {
+      const minor = isMinor();
+      return {
+        legalName: $('legalName').value.trim(),
+        dob: dobIso(),
+        minor: minor,
+        guardianName: minor ? $('guardianName').value.trim() : '',
+        guardianRelationship: minor ? $('guardianRelationship').value : '',
+        ackConduct: $('ackConduct').checked,
+        ackWaiver: $('ackWaiver').checked,
+        ackCapacity: $('ackCapacity').checked,
+      };
+    }
+    function formValid() {
+      const v = formValues();
+      if (v.legalName.length < 2 || v.legalName.length > 120) return false;
+      if (!v.dob || !dobSane()) return false;
+      if (v.minor && (v.guardianName.length < 2 || !v.guardianRelationship)) return false;
+      if (!v.ackConduct || !v.ackWaiver || !v.ackCapacity) return false;
+      return padSigned();
+    }
+    let submitting = false;
+    function syncSubmit() {
+      $('submitBtn').disabled = submitting || !formValid();
+    }
+
+    /* ---------------- SIGNED PDF ---------------- */
+
+    const FOLD = {
+      '‘': "'", '’': "'", '‚': "'", '‛': "'",
+      '“': '"', '”': '"', '„': '"', '″': '"',
+      '–': '-', '—': '-', '―': '-', '−': '-',
+      '…': '...', ' ': ' ', ' ': ' ', ' ': ' ',
+      '•': '-', '·': '-',
+    };
+    const WINANSI_EXTRA = '€‚ƒ„…†‡ˆ‰' +
+      'Š‹ŒŽ‘’“”•–—' +
+      '˜™š›œžŸ';
+    const NO_DECOMP = {
+      'Ł': 'L', 'ł': 'l', 'Đ': 'D', 'đ': 'd',
+      'Ħ': 'H', 'ħ': 'h', 'ı': 'i', 'Ŧ': 'T',
+      'ŧ': 't', 'Ŀ': 'L', 'ŀ': 'l', 'ẞ': 'SS',
+      'Ø': 'O', 'ø': 'o', 'Œ': 'OE', 'œ': 'oe',
+      'Æ': 'AE', 'æ': 'ae', 'Þ': 'Th', 'þ': 'th',
+      'Ĳ': 'IJ', 'ĳ': 'ij', 'ŉ': "'n",
+    };
+    /* The standard 14 PDF fonts are WinAnsi (CP1252) encoded and drawText
+       THROWS outside that set, which would crash after the member has done all
+       the work. Three passes, most faithful first: keep what CP1252 holds,
+       fold typographic punctuation, then decompose and drop combining marks.
+       The legal record is the database row, which is lossless UTF-8, so a
+       dropped glyph here is cosmetic. */
+    function foldChar(ch) {
+      const code = ch.codePointAt(0);
+      if (code <= 0xFF || WINANSI_EXTRA.indexOf(ch) !== -1) return ch;
+      if (FOLD[ch] !== undefined) return FOLD[ch];
+      const bare = ch.normalize('NFKD').replace(/[̀-ͯ᪰-᫿⃐-⃰]/g, '');
+      if (bare && bare !== ch) {
+        const folded = Array.from(bare).map(foldChar).join('');
+        if (folded) return folded;
+      }
+      if (NO_DECOMP[ch] !== undefined) return NO_DECOMP[ch];
+      return '';
+    }
+    function winAnsi(s) {
+      if (s === null || s === undefined) return '';
+      return Array.from(String(s).normalize('NFC')).map(foldChar).join('').trim();
+    }
+
+    function resolvePages(pdf, spec) {
+      const pages = pdf.getPages();
+      if (spec === 'all') return pages;
+      if (spec === 'last' || spec === undefined || spec === null) {
+        return pages.length ? [pages[pages.length - 1]] : [];
+      }
+      const p = pages[Number(spec) - 1];
+      return p ? [p] : [];
+    }
+
+    async function buildSignedPdf(vals, sigBytes, debug) {
+      const { PDFDocument, StandardFonts, rgb } = await pdfLib();
+      // slice(0) every time: pdf-lib takes ownership of the buffer, so a retry
+      // must not depend on re-fetching the source.
+      const pdf = await PDFDocument.load(sourceBytes.slice(0), { ignoreEncryption: true });
+      const font = await pdf.embedFont(StandardFonts.Helvetica);
+      const bold = await pdf.embedFont(StandardFonts.HelveticaBold);
+      const sig = sigBytes ? await pdf.embedPng(sigBytes) : null;
+
+      for (const s of (VER.stamps || [])) {
+        // 'minor' draws only for an under-18, 'adult' only for an over-18.
+        // Without this the athlete's own signature line would also be stamped
+        // on a minor's copy, where only the guardian is entitled to sign.
+        if (s.if === 'minor' && !vals.minor) continue;
+        if (s.if === 'adult' && vals.minor) continue;
+        for (const page of resolvePages(pdf, s.page)) {
+          const size = page.getSize();
+          const W = size.width, H = size.height;
+          const x = s.x * W;
+          const anchor = H - s.y * H;          // s.y is the anchor line, from the top
+
+          if (debug) {
+            page.drawRectangle({
+              x: x, y: anchor, width: (s.w || 0.22) * W, height: (s.size || 10) * 1.4,
+              color: rgb(1, 0.3, 0.12), opacity: 0.35,
+            });
+            page.drawText(s.field + ' ' + s.x + ',' + s.y,
+              { x: x, y: anchor - 8, size: 6, font: font, color: rgb(1, 0.3, 0.12) });
+            continue;
+          }
+          if (s.field === 'signature' || s.field === 'guardianSignature') {
+            if (!sig) continue;
+            let w = (s.w || 0.28) * W;
+            let h = w * (sig.height / sig.width);
+            // A tall signature would climb into whatever sits above the rule:
+            // the printed-name row on this document, body text on another.
+            // Cap the height and let the width follow, so a boxy signature
+            // simply renders smaller instead of colliding.
+            const maxH = (s.maxH || 0.042) * H;
+            if (h > maxH) { w = maxH * (sig.width / sig.height); h = maxH; }
+            page.drawImage(sig, { x: x, y: anchor, width: w, height: h });
+            continue;
+          }
+          const text = winAnsi(vals[s.field]);
+          if (!text) continue;
+          const sz = s.size || 10;
+          if (s.clear) {
+            page.drawRectangle({
+              x: x - 2, y: anchor - sz * 0.25,
+              width: font.widthOfTextAtSize(text, sz) + 4, height: sz * 1.25,
+              color: rgb(1, 1, 1),
+            });
+          }
+          page.drawText(text, { x: x, y: anchor, size: sz, font: font, color: rgb(0, 0, 0) });
+        }
+      }
+
+      if (VER.appendSignaturePage) {
+        const src = pdf.getPages();
+        const last = src.length ? src[src.length - 1].getSize() : { width: 612, height: 792 };
+        const W = last.width, H = last.height, M = 64;
+        const p = pdf.addPage([W, H]);
+        let y = H - M;
+        const line = (t, f, s, gap, col) => {
+          y -= gap;
+          p.drawText(winAnsi(t), { x: M, y: y, size: s, font: f, color: col || rgb(0, 0, 0) });
+        };
+        const label = (t) => line(t, bold, 8, 28, rgb(0.35, 0.35, 0.35));
+
+        line(VER.label, bold, 14, 20);
+        line('SIGNATURE AND ACKNOWLEDGEMENT', bold, 9, 18);
+        y -= 10;
+        p.drawLine({ start: { x: M, y: y }, end: { x: W - M, y: y }, thickness: 1, color: rgb(0, 0, 0) });
+
+        label('ATHLETE');
+        line(vals.legalName, font, 13, 17);
+        line('Date of birth ' + vals.dob, font, 8.5, 13, rgb(0.35, 0.35, 0.35));
+
+        if (vals.minor) {
+          label('SIGNED BY PARENT OR LEGAL GUARDIAN');
+          line(vals.guardianName, font, 13, 17);
+          line(vals.guardianRelationship, font, 8.5, 13, rgb(0.35, 0.35, 0.35));
+        }
+
+        label('DATE SIGNED');
+        line(vals.signedOn, font, 11, 15);
+
+        label('SIGNATURE');
+        if (sig) {
+          const w = Math.min(W - M * 2, 260);
+          const h = w * (sig.height / sig.width);
+          y -= h + 4;
+          p.drawImage(sig, { x: M, y: y, width: w, height: h });
+          p.drawLine({ start: { x: M, y: y - 4 }, end: { x: M + w, y: y - 4 },
+                       thickness: 0.75, color: rgb(0.6, 0.6, 0.6) });
+          y -= 10;
+        }
+
+        // Three separate agreements, recorded separately. The code of conduct
+        // is deliberately not merged with the waiver acknowledgement.
+        label('AGREED');
+        line('- Read the club code of conduct and agreed to follow it.', font, 9, 13);
+        line('- Read the waiver and release of liability in full, and agreed to it.', font, 9, 13);
+        line(vals.minor
+          ? '- Confirmed being the parent or legal guardian, with authority to sign.'
+          : '- Confirmed being 18 years of age or older.', font, 9, 13);
+
+        label('RECORD');
+        const rows = [
+          ['Record id', vals.recordId],
+          ['Waiver version', vals.version],
+          ['Waiver SHA-256', vals.sha256],
+          ['Conduct version', vals.conductVersion],
+          ['Conduct SHA-256', vals.conductSha],
+          ['Signed at (UTC)', vals.signedAtIso],
+        ];
+        for (const kv of rows) {
+          y -= 12;
+          p.drawText(winAnsi(kv[0]), { x: M, y: y, size: 8, font: bold, color: rgb(0.35, 0.35, 0.35) });
+          p.drawText(winAnsi(kv[1]), { x: M + 116, y: y, size: 8, font: font, color: rgb(0.2, 0.2, 0.2) });
+        }
+        y -= 24;
+        for (const t of ['Signed electronically at trackratsprint.club. This page was generated by',
+                         'the club site at the time of signing and forms part of the signed record.']) {
+          p.drawText(winAnsi(t), { x: M, y: y, size: 7.5, font: font, color: rgb(0.45, 0.45, 0.45) });
+          y -= 10;
+        }
+      }
+
+      pdf.setTitle(VER.label + ' - ' + winAnsi(vals.legalName));
+      pdf.setSubject('Signed waiver ' + vals.version);
+      pdf.setProducer('TRACKRAT (pdf-lib 1.17.1)');
+      pdf.setCreator('trackratsprint.club');
+      // useObjectStreams:false is much friendlier to macOS Preview and older
+      // Acrobat. updateFieldAppearances:false avoids pdf-lib throwing if the
+      // source happens to carry AcroForm fields; we fill none.
+      return pdf.save({ useObjectStreams: false, updateFieldAppearances: false });
+    }
+
+    /* ---------------- SUBMIT ---------------- */
+
+    let currentUser = null;
+
+    function submissionKey(userId) {
+      return 'trackrat:waiver:' + userId + ':' + CURRENT_WAIVER_VERSION;
+    }
+    function submissionId(userId) {
+      const k = submissionKey(userId);
+      let id = null;
+      try { id = sessionStorage.getItem(k); } catch (_) {}
+      if (!id) {
+        id = uuid();
+        try { sessionStorage.setItem(k, id); } catch (_) {}
+      }
+      return id;
+    }
+
+    $('wvForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (submitting || !formValid() || !currentUser || !docOk) return;
+      submitting = true;
+      syncSubmit();
+
+      const vals = formValues();
+      const now = new Date();
+      vals.version = CURRENT_WAIVER_VERSION;
+      vals.sha256 = sourceSha;
+      vals.conductVersion = CURRENT_CONDUCT_VERSION;
+      vals.conductSha = conductSha || '(unavailable)';
+      vals.signedAtIso = now.toISOString();
+      vals.signedOn = MONTHS[now.getMonth()] + ' ' + now.getDate() + ', ' + now.getFullYear();
+      vals.recordId = submissionId(currentUser.id);
+
+      let pdfBlob = null;
+      try {
+        if (!navigator.onLine) throw new Error('offline');
+
+        setMsg('GENERATING YOUR SIGNED PDF…', 'work');
+        // 1200px is ~480 DPI at a 2.5in stamp; line art on alpha is a few KB.
+        const bigPng = await canvasToBlob(exportSignature(1200));
+        const bigBytes = new Uint8Array(await bigPng.arrayBuffer());
+        // A smaller copy goes in the row itself, so a failed upload still
+        // leaves the signature recorded. The column caps at 200000 chars.
+        const smallUrl = exportSignature(600).toDataURL('image/png');
+
+        const out = await buildSignedPdf(vals, bigBytes, false);
+        pdfBlob = new Blob([out], { type: 'application/pdf' });
+
+        const base = currentUser.id + '/' + vals.recordId;
+        setMsg('UPLOADING…', 'work');
+        // Upload BEFORE the insert. An orphaned object is inert and cleanable;
+        // a row pointing at a missing file is a broken link that looks like
+        // data loss. upsert:true makes a retry idempotent.
+        const up1 = await supabase.storage.from('waivers')
+          .upload(base + '.pdf', pdfBlob,
+            { contentType: 'application/pdf', cacheControl: '3600', upsert: true });
+        if (up1.error) throw up1.error;
+        const up2 = await supabase.storage.from('waivers')
+          .upload(base + '-signature.png', bigPng,
+            { contentType: 'image/png', cacheControl: '3600', upsert: true });
+        if (up2.error) throw up2.error;
+
+        setMsg('SAVING…', 'work');
+        const row = {
+          id: vals.recordId,
+          waiver_version: vals.version,
+          waiver_sha256: vals.sha256,
+          legal_name: vals.legalName,
+          date_of_birth: vals.dob,
+          signed_by: vals.minor ? 'guardian' : 'self',
+          guardian_name: vals.minor ? vals.guardianName : null,
+          guardian_relationship: vals.minor ? vals.guardianRelationship : null,
+          signature_png: smallUrl,
+          conduct_version: CURRENT_CONDUCT_VERSION,
+          conduct_sha256: conductSha,
+          attested_conduct: true,
+          attested_waiver: true,
+          attested_capacity: true,
+          signed_pdf_path: base + '.pdf',
+        };
+        const ins = await supabase.from('waivers').insert(row);
+        // 23505 is the unique constraint on (user_id, waiver_version) or a
+        // retried insert of the same id. Both mean "already recorded", and
+        // both are success.
+        if (ins.error && ins.error.code !== '23505') throw ins.error;
+
+        try { sessionStorage.removeItem(submissionKey(currentUser.id)); } catch (_) {}
+        setMsg('SIGNED. TAKING YOU TO YOUR DASHBOARD…', 'ok');
+        location.replace('/dashboard#waiver');
+      } catch (err) {
+        console.error('[waiver] submit failed:', err);
+        submitting = false;
+        syncSubmit();
+        const offline = String(err && err.message) === 'offline' || !navigator.onLine;
+        // Never lose the member's work: hand them the file they just made.
+        let rescue = '';
+        if (pdfBlob) {
+          const url = URL.createObjectURL(pdfBlob);
+          rescue = ' <a href="' + url + '" download="trackrat-waiver.pdf" ' +
+                   'style="color:var(--orange);border-bottom:1px solid currentColor">' +
+                   'Download your signed copy</a> and send it to us, or press SIGN again.';
+        }
+        $('msg').className = 'wv-msg is-err';
+        $('msg').innerHTML = (offline
+          ? "You're offline, so we couldn't save this."
+          : "We couldn't save your waiver: " + escapeHtml(String(err && err.message || err)) + '.')
+          + rescue;
+      }
+    });
+
+    /* ---------------- AUTH ---------------- */
+
+    $('signInBtn').addEventListener('click', async () => {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: { redirectTo: window.location.origin + '/waiver' },
+      });
+      if (error) {
+        console.error('[waiver] sign-in failed:', error);
+        $('stAuth').insertAdjacentHTML('beforeend',
+          '<p class="wv-msg is-err">' + escapeHtml(error.message) + '</p>');
+      }
+    });
+
+    async function alreadySigned() {
+      // No .eq('user_id', ...): RLS scopes this to the caller.
+      const { data, error } = await supabase
+        .from('waivers')
+        .select('waiver_version, signed_at')
+        .eq('waiver_version', CURRENT_WAIVER_VERSION)
+        .limit(1);
+      if (error) {
+        console.warn('[waiver] could not check existing waivers:', error);
+        return false;   // fail open: better to offer the form than to block
+      }
+      return !!(data && data.length);
+    }
+
+    async function routeFor(user) {
+      currentUser = user;
+      if (!user) { showState('stAuth'); return; }
+      $('whoEmail').textContent = user.email || '';
+      const pic = user.user_metadata && (user.user_metadata.avatar_url || user.user_metadata.picture);
+      if (pic) $('whoAvatar').src = pic; else $('whoAvatar').removeAttribute('src');
+      if (await alreadySigned()) { showState('stDone'); return; }
+      showState('stForm');
+      // The pad was display:none until this moment, so it measured 0. Measure
+      // again now, and once more after a frame in case layout has not settled.
+      resizePad();
+      requestAnimationFrame(resizePad);
+    }
+
+    /* ---------------- INIT ---------------- */
+
+    fillDob();
+    for (const id of ['dobMonth', 'dobDay', 'dobYear']) {
+      $(id).addEventListener('change', () => {
+        if (id !== 'dobDay') syncDays();
+        syncGuardian(); syncSubmit();
+      });
+    }
+    for (const id of ['legalName', 'guardianName', 'guardianRelationship',
+                      'ackConduct', 'ackWaiver', 'ackCapacity']) {
+      $(id).addEventListener('input', syncSubmit);
+      $(id).addEventListener('change', syncSubmit);
+    }
+    new ResizeObserver(resizePad).observe(wrap);
+    window.addEventListener('orientationchange', () => setTimeout(resizePad, 120));
+    syncGuardian();
+
+    (async () => {
+      const [ok, conductOk] = await Promise.all([loadDocument(), loadConduct()]);
+      // Both documents are part of what gets agreed to, so neither missing is
+      // a signable state.
+      if (!ok || !conductOk) { showState('stBlocked'); return; }
+
+      const { data: { session } } = await supabase.auth.getSession();
+      await routeFor(session ? session.user : null);
+
+      // The callback must stay SYNCHRONOUS and must not await a Supabase call:
+      // awaiting inside it deadlocks the v2 auth lock, and the symptom is a
+      // page stuck on "CHECKING..." 30-60s after load.
+      let lastUserId = session ? session.user.id : null;
+      supabase.auth.onAuthStateChange((_event, s) => {
+        const nextId = s ? s.user.id : null;
+        if (nextId === lastUserId) return;      // token refreshes are not user changes
+        lastUserId = nextId;
+        setTimeout(() => { routeFor(s ? s.user : null); }, 0);
+      });
+    })();
+  </script>
+
+</body>
+</html>

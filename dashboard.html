@@ -1070,6 +1070,88 @@
     .dash-tab.is-active { opacity: 1; color: var(--orange); border-bottom-color: var(--orange); }
     .dash-tab:focus-visible { outline: 2px solid var(--orange); outline-offset: 2px; }
 
+    /* ---- WAIVER ---- */
+    .waiver-banner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      width: 100%;
+      max-width: 900px;
+      margin: 0 auto 24px;
+      padding: 16px 18px;
+      background: rgba(255, 77, 31, 0.07);
+      border: 1px solid var(--field-border);
+      border-left: 2px solid var(--orange);
+    }
+    .waiver-banner .wb-text { font-size: 12.5px; line-height: 1.6; }
+    .waiver-banner .wb-text strong {
+      display: block;
+      letter-spacing: 0.16em;
+      font-size: 11px;
+      color: var(--orange);
+      margin-bottom: 3px;
+    }
+    .wb-cta {
+      background: var(--orange);
+      color: var(--black);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      padding: 10px 14px;
+      white-space: nowrap;
+    }
+    .wb-cta:hover { opacity: 0.9; }
+
+    .waiver-card {
+      background: var(--field-bg);
+      border: 1px solid var(--field-border);
+      padding: 22px 22px 24px;
+      margin-bottom: 16px;
+    }
+    .waiver-card + .waiver-card { margin-top: 0; }
+    .wc-top {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+    .wc-title { font-size: 12px; font-weight: 700; letter-spacing: 0.14em; }
+    .wc-when { font-size: 11px; opacity: 0.5; letter-spacing: 0.06em; }
+    .wc-badge {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      padding: 4px 8px;
+      border: 1px solid var(--field-border);
+      opacity: 0.7;
+    }
+    .wc-badge.is-current { color: var(--orange); border-color: var(--orange); opacity: 1; }
+    .wc-rows { font-size: 12px; line-height: 1.9; }
+    .wc-rows span { opacity: 0.45; display: inline-block; min-width: 132px; }
+    .wc-hash { font-size: 10.5px; opacity: 0.4; word-break: break-all; }
+    /* The ink is black, so it needs a white plate on this page. */
+    .waiver-sig {
+      display: block;
+      max-width: 300px;
+      width: 100%;
+      margin: 16px 0 4px;
+      background: #fff;
+      padding: 8px 10px;
+    }
+    .wc-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
+    .wc-note {
+      margin-top: 16px;
+      padding-top: 14px;
+      border-top: 1px solid var(--field-border);
+      font-size: 11px;
+      line-height: 1.6;
+      opacity: 0.45;
+    }
+
     /* ---- PROMOTIONS ---- */
     .promo-intro {
       width: 100%; max-width: 900px; margin-bottom: 20px;
@@ -1184,8 +1266,28 @@
       footer { padding: 32px 20px; flex-direction: column; gap: 8px; }
 
       /* Equal-width tabs = bigger tap targets, clearer two-way switch. */
-      .dash-tabs { max-width: 100%; gap: 0; }
-      .dash-tab { flex: 1; padding: 13px 6px; letter-spacing: 0.1em; text-align: center; }
+      /* Four tabs will not fit one 375px row at flex:1 (PERSONAL RECORDS
+         alone measures ~146px). A 2x2 grid keeps every label full and every
+         tap target big. The container's border-bottom is dropped because it
+         would cut the grid in half; each cell carries its own hairline so the
+         active-underline metaphor survives. */
+      .dash-tabs {
+        max-width: 100%;
+        gap: 0;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        border-bottom: none;
+        margin-bottom: 24px;
+      }
+      .dash-tab {
+        padding: 14px 6px;
+        letter-spacing: 0.1em;
+        text-align: center;
+        margin-bottom: 0;
+        border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+      }
+      .waiver-banner { flex-direction: column; align-items: stretch; }
+      .wb-cta { text-align: center; }
 
       .promo-card { flex-direction: column; gap: 16px; padding: 20px; }
       /* Uniform logo height so the stacked cards line up instead of looking ragged. */
@@ -1231,6 +1333,7 @@
           <a href="/podium" role="menuitem">PODIUM</a>
           <a href="/dashboard" role="menuitem">PERSONAL RECORDS</a>
           <a href="/dashboard#PARTNERS" role="menuitem">PARTNERS</a>
+          <a href="/waiver" role="menuitem">WAIVER</a>
         </div>
       </div>
       <div class="nav-dropdown">
@@ -1275,6 +1378,7 @@
         <a href="/podium">PODIUM</a>
         <a href="/dashboard">PERSONAL RECORDS</a>
         <a href="/dashboard#PARTNERS">PARTNERS</a>
+        <a href="/waiver">WAIVER</a>
       </div>
       <button class="mobile-accordion-trigger" type="button" aria-expanded="false" aria-controls="mobileEvents">
         EVENTS
@@ -1301,7 +1405,7 @@
       <div class="auth-inner">
         <span class="auth-eyebrow">MEMBER DASHBOARD</span>
         <h2 class="auth-title">LOG IN</h2>
-        <p class="auth-sub">Sign in to log your PRs, see partner promotions, and view club photos and videos.</p>
+        <p class="auth-sub">Sign in to log your PRs, sign the club waiver, see partner promotions, and view club photos and videos.</p>
         <button class="google-btn" id="googleSignIn">
           <svg viewBox="0 0 24 24" aria-hidden="true">
             <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -1322,7 +1426,7 @@
     <div class="page-header">
       <span class="page-eyebrow">MEMBER DASHBOARD</span>
       <h1 class="page-title">TRACKRAT</h1>
-      <p class="page-sub" id="pageSub">SIGN IN TO LOG YOUR PRs, SEE PARTNER PROMOTIONS, AND VIEW CLUB PHOTOS.</p>
+      <p class="page-sub" id="pageSub">SIGN IN TO LOG YOUR PRs, SIGN THE WAIVER, SEE PARTNER PROMOTIONS, AND VIEW CLUB PHOTOS.</p>
     </div>
 
     <!-- SIGNED IN -->
@@ -1340,8 +1444,19 @@
       </div>
 
       <!-- TABS: Personal Records (default) + Promotions -->
+      <!-- Shown by refreshWaiverBanner() only when the signed-in member has no
+           waiver for the CURRENT version. Hidden at rest so it never flashes. -->
+      <div class="waiver-banner" id="waiverBanner" hidden role="status">
+        <div class="wb-text">
+          <strong>WAIVER NEEDED</strong>
+          You haven't signed the current club waiver yet.
+        </div>
+        <a class="wb-cta" href="/waiver">SIGN IT NOW &rarr;</a>
+      </div>
+
       <div class="dash-tabs" role="tablist" aria-label="Dashboard sections">
         <button class="dash-tab is-active" id="prTab" role="tab" aria-selected="true" aria-controls="prPanel" type="button">PERSONAL RECORDS</button>
+        <button class="dash-tab" id="waiverTab" role="tab" aria-selected="false" aria-controls="waiverPanel" type="button">WAIVER</button>
         <button class="dash-tab" id="promoTab" role="tab" aria-selected="false" aria-controls="promoPanel" type="button">PARTNERS</button>
         <button class="dash-tab" id="galleryTab" role="tab" aria-selected="false" aria-controls="galleryPanel" type="button">GALLERY</button>
       </div>
@@ -1450,6 +1565,15 @@
       </div>
       </div><!-- /#prPanel -->
 
+      <!-- TAB PANEL: WAIVER.
+           VIEW ONLY, DELIBERATELY. A signed waiver is a legal record: there is
+           no edit and no delete affordance here, and public.waivers grants the
+           client neither. Do NOT copy the pencil/trash row actions from
+           #prPanel above onto these cards. -->
+      <div id="waiverPanel" role="tabpanel" aria-labelledby="waiverTab" hidden>
+        <div class="waiver-list" id="waiverList"><div class="loading">LOADING…</div></div>
+      </div>
+
       <!-- TAB PANEL: PROMOTIONS -->
       <div id="promoPanel" role="tabpanel" aria-labelledby="promoTab" hidden>
         <div class="promo-list" id="promoList"><div class="loading">LOADING…</div></div>
@@ -1472,6 +1596,7 @@
         <div class="gallery-grid" id="galleryGrid" hidden></div>
         <div class="g-sentinel" id="gallerySentinel" aria-hidden="true"></div>
       </div>
+
 
     </div>
 
@@ -1568,6 +1693,9 @@
 
   <script type="module">
     import { supabase } from '/js/supabase-config.js';
+    // Shared with waiver.html so the banner and the signing page can never
+    // disagree about which version is current.
+    import { CURRENT_WAIVER_VERSION } from '/js/waiver-config.js';
 
     // ---- MOBILE MENU ----
     const menuToggle = document.getElementById('menuToggle');
@@ -1651,8 +1779,19 @@
     let openGalleryTab = null;
     let resetGalleryTab = null;
 
+    const waiverTab = document.getElementById('waiverTab');
+    const waiverPanel = document.getElementById('waiverPanel');
+    // Hooks assigned by the WAIVER TAB block further down. refreshWaiverBanner
+    // drives the banner ABOVE the tabs, so it is not tied to opening the tab.
+    let openWaiverTab = null;
+    let resetWaiverTab = null;
+    let refreshWaiverBanner = null;
+
     function selectTab(which) {
-      const tabs = { pr: [prTab, prPanel], promo: [promoTab, promoPanel], gallery: [galleryTab, galleryPanel] };
+      const tabs = {
+        pr: [prTab, prPanel], promo: [promoTab, promoPanel],
+        gallery: [galleryTab, galleryPanel], waiver: [waiverTab, waiverPanel],
+      };
       Object.entries(tabs).forEach(([key, [tab, panel]]) => {
         const on = key === which;
         tab.classList.toggle('is-active', on);
@@ -1661,18 +1800,24 @@
       });
       if (which === 'promo') loadPromotions();
       if (which === 'gallery' && openGalleryTab) openGalleryTab();
+      if (which === 'waiver' && openWaiverTab) openWaiverTab();
     }
     prTab.addEventListener('click', () => selectTab('pr'));
     promoTab.addEventListener('click', () => selectTab('promo'));
     galleryTab.addEventListener('click', () => selectTab('gallery'));
+    waiverTab.addEventListener('click', () => selectTab('waiver'));
 
     // Deep links from the nav's CLUB dropdown: /dashboard#PARTNERS →
     // Partners, /dashboard#gallery → Gallery, anything else → Personal
     // Records. Case-insensitive; the old #promotions still works.
     // hashchange covers clicking those nav links while already here.
+    const TAB_BY_HASH = {
+      '#partners': 'promo', '#promotions': 'promo',   // #promotions is the old name
+      '#gallery': 'gallery',
+      '#waiver': 'waiver', '#waivers': 'waiver',      // tolerate the signing page's name
+    };
     function applyTabHash() {
-      const h = location.hash.toLowerCase();
-      selectTab(h === '#partners' || h === '#promotions' ? 'promo' : (h === '#gallery' ? 'gallery' : 'pr'));
+      selectTab(TAB_BY_HASH[location.hash.toLowerCase()] || 'pr');
     }
     window.addEventListener('hashchange', applyTabHash);
 
@@ -2305,7 +2450,8 @@
       bootLoader.style.display = 'none';
       document.body.classList.remove('auth-mode');
       signedInView.style.display = 'block';
-      pageSub.textContent = 'TRACK YOUR PRs · PARTNER PROMOTIONS · CLUB PHOTOS AND VIDEOS';
+      // Order mirrors the tab order: PERSONAL RECORDS / WAIVER / PARTNERS / GALLERY.
+      pageSub.textContent = 'TRACK YOUR PRs · SIGNED WAIVER · PARTNER PROMOTIONS · CLUB PHOTOS AND VIDEOS';
 
       const meta = user.user_metadata || {};
       const name = meta.full_name || meta.name || user.email || 'ATHLETE';
@@ -3035,6 +3181,130 @@
       });
     }
 
+    // ---- WAIVER TAB (view-only signed record + the "unsigned" banner) ----
+    // Block-scoped like the gallery, so its helpers cannot collide with
+    // anything else on the page. Its only exports are the three hooks above.
+    {
+      const listEl = document.getElementById('waiverList');
+      const banner = document.getElementById('waiverBanner');
+      let loaded = false;
+      let bannerFor = null;   // guards against a fast user switch writing A's state into B's DOM
+
+      function fmtDate(iso) {
+        if (!iso) return '';
+        const d = new Date(iso);
+        return d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+      }
+      // date_of_birth is a plain date. Split the string rather than round-tripping
+      // it through Date, which would shift it a day west of UTC.
+      function fmtDob(s) {
+        if (!s) return '';
+        const p = String(s).split('-');
+        if (p.length !== 3) return s;
+        const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
+                        'August', 'September', 'October', 'November', 'December'];
+        return MONTHS[Number(p[1]) - 1] + ' ' + Number(p[2]) + ', ' + p[0];
+      }
+
+      function cardHtml(r, urls) {
+        const current = r.waiver_version === CURRENT_WAIVER_VERSION;
+        const pdfUrl = r.signed_pdf_path ? urls.get(r.signed_pdf_path) : null;
+        const sig = r.signature_png && /^data:image\/png;base64,/.test(r.signature_png)
+          ? r.signature_png : null;
+        const rows = [
+          ['Signed by', escapeHtml(r.legal_name || '')],
+          ['Date of birth', escapeHtml(fmtDob(r.date_of_birth))],
+        ];
+        if (r.signed_by === 'guardian') {
+          rows.push(['Guardian', escapeHtml(r.guardian_name || '')]);
+          rows.push(['Relationship', escapeHtml(r.guardian_relationship || '')]);
+        }
+        rows.push(['Code of conduct', escapeHtml(r.conduct_version || '')]);
+        return '<div class="waiver-card">' +
+          '<div class="wc-top">' +
+            '<span class="wc-title">' + escapeHtml(r.waiver_version || '') + '</span>' +
+            '<span class="wc-badge' + (current ? ' is-current' : '') + '">' +
+              (current ? 'CURRENT' : 'SUPERSEDED') + '</span>' +
+            '<span class="wc-when">SIGNED ' + escapeHtml(fmtDate(r.signed_at)).toUpperCase() + '</span>' +
+          '</div>' +
+          '<div class="wc-rows">' +
+            rows.map(function (kv) { return '<div><span>' + kv[0] + '</span>' + kv[1] + '</div>'; }).join('') +
+          '</div>' +
+          (sig ? '<img class="waiver-sig" src="' + sig + '" alt="Your signature as drawn when you signed">' : '') +
+          '<div class="wc-hash">Document SHA-256 ' + escapeHtml(r.waiver_sha256 || '') + '</div>' +
+          '<div class="wc-actions">' +
+            (pdfUrl
+              ? '<a class="g-btn" href="' + pdfUrl + '" target="_blank" rel="noopener">OPEN SIGNED PDF ↗</a>'
+              : '<span class="g-meta">The PDF is not available for this record.</span>') +
+          '</div>' +
+          '<p class="wc-note">This is a permanent record. It can be viewed and downloaded ' +
+            'but not edited or deleted, by you or by us.</p>' +
+        '</div>';
+      }
+
+      openWaiverTab = async function () {
+        if (loaded) return;
+        // No .eq('user_id', …): RLS scopes this to the caller. Named columns
+        // rather than *, because signature_png is a 10-30 KB data URL.
+        const { data, error } = await supabase
+          .from('waivers')
+          .select('id, waiver_version, waiver_sha256, legal_name, date_of_birth, signed_by, ' +
+                  'guardian_name, guardian_relationship, conduct_version, signature_png, ' +
+                  'signed_pdf_path, signed_at')
+          .order('signed_at', { ascending: false })
+          .limit(10);
+        if (error) {
+          // `loaded` deliberately stays false so reopening the tab retries.
+          listEl.innerHTML = '<div class="empty-state">Couldn\'t load your waiver: ' +
+            escapeHtml(String(error.message)) + '</div>';
+          return;
+        }
+        loaded = true;
+        if (!data || !data.length) {
+          listEl.innerHTML = '<div class="empty-state">You haven\'t signed a waiver yet.<br>' +
+            '<a class="g-btn-ghost" href="/waiver" style="margin-top:14px">SIGN THE WAIVER →</a></div>';
+          return;
+        }
+        // The bucket is private, so URLs are minted at view time and never stored.
+        const paths = data.map(function (r) { return r.signed_pdf_path; }).filter(Boolean);
+        let byPath = new Map();
+        if (paths.length) {
+          const signed = await supabase.storage.from('waivers').createSignedUrls(paths, 3600);
+          byPath = new Map(((signed && signed.data) || []).map(function (s) {
+            return [s.path, s.signedUrl];
+          }));
+        }
+        listEl.innerHTML = data.map(function (r) { return cardHtml(r, byPath); }).join('');
+      };
+
+      resetWaiverTab = function () {
+        loaded = false;
+        bannerFor = null;
+        listEl.innerHTML = '<div class="loading">LOADING…</div>';
+        banner.hidden = true;
+      };
+
+      // Called from the init IIFE and from inside the EXISTING setTimeout in
+      // onAuthStateChange. Async, but never awaited inside that callback, and
+      // it swallows its own errors so nothing rejects unhandled in a timer.
+      refreshWaiverBanner = async function (userId) {
+        bannerFor = userId;
+        try {
+          const { data, error } = await supabase
+            .from('waivers')
+            .select('waiver_version')
+            .eq('waiver_version', CURRENT_WAIVER_VERSION)
+            .limit(1);
+          if (bannerFor !== userId) return;              // superseded by a newer call
+          // On error, HIDE. A false "you must sign a waiver" is worse than a
+          // missed nudge, and the table will not exist on first deploy.
+          banner.hidden = error ? true : !!(data && data.length);
+        } catch (_) {
+          if (bannerFor === userId) banner.hidden = true;
+        }
+      };
+    }
+
     // Init
     // onAuthStateChange in Supabase JS v2 runs inside an internal auth lock.
     // Awaiting Supabase calls (`refreshHistory`, `from('prs').select`) directly
@@ -3055,6 +3325,8 @@
         setSignedIn(session.user);
         applyTabHash();
         await refreshHistory();
+        // Safe to await here: this is the top-level IIFE, NOT the auth lock.
+        if (refreshWaiverBanner) await refreshWaiverBanner(session.user.id);
       } else {
         setSignedOut();
       }
@@ -3065,12 +3337,17 @@
           if (nextUserId !== currentUserId) {
             currentUserId = nextUserId;
             if (resetGalleryTab) resetGalleryTab(); // don't show user A's roll to user B
+            if (resetWaiverTab) resetWaiverTab();
             setSignedIn(session.user);
-            setTimeout(() => { refreshHistory({ silent: true }); }, 0);
+            setTimeout(() => {
+              refreshHistory({ silent: true });
+              if (refreshWaiverBanner) refreshWaiverBanner(nextUserId);
+            }, 0);
           }
         } else if (currentUserId !== null) {
           currentUserId = null;
           if (resetGalleryTab) resetGalleryTab();
+          if (resetWaiverTab) resetWaiverTab();
           setSignedOut();
         }
       });

@@ -105,6 +105,15 @@
           "value": "public, max-age=86400"
         }
       ]
+    },
+    {
+      "source": "/waiver-docs/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
     }
   ],
   "redirects": [
@@ -117,6 +126,7 @@
     { "source": "/2026-invitational", "destination": "/invitational", "permanent": true },
     { "source": "/pr", "destination": "/dashboard", "permanent": true },
     { "source": "/prs", "destination": "/dashboard", "permanent": true },
-    { "source": "/gallery", "destination": "/dashboard#gallery", "permanent": true }
+    { "source": "/gallery", "destination": "/dashboard#gallery", "permanent": true },
+    { "source": "/waivers", "destination": "/waiver", "permanent": true }
   ]
 }

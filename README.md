@@ -27,11 +27,13 @@ TRACKRAT/
 ├── podium.html             # /podium                — competition results (search + discipline filter)
 ├── invitational.html       # /invitational          — 2026 Invitational (Oct 18, 2026 · Tilley St; RSVP TBD)
 ├── offtrack.html           # /offtrack              — OFFTRACK demo night, presented by TRACKRAT (under Events)
-├── dashboard.html          # /dashboard             — member Dashboard: PRs + Promotions (Google sign-in)
+├── dashboard.html          # /dashboard             — member Dashboard: PRs + Partners + Gallery + Waiver (Google sign-in)
+├── waiver.html            # /waiver               — club rules + liability waiver, signed in the browser
 ├── 404.html                # branded not-found page (Vercel serves it with status 404)
 ├── js/
 │   ├── supabase-config.js  # Shared Supabase client (URL + anon key)
-│   └── vendor/             # Vendored (self-hosted) Supabase JS SDK bundle
+│   ├── waiver-config.js    # Waiver + code-of-conduct registry (versions, hashes, stamp coords)
+│   └── vendor/             # Vendored (self-hosted) Supabase JS SDK + pdf-lib bundles
 ├── apps-script/
 │   └── gallery/            # Apps Script web app behind /gallery (Code.gs + manifest; deployed manually)
 ├── fonts/                  # Self-hosted webfonts (woff2, latin subset) + OFL license texts
@@ -39,6 +41,8 @@ TRACKRAT/
 │   ├── ibm-plex-mono-{400,500,600,700}-latin.woff2
 │   └── LICENSE-*.txt       # SIL OFL 1.1 notices for both font families
 ├── promos/                 # Partner logos for the Dashboard → Promotions tab
+├── waiver-docs/            # Versioned waiver PDFs + code of conduct + verbatim HTML transcripts
+│                           #   NEVER overwrite a file here: signed rows are pinned to its bytes
 ├── vercel.json             # cleanUrls, security headers, redirects, cache headers
 ├── og.png                  # default 1200×630 Open Graph image
 ├── og-invitational.png     # /invitational OG image
@@ -517,6 +521,243 @@ public on the deployed site) and point `logo` at it. **Use a raster format
 browsers (notably iOS Safari) and show as blank. Dark logos that need to sit on
 the dark dashboard get a matching dark `logo_bg` (e.g. WellSport uses `#080808`);
 logos meant for a light background get `logo_bg: '#FFFFFF'`.
+
+### 3c. Waivers tables (Dashboard → Waiver tab, `/waiver`)
+
+Two tables. `waiver_documents` registers each published version of the waiver;
+`waivers` is the append-only signature log.
+
+**The signature log is immutable from the client, by construction.** There is no
+`update` and no `delete` policy, and the client is granted only `select` and a
+*column-level* `insert`. Both layers matter, and they fail differently:
+
+| | What happens on an `update`/`delete` |
+|---|---|
+| Grant omitted | dies at the privilege check, `42501 permission denied`, **before** RLS runs |
+| Policy absent, grant present | RLS finds zero rows to update: **succeeds, affects 0 rows, returns 204** |
+
+The second is an observability hole, not a data hole, but it is a landmine: the
+day someone adds a permissive `UPDATE` policy, or opens the table in Supabase's
+**Table Editor UI (which auto-grants `all`)**, edits start working silently.
+Keep both layers.
+
+Note also that the **table owner (the SQL editor) bypasses RLS**. The guarantee
+is against the client, not against your own fat fingers. The optional trigger at
+the end is the only thing that closes that.
+
+```sql
+-- Registry of published waiver documents. The blank PDF is committed at a
+-- version-stamped path under /waiver-docs and NEVER overwritten, so a signed
+-- waiver can always be re-derived if Storage is ever lost.
+--   shasum -a 256 waiver-docs/trackrat-waiver-v1-2026.pdf
+create table if not exists public.waiver_documents (
+  version      text primary key,               -- 'v1-2026'; bump only when the legal text changes
+  sha256       text not null,                  -- lowercase hex of the PDF's exact bytes
+  pdf_path     text not null,                  -- '/waiver-docs/trackrat-waiver-v1-2026.pdf'
+  title        text not null,
+  effective_on date not null,
+  is_current   boolean not null default false, -- exactly one true row (partial unique index below)
+  created_at   timestamptz not null default now(),
+  unique (version, sha256)                     -- target of the composite FK from public.waivers
+);
+
+alter table public.waiver_documents add constraint waiver_documents_sha256_hex
+  check (sha256 ~ '^[0-9a-f]{64}$');
+alter table public.waiver_documents add constraint waiver_documents_version_clean
+  check (version = lower(btrim(version)) and length(version) between 2 and 32);
+
+-- At most one current version: a partial unique index, so only true rows collide.
+create unique index if not exists waiver_documents_one_current_idx
+  on public.waiver_documents (is_current) where is_current;
+
+alter table public.waiver_documents enable row level security;
+grant select on public.waiver_documents to authenticated;
+create policy "waiver_documents_select_auth" on public.waiver_documents
+  for select to authenticated using (true);
+
+-- Signed waivers. APPEND ONLY.
+-- Deliberately NOT gated on public.is_member(): a first-timer is not on the
+-- allowlist yet, and signing is the prerequisite to showing up, not a perk.
+create table if not exists public.waivers (
+  id                    uuid primary key default gen_random_uuid(),  -- client-generated; also names the Storage object
+  user_id               uuid not null default auth.uid(),            -- no FK to auth.users ON PURPOSE, see below
+  signer_email          text default lower(auth.jwt() ->> 'email'),
+  waiver_version        text not null,
+  waiver_sha256         text not null,                               -- verified by the composite FK below
+  legal_name            text not null,                               -- full legal name of the ATHLETE
+  date_of_birth         date not null,                               -- of the athlete; drives the guardian rule
+  signed_by             text not null,                               -- 'self' | 'guardian'
+  guardian_name         text,                                        -- required iff the athlete is a minor
+  guardian_relationship text,
+  signature_png         text not null,                               -- drawn signature, PNG data URL
+  conduct_version       text not null,                               -- code of conduct agreed to, e.g. 'conduct-v1-2026'
+  conduct_sha256        text not null,                               -- hash of the conduct document as displayed
+  attested_conduct      boolean not null,                            -- "I agree to follow the club rules"
+  attested_waiver       boolean not null,                            -- "I agree to the waiver"
+  attested_capacity     boolean not null,                            -- 18+, or guardian with authority
+  signed_pdf_path       text,                                        -- '{user_id}/{id}.pdf'; null if generation failed
+  user_agent            text default ((nullif(current_setting('request.headers', true), ''))::json ->> 'user-agent'),
+  signer_ip             text default coalesce(
+                          (nullif(current_setting('request.headers', true), ''))::json ->> 'cf-connecting-ip',
+                          (nullif(current_setting('request.headers', true), ''))::json ->> 'x-forwarded-for'
+                        ),                                           -- advisory only: XFF is client-appendable
+  signed_at             timestamptz not null default now(),          -- NOT client-insertable (see the column grant)
+  unique (user_id, waiver_version)                                   -- one signature per version; client treats 23505 as success
+);
+
+-- Pins each signature to the exact document bytes. Replace the PDF without
+-- registering it and the next insert fails 23503 instead of silently recording
+-- new bytes: fail closed. RESTRICT also blocks retro-editing a signed version.
+alter table public.waivers add constraint waivers_document_fkey
+  foreign key (waiver_version, waiver_sha256)
+  references public.waiver_documents (version, sha256)
+  on update restrict on delete restrict;
+
+alter table public.waivers add constraint waivers_signed_by_check
+  check (signed_by in ('self', 'guardian'));
+
+-- Minority is DERIVED from date_of_birth, never client-asserted: a client-supplied
+-- is_minor flag would make the guardian requirement decorative. timezone(text,
+-- timestamptz) and date + interval are both IMMUTABLE, so this is legal in a CHECK
+-- where anything calling now() would be rejected outright. Leap-day birthdays clamp
+-- to Feb 28, i.e. adult one day early (~1 person-day per 1460 signers), which is
+-- preferred over '18 years 1 day' giving every 18-year-old a guardian prompt on
+-- their actual birthday.
+alter table public.waivers add constraint waivers_guardian_when_minor check (
+  case
+    when (date_of_birth + interval '18 years') > timezone('America/Chicago', signed_at)
+      then signed_by = 'guardian'
+           and guardian_name is not null and length(btrim(guardian_name)) > 0
+           and guardian_relationship is not null
+    else signed_by = 'self'
+         and guardian_name is null
+         and guardian_relationship is null
+  end
+);
+
+-- All three agreements are required, so the only legal value is true. Storing
+-- them keeps the row self-describing: it shows what was actually affirmed.
+-- They are three SEPARATE columns because RRCA guidance requires the code of
+-- conduct to be its own agreement, not folded into the liability waiver.
+alter table public.waivers add constraint waivers_attested
+  check (attested_conduct and attested_waiver and attested_capacity);
+
+alter table public.waivers add constraint waivers_dob_sane
+  check (date_of_birth > date '1900-01-01'
+         and date_of_birth <= timezone('America/Chicago', signed_at)::date);
+alter table public.waivers add constraint waivers_signature_png_shape
+  check (signature_png like 'data:image/png;base64,%' and length(signature_png) <= 200000);
+alter table public.waivers add constraint waivers_name_lengths
+  check (length(btrim(legal_name)) between 2 and 120
+         and (guardian_name is null or length(guardian_name) <= 120)
+         and (guardian_relationship is null or length(guardian_relationship) <= 60));
+alter table public.waivers add constraint waivers_pdf_path_own
+  check (signed_pdf_path is null or signed_pdf_path like user_id::text || '/%');
+
+create index if not exists waivers_signed_at_idx on public.waivers (signed_at desc);
+
+alter table public.waivers enable row level security;
+grant select on public.waivers to authenticated;
+-- COLUMN-level insert. This is what makes signed_at, user_id, signer_email,
+-- user_agent and signer_ip unforgeable rather than merely conventional: a
+-- column default applies only when the column is OMITTED, and PostgREST will
+-- happily forward an explicit signed_at from devtools. A CHECK cannot help
+-- (check (signed_at <= now()) is rejected: CHECK must be IMMUTABLE).
+-- Keep this list in exact sync with the client's insert payload. A violation
+-- reports "permission denied for table waivers" and does NOT name the column.
+grant insert (id, waiver_version, waiver_sha256, legal_name, date_of_birth,
+              signed_by, guardian_name, guardian_relationship, signature_png,
+              conduct_version, conduct_sha256, attested_conduct,
+              attested_waiver, attested_capacity, signed_pdf_path)
+  on public.waivers to authenticated;
+
+create policy "waivers_select_own" on public.waivers
+  for select to authenticated using (auth.uid() = user_id);
+create policy "waivers_insert_own" on public.waivers
+  for insert to authenticated with check (auth.uid() = user_id);
+-- No update policy and no delete policy: rows are immutable from the client.
+
+-- Private bucket for the generated signed PDFs and signature images.
+-- Do NOT grant on storage.objects and do NOT enable RLS on it: the storage
+-- schema is owned by supabase_storage_admin, RLS is already on, and
+-- `authenticated` already holds the table privileges. (The "Supabase doesn't
+-- auto-grant" rule above does not apply here.)
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+  values ('waivers', 'waivers', false, 5242880,
+          array['application/pdf', 'image/png'])
+  on conflict (id) do nothing;
+
+create policy "waivers_object_insert_own" on storage.objects
+  for insert to authenticated
+  with check (bucket_id = 'waivers' and (storage.foldername(name))[1] = auth.uid()::text);
+create policy "waivers_object_select_own" on storage.objects
+  for select to authenticated
+  using (bucket_id = 'waivers' and (storage.foldername(name))[1] = auth.uid()::text);
+-- No update policy: that is what blocks an upsert from overwriting a signed PDF.
+
+-- ⚠️  Replace the hash with the real one before running. Never commit signed
+-- waiver data to this PUBLIC repo (same rule as the promotions block above).
+insert into public.waiver_documents (version, sha256, pdf_path, title, effective_on, is_current)
+  values ('v1-2026', 'REPLACE-WITH-shasum-a-256-OF-THE-COMMITTED-PDF',
+          '/waiver-docs/trackrat-waiver-v1-2026.pdf',
+          'TRACKRAT Waiver and Release of Liability', '2026-09-07', true)
+  on conflict (version) do nothing;
+```
+
+**Why there is no foreign key to `auth.users`.** `on delete cascade` would
+delete the liability evidence along with the account; `restrict` would block
+account deletion entirely; `set null` would hide the row from its own RLS
+policy. Dropping the FK is standard for an append-only audit log and costs
+nothing, because `with check (auth.uid() = user_id)` already prevents a bogus
+uid (the uid comes from a signed JWT). This is a deliberate deviation from the
+`prs` table above; do not "fix" it. The `signer_email` snapshot keeps the row
+self-identifying without joining `auth.users`.
+
+**Optional hardening.** The block above is complete against the client, but the
+SQL editor runs as the table owner and bypasses RLS. For an evidence table that
+is worth closing:
+
+```sql
+create or replace function public.waivers_immutable()
+returns trigger language plpgsql as $$
+begin
+  raise exception 'public.waivers is append-only (attempted % on %)', tg_op, old.id;
+end;
+$$;
+create trigger waivers_no_change
+  before update or delete on public.waivers
+  for each row execute function public.waivers_immutable();
+```
+
+Escape hatch when you legitimately need to remove a botched row:
+`alter table public.waivers disable trigger waivers_no_change;`, then re-enable
+it. This works cleanly *because* there is no `auth.users` FK; with
+`on delete cascade` still in place the trigger would make deleting an auth user
+fail outright.
+
+**Storage note.** Objects are written at `{user_id}/{waiver_id}.pdf` and
+`{user_id}/{waiver_id}-signature.png`. The client uploads *before* inserting the
+row: an orphaned object is inert and cleanable, whereas a row pointing at a
+missing file is a broken link that looks like data loss. Signed URLs are minted
+at view time with `createSignedUrl` and never stored.
+
+### Adding a new waiver or code-of-conduct version
+
+Both documents are version-pinned and never overwritten, because signed rows are
+tied to their exact bytes.
+
+1. Edit the source text and rebuild both the PDF and its HTML transcript from it
+   (they are generated together so the transcript cannot drift from the PDF).
+   Commit them under `/waiver-docs/` with a **new** filename.
+2. `shasum -a 256 waiver-docs/<new file>`
+3. Insert the `public.waiver_documents` row and flip `is_current`.
+4. Add the entry to `js/waiver-config.js` and bump `CURRENT_WAIVER_VERSION`
+   (or `CURRENT_CONDUCT_VERSION`), including the new hash and the stamp
+   coordinates. Load `/waiver?stamp=debug` to tune coordinates against the new
+   PDF without touching code.
+
+Existing signatures stay valid and stay visible on the dashboard; members are
+prompted to sign the new version.
 
 ### 4. Set up Google OAuth
 

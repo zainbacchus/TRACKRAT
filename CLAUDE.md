@@ -20,12 +20,16 @@ Pages:
   start time, mirroring offtrack.html's Event)
 - `/offtrack` — OFFTRACK demo night, presented by TRACKRAT (grouped under the **Events** nav dropdown)
 - `/dashboard` — member dashboard (Google sign-in): a **Personal Records** tab
-  (per-user PRs via Supabase), a **Partners** tab (member perks from the
+  (per-user PRs via Supabase), a **Waiver** tab (the member's signed waiver,
+  view-only), a **Partners** tab (member perks from the
   `promotions` table; deep link `/dashboard#PARTNERS`), and a **Gallery**
   tab (members-only club photos/videos from the shared Google Drive
   folder; deep link `/dashboard#gallery` — see the **Gallery** section
   below). `/gallery` used to be its own page; it now 301-redirects to
   `/dashboard#gallery`.
+- `/waiver` — club code of conduct + liability waiver, signed in the browser.
+  **Publicly readable**: both documents render for anyone, and only the signing
+  form is behind Google sign-in. `/waiver` (singular) redirects here.
 
 > Note: the dashboard is `/dashboard`. It used to be `/pr` (and `/prs` before
 > that); both now 301-redirect to `/dashboard`. If you see `/pr` or `pr.html`
@@ -44,7 +48,12 @@ Pages:
 
 There is intentionally no framework, bundler, or `package.json`. Each page
 holds its own styles and scripts so it can be read top-to-bottom without
-chasing imports. The only shared module is the Supabase client.
+chasing imports. There are exactly **two** shared modules: the Supabase
+client (`js/supabase-config.js`) and the waiver registry
+(`js/waiver-config.js`). The second is a deliberate exception:
+`CURRENT_WAIVER_VERSION` must not drift between `waiver.html` and
+`dashboard.html`, or the "sign your waiver" banner nags for ever or never
+fires at all.
 
 ## File Structure
 
@@ -60,6 +69,7 @@ TRACKRAT/
 ├── 404.html                # branded 404 (served automatically by Vercel)
 ├── js/
 │   ├── supabase-config.js  # Shared Supabase client (URL + anon key)
+│   ├── waiver-config.js    # Waiver + code-of-conduct registry (versions, hashes, stamp coords)
 │   └── vendor/             # Vendored Supabase JS SDK (dep-inlined ESM bundle + node-*.mjs polyfills)
 ├── api/
 │   └── video.js            # /api/video — same-origin Drive video streaming proxy (zero-dep Vercel Node function)
@@ -88,7 +98,7 @@ TRACKRAT/
 ├── trackrat-monogram-orange.png
 ├── vercel.json             # cleanUrls, security headers, redirects, cache headers
 ├── robots.txt              # Crawl rules (/dashboard handled by noindex meta, NOT Disallow)
-├── sitemap.xml             # Public-page sitemap (excludes /dashboard + /gallery; includes /offtrack)
+├── sitemap.xml             # Public-page sitemap (excludes /dashboard + /gallery; includes /offtrack + /waiver)
 ├── llms.txt                # LLM-facing site description
 ├── favicon.ico             # browser-tab + Google SERP icon (TR monogram; 16/32/48/64px frames)
 ├── favicon.svg             # vector favicon (TR monogram; crisp at any size, modern browsers)
@@ -283,7 +293,7 @@ gets wider or narrower).
 **CLUB and EVENTS are dropdowns, not pages** (there are intentionally no
 `/club` or `/events` routes). CLUB groups the member-facing destinations:
 GALLERY (`/dashboard#gallery`), PODIUM, PERSONAL RECORDS (`/dashboard`),
-and PARTNERS (`/dashboard#PARTNERS`) — the hashes deep-link to dashboard
+PARTNERS (`/dashboard#PARTNERS`), and WAIVER (`/waiver`) — the hashes deep-link to dashboard
 tabs (matched case-insensitively; the legacy `#promotions` still works).
 EVENTS groups the two event pages: **2026 Invitational** and **OFFTRACK**
 (`/offtrack`). Desktop: `.nav-dropdown`s whose `.nav-dropdown-panel`
@@ -415,14 +425,120 @@ who gets in:
   itself would require proxying every image through an authorized
   backend and losing Drive's CDN — deliberately not done.
 
+## Waivers (`/waiver` + Dashboard → Waiver)
+
+Everyone who trains with the club signs the liability waiver once. The page
+renders the code of conduct and the waiver for anyone, and gates only the
+signing form; the signed PDF is generated **in the browser**, stored in a
+private Supabase Storage bucket, and recorded in an append-only `waivers`
+table. Schema and RLS: README → *3c. Waivers tables*.
+
+**Two separate agreements, deliberately.** The code of conduct and the waiver
+of liability are agreed to with **separate checkboxes** and recorded in
+separate columns (`attested_conduct`, `attested_waiver`), plus a third for
+capacity (18+, or guardian authority). RRCA guidance is explicit that a club's
+code of conduct must be its own agreement question and must not be folded into
+the waiver of liability. Do not merge them.
+
+**The signed record is immutable.** `public.waivers` has no update and no
+delete policy and no update/delete grant, and the Waiver tab has no edit or
+delete affordance. Do not pattern-match the pencil/trash row actions from
+`#prPanel` onto it.
+
+**Minors.** The waiver supports under-18 athletes with a parent or legal
+guardian signing. Minority is **derived from `date_of_birth`** in both the
+client and a database `CHECK`, never from a client-supplied boolean, so a
+tampered client cannot skip the guardian fields. On a minor's signed copy the
+athlete's own signature line is left blank and only the guardian's is stamped.
+
+### The PDF cannot be displayed inline. Do not try.
+
+`vercel.json` sets `object-src 'none'` (killing `<object>`/`<embed>`) **and**
+`X-Frame-Options: DENY` **and** `frame-ancestors 'none'` on `/(.*)`, which
+covers every PDF served. `DENY` blocks **same-origin** framing too
+(`SAMEORIGIN` is the permissive value), and `frame-ancestors` is evaluated
+against the framed resource's own CSP. So `<iframe>` is out as well.
+
+Do **not** "fix" this by adding a `/waiver-docs/(.*)` header block that
+downgrades those headers: Vercel does not document precedence when two
+`headers` entries set the same key, so it would mean weakening a security
+header on undocumented behaviour. The page instead opens the PDF in a new tab
+(a top-level navigation, which no CSP directive touches), which hands it to the
+platform's own reader. The `<details>` transcript is the accessible reading
+path, since an untagged PDF does not reflow at 375px or read correctly in a
+screen reader.
+
+### Documents are version-pinned and never overwritten
+
+`/waiver-docs/` holds the waiver PDF, the code of conduct, and the waiver's
+verbatim HTML transcript. The PDF and its transcript are **generated from one
+source text** so they cannot drift. Each signed row stores the SHA-256 of both
+documents as displayed, and a composite foreign key to `waiver_documents`
+means replacing a PDF without registering it makes the next insert fail
+`23503` rather than silently recording new bytes. Never overwrite a file in
+`/waiver-docs/`; publish a new version. Steps: README → *Adding a new waiver or
+code-of-conduct version*.
+
+### pdf-lib (vendored)
+
+`js/vendor/pdf-lib-1.17.1.bundle.mjs` (523,373 bytes after stripping the
+trailing sourcemap comment; ~205 KB gzip). Unlike the Supabase bundle it needs
+**no** polyfill rewriting: the published ESM dist has zero imports, zero
+`require(`, and zero `process`/`Buffer` references. Do not also vendor
+`@pdf-lib/fontkit`; `StandardFonts.Helvetica` uses inlined AFM metrics.
+
+It loads only on `/waiver`, via a dynamic `import()` after first paint, so it
+never blocks the sign-in gate and never loads on `/dashboard`.
+
+**WinAnsi trap.** The standard 14 PDF fonts are CP1252-encoded and `drawText`
+*throws* outside that set, which would crash after the member has done all the
+work. Every string reaching `drawText` goes through `winAnsi()`, which keeps
+what CP1252 holds, folds typographic punctuation, then decomposes and strips
+combining marks. The database row keeps the original UTF-8, so a dropped glyph
+is cosmetic.
+
+### Signature pad
+
+The repo's only `<canvas>`. The canvas is a **view**; a normalised stroke array
+(coordinates 0..1) is the truth, which is what makes the drawing survive a
+resize, undo one line, and the exported PNG a fixed 1200px regardless of the
+device that drew it. Notes for anyone touching it:
+
+- `ctx.setTransform(dpr,0,0,dpr,0,0)`, never `ctx.scale()`, which compounds if
+  the resize runs twice.
+- `touch-action: none` on the **canvas only**; on a container it would break
+  page scrolling.
+- `pointercancel` **and** `lostpointercapture` both end the stroke, or iOS
+  leaves the pad "drawing" for ever when the system takes the gesture.
+- `getCoalescedEvents()` can return an empty list; fall back to the event
+  itself or points are silently dropped.
+- `getBoundingClientRect()` under a `display:none` ancestor returns 0, which
+  would give a 0×0 canvas that swallows strokes. `ensureSized()` guards every
+  path that depends on the measurement, because a non-rendered tab may never
+  deliver the `ResizeObserver` callback.
+
+### Auth-lock rule still applies
+
+The dashboard banner fetch rides the **existing** `setTimeout(…, 0)` inside
+`onAuthStateChange` and only fires when `user.id` actually changes. The
+callback stays synchronous. See the Dashboard section's auth-lock note.
+
 ## Dashboard (`/dashboard`)
 
 Authenticated member dashboard backed by Supabase (`dashboard.html`, formerly
-`pr.html` / `/pr`). Three tabs inside the signed-in view, toggled by
-`.dash-tab` buttons (`selectTab('pr'|'promo'|'gallery')`); the nav's CLUB
-dropdown deep-links via hashes handled by `applyTabHash()` (initial load
-+ `hashchange`, case-insensitive): `#PARTNERS` (legacy `#promotions`
-too) → Partners, `#gallery` → Gallery, anything else → Personal Records.
+`pr.html` / `/pr`). Four tabs inside the signed-in view, toggled by
+`.dash-tab` buttons (`selectTab('pr'|'waiver'|'promo'|'gallery')`, rendered in
+that order: PERSONAL RECORDS / WAIVER / PARTNERS / GALLERY, with the panels in
+matching DOM order); the nav's
+CLUB dropdown deep-links via hashes handled by `applyTabHash()` (initial load
++ `hashchange`, case-insensitive) through the `TAB_BY_HASH` lookup:
+`#PARTNERS` (legacy `#promotions` too) → Partners, `#gallery` → Gallery,
+`#waiver` / `#waivers` → Waiver, anything else → Personal Records.
+
+At ≤768px the four tabs become a **2×2 grid** rather than one `flex:1` row:
+`PERSONAL RECORDS` alone measures ~134px, so four across a 339px content
+column would truncate. The container's `border-bottom` moves onto each cell so
+the active-tab underline still reads.
 
 - **Personal Records** (default) — the PR tracker described below, wrapped in
   `#prPanel`.
