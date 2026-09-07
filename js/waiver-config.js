@@ -62,6 +62,13 @@ export const WAIVER_VERSIONS = {
                 you want the printed rule visible under the ink.
        Load /waiver?stamp=debug to render labelled boxes at every position. */
     stamps: [
+      /* Fills the blank in the opening line: "I agree that I, ______ [NAME OF
+         MEMBER] am a member of...". clearW covers the whole span, blank plus
+         bracketed label, so the signed copy reads as a completed form however
+         long the name is. Coordinates come from the generator's own layout. */
+      { field: 'legalName', page: 1, x: 0.1951, y: 0.1889, size: 9.2,
+        clear: true, clearW: 0.3109, underline: true },
+
       { field: 'signature', page: 'last', x: 0.1013, y: 0.7285, w: 0.30, if: 'adult' },
       { field: 'signedOn',  page: 'last', x: 0.5915, y: 0.7285, size: 10, if: 'adult' },
       { field: 'legalName', page: 'last', x: 0.1013, y: 0.7790, size: 10 },

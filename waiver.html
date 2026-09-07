@@ -1774,10 +1774,23 @@
           if (!text) continue;
           const sz = s.size || 10;
           if (s.clear) {
+            // clearW knocks out a fixed span (a fill-in blank); without it the
+            // plate is sized to the text, which is right for a stamp landing on
+            // a ruled line but would leave the rest of a blank showing.
+            const plateW = s.clearW ? s.clearW * W : font.widthOfTextAtSize(text, sz) + 4;
             page.drawRectangle({
-              x: x - 2, y: anchor - sz * 0.25,
-              width: font.widthOfTextAtSize(text, sz) + 4, height: sz * 1.25,
+              x: x - 2, y: anchor - sz * 0.28,
+              width: plateW + 4, height: sz * 1.2,
               color: rgb(1, 1, 1),
+            });
+          }
+          if (s.underline) {
+            // Keeps the form's rule visible under the filled-in span, so the
+            // sentence does not read as a gap where the blank used to be.
+            const ruleW = s.clearW ? s.clearW * W : font.widthOfTextAtSize(text, sz);
+            page.drawLine({
+              start: { x: x, y: anchor - 2 }, end: { x: x + ruleW, y: anchor - 2 },
+              thickness: 0.6, color: rgb(0.45, 0.45, 0.45),
             });
           }
           page.drawText(text, { x: x, y: anchor, size: sz, font: font, color: rgb(0, 0, 0) });

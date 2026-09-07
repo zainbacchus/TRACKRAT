@@ -1132,25 +1132,7 @@
     .wc-badge.is-current { color: var(--orange); border-color: var(--orange); opacity: 1; }
     .wc-rows { font-size: 12px; line-height: 1.9; }
     .wc-rows span { opacity: 0.45; display: inline-block; min-width: 132px; }
-    .wc-hash { font-size: 10.5px; opacity: 0.4; word-break: break-all; }
-    /* The ink is black, so it needs a white plate on this page. */
-    .waiver-sig {
-      display: block;
-      max-width: 300px;
-      width: 100%;
-      margin: 16px 0 4px;
-      background: #fff;
-      padding: 8px 10px;
-    }
     .wc-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
-    .wc-note {
-      margin-top: 16px;
-      padding-top: 14px;
-      border-top: 1px solid var(--field-border);
-      font-size: 11px;
-      line-height: 1.6;
-      opacity: 0.45;
-    }
 
     /* ---- PROMOTIONS ---- */
     .promo-intro {
@@ -3209,8 +3191,6 @@
       function cardHtml(r, urls) {
         const current = r.waiver_version === CURRENT_WAIVER_VERSION;
         const pdfUrl = r.signed_pdf_path ? urls.get(r.signed_pdf_path) : null;
-        const sig = r.signature_png && /^data:image\/png;base64,/.test(r.signature_png)
-          ? r.signature_png : null;
         const rows = [
           ['Signed by', escapeHtml(r.legal_name || '')],
           ['Date of birth', escapeHtml(fmtDob(r.date_of_birth))],
@@ -3230,26 +3210,23 @@
           '<div class="wc-rows">' +
             rows.map(function (kv) { return '<div><span>' + kv[0] + '</span>' + kv[1] + '</div>'; }).join('') +
           '</div>' +
-          (sig ? '<img class="waiver-sig" src="' + sig + '" alt="Your signature as drawn when you signed">' : '') +
-          '<div class="wc-hash">Document SHA-256 ' + escapeHtml(r.waiver_sha256 || '') + '</div>' +
           '<div class="wc-actions">' +
             (pdfUrl
               ? '<a class="g-btn" href="' + pdfUrl + '" target="_blank" rel="noopener">OPEN SIGNED PDF ↗</a>'
               : '<span class="g-meta">The PDF is not available for this record.</span>') +
           '</div>' +
-          '<p class="wc-note">This is a permanent record. It can be viewed and downloaded ' +
-            'but not edited or deleted, by you or by us.</p>' +
         '</div>';
       }
 
       openWaiverTab = async function () {
         if (loaded) return;
         // No .eq('user_id', …): RLS scopes this to the caller. Named columns
-        // rather than *, because signature_png is a 10-30 KB data URL.
+        // rather than *, so the row's base64 signature never comes down: the
+        // card shows the record, and the signature lives in the signed PDF.
         const { data, error } = await supabase
           .from('waivers')
-          .select('id, waiver_version, waiver_sha256, legal_name, date_of_birth, signed_by, ' +
-                  'guardian_name, guardian_relationship, conduct_version, signature_png, ' +
+          .select('id, waiver_version, legal_name, date_of_birth, signed_by, ' +
+                  'guardian_name, guardian_relationship, conduct_version, ' +
                   'signed_pdf_path, signed_at')
           .order('signed_at', { ascending: false })
           .limit(10);
