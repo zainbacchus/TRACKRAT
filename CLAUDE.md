@@ -292,8 +292,9 @@ gets wider or narrower).
 
 **CLUB and EVENTS are dropdowns, not pages** (there are intentionally no
 `/club` or `/events` routes). CLUB groups the member-facing destinations:
-GALLERY (`/dashboard#gallery`), PODIUM, PERSONAL RECORDS (`/dashboard`),
-PARTNERS (`/dashboard#PARTNERS`), and WAIVER (`/waiver`) — the hashes deep-link to dashboard
+PODIUM, PERSONAL RECORDS (`/dashboard`), WAIVER (`/waiver`),
+PARTNERS (`/dashboard#PARTNERS`), and GALLERY (`/dashboard#gallery`), in that
+order — the hashes deep-link to dashboard
 tabs (matched case-insensitively; the legacy `#promotions` still works).
 EVENTS groups the two event pages: **2026 Invitational** and **OFFTRACK**
 (`/offtrack`). Desktop: `.nav-dropdown`s whose `.nav-dropdown-panel`

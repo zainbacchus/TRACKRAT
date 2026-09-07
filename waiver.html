@@ -251,6 +251,15 @@
       line-height: 0.85;
       color: var(--orange);
     }
+
+    /* Page name under the TRACKRAT wordmark, matching /brand's .hero-tagline. */
+    .page-tagline {
+      font-size: clamp(11px, 1.2vw, 15px);
+      letter-spacing: 0.2em;
+      margin-top: 20px;
+      opacity: 0.62; /* ≥4.5:1 on black for WCAG AA */
+      font-weight: 500;
+    }
     @keyframes fadeUp {
       to { opacity: 1; transform: translateY(0); }
     }
@@ -449,6 +458,15 @@
     .g-btn-ghost:hover { border-color: var(--orange); color: var(--orange); }
     .g-btn-ghost:focus-visible { outline: 2px solid var(--orange); outline-offset: 2px; }
 
+    /* Page name under the TRACKRAT wordmark, matching /brand's .hero-tagline. */
+    .page-tagline {
+      font-size: clamp(11px, 1.2vw, 15px);
+      letter-spacing: 0.2em;
+      margin-top: 20px;
+      opacity: 0.62; /* ≥4.5:1 on black for WCAG AA */
+      font-weight: 500;
+    }
+
     /* ---- INTRO ---- */
     .wv-intro {
       width: 100%;
@@ -478,28 +496,19 @@
       flex-wrap: wrap;
       margin-bottom: 4px;
     }
-    .wv-doc-eyebrow {
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.2em;
-      color: var(--orange);
-    }
     .wv-doc-version {
       font-size: 11px;
       letter-spacing: 0.12em;
       opacity: 0.45;
+      /* Stays right-aligned whether or not an eyebrow sits beside it. */
+      margin-left: auto;
     }
     .wv-doc-title {
       font-family: 'Fugaz One', 'Arial Black', sans-serif;
       letter-spacing: -0.04em;
       font-size: clamp(22px, 3.4vw, 32px);
       line-height: 1.05;
-      margin-bottom: 10px;
-    }
-    .wv-doc-meta {
-      font-size: 12px;
-      letter-spacing: 0.06em;
-      opacity: 0.5;
+      /* Was 10px with a meta line below carrying the other 22px. */
       margin-bottom: 22px;
     }
     .wv-doc-actions { display: flex; gap: 12px; flex-wrap: wrap; }
@@ -604,6 +613,12 @@
     .wv-pad-wrap {
       position: relative;
       width: 100%;
+      /* Capped rather than full-bleed: at the panel's 846px this was a
+         signature box nearly a metre wide on screen. 420x140 is closer to the
+         ruled box on the paper form, and still a comfortable target to sign
+         with a finger. The export reads its aspect from the live box, so
+         nothing downstream needs changing. */
+      max-width: 420px;
       aspect-ratio: 3 / 1;
       background: rgba(0, 0, 0, 0.35);
       border: 1px solid var(--field-border);
@@ -902,11 +917,11 @@
           <svg class="nav-dropdown-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
         </button>
         <div class="nav-dropdown-panel" id="clubMenu" role="menu">
-          <a href="/dashboard#gallery" role="menuitem">GALLERY</a>
           <a href="/podium" role="menuitem">PODIUM</a>
           <a href="/dashboard" role="menuitem">PERSONAL RECORDS</a>
-          <a href="/dashboard#PARTNERS" role="menuitem">PARTNERS</a>
           <a href="/waiver" role="menuitem">WAIVER</a>
+          <a href="/dashboard#PARTNERS" role="menuitem">PARTNERS</a>
+          <a href="/dashboard#gallery" role="menuitem">GALLERY</a>
         </div>
       </div>
       <div class="nav-dropdown">
@@ -947,11 +962,11 @@
         <svg class="acc-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
       </button>
       <div class="mobile-accordion-panel" id="mobileClub">
-        <a href="/dashboard#gallery">GALLERY</a>
         <a href="/podium">PODIUM</a>
         <a href="/dashboard">PERSONAL RECORDS</a>
-        <a href="/dashboard#PARTNERS">PARTNERS</a>
         <a href="/waiver">WAIVER</a>
+        <a href="/dashboard#PARTNERS">PARTNERS</a>
+        <a href="/dashboard#gallery">GALLERY</a>
       </div>
       <button class="mobile-accordion-trigger" type="button" aria-expanded="false" aria-controls="mobileEvents">
         EVENTS
@@ -969,19 +984,15 @@
   <main class="page">
 
     <div class="page-header">
-      <span class="page-eyebrow">CLUB</span>
-      <h1 class="page-title">WAIVER</h1>
+      <h1 class="page-title">TRACKRAT</h1>
+      <p class="page-tagline">WAIVER</p>
     </div>
 
     <div class="wv-intro">
-      <p>Everyone who trains with TRACKRAT signs this once. It is still free, there
-        is still no membership and no fees, and you still do not have to tell us
-        you are coming. You sign the waiver one time, then you just show up.</p>
+      <p>Everyone who trains with TRACKRAT must sign this waiver.</p>
       <p>Read the club rules and the waiver below, sign, and your signed copy
         lands on your <a href="/dashboard#waiver" class="wv-link">dashboard</a>
-        where you can read it or download it any time. <strong>Once it is signed
-        it cannot be edited or deleted</strong>, by you or by us. That is the
-        point of a signed record.</p>
+        where you can read it or download it any time.</p>
     </div>
 
     <!-- CODE OF CONDUCT. A SEPARATE agreement from the waiver, with its own
@@ -992,11 +1003,9 @@
          Anchored so /waiver#rules links straight here. -->
     <section class="wv-doc" id="rules">
       <div class="wv-doc-top">
-        <span class="wv-doc-eyebrow">FIRST</span>
         <span class="wv-doc-version" id="conductVersion">&nbsp;</span>
       </div>
       <h2 class="wv-doc-title" id="conductTitle">CLUB RULES</h2>
-      <p class="wv-doc-meta">WHAT WE EXPECT FROM EVERYONE ON THE TRACK</p>
 
       <div class="wv-rules" id="conductText"></div>
 
@@ -1014,11 +1023,9 @@
          reading path, and both it and the PDF are generated from one source. -->
     <section class="wv-doc" id="document">
       <div class="wv-doc-top">
-        <span class="wv-doc-eyebrow">THEN</span>
         <span class="wv-doc-version" id="docVersion">&nbsp;</span>
       </div>
       <h2 class="wv-doc-title" id="docTitle">THE WAIVER</h2>
-      <p class="wv-doc-meta" id="docMeta">CHECKING THE DOCUMENT&hellip;</p>
 
       <div class="wv-doc-actions">
         <a class="g-btn" id="docOpen" href="#" target="_blank" rel="noopener">OPEN THE WAIVER &#8599;</a>
@@ -1058,7 +1065,7 @@
            panel is gated. -->
       <div class="wv-state" id="stAuth">
         <p class="wv-auth-copy">Sign in with Google so we can attach the signed
-          waiver to your account. It is the same sign-in as the dashboard.</p>
+          waiver to your account.</p>
         <div class="wv-done-actions">
           <button class="g-btn" id="signInBtn" type="button">SIGN IN WITH GOOGLE</button>
         </div>
@@ -1361,17 +1368,12 @@
         sourceSha = await sha256Hex(buf);
         docOk = true;
 
+        // Parse it once here so a malformed PDF fails now, before anyone
+        // draws a signature, rather than at generation time.
         const { PDFDocument } = await pdfLib();
-        const probe = await PDFDocument.load(buf.slice(0), { ignoreEncryption: true });
-        const size = probe.getPages()[0].getSize();
-        const inches = (n) => (Math.round((n / 72) * 10) / 10);
-        $('docMeta').textContent =
-          probe.getPageCount() + (probe.getPageCount() === 1 ? ' PAGE' : ' PAGES') +
-          ' · ' + inches(size.width) + '×' + inches(size.height) + ' IN' +
-          ' · ' + Math.round(buf.length / 1024) + ' KB';
+        await PDFDocument.load(buf.slice(0), { ignoreEncryption: true });
       } catch (err) {
         console.error('[waiver] source document unavailable:', err);
-        $('docMeta').textContent = 'UNAVAILABLE';
         $('docOpen').setAttribute('aria-disabled', 'true');
         return false;
       }
@@ -1481,12 +1483,20 @@
     let cssW = 0, cssH = 0, activeId = null;
 
     function resizePad() {
-      const r = wrap.getBoundingClientRect();
+      // clientWidth/clientHeight, NOT getBoundingClientRect(): the wrapper is
+      // border-box with a 1px border, so the rect is 2px larger than the space
+      // the canvas can occupy. Sizing the canvas from the rect made it 2px
+      // taller than its own container, which grew the container, which fired
+      // the ResizeObserver again: the pad ran away 2px per frame.
+      const w = wrap.clientWidth, h = wrap.clientHeight;
       // A display:none ancestor reports 0 and would give us a 0x0 canvas that
       // silently swallows every stroke. Bail and re-run when it is visible.
-      if (r.width < 1) return;
+      if (w < 1 || h < 1) return;
       const dpr = Math.min(window.devicePixelRatio || 1, 3);
-      cssW = r.width; cssH = r.height;
+      // Nothing to do if the box has not actually changed. Belt and braces
+      // against any residual observer feedback.
+      if (cssW === w && cssH === h && canvas.width === Math.round(w * dpr)) return;
+      cssW = w; cssH = h;
       canvas.style.width = cssW + 'px';
       canvas.style.height = cssH + 'px';
       canvas.width = Math.round(cssW * dpr);

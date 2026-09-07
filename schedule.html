@@ -247,6 +247,15 @@
       color: var(--orange);
     }
 
+    /* Page name under the TRACKRAT wordmark, matching /brand's .hero-tagline. */
+    .page-tagline {
+      font-size: clamp(11px, 1.2vw, 15px);
+      letter-spacing: 0.2em;
+      margin-top: 20px;
+      opacity: 0.62; /* ≥4.5:1 on black for WCAG AA */
+      font-weight: 500;
+    }
+
     /* ---- SCHEDULE CARDS ---- */
     .schedule-stack {
       width: 100%;
@@ -724,11 +733,11 @@
           <svg class="nav-dropdown-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
         </button>
         <div class="nav-dropdown-panel" id="clubMenu" role="menu">
-          <a href="/dashboard#gallery" role="menuitem">GALLERY</a>
           <a href="/podium" role="menuitem">PODIUM</a>
           <a href="/dashboard" role="menuitem">PERSONAL RECORDS</a>
-          <a href="/dashboard#PARTNERS" role="menuitem">PARTNERS</a>
           <a href="/waiver" role="menuitem">WAIVER</a>
+          <a href="/dashboard#PARTNERS" role="menuitem">PARTNERS</a>
+          <a href="/dashboard#gallery" role="menuitem">GALLERY</a>
         </div>
       </div>
       <div class="nav-dropdown">
@@ -769,11 +778,11 @@
         <svg class="acc-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
       </button>
       <div class="mobile-accordion-panel" id="mobileClub">
-        <a href="/dashboard#gallery">GALLERY</a>
         <a href="/podium">PODIUM</a>
         <a href="/dashboard">PERSONAL RECORDS</a>
-        <a href="/dashboard#PARTNERS">PARTNERS</a>
         <a href="/waiver">WAIVER</a>
+        <a href="/dashboard#PARTNERS">PARTNERS</a>
+        <a href="/dashboard#gallery">GALLERY</a>
       </div>
       <button class="mobile-accordion-trigger" type="button" aria-expanded="false" aria-controls="mobileEvents">
         EVENTS
@@ -791,7 +800,8 @@
   <main class="page">
 
     <div class="page-header">
-      <h1 class="page-title">SCHEDULE</h1>
+      <h1 class="page-title">TRACKRAT</h1>
+      <p class="page-tagline">SCHEDULE</p>
     </div>
 
     <div class="schedule-stack">
