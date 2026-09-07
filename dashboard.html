@@ -155,14 +155,18 @@
       animation: fadeUp 0.7s ease 0.1s forwards;
     }
 
-    .page-eyebrow {
-      font-size: 12px; font-weight: 600; letter-spacing: 0.2em;
-      color: var(--orange); margin-bottom: 16px; display: block;
-    }
 
     .page-title {
       font-family: 'Fugaz One', 'Arial Black', sans-serif; letter-spacing: -0.14em;
       font-size: clamp(60px, 12vw, 160px); line-height: 0.85; color: var(--orange);
+    }
+    /* Page name under the TRACKRAT wordmark, matching /brand's .hero-tagline. */
+    .page-tagline {
+      font-size: clamp(11px, 1.2vw, 15px);
+      letter-spacing: 0.2em;
+      margin-top: 20px;
+      opacity: 0.62; /* ≥4.5:1 on black for WCAG AA */
+      font-weight: 500;
     }
 
 
@@ -1405,8 +1409,8 @@
   <main class="page">
 
     <div class="page-header">
-      <span class="page-eyebrow">MEMBER DASHBOARD</span>
       <h1 class="page-title">TRACKRAT</h1>
+      <p class="page-tagline">MEMBER DASHBOARD</p>
     </div>
 
     <!-- SIGNED IN -->
