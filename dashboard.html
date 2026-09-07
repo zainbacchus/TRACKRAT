@@ -165,10 +165,6 @@
       font-size: clamp(60px, 12vw, 160px); line-height: 0.85; color: var(--orange);
     }
 
-    .page-sub {
-      font-size: clamp(14px, 1.4vw, 16px); margin-top: 20px; opacity: 0.6;
-      max-width: 560px; line-height: 1.5;
-    }
 
     /* ---- SIGNED-OUT STATE ---- */
     .signin-card {
@@ -1128,6 +1124,10 @@
       padding: 4px 8px;
       border: 1px solid var(--field-border);
       opacity: 0.7;
+      /* The row is space-between with three children, which would strand the
+         badge in the middle. This keeps it beside the version it labels and
+         sends only the signed date to the right. */
+      margin-right: auto;
     }
     .wc-badge.is-current { color: var(--orange); border-color: var(--orange); opacity: 1; }
     .wc-rows { font-size: 12px; line-height: 1.9; }
@@ -1212,7 +1212,6 @@
       .page { padding: 84px 18px 56px; }
       .page-header { margin-bottom: 26px; }
       .page-title { font-size: clamp(40px, 12vw, 62px); }
-      .page-sub { font-size: 13px; margin-top: 14px; line-height: 1.5; }
 
       .signin-card { padding: 40px 24px; }
 
@@ -1408,7 +1407,6 @@
     <div class="page-header">
       <span class="page-eyebrow">MEMBER DASHBOARD</span>
       <h1 class="page-title">TRACKRAT</h1>
-      <p class="page-sub" id="pageSub">SIGN IN TO LOG YOUR PRs, SIGN THE WAIVER, SEE PARTNER PROMOTIONS, AND VIEW CLUB PHOTOS.</p>
     </div>
 
     <!-- SIGNED IN -->
@@ -2418,7 +2416,6 @@
     // ---- AUTH UI ----
     const bootLoader = document.getElementById('bootLoader');
     const signedInView = document.getElementById('signedInView');
-    const pageSub = document.getElementById('pageSub');
 
     // Logged out → show the focused split auth screen (body.auth-mode hides the
     // dashboard chrome). Logged in → remove it and reveal the dashboard.
@@ -2432,9 +2429,6 @@
       bootLoader.style.display = 'none';
       document.body.classList.remove('auth-mode');
       signedInView.style.display = 'block';
-      // Order mirrors the tab order: PERSONAL RECORDS / WAIVER / PARTNERS / GALLERY.
-      pageSub.textContent = 'TRACK YOUR PRs · SIGNED WAIVER · PARTNER PROMOTIONS · CLUB PHOTOS AND VIDEOS';
-
       const meta = user.user_metadata || {};
       const name = meta.full_name || meta.name || user.email || 'ATHLETE';
       const avatar = meta.avatar_url || meta.picture;
