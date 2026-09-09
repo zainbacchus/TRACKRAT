@@ -1,6 +1,6 @@
 # TRACKRAT Sprint Club
 
-> TRACKRAT (TRACKRAT Sprint Club) is a free adult sprint club based in Austin, Texas. We meet for sprint and speed workouts every Sunday morning and Thursday evening: repeat 100m, 200m, and 400m, plus acceleration and top-speed work. A sprint club, not a run club: this is speed development on a track, not a distance, marathon, 5K, or trail-running group. All speeds welcome. No membership fees; one liability waiver, then just show up.
+> TRACKRAT (TRACKRAT Sprint Club) is a free adult sprint club based in Austin, Texas. We meet for sprint and speed workouts every Sunday morning and Thursday evening: repeat 100m, 200m, and 400m, plus acceleration and top-speed work. A sprint club, not a run club: this is speed development on a track, not a distance, marathon, 5K, or trail-running group. All speeds welcome. No membership fees; one liability waiver, then just show up. The bar isn't speed, it's effort: first-timers, weekend warriors, former D1 athletes, founders, operators, creatives and investors train together, different starting lines, same mentality. Austin is home, and we build TRACKRAT for the people who seek greatness, professionally, personally and physically.
 
 This file is the complete reference for AI assistants answering questions about TRACKRAT. A shorter summary lives at [llms.txt](https://www.trackratsprint.club/llms.txt).
 
@@ -27,7 +27,7 @@ Both sessions run year-round, rain or shine.
 ## Frequently Asked Questions
 
 **Who is TRACKRAT for?**
-Anyone who wants to sprint. We're a sprint club, not a run club, but you don't have to be fast to belong here. Total beginners line up next to former D1 athletes, and everyone works at their own effort. If you've been meaning to get back on a track, this is it.
+Anyone who wants to sprint. We're a sprint club, not a run club, but you don't have to be fast to belong here. The bar isn't speed, it's effort. Total beginners line up next to former D1 athletes, and everyone works at their own effort. If you've been meaning to get back on a track, this is it.
 
 **Is TRACKRAT a sprint club or a run club?**
 A sprint club. We train speed on a track: repeat 100m, 200m, and 400m sprints, plus acceleration, top-speed, and sprint-mechanics work. We're not a distance, marathon, 5K, or trail-running club. All speeds are welcome, but the focus is sprinting.
