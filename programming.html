@@ -1,0 +1,2778 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="format-detection" content="telephone=no, date=no, address=no, email=no" />
+  <title>Programming · TRACKRAT Sprint Club</title>
+  <meta name="description" content="TRACKRAT workout block planner (members)." />
+  <meta name="robots" content="noindex, follow" />
+  <link rel="canonical" href="https://www.trackratsprint.club/programming" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="TRACKRAT Sprint Club" />
+  <meta property="og:title" content="Programming · TRACKRAT Sprint Club" />
+  <meta property="og:description" content="TRACKRAT workout block planner (members)." />
+  <meta property="og:url" content="https://www.trackratsprint.club/programming" />
+  <meta property="og:image" content="https://www.trackratsprint.club/og.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="TRACKRAT wordmark" />
+  <meta property="og:locale" content="en_US" />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Programming · TRACKRAT Sprint Club" />
+  <meta name="twitter:description" content="TRACKRAT workout block planner (members)." />
+  <meta name="twitter:image" content="https://www.trackratsprint.club/og.png" />
+  <meta name="twitter:site" content="@trackratsprints" />
+  <meta name="twitter:creator" content="@trackratsprints" />
+
+  <meta name="geo.region" content="US-TX" />
+  <meta name="geo.placename" content="Austin" />
+  <meta name="theme-color" content="#000000" />
+
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <meta name="apple-mobile-web-app-title" content="TRACKRAT">
+  <!-- Self-hosted fonts (see @font-face in inline <style>). -->
+  <link rel="preload" as="font" type="font/woff2" href="/fonts/fugaz-one-latin.woff2" crossorigin>
+  <link rel="preload" as="font" type="font/woff2" href="/fonts/ibm-plex-mono-400-latin.woff2" crossorigin>
+  <script defer src="/_vercel/insights/script.js"></script>
+  <script defer src="/_vercel/speed-insights/script.js"></script>
+  <style>
+    /* Self-hosted fonts (latin subset). */
+    @font-face { font-family: 'Fugaz One';     font-style: normal; font-weight: 400; font-display: swap; src: url('/fonts/fugaz-one-latin.woff2') format('woff2'); }
+    @font-face { font-family: 'IBM Plex Mono'; font-style: normal; font-weight: 400; font-display: swap; src: url('/fonts/ibm-plex-mono-400-latin.woff2') format('woff2'); }
+    @font-face { font-family: 'IBM Plex Mono'; font-style: normal; font-weight: 500; font-display: swap; src: url('/fonts/ibm-plex-mono-500-latin.woff2') format('woff2'); }
+    @font-face { font-family: 'IBM Plex Mono'; font-style: normal; font-weight: 600; font-display: swap; src: url('/fonts/ibm-plex-mono-600-latin.woff2') format('woff2'); }
+    @font-face { font-family: 'IBM Plex Mono'; font-style: normal; font-weight: 700; font-display: swap; src: url('/fonts/ibm-plex-mono-700-latin.woff2') format('woff2'); }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --orange: #FF4D1F;
+      --black: #000000;
+      --white: #FFFFFF;
+      --font: 'IBM Plex Mono', monospace;
+      --lane-color: rgba(255, 255, 255, 0.12);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font);
+      background: var(--black);
+      color: var(--white);
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      min-height: 100dvh; /* dvh: avoid overscroll past the footer on mobile toolbars */
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .wordmark {
+      font-family: 'Fugaz One', 'Arial Black', sans-serif;
+      letter-spacing: -0.14em;
+    }
+
+    /* ---- TRACK LANES (background) ---- */
+    .track-lanes {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 0;
+      pointer-events: none;
+      display: flex;
+      justify-content: center;
+      gap: 0;
+    }
+
+    .lane {
+      width: calc(100% / 8);
+      height: 100%;
+      border-right: 1px solid var(--lane-color);
+    }
+
+    .lane:first-child { border-left: 1px solid var(--lane-color); }
+
+    /* ---- NAV ---- */
+    nav {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 24px 40px;
+      font-size: 13px;
+      letter-spacing: 0.05em;
+    }
+
+    nav .nav-left {
+      font-family: 'Fugaz One', 'Arial Black', sans-serif;
+      font-size: 18px;
+      letter-spacing: -0.14em;
+      position: absolute;
+      left: 40px;
+    }
+
+    nav .nav-center {
+      display: flex;
+      gap: 28px;
+      font-weight: 500;
+      align-items: center;
+    }
+
+    /* ---- DESKTOP EVENTS DROPDOWN ---- */
+    .nav-dropdown { position: relative; display: inline-flex; align-items: center; }
+    .nav-dropdown-trigger {
+      background: transparent; border: none; cursor: pointer; color: inherit;
+      font-family: inherit; font-size: inherit; font-weight: inherit;
+      letter-spacing: inherit; padding: 0;
+      display: inline-flex; align-items: center; gap: 6px;
+    }
+    .nav-dropdown-trigger:hover { opacity: 0.6; transition: opacity 0.2s ease; }
+    .nav-dropdown-caret { width: 9px; height: 9px; display: block; transition: transform 0.2s ease; }
+    .nav-dropdown:hover .nav-dropdown-caret,
+    .nav-dropdown:focus-within .nav-dropdown-caret,
+    .nav-dropdown.is-open .nav-dropdown-caret { transform: rotate(180deg); }
+    .nav-dropdown-panel {
+      position: absolute; top: 100%; left: 50%;
+      transform: translateX(-50%) translateY(6px);
+      min-width: 230px; background: var(--black);
+      border: 1px solid rgba(255,255,255,0.16);
+      padding: 8px; display: flex; flex-direction: column;
+      opacity: 0; visibility: hidden; pointer-events: none;
+      transition: opacity 0.18s ease, transform 0.18s ease; z-index: 120;
+    }
+    .nav-dropdown:hover .nav-dropdown-panel,
+    .nav-dropdown:focus-within .nav-dropdown-panel,
+    .nav-dropdown.is-open .nav-dropdown-panel {
+      opacity: 1; visibility: visible; pointer-events: auto;
+      transform: translateX(-50%) translateY(0);
+    }
+    .nav-dropdown-panel a {
+      color: var(--white); font-size: 12px; letter-spacing: 0.08em;
+      font-weight: 500; padding: 11px 14px; white-space: nowrap;
+    }
+    .nav-dropdown-panel a:hover { color: var(--orange); opacity: 1; }
+
+    /* Collapse nav to the hamburger before the centered link bar crowds the
+       absolute wordmark (the multi-item nav overlaps it below ~860px). */
+    @media (max-width: 880px) {
+      nav { justify-content: space-between; padding: 16px 20px; }
+      nav .nav-left { position: static; font-size: 16px; flex-shrink: 0; }
+      nav .nav-center { display: none !important; }
+      .menu-toggle { display: block !important; }
+    }
+
+    nav a:hover { opacity: 0.6; transition: opacity 0.2s ease; }
+
+    /* ---- MOBILE MENU TOGGLE ---- */
+    .menu-toggle {
+      display: none;
+      position: relative;
+      width: 32px;
+      height: 32px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      z-index: 200;
+      color: var(--white);
+    }
+
+    .menu-toggle span {
+      position: absolute;
+      left: 4px;
+      right: 4px;
+      height: 2px;
+      background: currentColor;
+      transition: transform 0.3s ease, opacity 0.2s ease, top 0.3s ease;
+    }
+
+    .menu-toggle span:nth-child(1) { top: 10px; }
+    .menu-toggle span:nth-child(2) { top: 16px; }
+    .menu-toggle span:nth-child(3) { top: 22px; }
+
+    .menu-toggle.is-open span:nth-child(1) {
+      top: 16px;
+      transform: rotate(45deg);
+    }
+    .menu-toggle.is-open span:nth-child(2) { opacity: 0; }
+    .menu-toggle.is-open span:nth-child(3) {
+      top: 16px;
+      transform: rotate(-45deg);
+    }
+
+    /* ---- MOBILE MENU OVERLAY ---- */
+    .mobile-menu {
+      position: fixed;
+      inset: 0;
+      z-index: 150;
+      background: var(--black);
+      display: none;
+      flex-direction: column;
+      padding: 18px 32px 28px;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      overflow-y: auto;
+    }
+    .mobile-menu.is-open { display: flex; opacity: 1; }
+    /* Header: wordmark (-> home) + explicit close X. Lives INSIDE the overlay
+       so the close control is always above the overlay content (the old
+       hamburger-morph X was buried under this overlay by a z-index stacking
+       trap: nav's z-index:100 context capped the toggle below the 150 overlay). */
+    .mobile-menu-header {
+      display: flex; align-items: center; justify-content: space-between;
+      width: 100%; flex-shrink: 0;
+    }
+    .mobile-menu-wordmark {
+      font-family: 'Fugaz One', 'Arial Black', sans-serif; letter-spacing: -0.14em;
+      font-size: 18px; color: var(--white);
+    }
+    .mobile-menu-close {
+      background: transparent; border: none; cursor: pointer;
+      width: 44px; height: 44px; margin-right: -10px; padding: 0;
+      color: var(--white); display: flex; align-items: center; justify-content: center;
+    }
+    .mobile-menu-close svg { width: 26px; height: 26px; display: block; }
+    .mobile-menu-close:hover { color: var(--orange); }
+    /* flex: 1 0 auto, NOT `flex: 1; min-height: 0`: with both accordions
+       open the list is taller than the space left between header and footer.
+       A shrinkable box centers that overflow, spilling SHOP over the wordmark
+       and OFFTRACK over the footer line with no way to reach them. Growing to
+       content height instead lets .mobile-menu's overflow-y: auto scroll it.
+       `safe center` keeps the top edge reachable if a box is ever clamped. */
+    .mobile-menu-links {
+      flex: 1 0 auto;
+      display: flex; flex-direction: column; justify-content: center;
+      justify-content: safe center;
+      align-items: flex-start; width: 100%;
+      padding-bottom: 14px;
+    }
+    .mobile-menu-links > a,
+    .mobile-accordion-trigger {
+      font-size: clamp(30px, 7.5vw, 44px);
+      font-family: 'Fugaz One', 'Arial Black', sans-serif;
+      letter-spacing: -0.04em;
+      color: var(--white);
+      padding: 12px 0; width: 100%;
+      background: transparent; border: none; text-align: left; cursor: pointer;
+      display: flex; align-items: center; justify-content: space-between;
+      transform: translateX(-20px); opacity: 0;
+      transition: transform 0.4s ease, opacity 0.4s ease, color 0.2s ease;
+    }
+    .mobile-menu.is-open .mobile-menu-links > a,
+    .mobile-menu.is-open .mobile-accordion-trigger { transform: translateX(0); opacity: 1; }
+    .mobile-menu.is-open .mobile-menu-links > *:nth-child(1) { transition-delay: 0.05s; }
+    .mobile-menu.is-open .mobile-menu-links > *:nth-child(2) { transition-delay: 0.12s; }
+    .mobile-menu.is-open .mobile-menu-links > *:nth-child(3) { transition-delay: 0.19s; }
+    .mobile-menu.is-open .mobile-menu-links > *:nth-child(4) { transition-delay: 0.26s; }
+    .mobile-menu.is-open .mobile-menu-links > *:nth-child(5) { transition-delay: 0.33s; }
+    .mobile-menu-links a:hover, .mobile-menu-links a:active,
+    .mobile-accordion-trigger:hover { color: var(--orange); }
+    .mobile-menu-footer {
+      flex-shrink: 0;
+      font-size: 10px; letter-spacing: 0.3em;
+      opacity: 0.4; font-weight: 600; color: var(--white);
+    }
+
+    /* ---- MOBILE EVENTS ACCORDION ---- */
+    .mobile-menu.is-open .mobile-menu-links > *:nth-child(6) { transition-delay: 0.40s; }
+    .mobile-menu.is-open .mobile-menu-links > *:nth-child(7) { transition-delay: 0.47s; }
+    .mobile-accordion-trigger .acc-caret { width: 18px; height: 18px; flex-shrink: 0; transition: transform 0.2s ease; }
+    .mobile-accordion-trigger[aria-expanded="true"] .acc-caret { transform: rotate(180deg); }
+    .mobile-accordion-panel {
+      display: none; flex-direction: column; align-items: flex-start;
+      width: 100%; padding: 2px 0 10px 18px;
+    }
+    .mobile-accordion-panel.is-open { display: flex; }
+    .mobile-accordion-panel a {
+      font-family: 'Fugaz One', 'Arial Black', sans-serif; letter-spacing: -0.03em;
+      font-size: clamp(19px, 5vw, 26px); color: var(--white);
+      padding: 9px 0;
+    }
+    .mobile-accordion-panel a:hover { color: var(--orange); }
+    body.menu-open { overflow: hidden; }
+
+    /* ---- RESPONSIVE ---- */
+    @media (max-width: 768px) {
+      nav {
+        padding: 16px 20px;
+        justify-content: space-between;
+      }
+      nav .nav-left {
+        position: static;
+        font-size: 16px;
+        flex-shrink: 0;
+      }
+      nav .nav-center {
+        display: none;
+      }
+      .menu-toggle {
+        display: block;
+      }
+
+      .page { padding: 100px 20px 60px; }
+
+      .page-header { margin-bottom: 40px; }
+
+
+      .page-title {
+        font-size: clamp(48px, 16vw, 90px);
+      }
+
+      .schedule-card { padding: 28px 22px; gap: 14px; }
+
+      .card-title {
+        font-size: clamp(24px, 7vw, 36px);
+      }
+
+      .card-detail {
+        flex-direction: row;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+        font-size: 14px;
+      }
+
+      /* Time on its own line; location + pin together on the next */
+      .card-detail .time {
+        flex: 1 1 100%;
+        order: 1;
+      }
+
+      .card-detail .location {
+        flex: 0 1 auto;
+        order: 2;
+        min-width: 0;
+      }
+
+      .card-detail .icon-btn {
+        order: 3;
+        flex-shrink: 0;
+        margin-left: -2px;
+      }
+
+      .card-detail > span[style*="opacity:0.4"] {
+        display: none;
+      }
+
+      .card-actions {
+        margin-top: 4px;
+        gap: 10px;
+      }
+
+      .action-label {
+        font-size: 10px;
+        letter-spacing: 0.1em;
+        line-height: 1.4;
+      }
+
+      footer {
+        padding: 32px 20px;
+        flex-direction: column;
+        gap: 8px;
+      }
+    }
+
+    @media (max-width: 420px) {
+      nav .nav-left { font-size: 14px; }
+      .page-title { font-size: clamp(40px, 18vw, 72px); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+      html { scroll-behavior: auto !important; }
+    }
+  
+/* ===== PROGRAMMING PLANNER ===== */
+    /* light page: white ground, black nav, no lanes */
+    body.programming { background: #fff; color: #000; }
+    body.programming .track-lanes { display: none; }
+    body.programming .menu-toggle { color: #000; }
+    body.programming .nav-dropdown-panel { background: #000; }
+    :root { --ink-2: rgba(0,0,0,.55); --line: rgba(0,0,0,.14); --line-strong: rgba(0,0,0,.35); }
+    .prog { position: relative; z-index: 1; max-width: 1240px; margin: 0 auto; padding: 120px 24px 80px; }
+    .prog-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 20px 40px; margin-bottom: 20px; }
+    .prog-title { font-family: 'Fugaz One', 'Arial Black', sans-serif; font-weight: normal; font-size: clamp(40px, 6vw, 72px); letter-spacing: -0.06em; line-height: 0.9; margin: 0; padding-right: .06em; }
+    .prog-controls { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 16px 24px; }
+    .ctl { display: flex; flex-direction: column; gap: 6px; font-size: 11px; letter-spacing: .18em; }
+    .ctl input, .ctl select, .pool-search, .new-form input, .new-form select {
+      font: inherit; font-size: 13px; letter-spacing: .02em; color: #000; background: #fff;
+      border: 1px solid var(--line-strong); padding: 8px 10px; border-radius: 0; min-width: 200px; color-scheme: light; }
+    .ctl input:focus, .ctl select:focus, .pool-search:focus, .new-form input:focus, .new-form select:focus { outline: none; border-color: var(--orange); }
+    .ctl-actions { display: flex; gap: 14px; padding-bottom: 6px; }
+    .btn { font: inherit; font-size: 11px; letter-spacing: .16em; color: #000; background: transparent; border: 0; padding: 6px 0; cursor: pointer; }
+    .btn:hover, .btn:focus-visible { color: var(--orange); outline: none; }
+    .btn.ghost { opacity: .75; } .btn.ghost:hover { opacity: 1; }
+
+    /* month summary + checks */
+    .prog-summary { border-top: 1px solid var(--line-strong); border-bottom: 1px solid var(--line-strong); padding: 14px 0; margin-bottom: 28px;
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px 40px; font-size: 12px; line-height: 1.6; }
+    .sum-line { display: flex; gap: 14px; flex-wrap: wrap; letter-spacing: .04em; }
+    .sum-line b { color: var(--orange); font-weight: 600; }
+    .checks { list-style: none; margin: 0; padding: 0; }
+    .checks li { display: flex; gap: 10px; align-items: baseline; }
+    .checks .checks-title { font-size: 10px; letter-spacing: .22em; color: var(--ink-2); margin-bottom: 4px; }
+    .checks .ok::before { content: '\2713'; color: #178a43; font-weight: 700; min-width: 42px; }
+    .checks .bad::before { content: '!'; color: #fff; background: var(--orange); font-weight: 700; width: 16px; height: 16px; display: inline-flex; align-items: center; justify-content: center; font-size: 10px; margin-right: 26px; }
+    .checks .na::before { content: '·'; min-width: 42px; text-align: center; opacity: .5; }
+    .checks .na { opacity: .55; }
+
+    /* layout */
+    .prog-layout { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 32px; align-items: start; }
+    .prog-days { display: flex; flex-direction: column; gap: 22px; }
+    .week-head { display: flex; align-items: baseline; gap: 16px; padding: 0 2px 6px; }
+    .week-n { font-size: 10px; letter-spacing: .22em; color: var(--ink-2); }
+    .week-checks, .day-checks { display: inline-flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+    .week-hint { font-size: 10px; letter-spacing: .12em; color: var(--ink-2); }
+    .week-days { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+    .chk { display: inline-flex; align-items: center; gap: 5px; font-size: 10px; letter-spacing: .1em; }
+    .chk::first-letter { }
+    .chk.ok { color: #178a43; }
+    .chk.bad { color: var(--orange); }
+    .chk .chk-t { color: var(--ink-2); }
+    .day-checks .chk-t { display: none; }
+    .day-flags { display: flex; flex-direction: column; gap: 2px; font-size: 10.5px; letter-spacing: .04em; color: var(--orange); margin-top: -2px; }
+    .day-checks .chk { font-size: 12px; font-weight: 700; }
+    .day-checks .chk.bad { background: var(--orange); color: #fff; width: 16px; height: 16px; justify-content: center; font-size: 10px; }
+    .day { border: 1px solid var(--line-strong); background: #fff; padding: 14px 16px 12px; min-height: 150px; display: flex; flex-direction: column; gap: 8px; transition: border-color .15s ease, background-color .15s ease; }
+    
+    .day.over { border-color: var(--orange); background: rgba(255,77,31,.06); }
+    .day-head { display: flex; align-items: baseline; gap: 8px 12px; flex-wrap: wrap; }
+    .day-date { white-space: nowrap; }
+    .day-head .day-loc { margin-left: auto; }
+    .day-date { font-family: 'Fugaz One', 'Arial Black', sans-serif; font-size: 20px; letter-spacing: -0.03em; }
+    .day-date small { font-family: var(--font); font-size: 10px; letter-spacing: .18em; margin-left: 8px; opacity: .8; }
+    .day-loc { font-size: 10px; letter-spacing: .12em; text-transform: uppercase; background: transparent; border: 0; border-bottom: 1px dashed var(--line-strong); color: #000; font-family: inherit; flex: 0 1 auto; min-width: 0; max-width: 100%; text-align: right; padding: 2px 0; }
+    input.day-loc { width: 31ch; }
+    .day-loc:focus { outline: none; border-bottom-color: var(--orange); }
+    select.day-loc { appearance: none; -webkit-appearance: none; cursor: pointer; padding-right: 14px; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E") no-repeat right center / 9px; text-transform: uppercase; letter-spacing: .12em; font-size: 10px; text-align: right; text-align-last: right; }
+    select.day-loc:disabled { opacity: 1; color: #000; cursor: default; background-image: none; }
+    .day-blocks { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; min-height: 28px; }
+    .day-blocks li { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; font-size: 14px; line-height: 1.4; padding: 6px 0; border-bottom: 1px solid var(--line); }
+    .blk-name { font-weight: 700; color: var(--orange); }
+    .blk-name .meta { font-weight: 400; }
+    .blk-side { display: inline-flex; gap: 12px; align-items: baseline; white-space: nowrap; }
+    .day-blocks li span.meta { font-size: 10px; letter-spacing: .1em; color: var(--ink-2); white-space: nowrap; }
+    .day-blocks li button.rm { font: inherit; font-size: 11px; letter-spacing: .12em; color: #000; background: none; border: 0; cursor: pointer; padding: 2px 0; }
+    .day-blocks li button.rm:hover { color: var(--orange); }
+    .day-empty { font-size: 11px; letter-spacing: .14em; color: var(--ink-2); padding: 6px 0; }
+    .day-sum { font-size: 11px; letter-spacing: .08em; display: flex; gap: 14px; flex-wrap: wrap; }
+    .day-sum { color: var(--ink-2); }
+    .day-sum b { color: #000; font-weight: 700; }
+    .day-prep { font-size: 11px; line-height: 1.55; color: rgba(0,0,0,.75); border-top: 1px solid var(--line); padding-top: 6px; }
+    .day-prep span { color: var(--ink-2); letter-spacing: .14em; font-size: 10px; }
+    .day-actions { display: flex; flex-wrap: wrap; gap: 8px 16px; margin-top: auto; padding-top: 4px; align-items: center; }
+    .day-actions .btn { white-space: nowrap; }
+    .day-actions .btn { font-size: 10px; }
+    .day.past { border-style: dashed; border-color: var(--line-strong); background: #fafafa; }
+    .day.past .blk-name { color: #000; }
+    .day.past .day-loc { border-bottom-color: transparent; }
+    .logged { font-size: 10px; letter-spacing: .18em; color: var(--ink-2); align-self: center; }
+    .day.picking { border-color: var(--orange); box-shadow: 0 0 0 2px var(--orange); }
+    .day.picking .day-actions::before { content: 'ADDING HERE'; white-space: nowrap; font-size: 9px; letter-spacing: .18em; background: var(--orange); color: #fff; padding: 3px 7px; align-self: center; }
+    .prog-days.has-pick .day:not(.picking) { opacity: .45; }
+
+    /* pool */
+    .prog-pool { position: sticky; top: 90px; border: 1px solid var(--line-strong); background: #fff; padding: 14px; display: flex; flex-direction: column; gap: 10px; max-height: calc(100vh - 110px); }
+    .pool-head { display: flex; justify-content: space-between; align-items: baseline; }
+    .pool-title { font-family: 'Fugaz One', 'Arial Black', sans-serif; font-size: 18px; letter-spacing: -0.03em; }
+    .pool-hint { font-size: 10px; letter-spacing: .14em; color: var(--ink-2); }
+    .pool-hint.pick { color: var(--orange); }
+    .pool-search { min-width: 0; width: 100%; }
+    .pool-filters { display: flex; flex-wrap: wrap; gap: 6px 10px; }
+    .chip { font: inherit; font-size: 10px; letter-spacing: .14em; color: #000; background: transparent; border: 1px solid var(--line-strong); padding: 3px 8px; cursor: pointer; }
+    .chip.on { border-color: var(--orange); color: var(--orange); }
+    .pool-list { overflow: auto; display: flex; flex-direction: column; gap: 4px; min-height: 120px; flex: 1 1 auto; }
+    .blk { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; padding: 7px 8px; border: 1px solid var(--line); cursor: grab; font-size: 12.5px; line-height: 1.35; background: #fff; }
+    .blk:hover { border-color: var(--orange); }
+    .blk:active { cursor: grabbing; }
+        .blk .n { flex: 1; }
+    .blk .m { font-size: 10px; letter-spacing: .1em; color: var(--ink-2); white-space: nowrap; }
+    .blk .g { font-size: 9px; letter-spacing: .16em; color: var(--orange); opacity: .9; }
+    .pool-group { font-size: 10px; letter-spacing: .2em; color: var(--ink-2); padding: 8px 0 2px; }
+    .pool-new summary { font-size: 11px; letter-spacing: .16em; cursor: pointer; list-style: none; padding: 6px 0 0; }
+    .pool-new summary::-webkit-details-marker { display: none; }
+    .pool-new summary:hover { color: var(--orange); }
+    .new-form { display: flex; flex-direction: column; gap: 8px; padding-top: 10px; }
+    .new-form input, .new-form select { min-width: 0; width: 100%; }
+    .toast { position: fixed; left: 50%; bottom: 28px; transform: translateX(-50%) translateY(20px); background: #000; color: #fff; font-size: 11px; letter-spacing: .16em; padding: 10px 16px; opacity: 0; transition: opacity .2s ease, transform .2s ease; pointer-events: none; z-index: 200; }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    @media (max-width: 960px) {
+      .prog-layout { grid-template-columns: 1fr; }
+      .prog-pool { position: static; max-height: none; order: -1; }
+      .pool-list { max-height: 320px; }
+    }
+    @media (max-width: 640px) {
+      .prog { padding-top: 96px; }
+      .week-days { grid-template-columns: 1fr; }
+      .ctl input, .ctl select { min-width: 0; width: 100%; }
+      .ctl { width: 100%; }
+    }
+</style>
+</head>
+<body class="programming">
+
+  <!-- FIXED TRACK LANES -->
+  <div class="track-lanes">
+    <div class="lane"></div>
+    <div class="lane"></div>
+    <div class="lane"></div>
+    <div class="lane"></div>
+    <div class="lane"></div>
+    <div class="lane"></div>
+    <div class="lane"></div>
+    <div class="lane"></div>
+  </div>
+  <!-- NAV -->
+  <nav>
+    <a href="/" class="nav-left wordmark">TRACKRAT</a>
+    <div class="nav-center">
+      <a href="https://shop.trackratsprint.club" target="_blank" rel="noopener">[ SHOP ]</a>
+      <a href="/schedule">[ SCHEDULE ]</a>
+      <a href="/brand">[ BRAND ]</a>
+      <div class="nav-dropdown">
+        <button class="nav-dropdown-trigger" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="clubMenu">
+          [ CLUB ]
+          <svg class="nav-dropdown-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
+        </button>
+        <div class="nav-dropdown-panel" id="clubMenu" role="menu">
+          <a href="/podium" role="menuitem">PODIUM</a>
+          <a href="/dashboard" role="menuitem">PERSONAL RECORDS</a>
+          <a href="/waiver" role="menuitem">WAIVER</a>
+          <a href="/dashboard#PARTNERS" role="menuitem">PARTNERS</a>
+          <a href="/dashboard#gallery" role="menuitem">GALLERY</a>
+        </div>
+      </div>
+      <div class="nav-dropdown">
+        <button class="nav-dropdown-trigger" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="eventsMenu">
+          [ EVENTS ]
+          <svg class="nav-dropdown-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
+        </button>
+        <div class="nav-dropdown-panel" id="eventsMenu" role="menu">
+          <a href="/invitational" role="menuitem">INVITATIONAL</a>
+          <a href="/offtrack" role="menuitem">OFFTRACK</a>
+        </div>
+      </div>
+    </div>
+    <button class="menu-toggle" id="menuToggle" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </nav>
+
+  <!-- MOBILE MENU OVERLAY -->
+  <div class="mobile-menu" id="mobileMenu" aria-hidden="true">
+    <div class="mobile-menu-header">
+      <a href="/" class="mobile-menu-wordmark" aria-label="TRACKRAT — home">TRACKRAT</a>
+      <button class="mobile-menu-close" id="menuClose" type="button" aria-label="Close menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true">
+          <line x1="5" y1="5" x2="19" y2="19"></line>
+          <line x1="19" y1="5" x2="5" y2="19"></line>
+        </svg>
+      </button>
+    </div>
+    <div class="mobile-menu-links">
+      <a href="https://shop.trackratsprint.club" target="_blank" rel="noopener">SHOP</a>
+      <a href="/schedule">SCHEDULE</a>
+      <a href="/brand">BRAND</a>
+      <button class="mobile-accordion-trigger" type="button" aria-expanded="false" aria-controls="mobileClub">
+        CLUB
+        <svg class="acc-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
+      </button>
+      <div class="mobile-accordion-panel" id="mobileClub">
+        <a href="/podium">PODIUM</a>
+        <a href="/dashboard">PERSONAL RECORDS</a>
+        <a href="/waiver">WAIVER</a>
+        <a href="/dashboard#PARTNERS">PARTNERS</a>
+        <a href="/dashboard#gallery">GALLERY</a>
+      </div>
+      <button class="mobile-accordion-trigger" type="button" aria-expanded="false" aria-controls="mobileEvents">
+        EVENTS
+        <svg class="acc-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
+      </button>
+      <div class="mobile-accordion-panel" id="mobileEvents">
+        <a href="/invitational">INVITATIONAL</a>
+        <a href="/offtrack">OFFTRACK</a>
+      </div>
+    </div>
+    <div class="mobile-menu-footer">TRACKRAT SPRINT CLUB</div>
+  </div>
+
+  <!-- PAGE -->
+    <main class="page prog">
+    <header class="prog-head">
+      <h1 class="prog-title">PROGRAMMING</h1>
+      <div class="prog-controls">
+        <label class="ctl"><span>MONTH</span><input type="month" id="monthInput"></label>
+        <label class="ctl"><span>THEME (OPTIONAL)</span><select id="themeSelect"></select></label>
+        <div class="ctl-actions">
+          <button type="button" class="btn" id="suggestAllBtn">[ SUGGEST ALL ]</button>
+          <button type="button" class="btn" id="clearAllBtn">[ CLEAR ALL ]</button>
+          <button type="button" class="btn ghost" id="exportBtn">[ EXPORT ]</button>
+          <button type="button" class="btn ghost" id="importBtn">[ IMPORT ]</button>
+          <input type="file" id="importFile" accept="application/json" hidden>
+        </div>
+      </div>
+    </header>
+
+    <section class="prog-summary" id="monthSummary" aria-live="polite"></section>
+
+    <div class="prog-layout">
+      <section class="prog-days" id="days" aria-label="Sessions this month"></section>
+
+      <aside class="prog-pool" id="pool" aria-label="Workout blocks">
+        <div class="pool-head">
+          <span class="pool-title">BLOCKS</span>
+          <span class="pool-hint" id="poolHint">drag onto a day</span>
+        </div>
+        <input type="search" id="poolSearch" class="pool-search" placeholder="search (e.g. 150, ladder, hill)" autocomplete="off">
+        <div class="pool-filters" id="poolFilters"></div>
+        <div class="pool-list" id="poolList"></div>
+        <details class="pool-new">
+          <summary>[ + NEW BLOCK ]</summary>
+          <form id="newBlockForm" class="new-form">
+            <input type="text" name="name" placeholder="name (e.g. 3x200m)" required>
+            <input type="text" name="reps" placeholder="reps as distances, e.g. 200,200,200 or 400-200-100" required>
+            <input type="text" name="rest" placeholder="rest (e.g. 3 min)">
+            <select name="format">
+              <option value="straight">straight reps</option><option value="ladder">ladder</option><option value="hills">hills</option>
+              <option value="relay">relay</option><option value="broken">broken / split</option><option value="game">game</option><option value="extra">extra (plyos, drills)</option>
+            </select>
+            <input type="text" name="note" placeholder="notes (hill, flying, curve...)">
+            <button type="submit" class="btn">[ ADD TO LIBRARY ]</button>
+          </form>
+        </details>
+      </aside>
+    </div>
+  </main>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+    const menuToggle = document.getElementById('menuToggle');
+    const mobileMenu = document.getElementById('mobileMenu');
+    const menuClose = document.getElementById('menuClose');
+
+    function closeMenu() {
+      menuToggle.classList.remove('is-open');
+      mobileMenu.classList.remove('is-open');
+      document.body.classList.remove('menu-open');
+      menuToggle.setAttribute('aria-expanded', 'false');
+      mobileMenu.setAttribute('aria-hidden', 'true');
+      menuToggle.focus();
+    }
+    function openMenu() {
+      menuToggle.classList.add('is-open');
+      mobileMenu.classList.add('is-open');
+      document.body.classList.add('menu-open');
+      menuToggle.setAttribute('aria-expanded', 'true');
+      mobileMenu.setAttribute('aria-hidden', 'false');
+      menuClose.focus();
+    }
+    menuToggle.addEventListener('click', openMenu);
+    menuClose.addEventListener('click', closeMenu);
+    mobileMenu.querySelectorAll('a').forEach(link => link.addEventListener('click', closeMenu));
+
+    // Desktop dropdowns (Club + Events) — hover/focus is CSS; this adds click + a11y.
+    const navDropdowns = Array.from(document.querySelectorAll('.nav-dropdown'));
+    function closeNavDropdowns() {
+      navDropdowns.forEach(dd => {
+        dd.classList.remove('is-open');
+        dd.querySelector('.nav-dropdown-trigger').setAttribute('aria-expanded', 'false');
+      });
+    }
+    navDropdowns.forEach(dd => {
+      const trigger = dd.querySelector('.nav-dropdown-trigger');
+      trigger.addEventListener('click', e => {
+        e.stopPropagation();
+        const open = dd.classList.toggle('is-open');
+        trigger.setAttribute('aria-expanded', open ? 'true' : 'false');
+        navDropdowns.forEach(other => {
+          if (other !== dd) {
+            other.classList.remove('is-open');
+            other.querySelector('.nav-dropdown-trigger').setAttribute('aria-expanded', 'false');
+          }
+        });
+      });
+    });
+    document.addEventListener('click', e => {
+      if (!navDropdowns.some(dd => dd.contains(e.target))) closeNavDropdowns();
+    });
+
+    // Mobile Events accordion.
+    document.querySelectorAll('.mobile-accordion-trigger').forEach(accTrigger => {
+      accTrigger.addEventListener('click', () => {
+        const panel = document.getElementById(accTrigger.getAttribute('aria-controls'));
+        const open = accTrigger.getAttribute('aria-expanded') === 'true';
+        accTrigger.setAttribute('aria-expanded', open ? 'false' : 'true');
+        if (panel) panel.classList.toggle('is-open', !open);
+      });
+    });
+
+    document.addEventListener('keydown', e => {
+      if (e.key !== 'Escape') return;
+      if (mobileMenu.classList.contains('is-open')) closeMenu();
+      closeNavDropdowns();
+    });
+
+    </script>
+<script>
+    // ===== TRACKRAT PROGRAMMING PLANNER (v1: local storage; shared Supabase storage is v2) =====
+    const LIB = {
+ "themes": [
+  {
+   "id": "",
+   "name": "No theme",
+   "bands": []
+  },
+  {
+   "id": "accel",
+   "name": "Acceleration (0 to 40m)",
+   "bands": [
+    "accel"
+   ]
+  },
+  {
+   "id": "maxv",
+   "name": "Max velocity (40 to 100m)",
+   "bands": [
+    "maxv"
+   ]
+  },
+  {
+   "id": "speedend",
+   "name": "Speed endurance (100 to 300m)",
+   "bands": [
+    "speedend"
+   ]
+  },
+  {
+   "id": "special",
+   "name": "Special endurance (300m+)",
+   "bands": [
+    "special"
+   ]
+  },
+  {
+   "id": "bench",
+   "name": "Benchmark (time trials)",
+   "bands": [
+    "bench"
+   ]
+  },
+  {
+   "id": "mixed",
+   "name": "Mixed",
+   "bands": [
+    "accel",
+    "maxv",
+    "speedend",
+    "special"
+   ]
+  }
+ ],
+ "blocks": [
+  {
+   "id": "h-6x150",
+   "name": "6x150m",
+   "reps": [
+    150,
+    150,
+    150,
+    150,
+    150,
+    150
+   ],
+   "format": "straight",
+   "src": "history",
+   "seen": "#62, #78",
+   "rest": "3 min"
+  },
+  {
+   "id": "h-5x150",
+   "name": "5x150m",
+   "reps": [
+    150,
+    150,
+    150,
+    150,
+    150
+   ],
+   "format": "straight",
+   "src": "history",
+   "seen": "#70, #82, #88, #92",
+   "rest": "3 min"
+  },
+  {
+   "id": "h-4x150",
+   "name": "4x150m",
+   "reps": [
+    150,
+    150,
+    150,
+    150
+   ],
+   "format": "straight",
+   "src": "history",
+   "seen": "#74, #107",
+   "rest": "3 min"
+  },
+  {
+   "id": "h-3x150",
+   "name": "3x150m",
+   "reps": [
+    150,
+    150,
+    150
+   ],
+   "format": "straight",
+   "src": "history",
+   "seen": "#63, #77, #115",
+   "rest": "3 min"
+  },
+  {
+   "id": "h-lad400",
+   "name": "Ladder 400-200-100-100-200-400",
+   "reps": [
+    400,
+    200,
+    100,
+    100,
+    200,
+    400
+   ],
+   "format": "ladder",
+   "src": "history",
+   "seen": "#64, #72, #87",
+   "rest": "walk back"
+  },
+  {
+   "id": "h-lad4321",
+   "name": "Ladder 400-300-200-100-50 and back up",
+   "reps": [
+    400,
+    300,
+    200,
+    100,
+    50,
+    50,
+    100,
+    200,
+    300,
+    400
+   ],
+   "format": "ladder",
+   "src": "history",
+   "seen": "#75",
+   "rest": "walk back"
+  },
+  {
+   "id": "h-lad321",
+   "name": "Ladder 300-200-100 and back up",
+   "reps": [
+    300,
+    200,
+    100,
+    100,
+    200,
+    300
+   ],
+   "format": "ladder",
+   "src": "history",
+   "seen": "#109",
+   "rest": "walk back"
+  },
+  {
+   "id": "h-lad32105",
+   "name": "Ladders 300-200-100-50, then 50-100-200-300",
+   "reps": [
+    300,
+    200,
+    100,
+    50,
+    50,
+    100,
+    200,
+    300
+   ],
+   "format": "ladder",
+   "src": "history",
+   "seen": "#102",
+   "rest": "walk back"
+  },
+  {
+   "id": "h-lad-short",
+   "name": "Short ladder 200-150-100-50 and back up",
+   "reps": [
+    200,
+    150,
+    100,
+    50,
+    50,
+    100,
+    150,
+    200
+   ],
+   "format": "ladder",
+   "src": "history",
+   "seen": "#76",
+   "rest": "walk back"
+  },
+  {
+   "id": "h-lad-down",
+   "name": "Down ladder 200-150-120-100-80-50-30",
+   "reps": [
+    200,
+    150,
+    120,
+    100,
+    80,
+    50,
+    30
+   ],
+   "format": "steps",
+   "src": "history",
+   "seen": "#80",
+   "rest": "walk back"
+  },
+  {
+   "id": "h-lad-mixed",
+   "name": "Mixed ladders 400-200-300-100, 300-100-200-400",
+   "reps": [
+    400,
+    200,
+    300,
+    100,
+    300,
+    100,
+    200,
+    400
+   ],
+   "format": "ladder",
+   "src": "history",
+   "seen": "#91",
+   "rest": "walk back"
+  },
+  {
+   "id": "h-lad-pyr",
+   "name": "300-250-200-250-300",
+   "reps": [
+    300,
+    250,
+    200,
+    250,
+    300
+   ],
+   "format": "ladder",
+   "src": "history",
+   "seen": "#81",
+   "rest": "3 to 4 min"
+  },
+  {
+   "id": "h-lad160",
+   "name": "160-140-120-100",
+   "reps": [
+    160,
+    140,
+    120,
+    100
+   ],
+   "format": "steps",
+   "src": "history",
+   "seen": "#66",
+   "rest": "walk back"
+  },
+  {
+   "id": "h-lad180",
+   "name": "180-150-120-100",
+   "reps": [
+    180,
+    150,
+    120,
+    100
+   ],
+   "format": "steps",
+   "src": "history",
+   "seen": "#114",
+   "rest": "walk back"
+  },
+  {
+   "id": "h-lad150",
+   "name": "Ladder 150-100-80-60 and back up",
+   "reps": [
+    150,
+    100,
+    80,
+    60,
+    60,
+    80,
+    100,
+    150
+   ],
+   "format": "ladder",
+   "src": "history",
+   "seen": "#119",
+   "rest": "walk back"
+  },
+  {
+   "id": "h-2x200150100",
+   "name": "2 sets of 200-150-100",
+   "reps": [
+    200,
+    150,
+    100,
+    200,
+    150,
+    100
+   ],
+   "format": "steps",
+   "src": "history",
+   "seen": "#96",
+   "rest": "walk back, 5 min between sets"
+  },
+  {
+   "id": "h-2x250",
+   "name": "2x250, 2x200, 2x150",
+   "reps": [
+    250,
+    250,
+    200,
+    200,
+    150,
+    150
+   ],
+   "format": "straight",
+   "src": "history",
+   "seen": "#68",
+   "rest": "3 to 4 min"
+  },
+  {
+   "id": "h-4x250",
+   "name": "4x250m",
+   "reps": [
+    250,
+    250,
+    250,
+    250
+   ],
+   "format": "straight",
+   "src": "history",
+   "seen": "#110",
+   "rest": "4 min"
+  },
+  {
+   "id": "h-3x400",
+   "name": "3x400m",
+   "reps": [
+    400,
+    400,
+    400
+   ],
+   "format": "straight",
+   "src": "history",
+   "seen": "#106",
+   "rest": "5 min"
+  },
+  {
+   "id": "h-6x200",
+   "name": "6x200m",
+   "reps": [
+    200,
+    200,
+    200,
+    200,
+    200,
+    200
+   ],
+   "format": "straight",
+   "src": "history",
+   "seen": "#79",
+   "rest": "3 min"
+  },
+  {
+   "id": "h-4x200",
+   "name": "4x200m",
+   "reps": [
+    200,
+    200,
+    200,
+    200
+   ],
+   "format": "straight",
+   "src": "history",
+   "seen": "#71, #101",
+   "rest": "3 min"
+  },
+  {
+   "id": "h-3x200",
+   "name": "3x200m",
+   "reps": [
+    200,
+    200,
+    200
+   ],
+   "format": "straight",
+   "src": "history",
+   "seen": "#106",
+   "rest": "3 min"
+  },
+  {
+   "id": "h-5x200lad",
+   "name": "5x200m",
+   "reps": [
+    200,
+    200,
+    200,
+    200,
+    200
+   ],
+   "format": "straight",
+   "src": "history",
+   "seen": "#89",
+   "rest": "3 min"
+  },
+  {
+   "id": "h-2x200150",
+   "name": "2x (200m then 150m)",
+   "reps": [
+    200,
+    150,
+    200,
+    150
+   ],
+   "format": "straight",
+   "src": "history",
+   "seen": "#116",
+   "rest": "3 min"
+  },
+  {
+   "id": "h-200150100",
+   "name": "1x200, 2x150, 1x100",
+   "reps": [
+    200,
+    150,
+    150,
+    100
+   ],
+   "format": "steps",
+   "src": "history",
+   "seen": "#118",
+   "rest": "3 min"
+  },
+  {
+   "id": "h-2x400",
+   "name": "2x400, 2x200, 2x100, 1x200, 1x400",
+   "reps": [
+    400,
+    400,
+    200,
+    200,
+    100,
+    100,
+    200,
+    400
+   ],
+   "format": "ladder",
+   "src": "history",
+   "seen": "#84",
+   "rest": "walk back"
+  },
+  {
+   "id": "h-broken300",
+   "name": "3x broken 300 (200, rest, 100)",
+   "reps": [
+    300,
+    300,
+    300
+   ],
+   "format": "broken",
+   "src": "history",
+   "seen": "#113",
+   "rest": "30s inside, 5 min between"
+  },
+  {
+   "id": "h-breakups",
+   "name": "200m-100m breakups",
+   "reps": [
+    300,
+    300,
+    300,
+    300
+   ],
+   "format": "broken",
+   "src": "history",
+   "seen": "#103",
+   "rest": "30s inside, 4 min between",
+   "note": "approx 4 rounds"
+  },
+  {
+   "id": "h-10x100",
+   "name": "10x100m",
+   "reps": [
+    100,
+    100,
+    100,
+    100,
+    100,
+    100,
+    100,
+    100,
+    100,
+    100
+   ],
+   "format": "straight",
+   "src": "history",
+   "seen": "#112",
+   "rest": "2 min"
+  },
+  {
+   "id": "h-5x100",
+   "name": "5x100m",
+   "reps": [
+    100,
+    100,
+    100,
+    100,
+    100
+   ],
+   "format": "straight",
+   "src": "history",
+   "seen": "#83, #90, Thu Sep 10",
+   "rest": "2 to 3 min"
+  },
+  {
+   "id": "h-4x100",
+   "name": "4x100m",
+   "reps": [
+    100,
+    100,
+    100,
+    100
+   ],
+   "format": "straight",
+   "src": "history",
+   "seen": "#108, Thu Jul 16 and 23",
+   "rest": "2 to 3 min"
+  },
+  {
+   "id": "h-5x100curve",
+   "name": "5x100m curve sprints",
+   "reps": [
+    100,
+    100,
+    100,
+    100,
+    100
+   ],
+   "format": "straight",
+   "mod": "curve",
+   "src": "history",
+   "seen": "#67",
+   "rest": "2 to 3 min"
+  },
+  {
+   "id": "h-5x100runup",
+   "name": "5x100m with 30m run-up",
+   "reps": [
+    100,
+    100,
+    100,
+    100,
+    100
+   ],
+   "format": "straight",
+   "mod": "fly",
+   "src": "history",
+   "seen": "#82",
+   "rest": "3 min"
+  },
+  {
+   "id": "h-sfs",
+   "name": "6x150m sprint-float-sprint",
+   "reps": [
+    150,
+    150,
+    150,
+    150,
+    150,
+    150
+   ],
+   "format": "straight",
+   "mod": "sfs",
+   "src": "history",
+   "seen": "#78",
+   "rest": "3 min"
+  },
+  {
+   "id": "h-5x50",
+   "name": "5x50m",
+   "reps": [
+    50,
+    50,
+    50,
+    50,
+    50
+   ],
+   "format": "straight",
+   "src": "history",
+   "seen": "#88, #90, #92, #95",
+   "rest": "walk back"
+  },
+  {
+   "id": "h-4x50",
+   "name": "4x50m",
+   "reps": [
+    50,
+    50,
+    50,
+    50
+   ],
+   "format": "straight",
+   "src": "history",
+   "seen": "#70, #101",
+   "rest": "walk back"
+  },
+  {
+   "id": "h-3x50",
+   "name": "3x50m",
+   "reps": [
+    50,
+    50,
+    50
+   ],
+   "format": "straight",
+   "src": "history",
+   "seen": "#66",
+   "rest": "walk back"
+  },
+  {
+   "id": "h-6x50",
+   "name": "6x50m",
+   "reps": [
+    50,
+    50,
+    50,
+    50,
+    50,
+    50
+   ],
+   "format": "straight",
+   "src": "history",
+   "seen": "Thu Jul 2",
+   "rest": "walk back"
+  },
+  {
+   "id": "h-4x60",
+   "name": "4x60m",
+   "reps": [
+    60,
+    60,
+    60,
+    60
+   ],
+   "format": "straight",
+   "src": "history",
+   "seen": "#115, #117",
+   "rest": "2 min"
+  },
+  {
+   "id": "h-5x35",
+   "name": "5x35m",
+   "reps": [
+    35,
+    35,
+    35,
+    35,
+    35
+   ],
+   "format": "straight",
+   "src": "history",
+   "seen": "#107",
+   "rest": "walk back"
+  },
+  {
+   "id": "h-6x30",
+   "name": "6x30m",
+   "reps": [
+    30,
+    30,
+    30,
+    30,
+    30,
+    30
+   ],
+   "format": "straight",
+   "src": "history",
+   "seen": "#74, #110",
+   "rest": "walk back"
+  },
+  {
+   "id": "h-5x30kneel",
+   "name": "5x30m kneeling-start sprints",
+   "reps": [
+    30,
+    30,
+    30,
+    30,
+    30
+   ],
+   "format": "straight",
+   "mod": "kneeling",
+   "src": "history",
+   "seen": "#85, #89",
+   "rest": "walk back"
+  },
+  {
+   "id": "h-4x30",
+   "name": "4x30m",
+   "reps": [
+    30,
+    30,
+    30,
+    30
+   ],
+   "format": "straight",
+   "src": "history",
+   "seen": "#119, Thu Aug 27",
+   "rest": "walk back"
+  },
+  {
+   "id": "h-4x20",
+   "name": "4x20m",
+   "reps": [
+    20,
+    20,
+    20,
+    20
+   ],
+   "format": "straight",
+   "src": "history",
+   "seen": "Thu Aug 27",
+   "rest": "walk back"
+  },
+  {
+   "id": "h-5x20",
+   "name": "5x20m",
+   "reps": [
+    20,
+    20,
+    20,
+    20,
+    20
+   ],
+   "format": "straight",
+   "src": "history",
+   "seen": "#69",
+   "rest": "walk back"
+  },
+  {
+   "id": "h-4x20fly",
+   "name": "4x20m flying",
+   "reps": [
+    20,
+    20,
+    20,
+    20
+   ],
+   "format": "straight",
+   "mod": "fly",
+   "src": "history",
+   "seen": "Thu Aug 13, Sep 3",
+   "rest": "walk back"
+  },
+  {
+   "id": "h-4x40fly",
+   "name": "4x40m fly, 4x20m bound into sprint",
+   "reps": [
+    40,
+    40,
+    40,
+    40,
+    20,
+    20,
+    20,
+    20
+   ],
+   "format": "straight",
+   "mod": "fly",
+   "src": "history",
+   "seen": "#111",
+   "rest": "walk back"
+  },
+  {
+   "id": "h-flies",
+   "name": "4x off-the-curve flies",
+   "reps": [
+    60,
+    60,
+    60,
+    60
+   ],
+   "format": "straight",
+   "mod": "fly",
+   "src": "history",
+   "seen": "#98",
+   "rest": "walk back",
+   "note": "approx 60m"
+  },
+  {
+   "id": "h-buildups",
+   "name": "3x30m build-ups",
+   "reps": [
+    30,
+    30,
+    30
+   ],
+   "format": "straight",
+   "src": "history",
+   "seen": "Thu Sep 3",
+   "rest": "walk back"
+  },
+  {
+   "id": "h-40-60-80",
+   "name": "40m, 60m, 2x80m",
+   "reps": [
+    40,
+    60,
+    80,
+    80
+   ],
+   "format": "steps",
+   "src": "history",
+   "seen": "Thu Jul 30",
+   "rest": "walk back"
+  },
+  {
+   "id": "h-8x80hill",
+   "name": "8x80m hill sprints",
+   "reps": [
+    80,
+    80,
+    80,
+    80,
+    80,
+    80,
+    80,
+    80
+   ],
+   "format": "hills",
+   "mod": "hill",
+   "src": "history",
+   "seen": "Thu Jul 9",
+   "rest": "walk down"
+  },
+  {
+   "id": "h-6x80hill",
+   "name": "6x80m hill sprints",
+   "reps": [
+    80,
+    80,
+    80,
+    80,
+    80,
+    80
+   ],
+   "format": "hills",
+   "mod": "hill",
+   "src": "history",
+   "seen": "Thu Aug 20",
+   "rest": "walk down"
+  },
+  {
+   "id": "h-3x30hill",
+   "name": "3x30m hill sprints",
+   "reps": [
+    30,
+    30,
+    30
+   ],
+   "format": "hills",
+   "mod": "hill",
+   "src": "history",
+   "seen": "Thu Aug 13, Sep 3",
+   "rest": "walk down"
+  },
+  {
+   "id": "h-fartlek",
+   "name": "2x fartlek laps",
+   "reps": [
+    400,
+    400
+   ],
+   "format": "straight",
+   "mod": "tempo",
+   "src": "history",
+   "seen": "Thu Jul 16, 23",
+   "rest": "2 min",
+   "note": "alternate sprint/float by 100s"
+  },
+  {
+   "id": "h-8x200relay",
+   "name": "8x200m relays (the OG workout)",
+   "reps": [
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200
+   ],
+   "format": "relay",
+   "src": "history",
+   "seen": "#69",
+   "rest": "partner runs"
+  },
+  {
+   "id": "h-4x200relay",
+   "name": "4x200m relay",
+   "reps": [
+    200,
+    200,
+    200,
+    200
+   ],
+   "format": "relay",
+   "src": "history",
+   "seen": "#83",
+   "rest": "partner runs"
+  },
+  {
+   "id": "h-2x100relay",
+   "name": "2x100m curve relay",
+   "reps": [
+    100,
+    100
+   ],
+   "format": "relay",
+   "mod": "curve",
+   "src": "history",
+   "seen": "#70",
+   "rest": "partner runs"
+  },
+  {
+   "id": "h-3xrelay",
+   "name": "3x relay sprints",
+   "reps": [
+    100,
+    100,
+    100
+   ],
+   "format": "relay",
+   "src": "history",
+   "seen": "#98",
+   "rest": "partner runs"
+  },
+  {
+   "id": "h-swedish",
+   "name": "Swedish relays 300-200-150-100",
+   "reps": [
+    300,
+    200,
+    150,
+    100
+   ],
+   "format": "relay",
+   "src": "history",
+   "seen": "#100",
+   "rest": "partner runs"
+  },
+  {
+   "id": "h-4x100relay",
+   "name": "Women's 4x100m relay race",
+   "reps": [
+    100,
+    100,
+    100,
+    100
+   ],
+   "format": "relay",
+   "src": "history",
+   "seen": "#93",
+   "rest": "partner runs"
+  },
+  {
+   "id": "h-cooploop",
+   "name": "Coop Loop",
+   "reps": [],
+   "unmetered": true,
+   "est": 800,
+   "estReps": 6,
+   "estLongest": 150,
+   "format": "game",
+   "src": "history",
+   "seen": "#63, #77, #85, #95, #108, #117",
+   "note": "6 rounds; est 800m"
+  },
+  {
+   "id": "h-tomjerry",
+   "name": "Tom and Jerry's (chase the rabbit)",
+   "reps": [],
+   "unmetered": true,
+   "est": 600,
+   "estReps": 6,
+   "estLongest": 100,
+   "format": "game",
+   "src": "history",
+   "seen": "#65, #71, #99, #105",
+   "note": "est 6x100m"
+  },
+  {
+   "id": "h-sawyer",
+   "name": "Sawyer Circle",
+   "reps": [],
+   "unmetered": true,
+   "est": 400,
+   "estReps": 8,
+   "estLongest": 50,
+   "format": "game",
+   "src": "history",
+   "seen": "Thu Aug 6",
+   "note": "est 400m"
+  },
+  {
+   "id": "h-tt",
+   "name": "Quarterly time trials (pick 50 to 400m)",
+   "reps": [],
+   "unmetered": true,
+   "est": 500,
+   "estReps": 3,
+   "estLongest": 400,
+   "format": "tt",
+   "src": "history",
+   "seen": "#72, #73, #86, #97, #111",
+   "note": "hand-timed; separate workout for non-trialers"
+  },
+  {
+   "id": "h-murph",
+   "name": "MURPH: 6 rounds of 400m + calisthenics",
+   "reps": [
+    400,
+    400,
+    400,
+    400,
+    400,
+    400
+   ],
+   "format": "straight",
+   "mod": "tempo",
+   "src": "history",
+   "seen": "#104",
+   "rest": "none",
+   "note": "17 incline pull-ups, 37 push-ups, 50 air squats per round"
+  },
+  {
+   "id": "h-40yd",
+   "name": "40-yard dashes",
+   "reps": [
+    37,
+    37,
+    37,
+    37,
+    37,
+    37
+   ],
+   "format": "straight",
+   "src": "history",
+   "seen": "#109",
+   "rest": "walk back"
+  },
+  {
+   "id": "h-plyo",
+   "name": "Plyometric circuit",
+   "reps": [],
+   "unmetered": true,
+   "est": 0,
+   "estReps": 0,
+   "estLongest": 0,
+   "format": "extra",
+   "src": "history",
+   "seen": "#114",
+   "note": "bounds, hops, hurdle hops"
+  },
+  {
+   "id": "h-starts",
+   "name": "Kneeling starts into sprints",
+   "reps": [
+    30,
+    30,
+    30,
+    30,
+    30,
+    30
+   ],
+   "format": "straight",
+   "mod": "kneeling",
+   "src": "history",
+   "seen": "#85, #105",
+   "rest": "walk back"
+  },
+  {
+   "id": "g-blockstarts",
+   "name": "8x20m 3-point starts",
+   "reps": [
+    20,
+    20,
+    20,
+    20,
+    20,
+    20,
+    20,
+    20
+   ],
+   "format": "straight",
+   "mod": "kneeling",
+   "src": "general",
+   "rest": "walk back",
+   "note": "acceleration mechanics"
+  },
+  {
+   "id": "g-6x30",
+   "name": "6x30m from a falling start",
+   "reps": [
+    30,
+    30,
+    30,
+    30,
+    30,
+    30
+   ],
+   "format": "straight",
+   "src": "general",
+   "rest": "2 min"
+  },
+  {
+   "id": "g-wickets",
+   "name": "6x wicket runs (banana hurdles)",
+   "reps": [
+    40,
+    40,
+    40,
+    40,
+    40,
+    40
+   ],
+   "format": "straight",
+   "src": "general",
+   "rest": "walk back",
+   "note": "upright posture, front-side mechanics"
+  },
+  {
+   "id": "g-sledhill",
+   "name": "6x40m hill or sled accelerations",
+   "reps": [
+    40,
+    40,
+    40,
+    40,
+    40,
+    40
+   ],
+   "format": "hills",
+   "mod": "hill",
+   "src": "general",
+   "rest": "walk down"
+  },
+  {
+   "id": "g-fly30",
+   "name": "5x flying 30s (30m build, 30m fly)",
+   "reps": [
+    60,
+    60,
+    60,
+    60,
+    60
+   ],
+   "format": "straight",
+   "mod": "fly",
+   "src": "general",
+   "rest": "4 min",
+   "note": "max velocity; full recovery"
+  },
+  {
+   "id": "g-inout",
+   "name": "3x ins-and-outs (20 in, 20 out, 20 in)",
+   "reps": [
+    60,
+    60,
+    60
+   ],
+   "format": "straight",
+   "mod": "fly",
+   "src": "general",
+   "rest": "4 min"
+  },
+  {
+   "id": "g-3x60",
+   "name": "4x60m at full speed",
+   "reps": [
+    60,
+    60,
+    60,
+    60
+   ],
+   "format": "straight",
+   "src": "general",
+   "rest": "4 to 5 min",
+   "note": "quality over quantity"
+  },
+  {
+   "id": "g-2x3x60",
+   "name": "2 sets of 3x60m",
+   "reps": [
+    60,
+    60,
+    60,
+    60,
+    60,
+    60
+   ],
+   "format": "straight",
+   "src": "general",
+   "rest": "2 min, 8 min between sets"
+  },
+  {
+   "id": "g-4x120",
+   "name": "4x120m",
+   "reps": [
+    120,
+    120,
+    120,
+    120
+   ],
+   "format": "straight",
+   "src": "general",
+   "rest": "5 min",
+   "note": "speed endurance"
+  },
+  {
+   "id": "g-6x80",
+   "name": "6x80m",
+   "reps": [
+    80,
+    80,
+    80,
+    80,
+    80,
+    80
+   ],
+   "format": "straight",
+   "src": "general",
+   "rest": "3 min"
+  },
+  {
+   "id": "g-3x2x150",
+   "name": "2 sets of 3x150m",
+   "reps": [
+    150,
+    150,
+    150,
+    150,
+    150,
+    150
+   ],
+   "format": "straight",
+   "src": "general",
+   "rest": "3 min, 8 min between sets"
+  },
+  {
+   "id": "g-3x300",
+   "name": "3x300m",
+   "reps": [
+    300,
+    300,
+    300
+   ],
+   "format": "straight",
+   "src": "general",
+   "rest": "8 to 10 min",
+   "note": "special endurance; near race pace"
+  },
+  {
+   "id": "g-2x350",
+   "name": "2x350m",
+   "reps": [
+    350,
+    350
+   ],
+   "format": "straight",
+   "src": "general",
+   "rest": "12 min"
+  },
+  {
+   "id": "g-600-400-200",
+   "name": "600-400-200",
+   "reps": [
+    600,
+    400,
+    200
+   ],
+   "format": "steps",
+   "src": "general",
+   "rest": "8 min",
+   "note": "lactic tolerance"
+  },
+  {
+   "id": "g-300+150",
+   "name": "2x (300 + 150) split runs",
+   "reps": [
+    300,
+    150,
+    300,
+    150
+   ],
+   "format": "broken",
+   "src": "general",
+   "rest": "30s inside, 10 min between"
+  },
+  {
+   "id": "g-4x300",
+   "name": "4x300m",
+   "reps": [
+    300,
+    300,
+    300,
+    300
+   ],
+   "format": "straight",
+   "src": "general",
+   "rest": "6 min"
+  },
+  {
+   "id": "g-tempo200",
+   "name": "8x200m tempo (70%)",
+   "reps": [
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200
+   ],
+   "format": "straight",
+   "mod": "tempo",
+   "src": "general",
+   "rest": "walk 100",
+   "note": "extensive tempo; recovery-week block"
+  },
+  {
+   "id": "g-aussie",
+   "name": "Australian pursuit relay",
+   "reps": [
+    200,
+    200,
+    200,
+    200
+   ],
+   "format": "relay",
+   "src": "general",
+   "rest": "partner runs",
+   "note": "teams chase; caught team drops"
+  },
+  {
+   "id": "g-4x4relay",
+   "name": "4x400m relay race",
+   "reps": [
+    400
+   ],
+   "format": "relay",
+   "src": "general",
+   "rest": "partner runs",
+   "note": "one leg each; two teams"
+  },
+  {
+   "id": "g-4x1relay",
+   "name": "4x100m relay race with exchanges",
+   "reps": [
+    100,
+    100
+   ],
+   "format": "relay",
+   "src": "general",
+   "rest": "partner runs",
+   "note": "practice zones first"
+  },
+  {
+   "id": "g-hunt",
+   "name": "Hunt sprints (staggered 150m chase)",
+   "reps": [
+    150,
+    150,
+    150,
+    150
+   ],
+   "format": "game",
+   "src": "general",
+   "rest": "walk back"
+  },
+  {
+   "id": "g-bounds",
+   "name": "Bounding series 4x30m",
+   "reps": [],
+   "unmetered": true,
+   "est": 0,
+   "estReps": 4,
+   "estLongest": 30,
+   "format": "extra",
+   "src": "general",
+   "note": "single-leg and alternate bounds"
+  }
+ ],
+ "mobility": {
+  "activation": [
+   "Arm circles forward and back",
+   "Standing high-knee hip pulses",
+   "Arm strikes (running), 3 then pause",
+   "Quad pulses each leg",
+   "On side, leg raises",
+   "Clam shells",
+   "Leg swings front to back and side to side",
+   "Band walks (lateral)"
+  ],
+  "plank": [
+   "Front plank, alternate single-leg hold",
+   "Side plank with pulse, hand in air",
+   "Side plank, bottom leg out front with pulse up"
+  ],
+  "onback": [
+   "Bridge pulses",
+   "Single-leg bridge pulse",
+   "Walk out in bridge, walk in (hamstrings)",
+   "Ankle rotations, both ways",
+   "Point and flex toes",
+   "Push against knees",
+   "Pull knees",
+   "Push into opposite leg/hand hold for 10",
+   "Dead bugs",
+   "Dead bugs advanced (pushing)"
+  ],
+  "tabletop": [
+   "Donkey kick",
+   "Fire hydrant",
+   "Clockwise rotation",
+   "Counterclockwise rotation",
+   "Straight side leg lifts",
+   "Rainbow legs",
+   "Kick forward",
+   "Knee taps to ground"
+  ],
+  "dynamic": [
+   "90/90 and lift back foot up (knee on ground)",
+   "Front leg stretch with back leg 90, then diagonal, then lean back and lift back knee",
+   "Lunge forward then sit back (floss)",
+   "Windshield wipers",
+   "Rocking figure 4",
+   "World's greatest stretch",
+   "Hip flexor lunge with reach",
+   "Calf and ankle rocks"
+  ],
+  "strength": [
+   "Air squats",
+   "Lateral lunges",
+   "Front lunges",
+   "Single-leg RDL (bodyweight)",
+   "Calf raises (straight and bent knee)"
+  ]
+ },
+ "drills": {
+  "accel": [
+   "Wall drives (3-step)",
+   "Falling starts",
+   "A-skips",
+   "Ankling",
+   "Kneeling to 3-point starts",
+   "Sled or partner-resisted marches"
+  ],
+  "maxv": [
+   "A-skips and B-skips",
+   "High knees into run",
+   "Straight-leg bounds",
+   "Wickets (banana hurdles)",
+   "Build-ups to 90%",
+   "Flying 20s"
+  ],
+  "speedend": [
+   "A-skips",
+   "Butt kicks",
+   "Carioca",
+   "Straight-leg bounds",
+   "Build-ups to 90%",
+   "2x 60m strides"
+  ],
+  "special": [
+   "A-skips",
+   "High knees",
+   "Carioca",
+   "2x 100m strides building to 85%",
+   "Tempo build-ups on the curve"
+  ],
+  "hills": [
+   "Ankling",
+   "A-march up the hill",
+   "Calf raises",
+   "Skips for height"
+  ]
+ },
+ "history": {
+  "2026-07-02": {
+   "blocks": [
+    "h-6x50"
+   ],
+   "loc": "Lively Middle School"
+  },
+  "2026-07-09": {
+   "blocks": [
+    "h-8x80hill"
+   ],
+   "loc": "Yellow Jacket Stadium"
+  },
+  "2026-07-12": {
+   "blocks": [
+    "h-tt",
+    "h-4x40fly"
+   ],
+   "loc": "Marshall Middle School"
+  },
+  "2026-07-16": {
+   "blocks": [
+    "h-fartlek",
+    "h-4x100"
+   ],
+   "loc": "Lively Middle School"
+  },
+  "2026-07-19": {
+   "blocks": [
+    "h-10x100"
+   ],
+   "loc": "Marshall Middle School"
+  },
+  "2026-07-23": {
+   "blocks": [
+    "h-fartlek",
+    "h-4x100"
+   ],
+   "loc": "Lively Middle School"
+  },
+  "2026-07-26": {
+   "blocks": [
+    "h-broken300"
+   ],
+   "loc": "Marshall Middle School"
+  },
+  "2026-07-30": {
+   "blocks": [
+    "h-40-60-80"
+   ],
+   "loc": "Lively Middle School"
+  },
+  "2026-08-02": {
+   "blocks": [
+    "h-lad180",
+    "h-plyo"
+   ],
+   "loc": "Marshall Middle School"
+  },
+  "2026-08-06": {
+   "blocks": [
+    "h-sawyer"
+   ],
+   "loc": "Yellow Jacket Stadium"
+  },
+  "2026-08-09": {
+   "blocks": [
+    "h-4x60",
+    "h-3x150"
+   ],
+   "loc": "Marshall Middle School"
+  },
+  "2026-08-13": {
+   "blocks": [
+    "h-4x20fly",
+    "h-3x30hill"
+   ],
+   "loc": "Yellow Jacket Stadium"
+  },
+  "2026-08-16": {
+   "blocks": [
+    "h-2x200150"
+   ],
+   "loc": "Marshall Middle School"
+  },
+  "2026-08-20": {
+   "blocks": [
+    "h-6x80hill"
+   ],
+   "loc": "Yellow Jacket Stadium"
+  },
+  "2026-08-23": {
+   "blocks": [
+    "h-cooploop",
+    "h-4x60"
+   ],
+   "loc": "Marshall Middle School"
+  },
+  "2026-08-27": {
+   "blocks": [
+    "h-4x20",
+    "h-4x30"
+   ],
+   "loc": "Lively Middle School"
+  },
+  "2026-08-30": {
+   "blocks": [
+    "h-200150100"
+   ],
+   "loc": "Marshall Middle School"
+  },
+  "2026-09-03": {
+   "blocks": [
+    "h-buildups",
+    "h-4x20fly",
+    "h-3x30hill"
+   ],
+   "loc": "Lively Middle School"
+  },
+  "2026-09-06": {
+   "blocks": [
+    "h-lad150",
+    "h-4x30"
+   ],
+   "loc": "Marshall Middle School"
+  },
+  "2026-09-10": {
+   "blocks": [
+    "h-5x100"
+   ],
+   "loc": "Yellow Jacket Stadium"
+  }
+ }
+};
+    const STORE_KEY = 'tr-programming-v1';
+    const BANDS = [
+      { id: 'accel', label: '0-40m', min: 0, max: 40 },
+      { id: 'maxv', label: '40-100m', min: 41, max: 100 },
+      { id: 'speedend', label: '100-300m', min: 101, max: 300 },
+      { id: 'special', label: '300m+', min: 301, max: 9999 },
+    ];
+    const FORMATS = ['straight', 'ladder', 'steps', 'hills', 'relay', 'broken', 'game', 'tt', 'extra'];
+    const FMT_LABEL = { straight: 'straight reps', ladder: 'ladder', steps: 'stepped', hills: 'hills', relay: 'relay', broken: 'broken', game: 'game', tt: 'time trial' };
+    const SUN_LOC = 'Marshall Middle School';
+    const THU_LOC = 'Lively Middle School';
+    const THU_LOCS = ['Lively Middle School', 'Yellow Jacket Stadium'];
+
+    // ---------- state ----------
+    const TODAY = (() => { const n = new Date(); return new Date(n.getFullYear(), n.getMonth(), n.getDate()); })();
+    let state = load();
+    (function preloadHistory() { Object.keys(LIB.history || {}).forEach(k => monthDataQuiet(k.slice(0, 7))); })();
+    function monthDataQuiet(ym) { if (!state.months[ym]) state.months[ym] = { theme: '', days: {} }; const md = state.months[ym]; sessionsFor(ym).forEach(s => { if (!md.days[s.key]) md.days[s.key] = { blocks: [], loc: s.dow === 0 ? SUN_LOC : THU_LOC }; }); applyHistory(ym, md); return md; }
+    function load() {
+      try { const s = JSON.parse(localStorage.getItem(STORE_KEY)); if (s && s.months) return s; } catch (e) {}
+      return { months: {}, custom: [] };
+    }
+    function save() { try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch (e) {} }
+    function allBlocks() { return LIB.blocks.concat(state.custom || []); }
+    function blockById(id) { return allBlocks().find(b => b.id === id); }
+
+    // ---------- block math ----------
+    function metrics(b) {
+      if (!b) return { reps: 0, vol: 0, longest: 0 };
+      if (b.unmetered) return { reps: b.estReps || 0, vol: b.est || 0, longest: b.estLongest || 0 };
+      return { reps: b.reps.length, vol: b.reps.reduce((a, c) => a + c, 0), longest: Math.max(0, ...b.reps) };
+    }
+    function bandOf(dist) { return (BANDS.find(x => dist >= x.min && dist <= x.max) || BANDS[0]).id; }
+    function blockBand(b) { const m = metrics(b); return m.longest ? bandOf(m.longest) : null; }
+    function dayMetrics(day) {
+      const bs = day.blocks.map(blockById).filter(Boolean);
+      const reps = bs.reduce((a, b) => a + metrics(b).reps, 0);
+      const vol = bs.reduce((a, b) => a + metrics(b).vol, 0);
+      const longest = bs.reduce((a, b) => Math.max(a, metrics(b).longest), 0);
+      const bands = new Set(bs.map(blockBand).filter(Boolean));
+      const formats = new Set(bs.map(b => b.format).filter(f => f !== 'extra'));
+      return { reps, vol, longest, avg: reps ? Math.round(vol / reps) : 0, bands, formats, blocks: bs };
+    }
+
+    // ---------- month + sessions ----------
+    function sessionsFor(ym) {
+      const [y, m] = ym.split('-').map(Number);
+      const out = [];
+      for (let d = new Date(y, m - 1, 1); d.getMonth() === m - 1; d.setDate(d.getDate() + 1)) {
+        const dow = d.getDay();
+        if (dow === 4 || dow === 0) out.push({ key: d.toISOString().slice(0, 10), dow, date: new Date(d) });
+      }
+      return out;
+    }
+    function monthData(ym) {
+      if (!state.months[ym]) state.months[ym] = { theme: '', days: {} };
+      const md = state.months[ym];
+      sessionsFor(ym).forEach(s => { if (!md.days[s.key]) md.days[s.key] = { blocks: [], loc: s.dow === 0 ? SUN_LOC : THU_LOC }; });
+      applyHistory(ym, md);
+      return md;
+    }
+    function isLogged(s) { return !!(LIB.history && LIB.history[s.key]) && s.date <= TODAY; }
+    function isPast(s) { return s.date < TODAY || isLogged(s); }
+    function applyHistory(ym, md) {
+      sessionsFor(ym).forEach(s => {
+        const h = LIB.history && LIB.history[s.key]; const d = md.days[s.key];
+        if (h && s.date <= TODAY) { d.blocks = h.blocks.slice(); d.loc = h.loc || d.loc; d.logged = true; delete d.cleared; }   // what actually happened wins
+      });
+    }
+    function fmtDate(d) {
+      return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }).toUpperCase();
+    }
+
+    // ---------- prep suggestions (mobility + drills) ----------
+    function prepFor(day, idx) {
+      const m = dayMetrics(day);
+      if (!m.blocks.length) return null;
+      const hills = m.blocks.some(b => b.format === 'hills' || b.mod === 'hill');
+      const band = hills ? 'hills' : (m.longest ? bandOf(m.longest) : 'maxv');
+      const M = LIB.mobility;
+      const pick = (arr, n, off) => arr.map((x, i) => arr[(i + off) % arr.length]).slice(0, n);
+      let mob;
+      if (band === 'accel' || band === 'maxv') mob = pick(M.activation, 2, idx).concat(pick(M.tabletop, 1, idx), pick(M.strength, 1, idx));
+      else if (band === 'speedend') mob = pick(M.dynamic, 2, idx).concat(pick(M.onback, 1, idx), pick(M.plank, 1, idx));
+      else if (band === 'special') mob = pick(M.onback, 2, idx).concat(pick(M.dynamic, 1, idx), pick(M.activation, 1, idx));
+      else mob = pick(M.onback, 1, idx).concat(pick(M.strength, 2, idx), pick(M.dynamic, 1, idx));
+      const drills = pick(LIB.drills[band] || LIB.drills.maxv, 3, idx);
+      return { mob, drills, band };
+    }
+
+    // ---------- checks: day, week, month ----------
+    const RANGE = { sun: [600, 1500], thu: [300, 900] };
+    function dayChecks(s, m, md, allPlanned) {
+      if (!m.blocks.length) return [];
+      const [lo, hi] = s.dow === 0 ? RANGE.sun : RANGE.thu;
+      const out = [];
+      out.push({ ok: m.vol >= lo && m.vol <= hi, text: m.vol < lo ? `volume under ${lo}m` : m.vol > hi ? `volume over ${hi.toLocaleString()}m` : `volume ${lo} to ${hi.toLocaleString()}m` });
+      out.push({ ok: m.reps >= 4 && m.reps <= 14, text: m.reps < 4 ? 'under 4 reps' : m.reps > 14 ? 'over 14 reps' : '4 to 14 reps' });
+      const day = md.days[s.key];
+      const dup = (allPlanned || []).find(o => o.key !== s.key && o.day.blocks.join('|') === day.blocks.join('|') && Math.abs(o.date - s.date) <= 28 * 864e5);
+      out.push({ ok: !dup, text: dup ? `same session as ${fmtDate(dup.date)}` : 'not a repeat (4 weeks)' });
+      const rot = rotationCheck(s, m); if (rot) out.push(rot);
+      return out;
+    }
+    function weekChecks(days) {
+      const planned = days.filter(d => d.m.blocks.length);
+      if (planned.length < 2) return [];
+      const out = [];
+      const [a, b] = planned;
+      const same = a.day.blocks.join('|') === b.day.blocks.join('|');
+      const bands = new Set(); planned.forEach(d => d.m.bands.forEach(x => bands.add(x)));
+      const formats = new Set(); planned.forEach(d => d.m.formats.forEach(x => formats.add(x)));
+      out.push({ ok: !same && (bands.size >= 2 || formats.size >= 2), text: same ? 'both sessions identical' : (bands.size >= 2 || formats.size >= 2) ? 'the two sessions differ' : 'both sessions same band and format' });
+      out.push({ ok: bands.size >= 2, text: `${bands.size} distance band${bands.size === 1 ? '' : 's'} this week` });
+      const vol = planned.reduce((x, d) => x + d.m.vol, 0);
+      out.push({ ok: vol >= 900 && vol <= 2400, text: `${vol.toLocaleString()}m for the week` + (vol < 900 ? ' (light)' : vol > 2400 ? ' (heavy)' : '') });
+      return out;
+    }
+    function prevSame(s) {
+      let best = null;
+      Object.entries(state.months).forEach(([m, md]) => Object.entries(md.days).forEach(([k, d]) => {
+        if (!d.blocks.length || k === s.key) return;
+        const dt = new Date(k + 'T12:00:00'); if (dt.getDay() !== s.dow || dt >= s.date) return;
+        if (!best || dt > best.date) best = { key: k, date: dt, day: d, m: dayMetrics(d) };
+      }));
+      return best;
+    }
+    function rotationCheck(s, m) {
+      const p = prevSame(s); if (!p || !m.blocks.length) return null;
+      const label = s.dow === 0 ? 'Sunday' : 'Thursday';
+      const f1 = [...m.formats].sort().join('+'), f2 = [...p.m.formats].sort().join('+');
+      const sameType = f1 && f1 === f2;
+      const band1 = m.longest ? bandOf(m.longest) : '', band2 = p.m.longest ? bandOf(p.m.longest) : '';
+      const sameDist = band1 && band1 === band2 && Math.abs(m.reps - p.m.reps) < 3;
+      if (sameType) return { ok: false, text: `same type as last ${label} (${fmtDate(p.date)}: ${FMT_LABEL[[...p.m.formats][0]] || f2})` };
+      if (sameDist) return { ok: false, text: `same distances and reps as last ${label} (${fmtDate(p.date)})` };
+      return { ok: true, text: `varies from last ${label} (${fmtDate(p.date)})` };
+    }
+    function weeksFor(ym, md) {
+      const sess = sessionsFor(ym).map(s => ({ ...s, day: md.days[s.key], m: dayMetrics(md.days[s.key]) }));
+      const groups = new Map();
+      sess.forEach(s => { const d = new Date(s.date); const off = (d.getDay() + 6) % 7; d.setDate(d.getDate() - off); const k = d.toISOString().slice(0, 10); if (!groups.has(k)) groups.set(k, []); groups.get(k).push(s); });
+      return [...groups.entries()].sort().map(([k, days], i) => ({ key: k, n: i + 1, days }));
+    }
+    function monthChecks(ym) {
+      const md = monthData(ym);
+      const sess = sessionsFor(ym).map(s => ({ ...s, day: md.days[s.key], m: dayMetrics(md.days[s.key]) }));
+      const planned = sess.filter(s => s.m.blocks.length);
+      const out = [];
+      const suns = planned.filter(s => s.dow === 0), thus = planned.filter(s => s.dow === 4);
+      if (!planned.length) return { checks: [], sess, planned };
+      // 1 every planned day passes its day checks
+      const failDays = planned.filter(s => dayChecks(s, s.m, md, planned).some(c => !c.ok));
+      out.push({ ok: !failDays.length, text: failDays.length ? `Day checks flagged: ${failDays.map(s => fmtDate(s.date)).join(', ')}` : 'Every planned day passes its checks' });
+      const weeks = weeksFor(ym, md).filter(w => w.days.filter(d => d.m.blocks.length).length >= 2);
+      const failWeeks = weeks.filter(w => weekChecks(w.days).some(c => !c.ok));
+      out.push(weeks.length ? { ok: !failWeeks.length, text: failWeeks.length ? `Week checks flagged: week ${failWeeks.map(w => w.n).join(', ')}` : 'Every full week passes its checks' } : { na: true, text: 'Week checks (plan both sessions in a week)' });
+      // 2 a 250m+ rep at least every 3 weeks (any day)
+      const longDays = planned.filter(s => s.m.longest >= 250).map(s => s.date.getTime());
+      let gapOk = longDays.length > 0;
+      if (gapOk) { const all = planned.map(s => s.date.getTime()); for (const t of all) { if (!longDays.some(l => Math.abs(l - t) <= 21 * 864e5)) { gapOk = false; break; } } }
+      out.push({ ok: gapOk, text: longDays.length ? 'A 250m+ rep within every 3-week window' : 'A 250m+ rep somewhere in the month (none yet)' });
+      for (const [label, arr] of [['Thursdays', thus], ['Sundays', suns]]) {
+        const bad = arr.filter(s => { const r = rotationCheck(s, s.m); return r && !r.ok; });
+        out.push(arr.length > 1 ? { ok: !bad.length, text: bad.length ? `${label} repeat a type or distance back to back (${bad.map(s => fmtDate(s.date)).join(', ')})` : `${label} rotate type and distance week to week` } : { na: true, text: `${label} rotate type and distance week to week` });
+      }
+      // 3 each day type covers 3 bands
+      for (const [label, arr] of [['Thursdays', thus], ['Sundays', suns]]) {
+        const bands = new Set(); arr.forEach(s => s.m.bands.forEach(b => bands.add(b)));
+        out.push(arr.length ? { ok: bands.size >= 3, text: `${label} cover 3+ distance bands (${[...bands].map(b => BANDS.find(x => x.id === b).label).join(', ') || 'none'})` } : { na: true, text: `${label} cover 3+ distance bands` });
+      }
+      // 5 both days mix formats
+      for (const [label, arr] of [['Thursdays', thus], ['Sundays', suns]]) {
+        const f = new Set(); arr.forEach(s => s.m.formats.forEach(x => f.add(x)));
+        out.push(arr.length > 1 ? { ok: f.size >= 2, text: `${label} mix formats (${[...f].join(', ') || 'none'})` } : { na: true, text: `${label} mix formats` });
+      }
+      return { checks: out, sess, planned };
+    }
+
+    // ---------- suggest a block ----------
+    function suggestFor(ym, key) {
+      const md = monthData(ym), day = md.days[key];
+      const theme = LIB.themes.find(t => t.id === (md.theme || '')) || LIB.themes[0];
+      const sess = sessionsFor(ym);
+      const me = sess.find(s => s.key === key);
+      const isSun = me.dow === 0;
+      const sameDay = sess.filter(s => s.dow === me.dow && s.key !== key).map(s => md.days[s.key]);
+      const used = new Set(); Object.values(md.days).forEach(d => d.blocks.forEach(id => used.add(id)));
+      const covered = new Set(); sameDay.forEach(d => dayMetrics(d).bands.forEach(b => covered.add(b)));
+      const cur = dayMetrics(day);
+      const wk = weeksFor(ym, md).find(w => w.days.some(d => d.key === key));
+      const weekBands = new Set(); (wk ? wk.days : []).filter(d => d.key !== key).forEach(d => d.m.bands.forEach(b => weekBands.add(b)));
+      const hillOk = /yellow|hill/i.test(day.loc || '');
+      const prev = prevSame(me); const prevBand = prev && prev.m.longest ? bandOf(prev.m.longest) : '';
+      let cands = allBlocks().filter(b => b.format !== 'extra' && b.format !== 'tt' && !used.has(b.id) && !day.blocks.includes(b.id) && (hillOk || (b.format !== 'hills' && b.mod !== 'hill')));
+      if (theme.bands.length) { const t = cands.filter(b => theme.bands.includes(blockBand(b))); if (t.length) cands = t; }
+      // prefer bands this day-type hasn't covered yet this month
+      const missing = BANDS.map(b => b.id).filter(b => !covered.has(b) && (!theme.bands.length || theme.bands.includes(b)));
+      const score = b => {
+        const m = metrics(b), band = blockBand(b);
+        let s = 0;
+        if (missing.includes(band)) s += 5;
+        if (weekBands.has(band) && weekBands.size) s -= 3;   // vary the band from the other session this week
+        if (prev) { if (prev.m.formats.has(b.format) && !cur.blocks.length) s -= 9; if (band === prevBand && !cur.blocks.length) s -= 4; }
+        if (b.src === 'history') s += 2;
+        const target = isSun ? 1000 : 500;
+        const after = cur.vol + m.vol;
+        s -= Math.abs(after - target) / 150;               // aim at a sensible total
+        if (isSun && after > 1500) s -= 20;                 // never breach the Sunday ceiling
+        if (!isSun && after > 900) s -= 20;
+        if (isSun && after < 600) s -= 3;
+        if (cur.reps + m.reps < 4) s -= 4;                  // day check: at least 4 reps
+        if (!isSun && after < 300) s -= 3;
+        if (cur.reps + m.reps > 14) s -= 20;
+        if (!cur.formats.has(b.format)) s += 1;
+        const monthLong = Object.values(md.days).some(d => dayMetrics(d).longest >= 250);
+        if (!monthLong && m.longest >= 250) s += 3;
+        return s + Math.random() * 0.8;
+      };
+      cands.sort((a, b) => score(b) - score(a));
+      return cands[0] || null;
+    }
+
+    // ---------- flyer text ----------
+    function flyerText(ym, key) {
+      const md = monthData(ym), day = md.days[key];
+      const s = sessionsFor(ym).find(x => x.key === key);
+      const m = dayMetrics(day), prep = prepFor(day, s.date.getDate());
+      const d = s.date;
+      const head = s.dow === 0 ? `${d.getMonth() + 1}.${d.getDate()}.${String(d.getFullYear()).slice(2)}\n${day.loc.toUpperCase()}\n\n830AM` : `${d.getMonth() + 1}.${d.getDate()}.${String(d.getFullYear()).slice(2)}\n${day.loc.toUpperCase()}\n\n630PM MOBILITY\n700PM TRACK WORKOUT`;
+      const theme = LIB.themes.find(t => t.id === (md.theme || ''));
+      const lines = [head, '', 'WARM UP', 'JOG + SKIPS', ...(prep ? prep.drills.map(x => x.toUpperCase()) : ['DYNAMIC DRILLS']), '', 'WORKOUT',
+        ...m.blocks.map(b => b.name.toUpperCase() + (b.rest ? ` (REST ${b.rest.toUpperCase()})` : '')), '', 'COOL DOWN'];
+      if (theme && theme.id) lines.push('', 'GOAL', theme.name.toUpperCase().replace(/ \(.*\)/, ''));
+      lines.push('', `${m.reps} REPS · ${m.vol}M · LONGEST ${m.longest}M`);
+      return lines.join('\n');
+    }
+
+    // ---------- render ----------
+    const $ = s => document.querySelector(s);
+    const monthInput = $('#monthInput'), themeSelect = $('#themeSelect'), daysEl = $('#days'), poolList = $('#poolList'), poolSearch = $('#poolSearch'), poolFilters = $('#poolFilters'), summaryEl = $('#monthSummary'), poolHint = $('#poolHint');
+    let ym = (() => { const n = new Date(); return `${n.getFullYear()}-${String(n.getMonth() + 1).padStart(2, '0')}`; })();
+    let filter = { format: '', band: '' };
+    let picking = null;   // day key when "+ add" is active (tap-to-add fallback for touch)
+
+    LIB.themes.forEach(t => { const o = document.createElement('option'); o.value = t.id; o.textContent = t.name; themeSelect.appendChild(o); });
+    monthInput.value = ym;
+
+    function render() {
+      const md = monthData(ym);
+      themeSelect.value = md.theme || '';
+      renderDays(md); renderPool(md); renderSummary();
+      save();
+    }
+    function blockRow(b, i, past) {
+      const vol = metrics(b).vol;
+      const rest = b.rest ? ' <span class="meta">rest ' + b.rest + '</span>' : '';
+      const rm = past ? '' : '<button type="button" class="rm" data-remove="' + i + '" aria-label="Remove block">[ × ]</button>';
+      return '<li><span class="blk-name">' + b.name + rest + '</span><span class="blk-side"><span class="meta">' + (vol ? vol.toLocaleString() + 'm' : '') + '</span>' + rm + '</span></li>';
+    }
+    function renderDays(md) {
+      daysEl.innerHTML = ''; daysEl.classList.toggle('has-pick', !!picking);
+      const weeks = weeksFor(ym, md);
+      const allPlanned = weeks.flatMap(w => w.days).filter(d => d.m.blocks.length);
+      const mark = c => `<span class="chk ${c.ok ? 'ok' : 'bad'}" title="${c.text.replace(/"/g, '&quot;')}">${c.ok ? '&#10003;' : '!'}<span class="chk-t">${c.text}</span></span>`;
+      weeks.forEach(w => {
+        const wc = weekChecks(w.days);
+        const wrap = document.createElement('section'); wrap.className = 'week';
+        wrap.innerHTML = `<div class="week-head"><span class="week-n">WEEK ${w.n}</span><span class="week-checks">${wc.length ? wc.map(mark).join('') : '<span class="week-hint">plan both sessions for week checks</span>'}</span></div><div class="week-days"></div>`;
+        const grid = wrap.querySelector('.week-days');
+        daysEl.appendChild(wrap);
+      w.days.forEach((s) => {
+        const day = md.days[s.key], m = dayMetrics(day), prep = prepFor(day, s.date.getDate());
+        const dc = dayChecks(s, m, md, allPlanned);
+        const el = document.createElement('article');
+        const past = isPast(s);
+        el.className = 'day ' + (s.dow === 0 ? 'sun' : 'thu') + (picking === s.key ? ' picking' : '') + (past ? ' past' : '');
+        el.dataset.key = s.key;
+        el.innerHTML = `
+          <div class="day-head">
+            <div class="day-date">${fmtDate(s.date)}<small>${s.dow === 0 ? 'SUN 8:30AM' : 'THU 6:30PM'}</small></div>
+            <span class="day-checks">${dc.map(mark).join('')}</span>
+            ${s.dow === 4 ? `<select class="day-loc" aria-label="Location"${past ? ' disabled' : ''}>${THU_LOCS.concat(THU_LOCS.includes(day.loc) ? [] : [day.loc]).map(l => `<option${l === day.loc ? ' selected' : ''}>${l}</option>`).join('')}</select>` : `<input class="day-loc" value="${day.loc.replace(/"/g, '&quot;')}" aria-label="Location" spellcheck="false"${past ? ' readonly tabindex="-1"' : ''}>`}
+          </div>
+          ${dc.some(c => !c.ok) ? `<div class="day-flags">${dc.filter(c => !c.ok).map(c => `<span>! ${c.text}</span>`).join('')}</div>` : ''}
+          <ul class="day-blocks">${m.blocks.length ? m.blocks.map((b, i) => blockRow(b, i, past)).join('') : `<li class="day-empty">${past ? 'NO SESSION LOGGED' : 'DROP BLOCKS HERE'}</li>`}</ul>
+          ${m.blocks.length ? `<div class="day-sum"><span><b>${m.reps}</b> reps</span><span>total <b>${m.vol.toLocaleString()}m</b></span><span>longest <b>${m.longest}m</b></span><span>avg <b>${m.avg}m</b></span></div>` : ''}
+          ${prep ? `<div class="day-prep"><span>MOBILITY</span> ${prep.mob.join(' · ')}<br><span>DRILLS</span> ${prep.drills.join(' · ')}</div>` : ''}
+          <div class="day-actions">
+            ${past ? '<span class="logged">LOGGED</span>' : `<button type="button" class="btn" data-pick>[ ${picking === s.key ? 'CANCEL' : '+ ADD'} ]</button>
+            <button type="button" class="btn" data-suggest>[ SUGGEST ]</button>`}
+            ${m.blocks.length ? '<button type="button" class="btn" data-flyer>[ FLYER TEXT ]</button>' : ''}
+          </div>`;
+        // drag target
+        if (!past) el.addEventListener('dragover', e => { e.preventDefault(); el.classList.add('over'); });
+        el.addEventListener('dragleave', () => el.classList.remove('over'));
+        if (!past) el.addEventListener('drop', e => { e.preventDefault(); el.classList.remove('over'); const id = e.dataTransfer.getData('text/plain'); if (id) addBlock(s.key, id); });
+        el.querySelector('.day-loc').addEventListener('change', e => { day.loc = e.target.value.trim() || day.loc; render(); });
+        el.addEventListener('click', e => {
+          const rm = e.target.closest('[data-remove]'); if (rm && !past) { day.blocks.splice(+rm.dataset.remove, 1); if (!day.blocks.length) day.cleared = true; render(); return; }
+          if (e.target.closest('[data-pick]')) { picking = picking === s.key ? null : s.key; poolHint.textContent = picking ? `click a block to add to ${fmtDate(s.date)}` : 'drag onto a day'; poolHint.classList.toggle('pick', !!picking); render(); return; }
+          if (e.target.closest('[data-suggest]')) { const b = suggestFor(ym, s.key); if (b) { addBlock(s.key, b.id); toast(`Added ${b.name}`); } else toast('Nothing left to suggest'); return; }
+          if (e.target.closest('[data-flyer]')) { navigator.clipboard.writeText(flyerText(ym, s.key)).then(() => toast('Flyer text copied')); return; }
+        });
+        grid.appendChild(el);
+      });
+      });
+    }
+    function fillDay(key) {
+      const md = monthData(ym); const s = sessionsFor(ym).find(x => x.key === key);
+      for (let k = 0; k < 3; k++) { const mm = dayMetrics(md.days[key]); const lo = s.dow === 0 ? 600 : 300; if (mm.blocks.length && mm.reps >= 4 && mm.vol >= lo) break; const b = suggestFor(ym, key); if (!b) break; md.days[key].blocks.push(b.id); }
+    }
+    function addBlock(key, id) { const md = monthData(ym); if (isPast(sessionsFor(ym).find(s => s.key === key))) { toast('That day is in the past'); return; } md.days[key].blocks.push(id); picking = null; poolHint.textContent = 'drag onto a day'; poolHint.classList.remove('pick'); render(); }
+
+    function renderPool(md) {
+      const theme = LIB.themes.find(t => t.id === (md.theme || '')) || LIB.themes[0];
+      // filters
+      poolFilters.innerHTML = '';
+      const mk = (label, kind, val) => { const c = document.createElement('button'); c.type = 'button'; c.className = 'chip' + (filter[kind] === val ? ' on' : ''); c.textContent = label; c.addEventListener('click', () => { filter[kind] = filter[kind] === val ? '' : val; renderPool(md); }); poolFilters.appendChild(c); };
+      BANDS.forEach(b => mk(b.label, 'band', b.id));
+      ['ladder', 'steps', 'hills', 'relay', 'game', 'broken'].forEach(f => mk(f.toUpperCase(), 'format', f));
+      const q = poolSearch.value.trim().toLowerCase();
+      let list = allBlocks().filter(b => (!filter.band || blockBand(b) === filter.band) && (!filter.format || b.format === filter.format) && (!q || (b.name + ' ' + (b.note || '') + ' ' + (b.seen || '') + ' ' + b.format).toLowerCase().includes(q)));
+      const inTheme = b => !theme.bands.length || theme.bands.includes(blockBand(b)) || b.format === 'extra';
+      const groups = theme.bands.length ? [['ON THEME', list.filter(inTheme)], ['EVERYTHING ELSE', list.filter(b => !inTheme(b))]] : [['TR HISTORY', list.filter(b => b.src !== 'general')], ['STANDARD SPRINT BLOCKS', list.filter(b => b.src === 'general')]];
+      poolList.innerHTML = '';
+      groups.forEach(([label, arr]) => {
+        if (!arr.length) return;
+        const g = document.createElement('div'); g.className = 'pool-group'; g.textContent = label; poolList.appendChild(g);
+        arr.forEach(b => {
+          const m = metrics(b);
+          const el = document.createElement('div'); el.className = 'blk'; el.draggable = true; el.title = (b.seen ? 'Seen: ' + b.seen + '. ' : '') + (b.note || '') + (b.rest ? ' Rest ' + b.rest + '.' : '');
+          el.innerHTML = `<span class="n">${b.name}${b.src === 'general' ? ' <span class="g">STD</span>' : ''}${b.src === 'custom' ? ' <span class="g">NEW</span>' : ''}</span><span class="m">${m.vol ? m.reps + ' × ' + (m.reps ? Math.round(m.vol / m.reps) : 0) + ' · ' + m.vol + 'm' : (b.unmetered ? 'unmetered' : '')}</span>`;
+          el.addEventListener('dragstart', e => { e.dataTransfer.setData('text/plain', b.id); e.dataTransfer.effectAllowed = 'copy'; });
+          el.addEventListener('click', () => { if (picking) addBlock(picking, b.id); else toast('Drag onto a day, or press + ADD on a day first'); });
+          poolList.appendChild(el);
+        });
+      });
+      if (!list.length) poolList.innerHTML = '<div class="pool-group">NO MATCHES</div>';
+    }
+
+    function renderSummary() {
+      const { checks, sess, planned } = monthChecks(ym);
+      const sunV = planned.filter(s => s.dow === 0).map(s => s.m.vol), thuV = planned.filter(s => s.dow === 4).map(s => s.m.vol);
+      const med = a => a.length ? a.slice().sort((x, y) => x - y)[Math.floor(a.length / 2)] : 0;
+      const totalReps = planned.reduce((a, s) => a + s.m.reps, 0), totalVol = planned.reduce((a, s) => a + s.m.vol, 0);
+      summaryEl.innerHTML = `
+        <div>
+          <div class="sum-line"><span><b>${planned.length}</b> of ${sess.length} sessions planned</span><span><b>${totalReps}</b> reps</span><span><b>${totalVol.toLocaleString()}</b>m</span></div>
+          <div class="sum-line"><span>Sunday median <b>${med(sunV).toLocaleString()}</b>m</span><span>Thursday median <b>${med(thuV).toLocaleString()}</b>m</span><span>avg rep <b>${totalReps ? Math.round(totalVol / totalReps) : 0}</b>m</span></div>
+          <div class="sum-line" style="opacity:.6">Reference: pre-handoff Sundays ran ~1,200m, 9 reps, 140m avg; post-handoff ~700m, 4 reps, 145m avg.</div>
+        </div>
+        <ul class="checks"><li class="checks-title">MONTH CHECKS</li>${checks.length ? checks.map(c => `<li class="${c.na ? 'na' : c.ok ? 'ok' : 'bad'}">${c.text}</li>`).join('') : '<li class="na">Add blocks to see the month checks</li>'}</ul>`;
+    }
+
+    // ---------- events ----------
+    monthInput.addEventListener('change', () => { if (monthInput.value) { ym = monthInput.value; picking = null; render(); } });
+    themeSelect.addEventListener('change', () => { monthData(ym).theme = themeSelect.value; render(); });
+    poolSearch.addEventListener('input', () => renderPool(monthData(ym)));
+    $('#newBlockForm').addEventListener('submit', e => {
+      e.preventDefault();
+      const f = new FormData(e.target);
+      const reps = String(f.get('reps')).split(/[^0-9]+/).filter(Boolean).map(Number);
+      if (!reps.length) { toast('Enter rep distances, e.g. 200,200,200'); return; }
+      const name = String(f.get('name')).trim();
+      const b = { id: 'c-' + Date.now().toString(36), name, reps, format: f.get('format'), rest: String(f.get('rest')).trim(), note: String(f.get('note')).trim(), src: 'custom', seen: 'added ' + new Date().toLocaleDateString() };
+      if (/hill/i.test(name + b.note)) b.mod = 'hill';
+      state.custom = state.custom || []; state.custom.push(b);
+      e.target.reset(); toast(`Added ${name} to the library`); render();
+    });
+    $('#suggestAllBtn').addEventListener('click', () => {
+      const open = sessionsFor(ym).filter(s => !isPast(s) && !monthData(ym).days[s.key].blocks.length);
+      if (!open.length) { toast('Every upcoming day already has blocks'); return; }
+      open.forEach(s => fillDay(s.key)); picking = null; render(); toast(`Filled ${open.length} day${open.length === 1 ? '' : 's'}`);
+    });
+    $('#clearAllBtn').addEventListener('click', () => {
+      const md = monthData(ym); const open = sessionsFor(ym).filter(s => !isPast(s) && md.days[s.key].blocks.length);
+      if (!open.length) { toast('Nothing to clear'); return; }
+      if (!confirm(`Clear ${open.length} upcoming day${open.length === 1 ? '' : 's'}? Past days stay as logged.`)) return;
+      open.forEach(s => { md.days[s.key].blocks = []; md.days[s.key].cleared = true; }); picking = null; render();
+    });
+    $('#exportBtn').addEventListener('click', () => {
+      const blob = new Blob([JSON.stringify(state, null, 1)], { type: 'application/json' });
+      const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `trackrat-programming-${ym}.json`; a.click();
+    });
+    $('#importBtn').addEventListener('click', () => $('#importFile').click());
+    $('#importFile').addEventListener('change', e => {
+      const f = e.target.files[0]; if (!f) return;
+      f.text().then(t => { const s = JSON.parse(t); if (s && s.months) { state = s; render(); toast('Imported'); } else toast('Not a planner file'); }).catch(() => toast('Could not read file'));
+      e.target.value = '';
+    });
+    let toastT; function toast(msg) { const el = $('#toast'); el.textContent = msg; el.classList.add('show'); clearTimeout(toastT); toastT = setTimeout(() => el.classList.remove('show'), 1800); }
+
+        // dev/demo: /programming?demo seeds the current month with suggestions and exposes flyer text for inspection
+    if (/[?&]pick/.test(location.search)) picking = sessionsFor(ym)[0].key;
+    if (/[?&]demo/.test(location.search)) {
+      const md = monthData(ym);
+      sessionsFor(ym).forEach(s => { if (!isPast(s) && !md.days[s.key].blocks.length) { const b = suggestFor(ym, s.key); if (b) md.days[s.key].blocks.push(b.id); for (let k = 0; k < 2; k++) { const mm = dayMetrics(md.days[s.key]); const lo = s.dow === 0 ? 600 : 300; if (mm.reps >= 4 && mm.vol >= lo && !(s.dow === 0 && k === 0)) break; const b2 = suggestFor(ym, s.key); if (b2) md.days[s.key].blocks.push(b2.id); } } });
+      if (/[?&]flag/.test(location.search)) { const suns = sessionsFor(ym).filter(s => s.dow === 0); md.days[suns[1].key].blocks = md.days[suns[0].key].blocks.slice(); }
+      render();
+      const pre = document.createElement('pre'); pre.id = 'demoFlyer'; pre.hidden = true; pre.textContent = flyerText(ym, sessionsFor(ym).find(s => s.dow === 0).key); document.body.appendChild(pre);
+    } else render();
+
+
+</script>
+</body>
+</html>

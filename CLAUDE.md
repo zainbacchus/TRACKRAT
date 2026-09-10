@@ -28,6 +28,17 @@ Pages:
   below). `/gallery` used to be its own page; it now 301-redirects to
   `/dashboard#gallery`.
 - `/waiver` — club code of conduct + liability waiver, signed in the browser.
+- `/programming` — members' workout block planner (noindex, not in the
+  sitemap, not linked from the nav yet). Month view of every Thursday +
+  Sunday, an optional theme, a drag-and-drop library of blocks (TR history
+  from the IG log + flyers, plus standard 60–400m sprint blocks), per-day
+  reps/volume/longest/avg, auto mobility + drills, day/week/month
+  variety+intensity checks, SUGGEST / SUGGEST ALL, and a FLYER TEXT export
+  in the Discord flyer format. **Storage is `localStorage` only (v1)** with
+  JSON export/import; shared editing via Supabase is the planned v2. Days
+  before today (and today once its flyer is logged) render locked from the
+  `history` map baked into the page. Source of truth for the seed library +
+  history lives in the page's `LIB` object at the top of its script.
   **Publicly readable**: both documents render for anyone, and only the signing
   form is behind Google sign-in. `/waiver` (singular) redirects here.
 
@@ -65,6 +76,7 @@ TRACKRAT/
 ├── podium.html             # /podium                — competition results (search + discipline filter)
 ├── invitational.html       # /invitational          — 2026 Invitational (Oct 18, 2026 · Tilley St; RSVP TBD)
 ├── offtrack.html           # /offtrack              — OFFTRACK demo night (under Events dropdown)
+├── programming.html       # /programming           — members' workout block planner (localStorage v1)
 ├── dashboard.html          # /dashboard             — member dashboard: PRs + Partners + Gallery (Google sign-in)
 ├── 404.html                # branded 404 (served automatically by Vercel)
 ├── js/
