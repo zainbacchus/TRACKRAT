@@ -351,8 +351,12 @@
     .sl-title {
       font-family: 'Fugaz One', 'Arial Black', sans-serif;
       letter-spacing: -0.03em;
-      font-size: clamp(26px, 5.4vw, 64px);
-      line-height: 1.06;
+      /* Measured, not guessed: ATHLETES renders 4.84px wide per px of font
+         size, and the note line beneath it is 478px of ink, so 99px is
+         parity and 104px clears it. The floor keeps it near the note's
+         wrapped width on a phone without touching the 327px column. */
+      font-size: clamp(62px, 8.2vw, 104px);
+      line-height: 1;
       text-align: center;
     }
     .sl-note {
@@ -564,7 +568,7 @@
        Names and events ONLY: the export also carries emails and phone
        numbers and this repo is public. -->
   <section class="startlist" id="entries" aria-labelledby="entries-heading">
-    <h2 class="sl-title" id="entries-heading">TRACKRAT INVITATIONAL<br>ATHLETES</h2>
+    <h2 class="sl-title" id="entries-heading">ATHLETES</h2>
     <p class="sl-note">SIX LANES PER RACE &middot; LAST UPDATED SEP 12, 2026</p>
     <p class="sl-note sl-note-sm">HEATS ARE PROVISIONAL AND SEEDED ON THE DAY.</p>
     <div class="sl-grid">
