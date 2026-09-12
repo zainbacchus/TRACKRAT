@@ -351,8 +351,8 @@
     .sl-title {
       font-family: 'Fugaz One', 'Arial Black', sans-serif;
       letter-spacing: -0.03em;
-      font-size: clamp(44px, 8vw, 86px);
-      line-height: 1;
+      font-size: clamp(26px, 5.4vw, 64px);
+      line-height: 1.06;
       text-align: center;
     }
     .sl-note {
@@ -372,10 +372,13 @@
     /* Solid black at a smaller size rather than dimmed black: over Sprint
        Orange a low-alpha black reads brown, not grey. */
     .sl-count { font-size: 11px; font-weight: 700; letter-spacing: 0.14em; white-space: nowrap; }
-    .sl-count.is-full { background: var(--black); color: var(--orange); padding: 5px 8px; }
+    .sl-count.is-mark { background: var(--black); color: var(--orange); padding: 5px 8px; }
     .sl-race ul { list-style: none; margin-top: 14px; }
     .sl-race li { font-size: 15px; font-weight: 500; line-height: 1.9; }
-    .sl-team { font-size: 12px; font-weight: 700; letter-spacing: 0.18em; margin-top: 18px; }
+    .sl-team {
+      font-size: 12px; font-weight: 700; letter-spacing: 0.18em; margin-top: 18px;
+      display: flex; align-items: baseline; gap: 12px;
+    }
     .sl-empty { font-size: 13px; font-weight: 500; margin-top: 14px; }
     @media (max-width: 700px) {
       .startlist { padding: 0 24px 96px; }
@@ -561,8 +564,8 @@
        Names and events ONLY: the export also carries emails and phone
        numbers and this repo is public. -->
   <section class="startlist" id="entries" aria-labelledby="entries-heading">
-    <h2 class="sl-title" id="entries-heading">WHO&rsquo;S RACING</h2>
-    <p class="sl-note">SIX LANES PER RACE &middot; LAST UPDATED SEP 12, 2026 AT 12:26 PM CT</p>
+    <h2 class="sl-title" id="entries-heading">ATHLETES COMPETING AT<br>TRACKRAT INVITATIONAL</h2>
+    <p class="sl-note">SIX LANES PER RACE &middot; LAST UPDATED SEP 12, 2026</p>
     <p class="sl-note sl-note-sm">HEATS ARE PROVISIONAL AND SEEDED ON THE DAY.</p>
     <div class="sl-grid">
       <div class="sl-race">
@@ -611,15 +614,15 @@
         </ul>
       </div>
       <div class="sl-race">
-        <h3>200M WOMEN&rsquo;S <span class="sl-count is-full">2 HEATS</span></h3>
-        <p class="sl-team">HEAT 1</p>
+        <h3>200M WOMEN&rsquo;S <span class="sl-count is-mark">2 HEATS</span></h3>
+        <p class="sl-team">HEAT 1 <span class="sl-count">4 OF 6</span></p>
         <ul>
           <li>Ashley Fairley</li>
           <li>Mandy Peña</li>
           <li>Mia Constantin</li>
           <li>Natalie Woodham</li>
         </ul>
-        <p class="sl-team">HEAT 2</p>
+        <p class="sl-team">HEAT 2 <span class="sl-count">3 OF 6</span></p>
         <ul>
           <li>Sarah Boyd</li>
           <li>Vanessa Bacorn</li>
@@ -636,7 +639,7 @@
         </ul>
       </div>
       <div class="sl-race">
-        <h3>400M WOMEN&rsquo;S <span class="sl-count is-full">FULL</span></h3>
+        <h3>400M WOMEN&rsquo;S <span class="sl-count">6 OF 6</span></h3>
         <ul>
           <li>Kristin Malone</li>
           <li>L. Morgan Kelley</li>
@@ -647,22 +650,22 @@
         </ul>
       </div>
       <div class="sl-race">
-        <h3>4&times;100 WOMEN&rsquo;S <span class="sl-count is-full">1 TEAM</span></h3>
+        <h3>4&times;100 WOMEN&rsquo;S <span class="sl-count is-mark">1 TEAM</span></h3>
         <p class="sl-team">SHREVEPORT SPEED</p>
         <ul>
           <li>Lindsey Quebedeaux</li>
           <li>Mandy Peña</li>
-          <li>Ximena Ramos</li>
           <li>Natalie Woodham</li>
+          <li>Ximena Ramos</li>
         </ul>
       </div>
       <div class="sl-race">
-        <h3>4&times;400 CO-ED <span class="sl-count is-full">1 TEAM</span></h3>
+        <h3>4&times;400 CO-ED <span class="sl-count is-mark">1 TEAM</span></h3>
         <p class="sl-team">TRACKRAT</p>
         <ul>
-          <li>Myles Cooper</li>
-          <li>Isiah Weekly</li>
           <li>Davicia Weekly</li>
+          <li>Isiah Weekly</li>
+          <li>Myles Cooper</li>
           <li>Vanessa Bacorn</li>
         </ul>
       </div>
