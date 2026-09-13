@@ -495,7 +495,11 @@
       /* Was 10px with a meta line below carrying the other 22px. */
       margin-bottom: 22px;
     }
-    .wv-doc-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 14px; }
+    .wv-doc-actions {
+      display: flex; gap: 12px; margin-top: 12px;
+      width: 264px; max-width: 100%;
+    }
+    .wv-doc-actions > a { flex: 1; text-align: center; }
     /* Sits inside a <label>, so it has to read as a link and not as part
        of the sentence being agreed to. */
     .wv-jump { color: var(--orange); border-bottom: 1px solid rgba(255, 77, 31, 0.45); }
@@ -522,6 +526,13 @@
       text-transform: uppercase;
       padding: 12px 18px;
       transition: transform 0.15s ease;
+      /* All three controls share one width so the two cards line up. 264px is
+         set by the longest label (READ THE CLUB RULES measures 219px) and by
+         the pair below it (OPEN PDF needs 124px, so 2 x 124 + 12 gap = 260px),
+         and it clears the narrowest card inner width, 299px at 375px. */
+      width: 264px;
+      max-width: 100%;
+      justify-content: space-between;
     }
     .wv-read > summary:hover { transform: translateY(-1px); }
     .wv-read > summary::-webkit-details-marker { display: none; }
@@ -2062,7 +2073,10 @@
       if (!user) { showState('stAuth'); return; }
       $('whoEmail').textContent = user.email || '';
       const pic = user.user_metadata && (user.user_metadata.avatar_url || user.user_metadata.picture);
-      if (pic) $('whoAvatar').src = pic; else $('whoAvatar').removeAttribute('src');
+      // A Google account with no picture would otherwise leave a 30px empty
+      // circle next to the email, since the img keeps its size and border-radius.
+      if (pic) { $('whoAvatar').src = pic; $('whoAvatar').hidden = false; }
+      else { $('whoAvatar').removeAttribute('src'); $('whoAvatar').hidden = true; }
       if (await alreadySigned()) { showState('stDone'); return; }
       showState('stForm');
       // The pad was display:none until this moment, so it measured 0. Measure
