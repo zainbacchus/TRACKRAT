@@ -495,34 +495,46 @@
       /* Was 10px with a meta line below carrying the other 22px. */
       margin-bottom: 22px;
     }
-    .wv-doc-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+    .wv-doc-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 14px; }
+    /* Sits inside a <label>, so it has to read as a link and not as part
+       of the sentence being agreed to. */
+    .wv-jump { color: var(--orange); border-bottom: 1px solid rgba(255, 77, 31, 0.45); }
+    .wv-jump:hover { border-bottom-color: var(--orange); }
 
     /* Read-on-page transcript. This is the accessible reading path: the PDF is
        untagged and does not reflow, so it is the artifact and this is the text.
        Both are generated from one source file so they cannot drift. */
-    .wv-read { margin-top: 24px; border-top: 1px solid var(--field-border); padding-top: 18px; }
+    .wv-read { margin-top: 20px; }
+    /* The summary IS the primary button. Styling it rather than swapping in a
+       <button> keeps the disclosure working with no JS. */
     .wv-read > summary {
       cursor: pointer;
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.16em;
       list-style: none;
-      display: flex;
+      display: inline-flex;
       align-items: center;
       gap: 10px;
+      background: var(--orange);
+      border: 1px solid var(--orange);
+      color: var(--black);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 12px 18px;
+      transition: transform 0.15s ease;
     }
+    .wv-read > summary:hover { transform: translateY(-1px); }
     .wv-read > summary::-webkit-details-marker { display: none; }
-    .wv-read > summary::before {
+    .wv-read > summary::after {
       content: '';
       width: 7px; height: 7px;
-      border-right: 1.5px solid var(--orange);
-      border-bottom: 1.5px solid var(--orange);
-      transform: rotate(-45deg);
+      border-right: 2px solid var(--black);
+      border-bottom: 2px solid var(--black);
+      transform: rotate(45deg) translateY(-2px);
       transition: transform 0.18s ease;
       flex-shrink: 0;
     }
-    .wv-read[open] > summary::before { transform: rotate(45deg); }
-    .wv-read > summary:hover { color: var(--orange); }
+    .wv-read[open] > summary::after { transform: rotate(-135deg) translateY(-2px); }
     .wv-read > summary:focus-visible { outline: 2px solid var(--orange); outline-offset: 3px; }
     .wv-text {
       margin-top: 20px;
@@ -666,19 +678,26 @@
       display: flex;
       gap: 12px;
       align-items: flex-start;
-      margin-bottom: 14px;
+      margin-bottom: 10px;
+      /* Takes the row past the 24px WCAG 2.5.8 floor when the label happens to
+         fit on one line, which it does at desktop width. */
+      padding: 4px 0;
       cursor: pointer;
       font-size: 13px;
       line-height: 1.6;
     }
+    /* Unchecked was a 1px rgba(255,255,255,0.12) border over a fill DARKER
+       than the panel: 1.33:1, against the 3:1 WCAG 1.4.11 asks of a control
+       boundary, and invisible on a phone outdoors. An orange outline is
+       5.97:1 and reads as "still to do" before the fill arrives. */
     .wv-check input {
       appearance: none;
       -webkit-appearance: none;
       flex-shrink: 0;
-      width: 18px; height: 18px;
-      margin-top: 2px;
-      background: rgba(0, 0, 0, 0.4);
-      border: 1px solid var(--field-border);
+      width: 22px; height: 22px;
+      margin-top: 1px;
+      background: transparent;
+      border: 2px solid var(--orange);
       cursor: pointer;
       position: relative;
       transition: border-color 0.15s ease, background 0.15s ease;
@@ -687,14 +706,14 @@
     .wv-check input:checked::after {
       content: '';
       position: absolute;
-      left: 5px; top: 2px;
-      width: 5px; height: 9px;
+      left: 6px; top: 2px;
+      width: 6px; height: 11px;
       border-right: 2px solid var(--black);
       border-bottom: 2px solid var(--black);
       transform: rotate(40deg);
     }
     .wv-check input:focus-visible { outline: 2px solid var(--orange); outline-offset: 2px; }
-    .wv-check:hover input:not(:checked) { border-color: var(--field-border-hover); }
+    .wv-check:hover input:not(:checked) { background: rgba(255, 77, 31, 0.18); }
 
     /* ---- SUBMIT + STATUS ---- */
     .wv-submit-row {
@@ -706,6 +725,13 @@
       padding-top: 22px;
       border-top: 1px solid var(--field-border);
     }
+    /* A disabled button that says nothing is where people got stuck: six
+       conditions gate it and none of them announced itself. */
+    .wv-need {
+      font-size: 12px; line-height: 1.6;
+      color: var(--orange); margin-top: 12px; width: 100%;
+    }
+    .wv-need:empty { display: none; }
     .wv-msg {
       font-size: 12px;
       letter-spacing: 0.04em;
@@ -990,12 +1016,18 @@
       </div>
       <h2 class="wv-doc-title" id="conductTitle">CLUB RULES</h2>
 
-      <div class="wv-rules" id="conductText"></div>
-
-      <p class="wv-rules-foot">If any of this is not being upheld, say so. Tell a
-        coach or an organiser at the session, or
-        <a id="concernLink" href="#" target="_blank" rel="noopener">send it to us
-        directly</a>. We would much rather hear it early.</p>
+      <!-- Collapsed, like the waiver transcript: on a phone the rules ran
+           1415px, over half the page, before the waiver card appeared. The
+           checkbox that attests to them links straight here and opens it, so
+           the text is one tap from the thing being agreed to. -->
+      <details class="wv-read" id="rulesRead">
+        <summary class="wv-read-cta">READ THE CLUB RULES</summary>
+        <div class="wv-rules" id="conductText"></div>
+        <p class="wv-rules-foot">If any of this is not being upheld, say so. Tell a
+          coach or an organiser at the session, or
+          <a id="concernLink" href="#" target="_blank" rel="noopener">send it to us
+          directly</a>. We would much rather hear it early.</p>
+      </details>
     </section>
 
     <!-- WAIVER DOCUMENT. There is no inline PDF viewer, and that is deliberate:
@@ -1010,15 +1042,19 @@
       </div>
       <h2 class="wv-doc-title" id="docTitle">THE WAIVER</h2>
 
-      <div class="wv-doc-actions">
-        <a class="g-btn" id="docOpen" href="#" target="_blank" rel="noopener">OPEN THE WAIVER &#8599;</a>
-        <a class="g-btn-ghost" id="docDownload" href="#" download>DOWNLOAD</a>
-      </div>
-
+      <!-- Reading leads and the PDF is secondary. The orange button used to
+           be OPEN THE WAIVER, which sent people to a new tab holding a PDF
+           with no way back to the form; the path that keeps them here was an
+           11px collapsed line underneath it. -->
       <details class="wv-read" id="docRead" hidden>
-        <summary>READ THE FULL TEXT ON THIS PAGE</summary>
+        <summary class="wv-read-cta">READ THE WAIVER</summary>
         <div class="wv-text" id="docText" tabindex="0"></div>
       </details>
+
+      <div class="wv-doc-actions">
+        <a class="g-btn-ghost" id="docOpen" href="#" target="_blank" rel="noopener">OPEN PDF &#8599;</a>
+        <a class="g-btn-ghost" id="docDownload" href="#" download>DOWNLOAD</a>
+      </div>
     </section>
 
     <!-- SIGNING PANEL. Exactly one .wv-state carries .is-on at a time. -->
@@ -1135,8 +1171,8 @@
                  own agreement question. -->
             <label class="wv-check">
               <input type="checkbox" id="ackConduct">
-              <span>I have read the <strong>club rules</strong> above, and I agree
-                to follow them.</span>
+              <span>I have read the <a href="#rules" class="wv-jump"><strong>club
+                rules</strong></a>, and I agree to follow them.</span>
             </label>
             <label class="wv-check">
               <input type="checkbox" id="ackWaiver">
@@ -1152,6 +1188,7 @@
           <div class="wv-submit-row">
             <button class="g-btn" id="submitBtn" type="submit" disabled>SIGN THE WAIVER</button>
             <p class="wv-msg" id="msg" role="status" aria-live="polite"></p>
+            <p class="wv-need" id="needMsg" aria-live="polite"></p>
           </div>
         </form>
       </div>
@@ -1373,6 +1410,13 @@
         } catch (err) {
           console.warn('[waiver] transcript unavailable:', err);
         }
+      }
+      // Reading in place is the primary action, but it only exists once the
+      // transcript has loaded. If it did not, the card would be left with two
+      // ghost buttons and no primary at all, so the PDF takes the role back.
+      if ($('docRead').hidden) {
+        $('docOpen').className = 'g-btn';
+        $('docOpen').textContent = 'OPEN THE WAIVER \u2197';
       }
       return true;
     }
@@ -1644,17 +1688,29 @@
         ackCapacity: $('ackCapacity').checked,
       };
     }
-    function formValid() {
+    /* Returns the one thing still missing, or null when the form is good.
+       Order follows the order the fields appear on the page, so the message
+       always points at the next thing down rather than jumping around. */
+    function formMissing() {
       const v = formValues();
-      if (v.legalName.length < 2 || v.legalName.length > 120) return false;
-      if (!v.dob || !dobSane()) return false;
-      if (v.minor && (v.guardianName.length < 2 || !v.guardianRelationship)) return false;
-      if (!v.ackConduct || !v.ackWaiver || !v.ackCapacity) return false;
-      return padSigned();
+      if (v.legalName.length < 2 || v.legalName.length > 120)
+        return 'Add your full legal name to finish.';
+      if (!v.dob || !dobSane()) return 'Add your date of birth to finish.';
+      if (v.minor && (v.guardianName.length < 2 || !v.guardianRelationship))
+        return 'Add the guardian\u2019s name and relationship to finish.';
+      if (!padSigned()) return 'Draw your signature above to finish.';
+      const ticked = [v.ackConduct, v.ackWaiver, v.ackCapacity].filter(Boolean).length;
+      if (ticked < 3) return `Tick all three boxes to finish (${ticked} of 3).`;
+      return null;
     }
+    function formValid() { return formMissing() === null; }
     let submitting = false;
     function syncSubmit() {
-      $('submitBtn').disabled = submitting || !formValid();
+      const missing = formMissing();
+      $('submitBtn').disabled = submitting || missing !== null;
+      // The button used to dim with no explanation, which is where people
+      // stalled: six conditions gated it and none of them said so.
+      $('needMsg').textContent = submitting ? '' : (missing || '');
     }
 
     /* ---------------- SIGNED PDF ---------------- */
@@ -2029,6 +2085,20 @@
       $(id).addEventListener('input', syncSubmit);
       $(id).addEventListener('change', syncSubmit);
     }
+    /* The rules live in a collapsed <details>, so the checkbox that attests to
+       them opens it rather than pointing at something the reader cannot see.
+       preventDefault also stops the surrounding <label> toggling the box: the
+       reader is going to read, not to tick. */
+    document.querySelectorAll('.wv-jump').forEach(a => {
+      a.addEventListener('click', e => {
+        e.preventDefault();
+        e.stopPropagation();
+        const d = $('rulesRead');
+        d.open = true;
+        d.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    });
+
     new ResizeObserver(resizePad).observe(wrap);
     window.addEventListener('orientationchange', () => setTimeout(resizePad, 120));
     syncGuardian();
