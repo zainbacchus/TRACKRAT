@@ -384,6 +384,15 @@
     .sl-count.is-low { border: 2px solid var(--black); padding: 3px 6px; }
     .sl-race ul { list-style: none; margin-top: 14px; }
     .sl-race li { font-size: 15px; font-weight: 500; line-height: 1.9; }
+    /* Outlined rather than solid, matching the near-full header chip: this is a
+       thing still to be sorted, not a settled fact. Solid black at a small size
+       rather than any dimming, since black at low alpha over Sprint Orange
+       reads brown. */
+    .sl-flag {
+      display: inline-block; font-size: 10px; font-weight: 700;
+      letter-spacing: 0.14em; line-height: 1; padding: 3px 6px;
+      border: 2px solid var(--black); margin-left: 10px; vertical-align: 2px;
+    }
     .sl-team {
       font-size: 12px; font-weight: 700; letter-spacing: 0.18em; margin-top: 18px;
       display: flex; align-items: baseline; gap: 12px;
@@ -615,7 +624,7 @@
         <ul>
           <li>Brandon Jones</li>
           <li>Paris Desean Odem</li>
-          <li>Rathu</li>
+          <li>Rathu Jammula</li>
         </ul>
         <p class="sl-team">HEAT 2 <span class="sl-count">2 ATHLETES</span></p>
         <ul>
@@ -647,7 +656,7 @@
         </ul>
         <p class="sl-team">HEAT 2 <span class="sl-count">2 ATHLETES</span></p>
         <ul>
-          <li>Rathu</li>
+          <li>Rathu Jammula</li>
           <li>Tyriq Valentine</li>
         </ul>
       </div>
@@ -719,7 +728,7 @@
         </ul>
       </div>
       <div class="sl-race">
-        <h3>4&times;400 CO-ED <span class="sl-count">1 OF 6</span></h3>
+        <h3>4&times;400 CO-ED <span class="sl-count">3 OF 6</span></h3>
         <p class="sl-team">TRACKRAT</p>
         <ul>
           <li>Davicia Weekly</li>
@@ -727,13 +736,21 @@
           <li>Myles Cooper</li>
           <li>Vanessa Bacorn</li>
         </ul>
-        <p class="sl-team">LOOKING FOR A TEAM</p>
+        <p class="sl-team">OXYGEN DEBT</p>
         <ul>
+          <li>Austin <span class="sl-flag">UNPAID</span></li>
           <li>Dre</li>
           <li>Jaymie Ruskovich</li>
-          <li>Jorge Munoz</li>
-          <li>Rathu</li>
           <li>Zulema Nguyen</li>
+        </ul>
+        <p class="sl-team">REDLINE</p>
+        <ul>
+          <li>Isaac Nelson Jr <span class="sl-flag">UNPAID</span></li>
+          <li>Jorge Munoz</li>
+        </ul>
+        <p class="sl-team">LOOKING FOR A TEAM</p>
+        <ul>
+          <li>Rathu Jammula</li>
         </ul>
       </div>
     </div>
