@@ -384,6 +384,12 @@
     .sl-count.is-low { border: 2px solid var(--black); padding: 3px 6px; }
     .sl-race ul { list-style: none; margin-top: 14px; }
     .sl-race li { font-size: 15px; font-weight: 500; line-height: 1.9; }
+    /* An empty lane, not a competitor. Tracked caps at a smaller size reads as
+       a label rather than a name, which is the same device the HEAT and team
+       lines use. No dimming: black at low alpha over Sprint Orange goes brown. */
+    .sl-race li.sl-open {
+      font-size: 12px; font-weight: 700; letter-spacing: 0.2em;
+    }
     /* Outlined rather than solid, matching the near-full header chip: this is a
        thing still to be sorted, not a settled fact. Solid black at a small size
        rather than any dimming, since black at low alpha over Sprint Orange
@@ -592,123 +598,170 @@
     <div class="sl-grid">
       <div class="sl-race">
         <h3>60M MEN&rsquo;S <span class="sl-count">4 OF 12</span></h3>
-        <p class="sl-team">HEAT 1 <span class="sl-count">2 ATHLETES</span></p>
+        <p class="sl-team">HEAT 1 <span class="sl-count">4 ATHLETES</span></p>
         <ul>
           <li>Ankith Harathi</li>
           <li>Brandon Jones</li>
-        </ul>
-        <p class="sl-team">HEAT 2 <span class="sl-count">2 ATHLETES</span></p>
-        <ul>
           <li>Paris Desean Odem</li>
           <li>Rikin Tanna</li>
+          <li class="sl-open">OPEN</li>
+          <li class="sl-open">OPEN</li>
+        </ul>
+        <p class="sl-team">HEAT 2 <span class="sl-count">0 ATHLETES</span></p>
+        <ul>
+          <li class="sl-open">OPEN</li>
+          <li class="sl-open">OPEN</li>
+          <li class="sl-open">OPEN</li>
+          <li class="sl-open">OPEN</li>
+          <li class="sl-open">OPEN</li>
+          <li class="sl-open">OPEN</li>
         </ul>
       </div>
       <div class="sl-race">
         <h3>60M WOMEN&rsquo;S <span class="sl-count">7 OF 12</span></h3>
-        <p class="sl-team">HEAT 1 <span class="sl-count">4 ATHLETES</span></p>
+        <p class="sl-team">HEAT 1 <span class="sl-count">6 ATHLETES</span></p>
         <ul>
           <li>Ashley Fairley</li>
           <li>Emily Knippa</li>
           <li>Kristy Harris</li>
           <li>Lindsey Quebedeaux</li>
-        </ul>
-        <p class="sl-team">HEAT 2 <span class="sl-count">3 ATHLETES</span></p>
-        <ul>
           <li>Mandy Peña</li>
           <li>Natalie Woodham</li>
+        </ul>
+        <p class="sl-team">HEAT 2 <span class="sl-count">1 ATHLETE</span></p>
+        <ul>
           <li>Ximena Ramos</li>
+          <li class="sl-open">OPEN</li>
+          <li class="sl-open">OPEN</li>
+          <li class="sl-open">OPEN</li>
+          <li class="sl-open">OPEN</li>
+          <li class="sl-open">OPEN</li>
         </ul>
       </div>
       <div class="sl-race">
         <h3>100M MEN&rsquo;S <span class="sl-count">6 OF 12</span></h3>
-        <p class="sl-team">HEAT 1 <span class="sl-count">3 ATHLETES</span></p>
+        <p class="sl-team">HEAT 1 <span class="sl-count">6 ATHLETES</span></p>
         <ul>
           <li>Advay Ramesh</li>
           <li>Brandon Jones</li>
           <li>Paris Desean Odem</li>
-        </ul>
-        <p class="sl-team">HEAT 2 <span class="sl-count">3 ATHLETES</span></p>
-        <ul>
           <li>Rathu Jammula</li>
           <li>Rikin Tanna</li>
           <li>Tyriq Valentine</li>
         </ul>
+        <p class="sl-team">HEAT 2 <span class="sl-count">0 ATHLETES</span></p>
+        <ul>
+          <li class="sl-open">OPEN</li>
+          <li class="sl-open">OPEN</li>
+          <li class="sl-open">OPEN</li>
+          <li class="sl-open">OPEN</li>
+          <li class="sl-open">OPEN</li>
+          <li class="sl-open">OPEN</li>
+        </ul>
       </div>
       <div class="sl-race">
         <h3>100M WOMEN&rsquo;S <span class="sl-count">7 OF 12</span></h3>
-        <p class="sl-team">HEAT 1 <span class="sl-count">4 ATHLETES</span></p>
+        <p class="sl-team">HEAT 1 <span class="sl-count">6 ATHLETES</span></p>
         <ul>
           <li>Ashley Fairley</li>
           <li>Emily Knippa</li>
           <li>Kristy Harris</li>
           <li>Mandy Peña</li>
-        </ul>
-        <p class="sl-team">HEAT 2 <span class="sl-count">3 ATHLETES</span></p>
-        <ul>
           <li>Sarah Boyd</li>
           <li>Vanessa Bacorn</li>
+        </ul>
+        <p class="sl-team">HEAT 2 <span class="sl-count">1 ATHLETE</span></p>
+        <ul>
           <li>Ximena Ramos</li>
+          <li class="sl-open">OPEN</li>
+          <li class="sl-open">OPEN</li>
+          <li class="sl-open">OPEN</li>
+          <li class="sl-open">OPEN</li>
+          <li class="sl-open">OPEN</li>
         </ul>
       </div>
       <div class="sl-race">
         <h3>200M MEN&rsquo;S <span class="sl-count">5 OF 12</span></h3>
-        <p class="sl-team">HEAT 1 <span class="sl-count">3 ATHLETES</span></p>
+        <p class="sl-team">HEAT 1 <span class="sl-count">5 ATHLETES</span></p>
         <ul>
           <li>Brandon Jones</li>
           <li>Jorge Munoz</li>
           <li>Myles Cooper</li>
-        </ul>
-        <p class="sl-team">HEAT 2 <span class="sl-count">2 ATHLETES</span></p>
-        <ul>
           <li>Rathu Jammula</li>
           <li>Tyriq Valentine</li>
+          <li class="sl-open">OPEN</li>
+        </ul>
+        <p class="sl-team">HEAT 2 <span class="sl-count">0 ATHLETES</span></p>
+        <ul>
+          <li class="sl-open">OPEN</li>
+          <li class="sl-open">OPEN</li>
+          <li class="sl-open">OPEN</li>
+          <li class="sl-open">OPEN</li>
+          <li class="sl-open">OPEN</li>
+          <li class="sl-open">OPEN</li>
         </ul>
       </div>
       <div class="sl-race">
         <h3>200M WOMEN&rsquo;S <span class="sl-count">8 OF 12</span></h3>
-        <p class="sl-team">HEAT 1 <span class="sl-count">4 ATHLETES</span></p>
+        <p class="sl-team">HEAT 1 <span class="sl-count">6 ATHLETES</span></p>
         <ul>
           <li>Ashley Fairley</li>
           <li>Kristy Harris</li>
           <li>Mandy Peña</li>
           <li>Mia Constantin</li>
-        </ul>
-        <p class="sl-team">HEAT 2 <span class="sl-count">4 ATHLETES</span></p>
-        <ul>
           <li>Natalie Woodham</li>
           <li>Sarah Boyd</li>
+        </ul>
+        <p class="sl-team">HEAT 2 <span class="sl-count">2 ATHLETES</span></p>
+        <ul>
           <li>Vanessa Bacorn</li>
           <li>Ximena Ramos</li>
+          <li class="sl-open">OPEN</li>
+          <li class="sl-open">OPEN</li>
+          <li class="sl-open">OPEN</li>
+          <li class="sl-open">OPEN</li>
         </ul>
       </div>
       <div class="sl-race">
         <h3>400M MEN&rsquo;S <span class="sl-count">4 OF 12</span></h3>
-        <p class="sl-team">HEAT 1 <span class="sl-count">2 ATHLETES</span></p>
+        <p class="sl-team">HEAT 1 <span class="sl-count">4 ATHLETES</span></p>
         <ul>
           <li>Bradley Gardner</li>
           <li>Cory Mull</li>
-        </ul>
-        <p class="sl-team">HEAT 2 <span class="sl-count">2 ATHLETES</span></p>
-        <ul>
           <li>Michael Brown</li>
           <li>Nicolas Sawyer</li>
+          <li class="sl-open">OPEN</li>
+          <li class="sl-open">OPEN</li>
+        </ul>
+        <p class="sl-team">HEAT 2 <span class="sl-count">0 ATHLETES</span></p>
+        <ul>
+          <li class="sl-open">OPEN</li>
+          <li class="sl-open">OPEN</li>
+          <li class="sl-open">OPEN</li>
+          <li class="sl-open">OPEN</li>
+          <li class="sl-open">OPEN</li>
+          <li class="sl-open">OPEN</li>
         </ul>
       </div>
       <div class="sl-race">
         <h3>400M WOMEN&rsquo;S <span class="sl-count">8 OF 12</span></h3>
-        <p class="sl-team">HEAT 1 <span class="sl-count">4 ATHLETES</span></p>
+        <p class="sl-team">HEAT 1 <span class="sl-count">6 ATHLETES</span></p>
         <ul>
           <li>Genesis Garay</li>
           <li>Jaymie Ruskovich</li>
           <li>Kristin Malone</li>
           <li>L. Morgan Kelley</li>
-        </ul>
-        <p class="sl-team">HEAT 2 <span class="sl-count">4 ATHLETES</span></p>
-        <ul>
           <li>Lindsey Quebedeaux</li>
           <li>Mia Constantin</li>
+        </ul>
+        <p class="sl-team">HEAT 2 <span class="sl-count">2 ATHLETES</span></p>
+        <ul>
           <li>Sarah Boyd</li>
           <li>Vanessa Bacorn</li>
+          <li class="sl-open">OPEN</li>
+          <li class="sl-open">OPEN</li>
+          <li class="sl-open">OPEN</li>
+          <li class="sl-open">OPEN</li>
         </ul>
       </div>
       <div class="sl-race">
