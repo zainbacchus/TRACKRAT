@@ -383,7 +383,12 @@
     .sl-count.is-full { background: var(--black); color: var(--orange); padding: 5px 8px; }
     .sl-count.is-low { border: 2px solid var(--black); padding: 3px 6px; }
     .sl-race ul { list-style: none; margin-top: 14px; }
-    .sl-race li { font-size: 15px; font-weight: 500; line-height: 1.9; }
+    /* 28.5px, not the 1.9 it was expressed as: a relative line-height scales
+       with font-size, so the smaller OPEN rows below came out 22.8px against a
+       name's 28.5px and every heat holding one sat short. That put HEAT 2 at a
+       different height in each column. Fixed in px, a lane is a lane whatever
+       is written in it. */
+    .sl-race li { font-size: 15px; font-weight: 500; line-height: 28.5px; }
     /* An empty lane, not a competitor. Tracked caps at a smaller size reads as
        a label rather than a name, which is the same device the HEAT and team
        lines use. No dimming: black at low alpha over Sprint Orange goes brown. */
