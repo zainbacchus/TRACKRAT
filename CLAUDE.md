@@ -102,18 +102,12 @@ TRACKRAT/
 ├── trackrat-wordmark-white.png
 ├── trackrat-wordmark-orange.png
 ├── lockup-tri26.svg        # TRACKRAT INVITATIONAL / 2026 lockup (outlined paths)
-├── trackrat-monogram.svg   # TR/SC monogram, black (outlined paths, fill-rule evenodd)
-├── trackrat-monogram-white.svg   # monogram, white
-├── trackrat-monogram-orange.svg  # monogram, Sprint Orange
-├── trackrat-monogram-black.png   # monogram PNGs (transparent, 2000px): black / white / orange
-├── trackrat-monogram-white.png
-├── trackrat-monogram-orange.png
 ├── vercel.json             # cleanUrls, security headers, redirects, cache headers
 ├── robots.txt              # Crawl rules (/dashboard handled by noindex meta, NOT Disallow)
 ├── sitemap.xml             # Public-page sitemap (excludes /dashboard + /gallery; includes /offtrack + /waiver)
 ├── llms.txt                # LLM-facing site description
-├── favicon.ico             # browser-tab + Google SERP icon (TR monogram; 16/32/48/64px frames)
-├── favicon.svg             # vector favicon (TR monogram; crisp at any size, modern browsers)
+├── favicon.ico             # browser-tab + Google SERP icon (TR app icon; 16/32/48/64px frames)
+├── favicon.svg             # vector favicon (TR app icon; crisp at any size, modern browsers)
 ├── apple-touch-icon.png    # iOS home-screen icon (180×180, non-transparent)
 ├── icon-192.png            # PWA/Android home-screen icon (192×192)
 ├── icon-512.png            # PWA/Android icon + splash (512×512; also the icon master)
@@ -242,8 +236,9 @@ home screen" must resolve the icons.
   the TR sits well inside the center safe zone so adaptive masks don't
   clip it. `theme_color`/`background_color` are `#000000`.
 - All icons are the **TR app icon (white TR, Fugaz One) on Sprint Orange**,
-  matching favicon.ico. Call this the app icon, not the monogram: the
-  distributed monogram is TR/SC (see the brand-asset rule below). `icon-512.png` is the master; the 192 and 180
+  matching favicon.ico. It is the app icon and nothing else: there is no
+  distributed monogram. TR/SC was retired as a mark, so do not reintroduce
+  one. `icon-512.png` is the master; the 192 and 180
   are downscales. To regenerate: render `TR` in Fugaz One centered on a
   512×512 `#FF4D1F` square (headless Chrome or any renderer), then
   `sips -Z 192` / `-Z 180`. vercel.json sets the manifest MIME
@@ -816,29 +811,31 @@ Static files plus the zero-config Node serverless function(s) under
     `#1a0700` (or darker) instead — same visual feel, ~5.9:1 contrast.
     On the black-background pages (`schedule`/`brand`/`dashboard`) white text is
     fine.
-11. **Outlined brand artwork is canonical at the repo root, and two pages
-    inline it.** Three marks, all outlined paths so they need no font:
-    `trackrat-wordmark*.svg` (TRACKRAT), `trackrat-monogram*.svg` (TR/SC), and
-    `lockup-tri26.svg` (TRACKRAT INVITATIONAL / 2026). Each ships black /
-    white / orange in SVG, plus transparent 2000px-wide PNGs; `/brand` offers
-    all of them as downloads.
+11. **Outlined brand artwork is canonical at the repo root, and one page
+    inlines it.** Two marks, both outlined paths so they need no font:
+    `trackrat-wordmark*.svg` (TRACKRAT) and `lockup-tri26.svg` (TRACKRAT
+    INVITATIONAL / 2026). Each ships black / white / orange in SVG, plus
+    transparent 2000px-wide PNGs; `/brand` offers all of them as downloads.
 
-    Two pages **inline** paths rather than pointing at the file:
-    `invitational.html`'s `<h1>` (the lockup) and `brand.html`'s MONOGRAM
-    block. The reason is that the site has no build step and SVG-as-`<img>`
-    can render blank on iOS Safari, which is not a risk worth taking on a hero
-    or a brand-guide display; external `<use>` does not resolve in Safari
-    either. `print/invitational-sponsorship/build_onepager.py` therefore
-    **asserts both inline copies match their canonical files** and fails
-    loudly on drift. If you revise any of this artwork: update the root file,
-    re-inline the path(s) into the page, then run that build to confirm.
+    There was a third, the TR/SC monogram. It is **retired as a mark**: the
+    six files, the `/brand` MONOGRAM block and its download kit are all gone.
+    Do not add a monogram or any other pictorial mark back. The wordmark is
+    the mark.
 
-    Two traps. The monogram's path needs `fill-rule="evenodd"` or the counters
-    in the R and S fill solid. And `lockup-tri26.svg`'s canvas is 1123x941
-    while its ink is only 1100.9x478.3 at (13.4, 205.6), so every consumer
-    re-crops the viewBox to the ink; dropped in raw it renders with nearly
-    half its height as empty padding. (The wordmark and monogram keep their
-    exported boxes, which carry deliberate, modest padding.)
+    One page **inlines** paths rather than pointing at the file:
+    `invitational.html`'s `<h1>` (the lockup). The reason is that the site has
+    no build step and SVG-as-`<img>` can render blank on iOS Safari, which is
+    not a risk worth taking on a hero; external `<use>` does not resolve in
+    Safari either. `print/invitational-sponsorship/build_onepager.py` therefore
+    **asserts that inline copy matches its canonical file** and fails loudly
+    on drift. If you revise this artwork: update the root file, re-inline the
+    path(s) into the page, then run that build to confirm.
+
+    One trap. `lockup-tri26.svg`'s canvas is 1123x941 while its ink is only
+    1100.9x478.3 at (13.4, 205.6), so every consumer re-crops the viewBox to
+    the ink; dropped in raw it renders with nearly half its height as empty
+    padding. (The wordmark keeps its exported box, which carries deliberate,
+    modest padding.)
 
     `invitational.html`'s `<h1>` also carries a visually hidden text copy of
     the name, because artwork alone would leave the page with no heading text
