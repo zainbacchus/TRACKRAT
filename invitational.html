@@ -402,12 +402,24 @@
     }
     /* Solid black at a smaller size rather than dimmed black: over Sprint
        Orange a low-alpha black reads brown, not grey. */
-    .sl-count { font-size: 11px; font-weight: 700; letter-spacing: 0.14em; white-space: nowrap; }
+    /* The transparent top and bottom border is load-bearing. Without it a
+       plain count is 5px shorter than a chipped one, so a race that went
+       near-full grew its h3 and pushed HEAT 2 down 5px against the race
+       beside it. Vertical only, so the count still sits flush with the
+       column's right edge while every state is exactly the same height. */
+    .sl-count {
+      font-size: 11px; font-weight: 700; letter-spacing: 0.14em; white-space: nowrap;
+      border: 0 solid transparent; border-width: 2px 0; padding: 3px 0;
+    }
     /* The two chips that interrupt. FULL inverts, because it is the one state
        that changes what you do next. Near-full only outlines: still urgent,
        but a page of solid black chips would flatten the difference between
-       'hurry' and 'too late'. */
-    .sl-count.is-full { background: var(--black); color: var(--orange); padding: 5px 8px; }
+       'hurry' and 'too late'. Both keep the 5px of vertical box the plain
+       state has, so swapping between them moves nothing. */
+    .sl-count.is-full {
+      background: var(--black); color: var(--orange);
+      border: 2px solid var(--black); padding: 3px 6px;
+    }
     .sl-count.is-low { border: 2px solid var(--black); padding: 3px 6px; }
     .sl-race ul { list-style: none; margin-top: 14px; }
     /* 28.5px, not the 1.9 it was expressed as: a relative line-height scales
@@ -625,7 +637,7 @@
        numbers and this repo is public. -->
   <section class="startlist" id="entries" aria-labelledby="entries-heading">
     <h2 class="sl-title" id="entries-heading">ATHLETES</h2>
-    <p class="sl-note">LAST UPDATED SEP 15, 2026 AT 10:31 PM CT<span class="sl-live" aria-hidden="true"></span></p>
+    <p class="sl-note">LAST UPDATED SEP 16, 2026 AT 12:09 PM CT<span class="sl-live" aria-hidden="true"></span></p>
     <p class="sl-note sl-note-sm">HEATS ARE PROVISIONAL AND FINALIZED ON THE DAY OF THE RACE.</p>
     <div class="sl-grid">
       <div class="sl-race">
@@ -692,7 +704,7 @@
         </ul>
       </div>
       <div class="sl-race">
-        <h3>100M WOMEN&rsquo;S <span class="sl-count">9 OF 12</span></h3>
+        <h3>100M WOMEN&rsquo;S <span class="sl-count is-low">2 SPOTS LEFT</span></h3>
         <p class="sl-team">HEAT 1 <span class="sl-count">6 ATHLETES</span></p>
         <ul>
           <li>Ashley Fairley</li>
@@ -702,18 +714,18 @@
           <li>Mandy Peña</li>
           <li>Robyn Moss</li>
         </ul>
-        <p class="sl-team">HEAT 2 <span class="sl-count">3 ATHLETES</span></p>
+        <p class="sl-team">HEAT 2 <span class="sl-count">4 ATHLETES</span></p>
         <ul>
           <li>Sarah Boyd</li>
+          <li>Tori Hinojosa</li>
           <li>Vanessa Bacorn</li>
           <li>Ximena Ramos</li>
-          <li class="sl-open">OPEN</li>
           <li class="sl-open">OPEN</li>
           <li class="sl-open">OPEN</li>
         </ul>
       </div>
       <div class="sl-race">
-        <h3>200M MEN&rsquo;S <span class="sl-count">7 OF 12</span></h3>
+        <h3>200M MEN&rsquo;S <span class="sl-count">8 OF 12</span></h3>
         <p class="sl-team">HEAT 1 <span class="sl-count">6 ATHLETES</span></p>
         <ul>
           <li>Alex West</li>
@@ -723,10 +735,10 @@
           <li>Myles Cooper</li>
           <li>Rathu Jammula</li>
         </ul>
-        <p class="sl-team">HEAT 2 <span class="sl-count">1 ATHLETE</span></p>
+        <p class="sl-team">HEAT 2 <span class="sl-count">2 ATHLETES</span></p>
         <ul>
+          <li>Sebastian Koran</li>
           <li>Tyriq Valentine</li>
-          <li class="sl-open">OPEN</li>
           <li class="sl-open">OPEN</li>
           <li class="sl-open">OPEN</li>
           <li class="sl-open">OPEN</li>
@@ -734,7 +746,7 @@
         </ul>
       </div>
       <div class="sl-race">
-        <h3>200M WOMEN&rsquo;S <span class="sl-count">9 OF 12</span></h3>
+        <h3>200M WOMEN&rsquo;S <span class="sl-count is-low">1 SPOT LEFT</span></h3>
         <p class="sl-team">HEAT 1 <span class="sl-count">6 ATHLETES</span></p>
         <ul>
           <li>Ashley Fairley</li>
@@ -744,31 +756,31 @@
           <li>Mia Constantin</li>
           <li>Natalie Woodham</li>
         </ul>
-        <p class="sl-team">HEAT 2 <span class="sl-count">3 ATHLETES</span></p>
+        <p class="sl-team">HEAT 2 <span class="sl-count">5 ATHLETES</span></p>
         <ul>
           <li>Sarah Boyd</li>
+          <li>Tori Hinojosa</li>
           <li>Vanessa Bacorn</li>
           <li>Ximena Ramos</li>
-          <li class="sl-open">OPEN</li>
-          <li class="sl-open">OPEN</li>
+          <li>Zoe Wright</li>
           <li class="sl-open">OPEN</li>
         </ul>
       </div>
       <div class="sl-race">
-        <h3>400M MEN&rsquo;S <span class="sl-count">7 OF 12</span></h3>
+        <h3>400M MEN&rsquo;S <span class="sl-count">8 OF 12</span></h3>
         <p class="sl-team">HEAT 1 <span class="sl-count">6 ATHLETES</span></p>
         <ul>
           <li>Alex West</li>
           <li>Bradley Gardner</li>
           <li>Bryan Tran</li>
           <li>Cory Mull</li>
+          <li>Derwood Kirby</li>
           <li>Jayman Peterson</li>
-          <li>Michael Brown</li>
         </ul>
-        <p class="sl-team">HEAT 2 <span class="sl-count">1 ATHLETE</span></p>
+        <p class="sl-team">HEAT 2 <span class="sl-count">2 ATHLETES</span></p>
         <ul>
+          <li>Michael Brown</li>
           <li>Nicolas Sawyer</li>
-          <li class="sl-open">OPEN</li>
           <li class="sl-open">OPEN</li>
           <li class="sl-open">OPEN</li>
           <li class="sl-open">OPEN</li>
@@ -815,16 +827,24 @@
         <p class="sl-team">LOOKING FOR A TEAM</p>
         <ul>
           <li>Advay Ramesh</li>
+          <li>Derwood Kirby</li>
         </ul>
       </div>
       <div class="sl-race">
-        <h3>4&times;100 WOMEN&rsquo;S <span class="sl-count">1 OF 6</span></h3>
+        <h3>4&times;100 WOMEN&rsquo;S <span class="sl-count">2 OF 6</span></h3>
         <p class="sl-team">SHREVEPORT SPEED</p>
         <ul>
           <li>Lindsey Quebedeaux</li>
           <li>Mandy Peña</li>
           <li>Natalie Woodham</li>
           <li>Ximena Ramos</li>
+        </ul>
+        <p class="sl-team">CLEAN EXCHANGE</p>
+        <ul>
+          <li>Aliyah Hale</li>
+          <li>Ashley Fairley</li>
+          <li>Kennedy</li>
+          <li>Zoe Wright</li>
         </ul>
         <p class="sl-team">LOOKING FOR A TEAM</p>
         <ul>
@@ -836,8 +856,8 @@
         <h3>4&times;400 CO-ED <span class="sl-count is-low">2 TEAMS LEFT</span></h3>
         <p class="sl-team">LACTIC</p>
         <ul>
-          <li>Davicia Weekly <span class="sl-flag">UNPAID</span></li>
-          <li>Isiah Weekly <span class="sl-flag">UNPAID</span></li>
+          <li>Davicia Weekly</li>
+          <li>Isaiah Weekly</li>
           <li>Myles Cooper</li>
           <li>Vanessa Bacorn</li>
         </ul>
@@ -864,6 +884,7 @@
         </ul>
         <p class="sl-team">LOOKING FOR A TEAM</p>
         <ul>
+          <li>Derwood Kirby</li>
           <li>Jayman Peterson</li>
           <li>Rathu Jammula</li>
         </ul>
