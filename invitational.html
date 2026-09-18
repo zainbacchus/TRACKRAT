@@ -452,6 +452,105 @@
       justify-content: space-between;
     }
     .sl-empty { font-size: 13px; font-weight: 500; margin-top: 14px; }
+
+    /* WAITLIST SIGN-UP --------------------------------------------------
+       The button only exists under a FULL race (the generator decides), so
+       it carries the same black-on-orange inversion as the FULL chip in
+       that race's heading: both mean "this race is closed, here is the
+       door". */
+    .sl-wait-btn {
+      display: block; width: 100%; margin-top: 14px;
+      font-family: inherit; font-size: 12px; font-weight: 700;
+      letter-spacing: 0.14em; text-align: center; line-height: 1;
+      padding: 12px 10px; cursor: pointer;
+      background: var(--black); color: var(--orange);
+      border: 2px solid var(--black); border-radius: 0;
+      -webkit-appearance: none; appearance: none;
+      transition: background 0.15s ease, color 0.15s ease;
+    }
+    .sl-wait-btn:hover { background: transparent; color: var(--black); }
+    .sl-wait-btn:focus-visible { outline: 3px solid var(--black); outline-offset: 3px; }
+
+    .wl-overlay {
+      position: fixed; inset: 0; z-index: 200;
+      background: rgba(0, 0, 0, 0.82);
+      display: none; justify-content: center; align-items: flex-start;
+      padding: 24px 18px; overflow-y: auto; -webkit-overflow-scrolling: touch;
+    }
+    .wl-overlay.is-open { display: flex; }
+    /* margin:auto rather than align-items:center. Both centre a short card,
+       but auto margins collapse to 0 once the card is taller than the
+       viewport, whereas centring would push its top edge off-screen and
+       make the first field unreachable on a short phone in landscape. */
+    .wl-card {
+      margin: auto; width: 100%; max-width: 430px;
+      background: var(--white); color: var(--black);
+      border: 3px solid var(--black); padding: 26px 24px 28px;
+    }
+    .wl-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+    .wl-title {
+      font-family: 'Fugaz One', 'Arial Black', sans-serif;
+      font-size: 27px; line-height: 1.02; letter-spacing: -0.02em;
+    }
+    .wl-close {
+      flex: none; font-family: inherit; font-size: 20px; line-height: 1;
+      background: none; border: none; padding: 2px 4px; cursor: pointer;
+      color: var(--black); -webkit-appearance: none; appearance: none;
+    }
+    .wl-close:focus-visible { outline: 3px solid var(--black); outline-offset: 2px; }
+    .wl-race { font-size: 12px; font-weight: 700; letter-spacing: 0.16em; margin-top: 7px; }
+    .wl-intro { font-size: 13px; font-weight: 500; line-height: 1.55; margin-top: 14px; }
+
+    .wl-row { display: flex; gap: 12px; }
+    .wl-row .wl-field { flex: 1 1 0; min-width: 0; }
+    .wl-field { margin-top: 15px; }
+    .wl-field label { display: block; font-size: 11px; font-weight: 700;
+                      letter-spacing: 0.16em; margin-bottom: 6px; }
+    /* 16px is a hard floor, not a style choice: iOS Safari zooms the whole
+       page when a focused input is under 16px, which would blow the fixed
+       overlay out of the viewport mid-form. */
+    .wl-field input {
+      width: 100%; font-family: inherit; font-size: 16px; font-weight: 500;
+      padding: 10px 11px; color: var(--black); background: var(--white);
+      border: 2px solid var(--black); border-radius: 0;
+      -webkit-appearance: none; appearance: none;
+    }
+    .wl-field input:focus { outline: none; box-shadow: inset 0 0 0 2px var(--orange); }
+    .wl-field input::placeholder { color: #9a9a9a; }
+
+    .wl-hp { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+
+    .wl-agree { display: flex; gap: 11px; align-items: flex-start; margin-top: 20px; }
+    .wl-agree input { flex: none; width: 19px; height: 19px; margin-top: 1px; accent-color: var(--orange); }
+    .wl-agree label { font-size: 12px; font-weight: 500; line-height: 1.5; }
+
+    .wl-submit {
+      display: block; width: 100%; margin-top: 20px;
+      font-family: inherit; font-size: 13px; font-weight: 700;
+      letter-spacing: 0.14em; line-height: 1; padding: 14px 10px; cursor: pointer;
+      /* Black on orange, not white on orange: white sits at 3.3:1 here and
+         fails WCAG AA at this size, black is 6.4:1. */
+      background: var(--orange); color: var(--black);
+      border: 2px solid var(--black); border-radius: 0;
+      -webkit-appearance: none; appearance: none;
+    }
+    .wl-submit:hover:not(:disabled) { background: var(--black); color: var(--orange); }
+    .wl-submit:disabled { opacity: 0.45; cursor: not-allowed; }
+    .wl-submit:focus-visible { outline: 3px solid var(--black); outline-offset: 3px; }
+
+    .wl-msg { font-size: 12px; font-weight: 700; line-height: 1.5; margin-top: 12px; min-height: 1em; }
+    .wl-msg.err { color: #B3200B; }
+
+    .wl-done { display: none; }
+    .wl-card.is-done .wl-form, .wl-card.is-done .wl-intro { display: none; }
+    .wl-card.is-done .wl-done { display: block; }
+    .wl-done p { font-size: 14px; font-weight: 500; line-height: 1.6; margin-top: 16px; }
+
+    @media (max-width: 420px) {
+      .wl-card { padding: 22px 18px 24px; }
+      .wl-title { font-size: 23px; }
+      .wl-row { display: block; }
+    }
     @media (max-width: 700px) {
       .startlist { padding: 0 24px 96px; }
       .sl-grid { grid-template-columns: 1fr; gap: 0; margin-top: 36px; }
@@ -637,7 +736,7 @@
        numbers and this repo is public. -->
   <section class="startlist" id="entries" aria-labelledby="entries-heading">
     <h2 class="sl-title" id="entries-heading">ATHLETES</h2>
-    <p class="sl-note">LAST UPDATED SEP 18, 2026 AT 2:17 PM CT<span class="sl-live" aria-hidden="true"></span></p>
+    <p class="sl-note">LAST UPDATED SEP 18, 2026 AT 2:31 PM CT<span class="sl-live" aria-hidden="true"></span></p>
     <p class="sl-note sl-note-sm">HEATS ARE PROVISIONAL AND FINALIZED ON THE DAY OF THE RACE.</p>
     <div class="sl-grid">
       <div class="sl-race">
@@ -702,6 +801,8 @@
           <li>Tony Byerly</li>
           <li>Tyriq Valentine</li>
         </ul>
+        <p class="sl-team">WAITLIST</p>
+        <button type="button" class="sl-wait-btn" data-race="100m men&#x27;s">ADD ME TO THE WAITLIST</button>
       </div>
       <div class="sl-race">
         <h3>100M WOMEN&rsquo;S <span class="sl-count is-full">FULL</span></h3>
@@ -723,6 +824,8 @@
           <li>Vanessa Bacorn</li>
           <li>Ximena Ramos</li>
         </ul>
+        <p class="sl-team">WAITLIST</p>
+        <button type="button" class="sl-wait-btn" data-race="100m women&#x27;s">ADD ME TO THE WAITLIST</button>
       </div>
       <div class="sl-race">
         <h3>200M MEN&rsquo;S <span class="sl-count is-low">1 SPOT LEFT</span></h3>
@@ -769,6 +872,7 @@
         <ul>
           <li>Dayanara Colunga</li>
         </ul>
+        <button type="button" class="sl-wait-btn" data-race="200m women&#x27;s">ADD ME TO THE WAITLIST</button>
       </div>
       <div class="sl-race">
         <h3>400M MEN&rsquo;S <span class="sl-count">9 OF 12</span></h3>
@@ -897,6 +1001,62 @@
       </div>
     </div>
   </section>
+
+  <!-- WAITLIST SIGN-UP. One dialog serves every full race; the button that
+       opened it carries the race in data-race. Rows go to the Supabase
+       `waitlist` table, anon INSERT-only via RLS, so the public anon key in
+       this public repo cannot read the list back. Schema in README.md. -->
+  <div class="wl-overlay" id="wlOverlay" role="dialog" aria-modal="true" aria-labelledby="wlTitle">
+    <div class="wl-card" id="wlCard">
+      <div class="wl-head">
+        <h2 class="wl-title" id="wlTitle">JOIN THE WAITLIST</h2>
+        <button type="button" class="wl-close" id="wlClose" aria-label="Close">&times;</button>
+      </div>
+      <p class="wl-race" id="wlRace"></p>
+      <p class="wl-intro">This race is full. Leave your details and an organizer will reach out if a lane opens up.</p>
+
+      <form class="wl-form" id="wlForm" novalidate>
+        <div class="wl-row">
+          <div class="wl-field">
+            <label for="wlFirst">FIRST NAME</label>
+            <input type="text" id="wlFirst" name="first_name" autocomplete="given-name" maxlength="60" required />
+          </div>
+          <div class="wl-field">
+            <label for="wlLast">LAST NAME</label>
+            <input type="text" id="wlLast" name="last_name" autocomplete="family-name" maxlength="60" required />
+          </div>
+        </div>
+        <div class="wl-field">
+          <label for="wlEmail">EMAIL</label>
+          <input type="email" id="wlEmail" name="email" autocomplete="email" inputmode="email"
+                 maxlength="120" placeholder="you@email.com" required />
+        </div>
+        <div class="wl-field">
+          <label for="wlPhone">PHONE</label>
+          <input type="tel" id="wlPhone" name="phone" autocomplete="tel" inputmode="tel"
+                 maxlength="25" placeholder="(512) 555-0134" required />
+        </div>
+        <!-- Honeypot, same trick as the /offtrack signup: a bot fills every
+             field it can see in the DOM, a person never sees this one. -->
+        <input type="text" class="wl-hp" id="wlCompany" name="company" tabindex="-1"
+               autocomplete="off" aria-hidden="true" />
+
+        <div class="wl-agree">
+          <input type="checkbox" id="wlAgree" required />
+          <label for="wlAgree">I understand that a waitlist spot is not a confirmed entry, and that if
+            a spot opens I still have to pay the entry fee to compete.</label>
+        </div>
+
+        <button type="submit" class="wl-submit" id="wlSubmit">ADD ME TO THE WAITLIST</button>
+        <p class="wl-msg" id="wlMsg" role="status" aria-live="polite"></p>
+      </form>
+
+      <div class="wl-done" id="wlDone">
+        <p>Thanks for filling this out. If a spot opens, expect one of the organizers to reach out to you.</p>
+        <button type="button" class="wl-submit" id="wlDoneClose">DONE</button>
+      </div>
+    </div>
+  </div>
 
   <footer class="site-footer">
     <div class="socials">
@@ -1033,6 +1193,135 @@
       if (mobileMenu.classList.contains('is-open')) closeMenu();
       closeNavDropdowns();
     });
+  </script>
+
+  <!-- WAITLIST SIGN-UP. Plain script, not type="module", so the Supabase SDK
+       can be pulled with a dynamic import() on first open instead of on every
+       page load: the bundle plus its Node polyfills is ~265 KB, and almost
+       everyone who reads this page never opens the form. -->
+  <script>
+    (function () {
+      const overlay = document.getElementById('wlOverlay');
+      const buttons = Array.from(document.querySelectorAll('.sl-wait-btn'));
+      if (!overlay || !buttons.length) return;   // no full race, no dialog
+
+      const card    = document.getElementById('wlCard');
+      const form    = document.getElementById('wlForm');
+      const raceEl  = document.getElementById('wlRace');
+      const msg     = document.getElementById('wlMsg');
+      const submit  = document.getElementById('wlSubmit');
+      const agree   = document.getElementById('wlAgree');
+      const honey   = document.getElementById('wlCompany');
+      const first   = document.getElementById('wlFirst');
+      const doneMsg = document.querySelector('#wlDone p');
+
+      let race = '';
+      let opener = null;
+      let sending = false;
+      let sdk = null;          // cached import() promise, kicked off on open
+
+      function setMsg(text, kind) {
+        msg.textContent = text;
+        msg.className = 'wl-msg' + (kind ? ' ' + kind : '');
+      }
+
+      function open(btn) {
+        opener = btn;
+        race = btn.getAttribute('data-race') || '';
+        // The canonical key is lowercase ("200m women's"); the page shouts.
+        raceEl.textContent = race.toUpperCase();
+        card.classList.remove('is-done');
+        form.reset();
+        setMsg('', '');
+        submit.disabled = false;
+        overlay.classList.add('is-open');
+        document.body.classList.add('menu-open');   // the shared scroll lock
+        first.focus();
+        // Warm the SDK while they type rather than after they submit.
+        if (!sdk) sdk = import('/js/supabase-config.js');
+      }
+
+      function close() {
+        overlay.classList.remove('is-open');
+        document.body.classList.remove('menu-open');
+        if (opener) opener.focus();
+        opener = null;
+      }
+
+      buttons.forEach(b => b.addEventListener('click', () => open(b)));
+      document.getElementById('wlClose').addEventListener('click', close);
+      document.getElementById('wlDoneClose').addEventListener('click', close);
+      // Backdrop only: a click that started inside the card must not close it,
+      // which is why this tests the target rather than using a wrapper.
+      overlay.addEventListener('click', e => { if (e.target === overlay) close(); });
+
+      document.addEventListener('keydown', e => {
+        if (!overlay.classList.contains('is-open')) return;
+        if (e.key === 'Escape') { e.stopPropagation(); close(); return; }
+        if (e.key !== 'Tab') return;
+        // Focus trap. aria-modal alone does not stop Tab reaching the page
+        // behind a plain overlay the way a real <dialog> would, and <dialog>
+        // needs Safari 15.4 against this site's Safari 14 floor.
+        const f = Array.from(card.querySelectorAll(
+          'button, input:not([tabindex="-1"]), [href]'
+        )).filter(el => !el.disabled && el.offsetParent !== null);
+        if (!f.length) return;
+        const firstEl = f[0], lastEl = f[f.length - 1];
+        if (e.shiftKey && document.activeElement === firstEl) { e.preventDefault(); lastEl.focus(); }
+        else if (!e.shiftKey && document.activeElement === lastEl) { e.preventDefault(); firstEl.focus(); }
+      });
+
+      form.addEventListener('submit', async e => {
+        e.preventDefault();
+        if (sending) return;                  // a fast double-tap beats `disabled`
+
+        const v = id => document.getElementById(id).value.trim();
+        const firstName = v('wlFirst'), lastName = v('wlLast');
+        const email = v('wlEmail'), phone = v('wlPhone');
+
+        if (!firstName || !lastName) { setMsg('Enter your first and last name.', 'err'); first.focus(); return; }
+        if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+          setMsg('Enter a valid email.', 'err'); document.getElementById('wlEmail').focus(); return;
+        }
+        // Digits only, so (512) 555-0134 and +1 512 555 0134 both pass. Ten is
+        // a US number, fifteen is the E.164 ceiling.
+        const digits = phone.replace(/\D/g, '');
+        if (digits.length < 10 || digits.length > 15) {
+          setMsg('Enter a valid phone number.', 'err'); document.getElementById('wlPhone').focus(); return;
+        }
+        if (!agree.checked) { setMsg('Please confirm you understand the waitlist terms.', 'err'); agree.focus(); return; }
+        if (honey.value) { card.classList.add('is-done'); return; }   // bot
+
+        sending = true; submit.disabled = true;
+        setMsg('Adding you\u2026', '');
+
+        try {
+          const { supabase } = await (sdk || (sdk = import('/js/supabase-config.js')));
+          const { error } = await supabase.from('waitlist').insert({
+            race: race,
+            first_name: firstName,
+            last_name: lastName,
+            email: email.toLowerCase(),
+            phone: phone,
+            agreed: true
+          });
+          if (error && error.code !== '23505') throw error;
+          // 23505 is the one-entry-per-race unique index: they are already on
+          // it, which is the outcome they wanted, so it is success. Same
+          // reading as the /offtrack signup.
+          doneMsg.textContent = error
+            ? 'You are already on the waitlist for this race. If a spot opens, expect one of the organizers to reach out to you.'
+            : 'Thanks for filling this out. If a spot opens, expect one of the organizers to reach out to you.';
+          card.classList.add('is-done');
+          document.getElementById('wlDoneClose').focus();
+        } catch (err) {
+          setMsg("Couldn't add you just now. Try again in a bit.", 'err');
+          submit.disabled = false;
+        } finally {
+          sending = false;
+        }
+      });
+    })();
   </script>
 
 </body>

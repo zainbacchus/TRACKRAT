@@ -759,6 +759,87 @@ tied to their exact bytes.
 Existing signatures stay valid and stay visible on the dashboard; members are
 prompted to sign the new version.
 
+### 3d. Waitlist table (`/invitational`)
+
+When a race reaches 12 entries the start list stops offering lanes and shows a
+**WAITLIST** heading with an `ADD ME TO THE WAITLIST` button under it. The
+button opens a dialog collecting first name, last name, email, phone and a
+required acknowledgement that a waitlist spot is not a confirmed entry. This is
+the only door into a full race, because Sweatpals drops an event from its RSVP
+form once it fills.
+
+Rows go straight to Supabase. **Nothing from this form ever lands in the repo**,
+which is the same rule the start-list generator follows: the page carries names
+and events only.
+
+Insert is granted to `anon` (the form is on a public page, with no sign-in), but
+**there is no select grant and no select policy**, so the anon key published in
+`js/supabase-config.js` can add a row and can never read one back. Read the list
+in the Supabase dashboard, or grant `select` to `authenticated` later if it ever
+needs to appear on `/dashboard`.
+
+```sql
+create table if not exists public.waitlist (
+  id          uuid primary key default gen_random_uuid(),
+  race        text not null,          -- canonical key, e.g. "200m women's" (matches ORDER in gen-startlist.py)
+  first_name  text not null,
+  last_name   text not null,
+  email       text not null,
+  phone       text not null,          -- stored as typed; the client only checks it holds 10-15 digits
+  agreed      boolean not null,       -- the "not a confirmed entry, fee still due" checkbox
+  created_at  timestamptz not null default now()
+);
+
+-- Shape checks. `race` is a pattern rather than a fixed list so a new distance
+-- needs no migration, while still rejecting free text.
+alter table public.waitlist add constraint waitlist_race_shape
+  check (race ~ '^[0-9]{2,4}m (men|women)''s$');
+alter table public.waitlist add constraint waitlist_email_shape
+  check (email = lower(email) and email ~ '^[^@[:space:]]+@[^@[:space:]]+\.[^@[:space:]]+$');
+alter table public.waitlist add constraint waitlist_lengths
+  check (length(btrim(first_name)) between 1 and 60
+     and length(btrim(last_name))  between 1 and 60
+     and length(email) <= 120
+     and length(phone) between 7 and 25);
+-- The checkbox is required, so the only legal value is true. Keeping the column
+-- rather than dropping it leaves the row self-describing: it records what the
+-- person actually agreed to, which is the point of storing it at all.
+alter table public.waitlist add constraint waitlist_agreed check (agreed);
+
+-- One entry per person per race. An expression index, not a table constraint,
+-- because it keys on lower(email). A second submit therefore fails 23505, which
+-- the client reads as success: they are on the list, which is what they wanted.
+create unique index if not exists waitlist_race_email_idx
+  on public.waitlist (race, lower(email));
+create index if not exists waitlist_created_at_idx
+  on public.waitlist (created_at desc);
+
+alter table public.waitlist enable row level security;
+
+-- Column-scoped on purpose: without the list, `created_at` and `id` are
+-- client-settable, because a column default only applies when the column is
+-- omitted and PostgREST forwards an explicit value happily.
+grant insert (race, first_name, last_name, email, phone, agreed)
+  on public.waitlist to anon, authenticated;
+create policy "waitlist_insert_public" on public.waitlist
+  for insert to anon, authenticated with check (true);
+-- No select/update/delete grant and no select/update/delete policy: the form
+-- can add a row and nothing more.
+```
+
+Reading the list, in the SQL editor:
+
+```sql
+select created_at, race, first_name, last_name, email, phone
+  from public.waitlist order by created_at;
+```
+
+Note that a **missing grant fails before RLS runs**, with
+`42501 permission denied for table waitlist`, and the error does not name the
+offending column. If the form starts reporting a generic failure after a schema
+change, check the grant column list against the insert payload in
+`invitational.html` first: the two must be kept in sync in the same commit.
+
 ### 4. Set up Google OAuth
 
 In [Google Cloud Console](https://console.cloud.google.com):
