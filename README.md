@@ -199,10 +199,23 @@ update the Supabase row.
 
 ### Setup
 
-1. **Create the album** in Photos: a Shared Album, then turn on *Public
-   Website* so it has a `photos.icloud.com/shared/album/...` URL that
-   opens in any browser with no Apple ID. Leave *Subscribers Can Post*
-   on so members can add their own shots from their phones.
+1. **Create the album** in Photos as a Shared Album and get a link for
+   it. Two different toggles produce a link and they are **not**
+   equivalent, so check which one you used:
+
+   - ***Public Website*** publishes a browser-viewable page. Apple
+     documents this as needing **no Apple ID**, but as **view only**:
+     nobody can add to it.
+   - ***Invite by link***, with sharing options set to "anyone with the
+     link", plus ***Subscribers Can Post***, is what lets other people
+     **add** photos. Apple's Shared Albums page says link recipients do
+     not need an Apple ID *on iOS 27 and later*, which implies earlier
+     versions do.
+
+   So "anyone with the link can add photos" and "no Apple ID needed" may
+   not both be true of the same link. Decide which matters more for the
+   club and verify the finished link in a private browser window signed
+   out of iCloud, because nothing in this repo can check it for you.
 2. **Store the link** (SQL Editor). The `members` table and
    `is_member()` from the Personal Records setup are unchanged and still
    do the gating; only the payload changes.
@@ -250,8 +263,8 @@ update the Supabase row.
 |---|---|
 | Member sees "MEMBERS ONLY" after signing in | Their Google email is not in `members` (matching is case-insensitive). |
 | Everyone sees "couldn't check your access" | `gallery_access` has no `album_url` column yet, or its row is missing. Run the SQL above. |
-| The album opens but asks for an Apple ID | *Public Website* is off on the album. Turn it on in Photos and re-copy the link, which changes when you toggle it. |
-| A member cannot add photos | *Subscribers Can Post* is off, or they are opening the web link on a non-Apple device (the web view is view-only for most browsers). |
+| The album opens but asks for an Apple ID | The link is an invite link rather than a *Public Website* link, and the viewer's OS is older than the version where Apple dropped that requirement. Turning on *Public Website* gives a no-Apple-ID link, at the cost of nobody being able to add. Re-copy the link after toggling: it changes. |
+| A member cannot add photos | *Subscribers Can Post* is off, or they have a *Public Website* link, which Apple documents as view-only. |
 
 ## Local Development
 

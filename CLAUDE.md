@@ -348,8 +348,8 @@ if you pass, hands you a link that opens the album in a new tab.
   reset to false so the next tab open tries again.
 
 - **The album URL is a credential and must never enter this repo.**
-  Anyone holding it can view the album, and because it is an upgraded
-  ("anyone can add photos") album, add to it too. That is why it lives
+  Anyone holding it can view the album, and depending on which Photos
+  toggle produced it, add to it too. That is why it lives
   in a Supabase row rather than in `dashboard.html` — a public repo
   would publish it to the world and make the members gate decorative.
   `resetGalleryTab` removes the `href` on sign-out or user switch so

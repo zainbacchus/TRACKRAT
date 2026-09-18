@@ -499,9 +499,13 @@
     .gal-kicker {
       font-size: 11px; font-weight: 700; letter-spacing: 0.22em; color: var(--orange);
     }
+    /* The wordmark treatment, matching .wordmark / .auth-wordmark: Fugaz One
+       at -0.14em. The padding-right is not decoration, it is what stops the
+       negative tracking clipping the final T against the centred box. */
     .gal-title {
       font-family: 'Fugaz One', 'Arial Black', sans-serif;
-      font-size: 30px; line-height: 1.05; margin-top: 10px;
+      letter-spacing: -0.14em; padding-right: 0.14em;
+      font-size: clamp(38px, 9vw, 52px); line-height: 0.88; margin-top: 12px;
     }
     .gal-copy {
       font-size: 13px; line-height: 1.75; margin: 14px auto 0;
@@ -1143,13 +1147,11 @@
         <p class="gal-note" id="galleryNote">CHECKING YOUR ACCESS&hellip;</p>
         <div class="gal-card" id="galleryCard" hidden>
           <p class="gal-kicker">CLUB PHOTOS</p>
-          <h3 class="gal-title">THE SHARED ALBUM</h3>
-          <p class="gal-copy">Every session&rsquo;s photos and videos live in the club&rsquo;s iCloud Shared
-            Album. It opens in any browser, on any device, with no Apple ID needed. On an iPhone or iPad
-            you can also add your own shots to it straight from Photos.</p>
+          <h3 class="gal-title">TRACKRAT</h3>
+          <p class="gal-copy">Photos and videos live in the club&rsquo;s iCloud Shared Album.</p>
           <a class="gal-open" id="galleryLink" href="#" target="_blank" rel="noopener">OPEN THE ALBUM &#8599;</a>
-          <p class="gal-fine">Members only. Anyone with this link can view the album and add to it, so
-            please keep it inside the club.</p>
+          <p class="gal-fine">Members only. Anyone who gets this link can open the album, so please keep
+            it inside the club.</p>
         </div>
       </div>
 
