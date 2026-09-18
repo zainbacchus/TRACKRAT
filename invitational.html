@@ -454,20 +454,26 @@
     .sl-empty { font-size: 13px; font-weight: 500; margin-top: 14px; }
 
     /* WAITLIST SIGN-UP --------------------------------------------------
-       The button only exists under a FULL race (the generator decides), so
-       it carries the same black-on-orange inversion as the FULL chip in
-       that race's heading: both mean "this race is closed, here is the
-       door". */
+       The button only exists on a FULL race (the generator decides), and it
+       rides the WAITLIST line, which is already a space-between flex row.
+       So it lands at the column's right edge at the same level as the FULL
+       chip in the header above, sized and coloured to match it: the two
+       read as one statement rather than as a chip plus a banner. */
     .sl-wait-btn {
-      display: block; width: 100%; margin-top: 14px;
-      font-family: inherit; font-size: 12px; font-weight: 700;
-      letter-spacing: 0.14em; text-align: center; line-height: 1;
-      padding: 12px 10px; cursor: pointer;
+      flex: none; position: relative;
+      font-family: inherit; font-size: 11px; font-weight: 700;
+      letter-spacing: 0.14em; line-height: 1; white-space: nowrap;
+      /* 5px/6px, not 3px/6px: line-height:1 here vs the chip's inherited
+         leading, so this is what makes the two render the same 25px tall. */
+      padding: 5px 6px; cursor: pointer;
       background: var(--black); color: var(--orange);
       border: 2px solid var(--black); border-radius: 0;
       -webkit-appearance: none; appearance: none;
       transition: background 0.15s ease, color 0.15s ease;
     }
+    /* A chip this size is ~25px tall, well under a comfortable thumb. This
+       widens the hit area to roughly 45px without changing a drawn pixel. */
+    .sl-wait-btn::after { content: ''; position: absolute; inset: -10px -8px; }
     .sl-wait-btn:hover { background: transparent; color: var(--black); }
     .sl-wait-btn:focus-visible { outline: 3px solid var(--black); outline-offset: 3px; }
 
@@ -736,7 +742,7 @@
        numbers and this repo is public. -->
   <section class="startlist" id="entries" aria-labelledby="entries-heading">
     <h2 class="sl-title" id="entries-heading">ATHLETES</h2>
-    <p class="sl-note">LAST UPDATED SEP 18, 2026 AT 2:31 PM CT<span class="sl-live" aria-hidden="true"></span></p>
+    <p class="sl-note">LAST UPDATED SEP 18, 2026 AT 2:41 PM CT<span class="sl-live" aria-hidden="true"></span></p>
     <p class="sl-note sl-note-sm">HEATS ARE PROVISIONAL AND FINALIZED ON THE DAY OF THE RACE.</p>
     <div class="sl-grid">
       <div class="sl-race">
@@ -801,8 +807,7 @@
           <li>Tony Byerly</li>
           <li>Tyriq Valentine</li>
         </ul>
-        <p class="sl-team">WAITLIST</p>
-        <button type="button" class="sl-wait-btn" data-race="100m men&#x27;s">ADD ME TO THE WAITLIST</button>
+        <p class="sl-team">WAITLIST <button type="button" class="sl-wait-btn" data-race="100m men&#x27;s">JOIN WAITLIST</button></p>
       </div>
       <div class="sl-race">
         <h3>100M WOMEN&rsquo;S <span class="sl-count is-full">FULL</span></h3>
@@ -824,8 +829,7 @@
           <li>Vanessa Bacorn</li>
           <li>Ximena Ramos</li>
         </ul>
-        <p class="sl-team">WAITLIST</p>
-        <button type="button" class="sl-wait-btn" data-race="100m women&#x27;s">ADD ME TO THE WAITLIST</button>
+        <p class="sl-team">WAITLIST <button type="button" class="sl-wait-btn" data-race="100m women&#x27;s">JOIN WAITLIST</button></p>
       </div>
       <div class="sl-race">
         <h3>200M MEN&rsquo;S <span class="sl-count is-low">1 SPOT LEFT</span></h3>
@@ -868,11 +872,10 @@
           <li>Ximena Ramos</li>
           <li>Zoe Wright</li>
         </ul>
-        <p class="sl-team">WAITLIST</p>
+        <p class="sl-team">WAITLIST <button type="button" class="sl-wait-btn" data-race="200m women&#x27;s">JOIN WAITLIST</button></p>
         <ul>
           <li>Dayanara Colunga</li>
         </ul>
-        <button type="button" class="sl-wait-btn" data-race="200m women&#x27;s">ADD ME TO THE WAITLIST</button>
       </div>
       <div class="sl-race">
         <h3>400M MEN&rsquo;S <span class="sl-count">9 OF 12</span></h3>
