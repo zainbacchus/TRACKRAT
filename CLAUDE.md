@@ -23,8 +23,8 @@ Pages:
   (per-user PRs via Supabase), a **Waiver** tab (the member's signed waiver,
   view-only), a **Partners** tab (member perks from the
   `promotions` table; deep link `/dashboard#PARTNERS`), and a **Gallery**
-  tab (members-only club photos/videos from the shared Google Drive
-  folder; deep link `/dashboard#gallery` — see the **Gallery** section
+  tab (members-only gate in front of the club's iCloud Shared Album;
+  deep link `/dashboard#gallery` — see the **Gallery** section
   below). `/gallery` used to be its own page; it now 301-redirects to
   `/dashboard#gallery`.
 - `/waiver` — club code of conduct + liability waiver, signed in the browser.
@@ -83,10 +83,6 @@ TRACKRAT/
 │   ├── supabase-config.js  # Shared Supabase client (URL + anon key)
 │   ├── waiver-config.js    # Waiver + code-of-conduct registry (versions, hashes, stamp coords)
 │   └── vendor/             # Vendored Supabase JS SDK (dep-inlined ESM bundle + node-*.mjs polyfills)
-├── api/
-│   └── video.js            # /api/video — same-origin Drive video streaming proxy (zero-dep Vercel Node function)
-├── apps-script/
-│   └── gallery/            # Apps Script web app behind /gallery (Code.gs + manifest; deployed manually)
 ├── fonts/                  # Self-hosted webfonts (woff2, latin subset) + OFL licenses
 │   ├── fugaz-one-latin.woff2
 │   ├── ibm-plex-mono-{400,500,600,700}-latin.woff2
@@ -329,109 +325,44 @@ trigger + panel).
 
 ## Gallery (Dashboard → GALLERY tab)
 
-Members-only photo + video gallery served straight from the club's
-shared **Google Drive** folder. It lives as the third tab of
-`/dashboard` (`#galleryPanel` in dashboard.html; deep link
-`/dashboard#gallery`; the old `/gallery` route 301-redirects there). No
-API key, no build step; the dashboard's Google sign-in + Supabase gate
-who gets in:
+Members-only gate in front of the club's **iCloud Shared Album**. It is
+the third tab of `/dashboard` (`#galleryPanel` in dashboard.html; deep
+link `/dashboard#gallery`; the old `/gallery` route 301-redirects
+there). The tab renders no photos of its own: it checks membership and,
+if you pass, hands you a link that opens the album in a new tab.
 
-- **Backend** — a Google Apps Script **web app** (source committed at
-  `apps-script/gallery/Code.gs` + `appsscript.json`; deployed manually at
-  script.google.com — steps in README's *Photo gallery* section). Deployed
-  "Execute as: Me" / access "Anyone", so it runs as the club's Google
-  account: GET returns the folder listing as JSON, POST accepts an upload
-  — both require the view token (below). Deploy it from the account that
-  owns the photo folder — website uploads are created by (and billed to
-  the storage of) that account.
-- **Config** — `GALLERY_CONFIG.scriptUrl` at the top of the GALLERY TAB
-  block in dashboard.html's script (the `/exec` URL; empty string = the
-  tab shows setup instructions), plus optional `folderUrl`. `FOLDER_ID`
-  and `VIEW_TOKEN` live only in the *deployed* Code.gs — the repo copy
-  keeps placeholders (the repo is public).
-- **Members gate** — the gallery code is a block-scoped section of
-  dashboard.html's module script (its only exports are the
-  `openGalleryTab` / `resetGalleryTab` hooks used by `selectTab` and the
-  auth listener). Lazy like the Partners tab: on first open it reads the
-  **view token** from Supabase's `gallery_access` table — RLS lets the
-  row through only when `is_member()` (a security-definer function
-  checking the JWT email against the `members` allowlist; DDL in
-  README's *Photo gallery* section; both tables + real values live only
-  in Supabase). Zero rows = a "MEMBERS ONLY / not on the list yet" note
-  inside the tab. The token rides every listing/upload request
-  (`?token=` / body `token`) and must equal `VIEW_TOKEN` in the deployed
-  Code.gs — rotate both together. `resetGalleryTab` runs on sign-out /
-  user switch so one member's roll never lingers for the next account.
-- **Images** — Drive's public thumbnail CDN:
-  `https://drive.google.com/thumbnail?id=<id>&sz=w400` for tiles, `w1600`
-  for the lightbox. This only works while the folder is shared **"Anyone
-  with the link · Viewer"** (files inherit). Exactly two size buckets on
-  purpose — keeps the CDN cache hot. Videos play in the lightbox inside
-  the gallery's own custom controls (`makeNativePlayer`:
-  play/scrub/mute/fullscreen). The `controls` attribute is deliberately
-  OFF — iOS Safari stacks its system media overlay on top of the
-  built-in inline controls, doubling the UI even on a plain native
-  `<video controls>`; custom controls are the only reliable
-  single-control-set cure (the YouTube/Vimeo/Mux pattern). The `<video>`
-  src is the **same-origin streaming proxy** `/api/video?id=<id>&token=`
-  (`api/video.js`, a dependency-free Vercel Node function): it fetches
-  `https://drive.usercontent.google.com/download?id=<id>&export=download&confirm=t`
-  server-side and pipes the bytes through with Range/206 passthrough
-  (plus an explicit `Accept-Ranges: bytes`, `Content-Disposition:
-  inline`, and MIME corrected from the filename Drive reports — .MOVs
-  come back `application/octet-stream`). The proxy exists because
-  **Google gates the usercontent host on Fetch Metadata** (verified
-  2026-07 by header bisection): any cross-site browser subresource
-  request — `<video>` src (`Sec-Fetch-Dest: video`) or `fetch()`
-  (`Sec-Fetch-Mode: cors`) — gets a 403 HTML page; only navigations
-  (`Sec-Fetch-Mode: navigate`) pass. Browsers attach those headers
-  unconditionally and JS can't strip them, so **no client-side approach
-  (direct src, CORS-fetch-to-blob, lh3 =m22 transcodes — all tested) can
-  ever stream Drive bytes** — don't re-attempt one; curl "verifying" the
-  endpoint without Sec-Fetch headers is a false positive. On `error`
-  (proxy not deployed, upstream quota 403, a codec the device can't
-  decode) the player falls back to Drive's transcoding
-  `https://drive.google.com/file/d/<id>/preview` iframe, which always
-  plays but double-stacks controls on iOS — the last resort, never the
-  primary. The proxy's gate protects bandwidth, not secrecy (files are
-  link-shared): with a `GALLERY_VIEW_TOKEN` env var set in Vercel
-  (same value as the Apps Script `VIEW_TOKEN`) it requires the token;
-  without it, it falls back to a same-site `Sec-Fetch-Site`/Referer
-  check. Fullscreen hands off to `webkitEnterFullscreen` on iPhone
-  (iOS's clean native fullscreen player), `requestFullscreen` elsewhere.
-  The usercontent URL is still the DOWNLOAD link (navigations pass the
-  gate and Content-Disposition applies). The page CSP doesn't restrict
-  child frames, only being framed.
-- **Albums** — one level of subfolders inside the photo folder. Root-level
-  files appear under ALL only. The upload form can create a new album
-  (server-side, with a lock to avoid duplicate folders). Chips are
-  ordered newest-event-first by the `M.DD.YY-` date prefix in the folder
-  name (`albumCompare` in dashboard.html; undated names fall back to Z→A),
-  and the row collapses to ALL + the three newest + a `+ N MORE` toggle
-  (`CHIPS_COLLAPSED`); the active album always stays visible even when
-  it's behind the fold.
-- **Uploads** — members-only via the same view token; there is no
-  separate upload code. The POST body is JSON sent as
-  `Content-Type: text/plain` **on purpose**: Apps Script web apps can't
-  answer a CORS preflight, and text/plain keeps the request "simple".
-  ~40MB/file cap (Apps Script's POST limit is ~50MB of base64); bigger
-  files go through the Drive folder link shown in the form. Uploads are
-  stored byte-for-byte — **never add client-side recompression**;
-  preserving quality is the whole reason the club moved to Drive.
-- **Caching** — the script caches its listing for 5 minutes
-  (CacheService) and busts the cache on every successful upload, so page
-  uploads appear immediately; files added directly in Drive can take up
-  to 5 minutes.
-- **Privacy** — this is a club gate, not cryptographic privacy. The
-  Drive folder stays link-shared ("Anyone with the link · Viewer") so
-  Drive's thumbnail CDN can serve images anonymously — meaning any
-  individual file/folder Drive link still works for whoever it's
-  forwarded to, exactly like sharing from Drive directly. The website
-  layer (sign-in + allowlist + token) gates *discovery and listing*.
-  The dashboard page carrying the tab is `noindex` and excluded from
-  sitemap.xml (deliberately not robots-Disallowed). Locking the folder
-  itself would require proxying every image through an authorized
-  backend and losing Drive's CDN — deliberately not done.
+- **No backend.** This replaced a Google Drive folder fronted by a
+  Google Apps Script web app. `api/video.js`, `apps-script/`, the Drive
+  thumbnail CDN, the lightbox, the in-page uploader and the shared view
+  token are all deleted. The two Apps Script origins were removed from
+  the CSP `connect-src` at the same time. Do not reintroduce any of it.
+
+- **Members gate** — a block-scoped section of `dashboard.html`'s main
+  `<script type="module">`, exporting only the `openGalleryTab` /
+  `resetGalleryTab` hooks that `selectTab` and the auth handler call,
+  same shape as the Partners and Waiver blocks. It selects `album_url`
+  from Supabase's `gallery_access`, whose RLS policy is
+  `using (public.is_member())`. Three outcomes have to stay distinct:
+  a row → show the link; **zero rows → not a member** (RLS filters, it
+  does not error); an error → a retryable failure, and `started` is
+  reset to false so the next tab open tries again.
+
+- **The album URL is a credential and must never enter this repo.**
+  Anyone holding it can view the album, and because it is an upgraded
+  ("anyone can add photos") album, add to it too. That is why it lives
+  in a Supabase row rather than in `dashboard.html` — a public repo
+  would publish it to the world and make the members gate decorative.
+  `resetGalleryTab` removes the `href` on sign-out or user switch so
+  one member's link cannot survive into another account's session.
+
+- **What the gate is worth.** It controls *who is handed the link*, not
+  who may use one. A forwarded link works for anyone, and removing
+  someone from `members` does not revoke a link they already hold. The
+  fix for a leak is to regenerate the album link in Photos and update
+  the Supabase row; no code change, because the URL is data.
+
+- **Adding photos** happens in Apple Photos, not on the site. There is
+  no upload path in the dashboard any more.
 
 ## Waivers (`/waiver` + Dashboard → Waiver)
 
@@ -553,8 +484,8 @@ the active-tab underline still reads.
 - **Partners** — `#promoPanel` (promotions under the hood). Lazy-loads on
   first open from the Supabase `promotions` table and renders
   `.promo-card`s. See **Promotions** below.
-- **Gallery** — `#galleryPanel`. The Drive-backed club gallery; see the
-  **Gallery** section above.
+- **Gallery** — `#galleryPanel`. The members gate in front of the club
+  iCloud album; see the **Gallery** section above.
 
 ### Promotions tab
 
@@ -760,10 +691,9 @@ Three places to keep in sync:
 
 ### Deployment
 
-Push to the default branch (`main`) → Vercel auto-deploys. No build step.
-Static files plus the zero-config Node serverless function(s) under
-`/api` (currently just `api/video.js` — keep them dependency-free; no
-`package.json`).
+Push to the default branch (`main`) → Vercel auto-deploys. No build step
+and no serverless functions: the whole site is static files. There is no
+`package.json` and there should not be one.
 
 ## Browser Compatibility
 
