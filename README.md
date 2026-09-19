@@ -753,9 +753,39 @@ grant insert (race, first_name, last_name, email, phone, agreed)
   on public.waitlist to anon, authenticated;
 create policy "waitlist_insert_public" on public.waitlist
   for insert to anon, authenticated with check (true);
--- No select/update/delete grant and no select/update/delete policy: the form
--- can add a row and nothing more.
+
+-- Read back NAMES only, so the start-list generator can put waitlist
+-- sign-ups on the page. This grant is COLUMN-SCOPED on purpose: `select *`
+-- and any attempt to read email or phone still fail 42501. Waitlist names go
+-- on the public page anyway, exactly like every athlete on the start list,
+-- but contact details never leave Supabase. Do not widen this to a plain
+-- `grant select on public.waitlist`, which is what Postgres's own error hint
+-- suggests and which would publish every phone number to the anon key.
+grant select (race, first_name, last_name, created_at)
+  on public.waitlist to anon, authenticated;
+create policy "waitlist_select_names" on public.waitlist
+  for select to anon, authenticated using (true);
+-- Still no update and no delete, of either kind: a row cannot be changed or
+-- removed from the client.
 ```
+
+`created_at` is granted because the generator orders by it. A waitlist is a
+queue, so the page lists sign-ups in the order they arrived rather than
+alphabetically like the heats.
+
+**How a name reaches the page.** `gen-startlist.py` reads this table with the
+same public anon key the site ships and merges it into the WAITLIST block. Two
+different things share that heading: the generator's hardcoded `WAITLIST` dict
+*moves* someone off a roster they are already on (they bought a Sweatpals entry
+and overflowed the race, which is how Dayanara Colunga got there), while a form
+sign-up never got in at all and is simply appended. Anyone who later makes it
+onto the roster is dropped from the waitlist rather than listed twice.
+
+The page is static, so a sign-up appears at the next regeneration, not
+instantly. If the read fails the generator **exits** instead of publishing a
+start list without those people: carrying on would quietly remove names that
+are already visible on the live page, and a failed request cannot say which
+ones. `--no-form-waitlist` skips it deliberately, with a warning.
 
 Reading the list, in the SQL editor:
 
