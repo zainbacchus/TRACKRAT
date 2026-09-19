@@ -596,6 +596,20 @@
       .wl-row { display: block; }
     }
     @media (max-width: 700px) {
+      /* The stamp is 39 characters and has to hold one line. At 13px/0.2em it
+         wants 426px against the 327px a 375px phone gives it, so it wrapped
+         and left the live dot orphaned on a second line. Its width is linear
+         in font-size (measured: 29.1px of line per px of type at 0.1em), so
+         this is solved rather than guessed: size = (viewport - the 48px of
+         side padding) / 29.1, minus a little, because 3.4vw came out 1px
+         over at 320px. Clamped so it stops growing past the desktop size.
+         :not(.sl-note-sm) matters: the provisional-heats line below shares
+         .sl-note, and this block would otherwise override its own size. */
+      .sl-note:not(.sl-note-sm) {
+        font-size: clamp(8px, calc(3.3vw - 1.6px), 13px);
+        letter-spacing: 0.1em;
+        white-space: nowrap;
+      }
       .startlist { padding: 0 24px 96px; }
       .sl-grid { grid-template-columns: 1fr; gap: 0; margin-top: 36px; }
     }
