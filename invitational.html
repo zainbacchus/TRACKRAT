@@ -396,6 +396,17 @@
       gap: 0 48px; margin-top: 52px;
     }
     .sl-race { border-top: 2px solid var(--black); padding: 16px 0 26px; }
+    /* The heading is two flex children, not three: the name, and a .sl-meta
+       group holding the state badge with the action that answers it. As
+       siblings of the name, space-between would strand the badge mid-line
+       instead of keeping the pair together at the right edge. */
+    /* nowrap is load-bearing, not tidiness. Without it the longer race
+       names took a 40px heading against everyone else's 25px, which
+       pushed HEAT 1 and HEAT 2 about 16px out of line between the two
+       columns. No name is close to the column width, so this can never
+       clip: measured, the tightest is the 400m men's with 5px to spare. */
+    .sl-name { min-width: 0; white-space: nowrap; }
+    .sl-meta { flex: none; display: flex; align-items: center; gap: 8px; }
     .sl-race h3 {
       font-size: 15px; font-weight: 700; letter-spacing: 0.16em;
       display: flex; align-items: baseline; justify-content: space-between; gap: 14px;
@@ -462,16 +473,8 @@
     }
     /* An empty team slot, sitting where a team name would. 0.2em to match
        an OPEN lane in an individual race, because that is what it is:
-       room left, not a team.
-
-       min-height is load-bearing, the same trick the count chips needed.
-       Only the LAST slot carries an RSVP chip, and a chip is 25px against
-       a bare line's 16px, so without this the gap above the last slot came
-       out 38px while every other gap was 43px. Centring rather than
-       baseline because the row is now taller than its text. */
-    .sl-team.sl-team-open {
-      letter-spacing: 0.2em; min-height: 25px; align-items: center;
-    }
+       room left, not a team. */
+    .sl-team.sl-team-open { letter-spacing: 0.2em; }
     .sl-empty { font-size: 13px; font-weight: 500; margin-top: 14px; }
 
     /* WAITLIST SIGN-UP --------------------------------------------------
@@ -498,15 +501,8 @@
     .sl-wait-btn:hover { background: transparent; color: var(--black); }
     .sl-wait-btn:focus-visible { outline: 3px solid var(--black); outline-offset: 3px; }
 
-    /* RSVP rides the LAST open lane, so the eye lands on it straight after
-       reading how much room is left. Same chip as FULL and JOIN WAITLIST,
-       because all three are the same kind of statement about a race.
-       The row stays 28.5px like every other: the text keeps the inherited
-       line-height and the 25px chip is shorter than it, so making this one
-       row a flex container cannot change the rhythm of the column. */
-    .sl-race li.sl-open.is-last {
-      display: flex; align-items: center; justify-content: space-between; gap: 12px;
-    }
+    /* The RSVP and JOIN WAITLIST chips live in the race heading; these
+       rules style them there. */
     .sl-rsvp-btn {
       flex: none; position: relative;
       font-size: 11px; font-weight: 700; letter-spacing: 0.14em;
@@ -784,12 +780,12 @@
        numbers and this repo is public. -->
   <section class="startlist" id="entries" aria-labelledby="entries-heading">
     <h2 class="sl-title" id="entries-heading">ATHLETES</h2>
-    <p class="sl-note">LAST UPDATED SEP 19, 2026 AT 7:34 AM CT<span class="sl-live" aria-hidden="true"></span></p>
+    <p class="sl-note">LAST UPDATED SEP 19, 2026 AT 7:39 AM CT<span class="sl-live" aria-hidden="true"></span></p>
     <p class="sl-note sl-note-sm">HEATS ARE PROVISIONAL AND FINALIZED ON THE DAY OF THE RACE.</p>
     <div class="sl-grid">
       <div class="sl-race">
-        <h3>60M MEN&rsquo;S <span class="sl-count is-low">1 SPOT LEFT</span></h3>
-        <p class="sl-team">HEAT 1 <span class="sl-count">6 ATHLETES</span></p>
+        <h3><span class="sl-name">60M MEN&rsquo;S</span><span class="sl-meta"><span class="sl-count is-low">1 SPOT LEFT</span><a class="sl-rsvp-btn" href="https://events.sweatpals.com/ca3b412e" target="_blank" rel="noopener">RSVP &#8599;</a></span></h3>
+        <p class="sl-team">HEAT 1</p>
         <ul>
           <li>Andrew Gruninger</li>
           <li>Ankith Harathi</li>
@@ -798,19 +794,19 @@
           <li>DJ Phillips</li>
           <li>Ethan M Capitano</li>
         </ul>
-        <p class="sl-team">HEAT 2 <span class="sl-count">5 ATHLETES</span></p>
+        <p class="sl-team">HEAT 2</p>
         <ul>
           <li>Matthew Bacchus</li>
           <li>O’Shea Wilson</li>
           <li>Paris Desean Odem</li>
           <li>Rikin Tanna</li>
           <li>Tony Byerly</li>
-          <li class="sl-open is-last">OPEN<a class="sl-rsvp-btn" href="https://events.sweatpals.com/ca3b412e" target="_blank" rel="noopener">RSVP &#8599;</a></li>
+          <li class="sl-open">OPEN</li>
         </ul>
       </div>
       <div class="sl-race">
-        <h3>60M WOMEN&rsquo;S <span class="sl-count">9 OF 12</span></h3>
-        <p class="sl-team">HEAT 1 <span class="sl-count">6 ATHLETES</span></p>
+        <h3><span class="sl-name">60M WOMEN&rsquo;S</span><span class="sl-meta"><span class="sl-count">9 OF 12</span><a class="sl-rsvp-btn" href="https://events.sweatpals.com/ca3b412e" target="_blank" rel="noopener">RSVP &#8599;</a></span></h3>
+        <p class="sl-team">HEAT 1</p>
         <ul>
           <li>Ashley Fairley</li>
           <li>Emily Knippa</li>
@@ -819,19 +815,19 @@
           <li>Mandy Peña</li>
           <li>Monica Kirkpatrick</li>
         </ul>
-        <p class="sl-team">HEAT 2 <span class="sl-count">3 ATHLETES</span></p>
+        <p class="sl-team">HEAT 2</p>
         <ul>
           <li>Natalie Woodham</li>
           <li>Robyn Moss</li>
           <li>Ximena Ramos</li>
           <li class="sl-open">OPEN</li>
           <li class="sl-open">OPEN</li>
-          <li class="sl-open is-last">OPEN<a class="sl-rsvp-btn" href="https://events.sweatpals.com/ca3b412e" target="_blank" rel="noopener">RSVP &#8599;</a></li>
+          <li class="sl-open">OPEN</li>
         </ul>
       </div>
       <div class="sl-race">
-        <h3>100M MEN&rsquo;S <span class="sl-count is-full">FULL</span></h3>
-        <p class="sl-team">HEAT 1 <span class="sl-count">6 ATHLETES</span></p>
+        <h3><span class="sl-name">100M MEN&rsquo;S</span><span class="sl-meta"><span class="sl-count is-full">FULL</span><button type="button" class="sl-wait-btn" data-race="100m men&#x27;s">JOIN WAITLIST</button></span></h3>
+        <p class="sl-team">HEAT 1</p>
         <ul>
           <li>Advay Ramesh</li>
           <li>Andrew Gruninger</li>
@@ -840,7 +836,7 @@
           <li>Caleb Hulbin</li>
           <li>DJ Phillips</li>
         </ul>
-        <p class="sl-team">HEAT 2 <span class="sl-count">6 ATHLETES</span></p>
+        <p class="sl-team">HEAT 2</p>
         <ul>
           <li>Gavin Stafford</li>
           <li>Paris Desean Odem</li>
@@ -849,14 +845,14 @@
           <li>Tony Byerly</li>
           <li>Tyriq Valentine</li>
         </ul>
-        <p class="sl-team">WAITLIST <button type="button" class="sl-wait-btn" data-race="100m men&#x27;s">JOIN WAITLIST</button></p>
+        <p class="sl-team">WAITLIST</p>
         <ul>
           <li>Ethan M Capitano</li>
         </ul>
       </div>
       <div class="sl-race">
-        <h3>100M WOMEN&rsquo;S <span class="sl-count is-full">FULL</span></h3>
-        <p class="sl-team">HEAT 1 <span class="sl-count">6 ATHLETES</span></p>
+        <h3><span class="sl-name">100M WOMEN&rsquo;S</span><span class="sl-meta"><span class="sl-count is-full">FULL</span><button type="button" class="sl-wait-btn" data-race="100m women&#x27;s">JOIN WAITLIST</button></span></h3>
+        <p class="sl-team">HEAT 1</p>
         <ul>
           <li>Andrea Colunga</li>
           <li>Ashley Fairley</li>
@@ -865,7 +861,7 @@
           <li>Emily Knippa</li>
           <li>Kristy Harris</li>
         </ul>
-        <p class="sl-team">HEAT 2 <span class="sl-count">6 ATHLETES</span></p>
+        <p class="sl-team">HEAT 2</p>
         <ul>
           <li>Mandy Peña</li>
           <li>Robyn Moss</li>
@@ -874,12 +870,12 @@
           <li>Vanessa Bacorn</li>
           <li>Ximena Ramos</li>
         </ul>
-        <p class="sl-team">WAITLIST <button type="button" class="sl-wait-btn" data-race="100m women&#x27;s">JOIN WAITLIST</button></p>
-        <p class="sl-empty">NOBODY ON THE WAITLIST YET</p>
+        <p class="sl-team">WAITLIST</p>
+        <p class="sl-empty">Waitlist empty</p>
       </div>
       <div class="sl-race">
-        <h3>200M MEN&rsquo;S <span class="sl-count is-full">FULL</span></h3>
-        <p class="sl-team">HEAT 1 <span class="sl-count">6 ATHLETES</span></p>
+        <h3><span class="sl-name">200M MEN&rsquo;S</span><span class="sl-meta"><span class="sl-count is-full">FULL</span><button type="button" class="sl-wait-btn" data-race="200m men&#x27;s">JOIN WAITLIST</button></span></h3>
+        <p class="sl-team">HEAT 1</p>
         <ul>
           <li>Alex West</li>
           <li>Andrew Gruninger</li>
@@ -888,7 +884,7 @@
           <li>Ethan M Capitano</li>
           <li>Gavin Stafford</li>
         </ul>
-        <p class="sl-team">HEAT 2 <span class="sl-count">6 ATHLETES</span></p>
+        <p class="sl-team">HEAT 2</p>
         <ul>
           <li>Jorge Munoz</li>
           <li>Myles Cooper</li>
@@ -897,12 +893,12 @@
           <li>Tony Byerly</li>
           <li>Tyriq Valentine</li>
         </ul>
-        <p class="sl-team">WAITLIST <button type="button" class="sl-wait-btn" data-race="200m men&#x27;s">JOIN WAITLIST</button></p>
-        <p class="sl-empty">NOBODY ON THE WAITLIST YET</p>
+        <p class="sl-team">WAITLIST</p>
+        <p class="sl-empty">Waitlist empty</p>
       </div>
       <div class="sl-race">
-        <h3>200M WOMEN&rsquo;S <span class="sl-count is-full">FULL</span></h3>
-        <p class="sl-team">HEAT 1 <span class="sl-count">6 ATHLETES</span></p>
+        <h3><span class="sl-name">200M WOMEN&rsquo;S</span><span class="sl-meta"><span class="sl-count is-full">FULL</span><button type="button" class="sl-wait-btn" data-race="200m women&#x27;s">JOIN WAITLIST</button></span></h3>
+        <p class="sl-team">HEAT 1</p>
         <ul>
           <li>Andrea Colunga</li>
           <li>Ashley Fairley</li>
@@ -911,7 +907,7 @@
           <li>Mandy Peña</li>
           <li>Mia Constantin</li>
         </ul>
-        <p class="sl-team">HEAT 2 <span class="sl-count">6 ATHLETES</span></p>
+        <p class="sl-team">HEAT 2</p>
         <ul>
           <li>Natalie Woodham</li>
           <li>Sarah Boyd</li>
@@ -920,14 +916,14 @@
           <li>Ximena Ramos</li>
           <li>Zoe Wright</li>
         </ul>
-        <p class="sl-team">WAITLIST <button type="button" class="sl-wait-btn" data-race="200m women&#x27;s">JOIN WAITLIST</button></p>
+        <p class="sl-team">WAITLIST</p>
         <ul>
           <li>Dayanara Colunga</li>
         </ul>
       </div>
       <div class="sl-race">
-        <h3>400M MEN&rsquo;S <span class="sl-count is-low">2 SPOTS LEFT</span></h3>
-        <p class="sl-team">HEAT 1 <span class="sl-count">6 ATHLETES</span></p>
+        <h3><span class="sl-name">400M MEN&rsquo;S</span><span class="sl-meta"><span class="sl-count is-low">2 SPOTS LEFT</span><a class="sl-rsvp-btn" href="https://events.sweatpals.com/ca3b412e" target="_blank" rel="noopener">RSVP &#8599;</a></span></h3>
+        <p class="sl-team">HEAT 1</p>
         <ul>
           <li>Alex West</li>
           <li>Bradley Gardner</li>
@@ -936,19 +932,19 @@
           <li>Derwood Kirby</li>
           <li>Jayman Peterson</li>
         </ul>
-        <p class="sl-team">HEAT 2 <span class="sl-count">4 ATHLETES</span></p>
+        <p class="sl-team">HEAT 2</p>
         <ul>
           <li>Michael Brown</li>
           <li>Nicolas Sawyer</li>
           <li>Owen Sutherland</li>
           <li>Thomas Samples</li>
           <li class="sl-open">OPEN</li>
-          <li class="sl-open is-last">OPEN<a class="sl-rsvp-btn" href="https://events.sweatpals.com/ca3b412e" target="_blank" rel="noopener">RSVP &#8599;</a></li>
+          <li class="sl-open">OPEN</li>
         </ul>
       </div>
       <div class="sl-race">
-        <h3>400M WOMEN&rsquo;S <span class="sl-count is-low">1 SPOT LEFT</span></h3>
-        <p class="sl-team">HEAT 1 <span class="sl-count">6 ATHLETES</span></p>
+        <h3><span class="sl-name">400M WOMEN&rsquo;S</span><span class="sl-meta"><span class="sl-count is-low">1 SPOT LEFT</span><a class="sl-rsvp-btn" href="https://events.sweatpals.com/ca3b412e" target="_blank" rel="noopener">RSVP &#8599;</a></span></h3>
+        <p class="sl-team">HEAT 1</p>
         <ul>
           <li>Andrea Colunga</li>
           <li>Dayanara Colunga</li>
@@ -957,18 +953,18 @@
           <li>Kelly Ferraro</li>
           <li>Kristin Malone</li>
         </ul>
-        <p class="sl-team">HEAT 2 <span class="sl-count">5 ATHLETES</span></p>
+        <p class="sl-team">HEAT 2</p>
         <ul>
           <li>L. Morgan Kelley</li>
           <li>Lindsey Quebedeaux</li>
           <li>Mia Constantin</li>
           <li>Sarah Boyd</li>
           <li>Vanessa Bacorn</li>
-          <li class="sl-open is-last">OPEN<a class="sl-rsvp-btn" href="https://events.sweatpals.com/ca3b412e" target="_blank" rel="noopener">RSVP &#8599;</a></li>
+          <li class="sl-open">OPEN</li>
         </ul>
       </div>
       <div class="sl-race">
-        <h3>4&times;100 MEN&rsquo;S <span class="sl-count">2 OF 6</span></h3>
+        <h3><span class="sl-name">4&times;100 MEN&rsquo;S</span><span class="sl-meta"><span class="sl-count">2 OF 6</span><a class="sl-rsvp-btn" href="https://events.sweatpals.com/ca3b412e" target="_blank" rel="noopener">RSVP &#8599;</a></span></h3>
         <p class="sl-team">BLIND HANDOFF</p>
         <ul>
           <li>Ankith Harathi</li>
@@ -995,7 +991,7 @@
         <ul>
           <li class="sl-open">OPEN</li>
         </ul>
-        <p class="sl-team sl-team-open">TEAM #6 <a class="sl-rsvp-btn" href="https://events.sweatpals.com/ca3b412e" target="_blank" rel="noopener">RSVP &#8599;</a></p>
+        <p class="sl-team sl-team-open">TEAM #6</p>
         <ul>
           <li class="sl-open">OPEN</li>
         </ul>
@@ -1008,7 +1004,7 @@
         </ul>
       </div>
       <div class="sl-race">
-        <h3>4&times;100 WOMEN&rsquo;S <span class="sl-count">2 OF 6</span></h3>
+        <h3><span class="sl-name">4&times;100 WOMEN&rsquo;S</span><span class="sl-meta"><span class="sl-count">2 OF 6</span><a class="sl-rsvp-btn" href="https://events.sweatpals.com/ca3b412e" target="_blank" rel="noopener">RSVP &#8599;</a></span></h3>
         <p class="sl-team">SHREVEPORT SPEED</p>
         <ul>
           <li>Lindsey Quebedeaux</li>
@@ -1035,7 +1031,7 @@
         <ul>
           <li class="sl-open">OPEN</li>
         </ul>
-        <p class="sl-team sl-team-open">TEAM #6 <a class="sl-rsvp-btn" href="https://events.sweatpals.com/ca3b412e" target="_blank" rel="noopener">RSVP &#8599;</a></p>
+        <p class="sl-team sl-team-open">TEAM #6</p>
         <ul>
           <li class="sl-open">OPEN</li>
         </ul>
@@ -1046,7 +1042,7 @@
         </ul>
       </div>
       <div class="sl-race">
-        <h3>4&times;400 CO-ED <span class="sl-count is-low">2 TEAMS LEFT</span></h3>
+        <h3><span class="sl-name">4&times;400 CO-ED</span><span class="sl-meta"><span class="sl-count is-low">2 TEAMS LEFT</span><a class="sl-rsvp-btn" href="https://events.sweatpals.com/ca3b412e" target="_blank" rel="noopener">RSVP &#8599;</a></span></h3>
         <p class="sl-team">LACTIC</p>
         <ul>
           <li>Davicia Weekly</li>
@@ -1079,7 +1075,7 @@
         <ul>
           <li class="sl-open">OPEN</li>
         </ul>
-        <p class="sl-team sl-team-open">TEAM #6 <a class="sl-rsvp-btn" href="https://events.sweatpals.com/ca3b412e" target="_blank" rel="noopener">RSVP &#8599;</a></p>
+        <p class="sl-team sl-team-open">TEAM #6</p>
         <ul>
           <li class="sl-open">OPEN</li>
         </ul>
