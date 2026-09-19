@@ -416,8 +416,17 @@
        but a page of solid black chips would flatten the difference between
        'hurry' and 'too late'. Both keep the 5px of vertical box the plain
        state has, so swapping between them moves nothing. */
+    /* Badge language on this page, in one place so it stays learnable:
+         BLACK fill  = you can press it. The hero RSVP button set that rule
+                       long before these chips existed, and JOIN WAITLIST
+                       and RSVP follow it.
+         WHITE fill  = a terminal state. FULL used to be black, which made
+                       it look exactly like the two buttons beside it while
+                       being the one badge that does nothing.
+         OUTLINE     = a state worth noticing (1 SPOT LEFT).
+         NO BORDER   = a neutral count (9 OF 12). */
     .sl-count.is-full {
-      background: var(--black); color: var(--orange);
+      background: var(--white); color: var(--black);
       border: 2px solid var(--black); padding: 3px 6px;
     }
     .sl-count.is-low { border: 2px solid var(--black); padding: 3px 6px; }
@@ -450,6 +459,18 @@
          'HEAT 1' and its count ran together and read as one number. A team
          name is the only child on its line, so it still sits flush left. */
       justify-content: space-between;
+    }
+    /* An empty team slot, sitting where a team name would. 0.2em to match
+       an OPEN lane in an individual race, because that is what it is:
+       room left, not a team.
+
+       min-height is load-bearing, the same trick the count chips needed.
+       Only the LAST slot carries an RSVP chip, and a chip is 25px against
+       a bare line's 16px, so without this the gap above the last slot came
+       out 38px while every other gap was 43px. Centring rather than
+       baseline because the row is now taller than its text. */
+    .sl-team.sl-team-open {
+      letter-spacing: 0.2em; min-height: 25px; align-items: center;
     }
     .sl-empty { font-size: 13px; font-weight: 500; margin-top: 14px; }
 
@@ -763,7 +784,7 @@
        numbers and this repo is public. -->
   <section class="startlist" id="entries" aria-labelledby="entries-heading">
     <h2 class="sl-title" id="entries-heading">ATHLETES</h2>
-    <p class="sl-note">LAST UPDATED SEP 19, 2026 AT 7:27 AM CT<span class="sl-live" aria-hidden="true"></span></p>
+    <p class="sl-note">LAST UPDATED SEP 19, 2026 AT 7:34 AM CT<span class="sl-live" aria-hidden="true"></span></p>
     <p class="sl-note sl-note-sm">HEATS ARE PROVISIONAL AND FINALIZED ON THE DAY OF THE RACE.</p>
     <div class="sl-grid">
       <div class="sl-race">
@@ -784,7 +805,7 @@
           <li>Paris Desean Odem</li>
           <li>Rikin Tanna</li>
           <li>Tony Byerly</li>
-          <li class="sl-open is-last">OPEN<a class="sl-rsvp-btn" href="https://events.sweatpals.com/ca3b412e" target="_blank" rel="noopener">RSVP</a></li>
+          <li class="sl-open is-last">OPEN<a class="sl-rsvp-btn" href="https://events.sweatpals.com/ca3b412e" target="_blank" rel="noopener">RSVP &#8599;</a></li>
         </ul>
       </div>
       <div class="sl-race">
@@ -805,7 +826,7 @@
           <li>Ximena Ramos</li>
           <li class="sl-open">OPEN</li>
           <li class="sl-open">OPEN</li>
-          <li class="sl-open is-last">OPEN<a class="sl-rsvp-btn" href="https://events.sweatpals.com/ca3b412e" target="_blank" rel="noopener">RSVP</a></li>
+          <li class="sl-open is-last">OPEN<a class="sl-rsvp-btn" href="https://events.sweatpals.com/ca3b412e" target="_blank" rel="noopener">RSVP &#8599;</a></li>
         </ul>
       </div>
       <div class="sl-race">
@@ -854,6 +875,7 @@
           <li>Ximena Ramos</li>
         </ul>
         <p class="sl-team">WAITLIST <button type="button" class="sl-wait-btn" data-race="100m women&#x27;s">JOIN WAITLIST</button></p>
+        <p class="sl-empty">NOBODY ON THE WAITLIST YET</p>
       </div>
       <div class="sl-race">
         <h3>200M MEN&rsquo;S <span class="sl-count is-full">FULL</span></h3>
@@ -876,6 +898,7 @@
           <li>Tyriq Valentine</li>
         </ul>
         <p class="sl-team">WAITLIST <button type="button" class="sl-wait-btn" data-race="200m men&#x27;s">JOIN WAITLIST</button></p>
+        <p class="sl-empty">NOBODY ON THE WAITLIST YET</p>
       </div>
       <div class="sl-race">
         <h3>200M WOMEN&rsquo;S <span class="sl-count is-full">FULL</span></h3>
@@ -920,7 +943,7 @@
           <li>Owen Sutherland</li>
           <li>Thomas Samples</li>
           <li class="sl-open">OPEN</li>
-          <li class="sl-open is-last">OPEN<a class="sl-rsvp-btn" href="https://events.sweatpals.com/ca3b412e" target="_blank" rel="noopener">RSVP</a></li>
+          <li class="sl-open is-last">OPEN<a class="sl-rsvp-btn" href="https://events.sweatpals.com/ca3b412e" target="_blank" rel="noopener">RSVP &#8599;</a></li>
         </ul>
       </div>
       <div class="sl-race">
@@ -941,7 +964,7 @@
           <li>Mia Constantin</li>
           <li>Sarah Boyd</li>
           <li>Vanessa Bacorn</li>
-          <li class="sl-open is-last">OPEN<a class="sl-rsvp-btn" href="https://events.sweatpals.com/ca3b412e" target="_blank" rel="noopener">RSVP</a></li>
+          <li class="sl-open is-last">OPEN<a class="sl-rsvp-btn" href="https://events.sweatpals.com/ca3b412e" target="_blank" rel="noopener">RSVP &#8599;</a></li>
         </ul>
       </div>
       <div class="sl-race">
@@ -959,6 +982,22 @@
           <li>TBD</li>
           <li>TBD</li>
           <li>TBD</li>
+        </ul>
+        <p class="sl-team sl-team-open">TEAM #3</p>
+        <ul>
+          <li class="sl-open">OPEN</li>
+        </ul>
+        <p class="sl-team sl-team-open">TEAM #4</p>
+        <ul>
+          <li class="sl-open">OPEN</li>
+        </ul>
+        <p class="sl-team sl-team-open">TEAM #5</p>
+        <ul>
+          <li class="sl-open">OPEN</li>
+        </ul>
+        <p class="sl-team sl-team-open">TEAM #6 <a class="sl-rsvp-btn" href="https://events.sweatpals.com/ca3b412e" target="_blank" rel="noopener">RSVP &#8599;</a></p>
+        <ul>
+          <li class="sl-open">OPEN</li>
         </ul>
         <p class="sl-team">LOOKING FOR A TEAM</p>
         <ul>
@@ -983,6 +1022,22 @@
           <li>Ashley Fairley</li>
           <li>Kennedy</li>
           <li>Zoe Wright</li>
+        </ul>
+        <p class="sl-team sl-team-open">TEAM #3</p>
+        <ul>
+          <li class="sl-open">OPEN</li>
+        </ul>
+        <p class="sl-team sl-team-open">TEAM #4</p>
+        <ul>
+          <li class="sl-open">OPEN</li>
+        </ul>
+        <p class="sl-team sl-team-open">TEAM #5</p>
+        <ul>
+          <li class="sl-open">OPEN</li>
+        </ul>
+        <p class="sl-team sl-team-open">TEAM #6 <a class="sl-rsvp-btn" href="https://events.sweatpals.com/ca3b412e" target="_blank" rel="noopener">RSVP &#8599;</a></p>
+        <ul>
+          <li class="sl-open">OPEN</li>
         </ul>
         <p class="sl-team">LOOKING FOR A TEAM</p>
         <ul>
@@ -1019,6 +1074,14 @@
           <li>Caleb Schnatz</li>
           <li>Janine Dias</li>
           <li>Zoe Herman</li>
+        </ul>
+        <p class="sl-team sl-team-open">TEAM #5</p>
+        <ul>
+          <li class="sl-open">OPEN</li>
+        </ul>
+        <p class="sl-team sl-team-open">TEAM #6 <a class="sl-rsvp-btn" href="https://events.sweatpals.com/ca3b412e" target="_blank" rel="noopener">RSVP &#8599;</a></p>
+        <ul>
+          <li class="sl-open">OPEN</li>
         </ul>
         <p class="sl-team">LOOKING FOR A TEAM</p>
         <ul>
