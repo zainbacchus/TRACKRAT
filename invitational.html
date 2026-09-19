@@ -477,6 +477,27 @@
     .sl-wait-btn:hover { background: transparent; color: var(--black); }
     .sl-wait-btn:focus-visible { outline: 3px solid var(--black); outline-offset: 3px; }
 
+    /* RSVP rides the LAST open lane, so the eye lands on it straight after
+       reading how much room is left. Same chip as FULL and JOIN WAITLIST,
+       because all three are the same kind of statement about a race.
+       The row stays 28.5px like every other: the text keeps the inherited
+       line-height and the 25px chip is shorter than it, so making this one
+       row a flex container cannot change the rhythm of the column. */
+    .sl-race li.sl-open.is-last {
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    }
+    .sl-rsvp-btn {
+      flex: none; position: relative;
+      font-size: 11px; font-weight: 700; letter-spacing: 0.14em;
+      line-height: 1; white-space: nowrap; padding: 5px 6px;
+      background: var(--black); color: var(--orange);
+      border: 2px solid var(--black);
+      transition: background 0.15s ease, color 0.15s ease;
+    }
+    .sl-rsvp-btn::after { content: ''; position: absolute; inset: -10px -8px; }
+    .sl-rsvp-btn:hover { background: transparent; color: var(--black); }
+    .sl-rsvp-btn:focus-visible { outline: 3px solid var(--black); outline-offset: 3px; }
+
     .wl-overlay {
       position: fixed; inset: 0; z-index: 200;
       background: rgba(0, 0, 0, 0.82);
@@ -742,7 +763,7 @@
        numbers and this repo is public. -->
   <section class="startlist" id="entries" aria-labelledby="entries-heading">
     <h2 class="sl-title" id="entries-heading">ATHLETES</h2>
-    <p class="sl-note">LAST UPDATED SEP 19, 2026 AT 7:18 AM CT<span class="sl-live" aria-hidden="true"></span></p>
+    <p class="sl-note">LAST UPDATED SEP 19, 2026 AT 7:27 AM CT<span class="sl-live" aria-hidden="true"></span></p>
     <p class="sl-note sl-note-sm">HEATS ARE PROVISIONAL AND FINALIZED ON THE DAY OF THE RACE.</p>
     <div class="sl-grid">
       <div class="sl-race">
@@ -763,7 +784,7 @@
           <li>Paris Desean Odem</li>
           <li>Rikin Tanna</li>
           <li>Tony Byerly</li>
-          <li class="sl-open">OPEN</li>
+          <li class="sl-open is-last">OPEN<a class="sl-rsvp-btn" href="https://events.sweatpals.com/ca3b412e" target="_blank" rel="noopener">RSVP</a></li>
         </ul>
       </div>
       <div class="sl-race">
@@ -784,7 +805,7 @@
           <li>Ximena Ramos</li>
           <li class="sl-open">OPEN</li>
           <li class="sl-open">OPEN</li>
-          <li class="sl-open">OPEN</li>
+          <li class="sl-open is-last">OPEN<a class="sl-rsvp-btn" href="https://events.sweatpals.com/ca3b412e" target="_blank" rel="noopener">RSVP</a></li>
         </ul>
       </div>
       <div class="sl-race">
@@ -899,7 +920,7 @@
           <li>Owen Sutherland</li>
           <li>Thomas Samples</li>
           <li class="sl-open">OPEN</li>
-          <li class="sl-open">OPEN</li>
+          <li class="sl-open is-last">OPEN<a class="sl-rsvp-btn" href="https://events.sweatpals.com/ca3b412e" target="_blank" rel="noopener">RSVP</a></li>
         </ul>
       </div>
       <div class="sl-race">
@@ -920,7 +941,7 @@
           <li>Mia Constantin</li>
           <li>Sarah Boyd</li>
           <li>Vanessa Bacorn</li>
-          <li class="sl-open">OPEN</li>
+          <li class="sl-open is-last">OPEN<a class="sl-rsvp-btn" href="https://events.sweatpals.com/ca3b412e" target="_blank" rel="noopener">RSVP</a></li>
         </ul>
       </div>
       <div class="sl-race">
