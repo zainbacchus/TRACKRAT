@@ -91,15 +91,25 @@ export const WAIVER_VERSIONS = {
  * liability. Do not merge the two checkboxes, and do not move this text into
  * the waiver PDF.
  */
-export const CURRENT_CONDUCT_VERSION = 'conduct-v1-2026';
+export const CURRENT_CONDUCT_VERSION = 'conduct-v2-2026';
 
 export const CONDUCT_VERSIONS = {
+  /* v1 stays listed forever. Signatures recorded against it must still
+     resolve to the text those members actually agreed to. */
   'conduct-v1-2026': {
     label: 'TRACKRAT CODE OF CONDUCT',
     file: '/waiver-docs/trackrat-conduct-v1-2026.html',
     effectiveOn: '2026-09-07',
     /* shasum -a 256 waiver-docs/trackrat-conduct-v1-2026.html */
     sha256: '0eceaf41d8aa36d2ddde4a798e5667c903a9d07e1a546b46d07aefff51ea9d9d',
+  },
+  /* v2 adds DON'T SHILL. */
+  'conduct-v2-2026': {
+    label: 'TRACKRAT CODE OF CONDUCT',
+    file: '/waiver-docs/trackrat-conduct-v2-2026.html',
+    effectiveOn: '2026-09-20',
+    /* shasum -a 256 waiver-docs/trackrat-conduct-v2-2026.html */
+    sha256: 'ec23a998a7f6f545731d4325fb748ab3815c11135cac9924fbe1de526320382b',
   },
 };
 
