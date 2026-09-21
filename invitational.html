@@ -458,6 +458,13 @@
        thing still to be sorted, not a settled fact. Solid black at a small size
        rather than any dimming, since black at low alpha over Sprint Orange
        reads brown. */
+    /* INDIVIDUAL / TEAM on a relay waitlist entry. Lighter than .sl-flag,
+       which is the UNPAID chip: this is a fact about the entry, not a flag. */
+    .sl-kind {
+      display: inline-block; font-size: 10px; font-weight: 700;
+      letter-spacing: 0.14em; line-height: 1; margin-left: 10px;
+      vertical-align: 2px; opacity: 0.6;
+    }
     .sl-flag {
       display: inline-block; font-size: 10px; font-weight: 700;
       letter-spacing: 0.14em; line-height: 1; padding: 3px 6px;
@@ -561,6 +568,12 @@
     }
     .wl-field input:focus { outline: none; box-shadow: inset 0 0 0 2px var(--orange); }
     .wl-field input::placeholder { color: #9a9a9a; }
+
+    .wl-radios { display: flex; flex-direction: column; gap: 9px; }
+    .wl-radio { display: flex; align-items: flex-start; gap: 10px; font-size: 14px;
+                font-weight: 500; line-height: 1.4; }
+    .wl-radio input { flex: none; width: 18px; height: 18px; margin-top: 1px;
+                      accent-color: var(--orange); }
 
     .wl-hp { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
 
@@ -794,7 +807,7 @@
        numbers and this repo is public. -->
   <section class="startlist" id="entries" aria-labelledby="entries-heading">
     <h2 class="sl-title" id="entries-heading">ATHLETES</h2>
-    <p class="sl-note">LAST UPDATED SEP 21, 2026 AT 1:15 PM CT<span class="sl-live" aria-hidden="true"></span></p>
+    <p class="sl-note">LAST UPDATED SEP 21, 2026 AT 1:37 PM CT<span class="sl-live" aria-hidden="true"></span></p>
     <p class="sl-note sl-note-sm">HEATS ARE PROVISIONAL AND FINALIZED ON THE DAY OF THE RACE.</p>
     <div class="sl-grid">
       <div class="sl-race">
@@ -1009,12 +1022,12 @@
         <ul>
           <li class="sl-open">OPEN</li>
         </ul>
-        <p class="sl-team">LOOKING FOR A TEAM</p>
+        <p class="sl-team">WAITLIST</p>
         <ul>
-          <li>Advay Ramesh</li>
-          <li>Derwood Kirby</li>
-          <li>Owen Sutherland</li>
-          <li>O’Shea Wilson</li>
+          <li>Advay Ramesh <span class="sl-kind">INDIVIDUAL</span></li>
+          <li>Derwood Kirby <span class="sl-kind">INDIVIDUAL</span></li>
+          <li>Owen Sutherland <span class="sl-kind">INDIVIDUAL</span></li>
+          <li>O’Shea Wilson <span class="sl-kind">INDIVIDUAL</span></li>
         </ul>
       </div>
       <div class="sl-race">
@@ -1049,14 +1062,14 @@
         <ul>
           <li class="sl-open">OPEN</li>
         </ul>
-        <p class="sl-team">LOOKING FOR A TEAM</p>
+        <p class="sl-team">WAITLIST</p>
         <ul>
-          <li>Emily Knippa</li>
-          <li>Monica Kirkpatrick</li>
+          <li>Emily Knippa <span class="sl-kind">INDIVIDUAL</span></li>
+          <li>Monica Kirkpatrick <span class="sl-kind">INDIVIDUAL</span></li>
         </ul>
       </div>
       <div class="sl-race">
-        <h3><span class="sl-name">4&times;400 CO-ED</span><span class="sl-meta"><span class="sl-count is-full">FULL</span></span></h3>
+        <h3><span class="sl-name">4&times;400 CO-ED</span><span class="sl-meta"><span class="sl-count is-full">FULL</span><button type="button" class="sl-wait-btn" data-race="4x400 co-ed">JOIN WAITLIST</button></span></h3>
         <p class="sl-team">LACTIC</p>
         <ul>
           <li>Davicia Weekly</li>
@@ -1099,10 +1112,10 @@
           <li>Mandy Peña</li>
           <li>Ximena Ramos</li>
         </ul>
-        <p class="sl-team">LOOKING FOR A TEAM</p>
+        <p class="sl-team">WAITLIST</p>
         <ul>
-          <li>Derwood Kirby</li>
-          <li>Rathu Jammula</li>
+          <li>Derwood Kirby <span class="sl-kind">INDIVIDUAL</span></li>
+          <li>Rathu Jammula <span class="sl-kind">INDIVIDUAL</span></li>
         </ul>
       </div>
     </div>
@@ -1142,6 +1155,20 @@
           <input type="tel" id="wlPhone" name="phone" autocomplete="tel" inputmode="tel"
                  maxlength="25" placeholder="(512) 555-0134" required />
         </div>
+        <!-- Relays only. A relay waitlist holds two different things, someone
+             after a single leg and a whole team after a lane, and the organisers
+             cannot act on the row without knowing which. Hidden for individual
+             races, where the question is meaningless. -->
+        <div class="wl-field wl-kind" id="wlKindField" hidden>
+          <label for="wlKind">SIGNING UP AS</label>
+          <div class="wl-radios">
+            <label class="wl-radio"><input type="radio" name="entry_type" value="individual" id="wlKind" />
+              <span>An individual after one leg</span></label>
+            <label class="wl-radio"><input type="radio" name="entry_type" value="team" />
+              <span>A full team after a lane</span></label>
+          </div>
+        </div>
+
         <!-- Honeypot, same trick as the /offtrack signup: a bot fills every
              field it can see in the DOM, a person never sees this one. -->
         <input type="text" class="wl-hp" id="wlCompany" name="company" tabindex="-1"
@@ -1319,11 +1346,13 @@
       const agree   = document.getElementById('wlAgree');
       const honey   = document.getElementById('wlCompany');
       const first   = document.getElementById('wlFirst');
+      const kindFld = document.getElementById('wlKindField');
       const doneMsg = document.querySelector('#wlDone p');
 
       let race = '';
       let opener = null;
       let sending = false;
+      let isRelay = false;
       let sdk = null;          // cached import() promise, kicked off on open
 
       function setMsg(text, kind) {
@@ -1336,6 +1365,10 @@
         race = btn.getAttribute('data-race') || '';
         // The canonical key is lowercase ("200m women's"); the page shouts.
         raceEl.textContent = race.toUpperCase();
+        // A relay waitlist holds individuals and whole teams; a flat race
+        // cannot, so the question only exists on the relays.
+        isRelay = race.indexOf('4x') === 0;
+        kindFld.hidden = !isRelay;
         card.classList.remove('is-done');
         form.reset();
         setMsg('', '');
@@ -1395,6 +1428,11 @@
         if (digits.length < 10 || digits.length > 15) {
           setMsg('Enter a valid phone number.', 'err'); document.getElementById('wlPhone').focus(); return;
         }
+        const kind = (form.querySelector('input[name="entry_type"]:checked') || {}).value || '';
+        if (isRelay && !kind) {
+          setMsg('Tell us whether you are entering as an individual or a team.', 'err');
+          document.getElementById('wlKind').focus(); return;
+        }
         if (!agree.checked) { setMsg('Please confirm you understand the waitlist terms.', 'err'); agree.focus(); return; }
         if (honey.value) { card.classList.add('is-done'); return; }   // bot
 
@@ -1403,14 +1441,18 @@
 
         try {
           const { supabase } = await (sdk || (sdk = import('/js/supabase-config.js')));
-          const { error } = await supabase.from('waitlist').insert({
+          const row = {
             race: race,
             first_name: firstName,
             last_name: lastName,
             email: email.toLowerCase(),
             phone: phone,
             agreed: true
-          });
+          };
+          // Omitted entirely for a flat race rather than sent as null: the
+          // column check requires it present for a relay and absent otherwise.
+          if (isRelay) row.entry_type = kind;
+          const { error } = await supabase.from('waitlist').insert(row);
           if (error && error.code !== '23505') throw error;
           // 23505 is the one-entry-per-race unique index: they are already on
           // it, which is the outcome they wanted, so it is success. Same

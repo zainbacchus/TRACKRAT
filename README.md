@@ -787,10 +787,40 @@ start list without those people: carrying on would quietly remove names that
 are already visible on the live page, and a failed request cannot say which
 ones. `--no-form-waitlist` skips it deliberately, with a warning.
 
+**Relays (added later).** A relay waitlist is not the same object as a flat
+race's: it can hold someone after a single leg *or* a whole team after a lane,
+and an organiser cannot act on the row without knowing which. Relays also need
+the `race` check widened, because the original pattern only matched
+`^[0-9]{2,4}m (men|women)'s$` and rejected every relay key.
+
+```sql
+-- Relay keys. The generator sends "4x100 men's", "4x100 women's" and
+-- "4x400 co-ed"; the old pattern rejected all three.
+alter table public.waitlist drop constraint waitlist_race_shape;
+alter table public.waitlist add constraint waitlist_race_shape
+  check (race ~ '^([0-9]{2,4}m (men|women)''s|4x100 (men|women)''s|4x400 co-ed)$');
+
+-- Individual or whole team. Required for a relay and forbidden otherwise, so
+-- the column cannot quietly go unanswered on the rows that need it or carry a
+-- meaningless value on the rows that do not.
+alter table public.waitlist add column if not exists entry_type text;
+alter table public.waitlist add constraint waitlist_entry_type
+  check ((race like '4x%' and entry_type in ('individual', 'team'))
+      or (race not like '4x%' and entry_type is null));
+
+-- Column grants are additive, so these extend the existing ones rather than
+-- replacing them. Both have to name entry_type: insert so the form can send
+-- it, select so the generator can print INDIVIDUAL or TEAM on the page.
+grant insert (race, first_name, last_name, email, phone, agreed, entry_type)
+  on public.waitlist to anon, authenticated;
+grant select (race, first_name, last_name, created_at, entry_type)
+  on public.waitlist to anon, authenticated;
+```
+
 Reading the list, in the SQL editor:
 
 ```sql
-select created_at, race, first_name, last_name, email, phone
+select created_at, race, entry_type, first_name, last_name, email, phone
   from public.waitlist order by created_at;
 ```
 
