@@ -8,13 +8,14 @@ reads as a series:
   - the date block and the taped QR at the same height
   - the credits (presenters, partners, live music)
 
-The punchline is the only thing that changes. It is set at one size, as big
-as the measure (9.9in wide) and the zone (2.0in to 10.9in down) allow, and
-sits on the zone's floor so it grows upward. Line breaks are chosen per
-punchline in SERIES, because a long single word (RESPONDING, TRANSPLANT) caps
-the size: a line can only be as big as its widest word lets it.
+The punchline is the only thing that changes, and it always fills most of
+the zone between FASTER THAN... and the date block (2.0in to 10.9in down),
+however many words it has. It is set as wide as the 9.9in measure, then
+stretched vertically to fill the zone's height, up to STRETCH_MAX. It sits on
+the zone's floor, so any shortfall shows the runner above it. Line breaks are
+chosen per punchline in SERIES: pick the breaks that need the least stretch.
 
-Headline type is always white. Backgrounds are Sprint Orange or black.
+Headline type is always white, on black.
 
 Self-contained: fonts come from the repo's /fonts, the wordmark from the repo
 root, everything else from this folder. See README.md for what is still a
@@ -32,14 +33,14 @@ OR, BK, WH, PAPER = '#FF4D1F', '#000', '#fff', '#F3EEE5'
 
 # slug, punchline lines (you choose the breaks), background
 SERIES = [
-    ('ex-new-bf',     ['YOUR', 'EX&#39;S', 'NEW BF'],        OR),
+    ('hybrid-neighbor', ['YOUR', '&quot;HYBRID&quot;', 'NEIGHBOR'], BK),
     ('claude',        ['CLAUDE', 'RESPONDING'],              BK),
     ('i-35',          ['I-35'],                              BK),
-    ('waymo',         ['A', 'WAYMO'],                        BK),
-    ('hinge-guy',     ['YOUR', 'NEW', 'HINGE', 'GUY'],       OR),
-    ('sf-transplant', ['A SF', 'TRANSPLANT'],                OR),
+    ('tesla-robotaxi', ['TESLA', 'ROBO', 'TAXI'],            BK),
+    ('hinge-match',   ['YOUR NEW', 'HINGE', 'MATCH'],        BK),
+    ('california-neighbor', ['YOUR', 'NEIGHBOR', 'WHO JUST', 'MOVED FROM', 'CALIFORNIA'], BK),
     ('excuses',       ['YOUR', 'EXCUSES'],                   BK),
-    ('ex-rebound',    ['YOUR', 'EX&#39;S', 'REBOUND'],       OR),
+    ('ex-rebound',    ['YOUR', 'EX&#39;S', 'REBOUND'],       BK),
 ]
 
 # ---------------------------------------------------------------- page shell
@@ -64,9 +65,11 @@ body {{ font-family:'IBM Plex Mono',monospace; font-weight:700; -webkit-font-smo
 FIT_JS = """<script>document.fonts.ready.then(()=>{
 document.querySelectorAll('[data-fit]').forEach(box=>{const W=box.offsetWidth;box.querySelectorAll('.fit').forEach(l=>{
   let lo=10,hi=3000;for(let i=0;i<32;i++){const m=(lo+hi)/2;l.style.fontSize=m+'px';(l.offsetWidth>W?hi=m:lo=m);}l.style.fontSize=lo+'px';});});
-const b=document.getElementById('zone');if(b){const s=b.firstElementChild,W=b.clientWidth,H=b.clientHeight;
-  let lo=10,hi=1200;for(let i=0;i<32;i++){const m=(lo+hi)/2;s.style.fontSize=m+'px';(s.offsetWidth<=W&&s.offsetHeight<=H)?lo=m:hi=m;}
-  s.style.fontSize=lo+'px';}
+const b=document.getElementById('zone');if(b){const s=b.firstElementChild,W=b.clientWidth,H=b.clientHeight,K=+s.dataset.kmax||1;
+  const fit=ok=>{let lo=10,hi=1200;for(let i=0;i<32;i++){const m=(lo+hi)/2;s.style.fontSize=m+'px';ok()?lo=m:hi=m;}s.style.fontSize=lo+'px';};
+  fit(()=>s.offsetWidth<=W);                                         // 1. as wide as the measure
+  if(s.offsetHeight>H)fit(()=>s.offsetWidth<=W&&s.offsetHeight<=H); // 2. too tall already: fit the height instead
+  s.style.transform='scaleY('+Math.min(H/s.offsetHeight,K)+')';}
 document.title='fitted';});</script>"""
 
 def page(bg, fg, body):
@@ -75,11 +78,19 @@ def page(bg, fg, body):
 
 def tight(text):
     """A monospace space is a full character wide; close word gaps to about
-    half. The apostrophe too: in a monospace face it takes a full cell, so
-    EX'S reads EX ' S unless it is pulled in on both sides."""
+    half. Apostrophes and quote marks too: in a monospace face each takes a
+    full cell, so EX'S reads EX ' S unless it is pulled in on both sides."""
     first, *rest = text.split(' ')      # split first: the spans below contain spaces
     out = first + ''.join(f'<span style="margin-left:.28em">{w}</span>' for w in rest)
-    return out.replace('&#39;', '<span style="margin:0 -.17em">&#39;</span>')
+    # an apostrophe sits inside a word: pull it in on both sides
+    out = out.replace('&#39;', '<span style="margin:0 -.17em">&#39;</span>')
+    # quote marks only tuck toward their word: an opening mark at the start of
+    # a line must not hang into the margin, and a full pull jams it against the letter
+    parts = out.split('&quot;')
+    return ''.join(part + ('' if i == len(parts) - 1 else
+                           '<span style="margin-right:-.12em">&quot;</span>' if i % 2 == 0 else
+                           '<span style="margin-left:-.12em">&quot;</span>')
+                   for i, part in enumerate(parts))
 
 # ---------------------------------------------------------------- the runner
 
@@ -95,6 +106,14 @@ RUNNER = (HERE / 'runner-dots.svg').read_text()
 RUN_H, RUN_RATIO = 10.0, 530 / 624
 TONE = {OR: '#8A2408', BK: '#7A2208'}    # a deep Sprint Orange, so she reads as the backdrop
 TITLE_W = 6.6                             # inches, from the .5in margin
+# The punchline is stretched vertically (never squashed) by however much it
+# takes to fill the zone's height once it fills the width, up to this cap.
+# Plex Mono Bold reads as a condensed face up to about 2x; past that it
+# distorts. Short words (I-35) and long ones (RESPONDING) hit the cap.
+STRETCH_MAX = 2.2
+# Three bold periods pulled together: the font's single-cell ellipsis glyph is
+# tiny beside the cap height.
+ELLIPSIS = '<span style="letter-spacing:-.3em;margin-right:.3em">...</span>'
 
 def runner(bg):
     return (f'<div class="abs" style="right:.3in;top:.3in;height:{RUN_H}in;width:{RUN_H * RUN_RATIO:.2f}in;'
@@ -133,28 +152,31 @@ KOL = b64(HERE / 'logos/kollective-placeholder.png')
 # same (Nirvanix's thin serif needs more height than C4's slab).
 PARTNERS = [('nirvanix-black.png', .31), ('newbalance-black.png', .42), ('c4-black.png', .26), ('dripdrop-black.png', .26)]
 
+# DJ Thani's own mark (gold on black in the original JPG; stored one-colour
+# black like the partners). Sized so its DJ THANI lettering matches the type it
+# replaced, which also lines its foot up with the partner row on the left.
+DJ = b64(HERE / 'logos/djthani-black.png')
+
 def credits(dark):
-    """Presenters biggest, partners smaller beneath; live music right-justified.
-    On black every mark goes white."""
+    """TRACKRAT biggest on its own row; Kollective leads the partner row beneath
+    it, at partner size; live music right-justified. On black every mark goes
+    white (Kollective's placeholder is already white, the rest are stored black)."""
     fg = WH if dark else BK
     wm = WORDMARK.replace('fill="#000000"', f'fill="{fg}"').replace('<svg ', '<svg style="height:.32in;width:auto" ', 1)
     inv = 'filter:invert(1);' if dark else ''
     partners = ''.join(f'<img src="data:image/png;base64,{b64(HERE / "logos" / f)}" style="display:block;{inv}height:{h}in">'
                        for f, h in PARTNERS)
-    kol = '' if dark else 'filter:invert(1)'
+    kol = f'<img src="data:image/png;base64,{KOL}" style="display:block;height:.27in;{"" if dark else "filter:invert(1)"}">'
     return f"""<div class="abs" style="left:.55in;right:.55in;bottom:.6in;display:flex;justify-content:space-between;align-items:flex-start;color:{fg}">
   <div>
     <div class="lab" style="font-size:.14in;margin-bottom:.16in">PRESENTED BY:</div>
-    <div style="display:flex;align-items:center;gap:.3in">
-      <span style="display:block;height:.32in;line-height:0">{wm}</span>
-      <span style="display:block;width:.025in;height:.4in;background:{fg}"></span>
-      <img src="data:image/png;base64,{KOL}" style="display:block;height:.34in;{kol}">
-    </div>
-    <div style="display:flex;align-items:center;gap:.5in;margin-top:.3in">{partners}</div>
+    <span style="display:block;height:.32in;line-height:0">{wm}</span>
+    <div style="display:flex;align-items:center;gap:.4in;margin-top:.34in">{kol}{partners}</div>
   </div>
-  <div style="text-align:right">
-    <div class="lab" style="font-size:.14in;margin-bottom:.16in;margin-right:-.2em">LIVE MUSIC BY:</div>
-    <div class="hl" style="font-size:.38in;height:.4in;display:flex;align-items:center;justify-content:flex-end;letter-spacing:0">DJ THANI</div>
+  <div style="display:flex;flex-direction:column;align-items:center">
+    <!-- the label centred over the logo; padding-left balances the letter-spacing trailing the last letter -->
+    <div class="lab" style="font-size:.14in;margin-bottom:.16in;padding-left:.2em">LIVE MUSIC BY:</div>
+    <img src="data:image/png;base64,{DJ}" style="display:block;{inv}height:1.1in">
   </div>
 </div>"""
 
@@ -167,9 +189,9 @@ def poster(lines, bg):
     punch = '<br>'.join(tight(l) for l in lines)
     return page(bg, fg, f"""
 {runner(bg)}
-<div class="abs hl" data-fit style="left:.5in;width:{TITLE_W}in;top:.5in;color:{WH}"><span class="fit">{tight('FASTER THAN')}</span></div>
+<div class="abs hl" data-fit style="left:.5in;width:{TITLE_W}in;top:.5in;color:{WH}"><span class="fit">{tight('FASTER THAN')}{ELLIPSIS}</span></div>
 <div id="zone" class="abs hl" style="left:.5in;right:.5in;top:2.0in;bottom:{17 - 10.9}in;display:flex;flex-direction:column;justify-content:flex-end;color:{WH}">
-  <span style="display:block;width:max-content;line-height:.92">{punch}</span></div>
+  <span data-kmax="{STRETCH_MAX}" style="display:block;width:max-content;line-height:.88;transform-origin:left bottom">{punch}</span></div>
 <div class="abs lab" style="left:.55in;top:11.4in;font-size:.2in">TRACKRAT INVITATIONAL 2026</div>
 <div class="abs hl" style="left:.55in;top:11.75in;font-size:.66in;line-height:1.0">{tight('SUNDAY OCTOBER 18')}<br>{tight('9 - 11AM')}</div>
 <div class="abs lab" style="left:.55in;top:13.25in;font-size:.3in;color:{accent}">FREE TO ATTEND</div>

@@ -1,8 +1,8 @@
 # FASTER THAN poster series (11in x 17in)
 
 Coffee-shop posters for the TRACKRAT Invitational (Sunday October 18, 2026,
-9 to 11 AM). One template, one punchline per poster: FASTER THAN YOUR EX'S
-NEW BF, FASTER THAN I-35, FASTER THAN A WAYMO, and so on.
+9 to 11 AM). One template, one punchline per poster: FASTER THAN... YOUR
+"HYBRID" NEIGHBOR, FASTER THAN... I-35, FASTER THAN... TESLA ROBO TAXI, and so on.
 
 ## Still placeholder: needed before print
 
@@ -40,24 +40,30 @@ files are gitignored.
 ## Adding or changing a punchline
 
 Edit `SERIES` at the top of `build_series.py`: a slug, the lines (you choose
-the breaks), and `OR` or `BK` for the background.
+the breaks), and the background (`BK`; every poster is on black).
 
 - Headline type is always white.
-- The punchline is one size, as large as fits 9.9in wide and the zone from
-  2.0in to 10.9in down the page. It sits on the bottom of that zone, so it
-  grows upward and the date block never moves.
-- A line can only be as big as its widest word allows. Long single words
-  (RESPONDING, TRANSPLANT) make a smaller punchline; short words stacked one
-  per line make the biggest (YOUR / NEW / HINGE / GUY).
-- Word gaps and apostrophes are tightened automatically by `tight()`, because
-  a monospace face gives each one a full letter-width (EX'S would otherwise
-  read EX ' S).
+- The punchline always fills most of the zone between FASTER THAN... and the
+  date block (2.0in to 10.9in down), however many words it has. It is set as
+  wide as the 9.9in measure, then stretched vertically to fill the height, up
+  to `STRETCH_MAX` (2.2x; Plex Mono Bold reads as a condensed face to about
+  2x and distorts past that). It sits on the bottom of the zone, so any
+  shortfall shows the runner above it, and the date block never moves.
+- Choose breaks that need the least stretch: lines of similar length that,
+  stacked, come out roughly as tall as they are wide. A single short word
+  (I-35) or a long one (RESPONDING) hits the cap and fills about 60% of the
+  zone; stacks like YOUR / EX'S / REBOUND need much less.
+- Word gaps, apostrophes and quote marks are tightened automatically by
+  `tight()`, because a monospace face gives each one a full letter-width
+  (EX'S would otherwise read EX ' S). Write them as `&#39;` and `&quot;`.
 
 ## Fixed on purpose
 
-- **FASTER THAN never covers her head.** It is fitted to end at 7.1in across
-  (`TITLE_W`); her head sits at about 7.7 to 9.0in across and 0.4 to 1.6in
-  down. Moving or resizing the runner means re-checking this.
+- **FASTER THAN... never covers her head.** The whole line, ellipsis
+  included, is fitted to end by 7.1in across (`TITLE_W`); her head sits at
+  about 7.7 to 9.0in across and 0.4 to 1.6in down. Moving or resizing the
+  runner means re-checking this. The ellipsis is three bold periods pulled
+  together (`ELLIPSIS`), because the font's one-cell ellipsis glyph is tiny.
 - **Runner tone.** She is a deep orange (`TONE`) rather than black, so she
   reads as the backdrop and her stray dots never look like punctuation next
   to the type.
@@ -67,9 +73,10 @@ the breaks), and `OR` or `BK` for the background.
   rest. Scan the PNG proof with a phone after any change to it.
 - **QR shadow** is a hard shadow, because Chrome's PDF output turns a blurred
   shadow into a tinted box behind the tile.
-- **Credits.** TRACKRAT and Kollective are the biggest marks, with Nirvanix,
-  New Balance, C4 and DripDrop smaller beneath; LIVE MUSIC BY: DJ THANI is
-  right-justified. Keep these sizes.
+- **Credits.** TRACKRAT is the biggest mark, on its own row; Kollective,
+  Nirvanix, New Balance, C4 and DripDrop sit smaller beneath it; DJ Thani's logo is
+  right-justified, with LIVE MUSIC BY: centred over it. Keep these sizes. The DJ Thani logo is
+  lifted from a 500px JPG; a larger or vector file would print sharper.
 - **Event name.** TRACKRAT INVITATIONAL 2026 sits above the date. It is the
   only place the poster names the event, so do not drop it.
 
