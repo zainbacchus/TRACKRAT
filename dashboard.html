@@ -412,6 +412,13 @@
 
     /* ---- HISTORY ---- */
     .history { width: 100%; max-width: 900px; }
+    #signedInView { width: 100%; max-width: 900px; }
+    /* SPRINT & RUN / LIFTS / POWER labels over the records board; desktop only. */
+    .records-group {
+      display: none; grid-column: 1 / -1; margin-top: 10px;
+      font-size: 11px; letter-spacing: 0.2em; font-weight: 600; opacity: 0.5;
+    }
+    .records-group:first-child { margin-top: 0; }
     .history-header {
       display: flex; align-items: center; justify-content: space-between;
       margin-bottom: 16px;
@@ -951,6 +958,59 @@
       .promo-logo { width: auto; max-width: 220px; min-height: 0; align-self: flex-start; padding: 10px 12px; }
       .promo-logo img { max-height: 46px; }
     }
+    /* ---- DESKTOP (>=1080px) ----
+       Built so the records are on screen without scrolling: a compact header,
+       and the Records tab in two columns, LOG A PR on the left (sticky) and
+       the records as a board of folded tiles on the right. The content column
+       widens to 1200px; Waiver and Gallery keep the 900px reading width.
+       769-1079px keeps the single-column layout. */
+    @media (min-width: 1080px) {
+      .page { padding-top: 90px; }
+      .page-header { max-width: 1200px; margin-bottom: 24px; }
+      .page-title { font-size: 64px; }
+      .page-tagline { margin-top: 12px; }
+      #signedInView { max-width: 1200px; }
+      .user-strip, .dash-tabs, .waiver-banner, .pr-form-card, .history,
+      .promo-intro, .promo-list { max-width: none; }
+      .user-strip { margin-bottom: 20px; }
+      .dash-tabs { margin-bottom: 22px; }
+      #waiverPanel, #galleryPanel { max-width: 900px; }
+
+      #prPanel { display: grid; grid-template-columns: 470px minmax(0, 1fr); gap: 28px; align-items: start; }
+      /* Sticky so it stays beside the records; capped at the window height
+         and scrollable inside, so a short window can't strand SAVE below it. */
+      .pr-form-card {
+        position: sticky; top: 24px; margin: 0; padding: 22px 24px;
+        max-height: calc(100vh - 48px); overflow-y: auto; overscroll-behavior: contain;
+      }
+      .pr-form-card h2 { margin-bottom: 16px; }
+      .pr-form-card .hint { display: none; }   /* the group labels say it */
+      .event-grid { gap: 12px; margin-bottom: 16px; }
+      .chip-row { display: flex; flex-wrap: wrap; gap: 6px; }
+      .event-chip { padding: 9px 10px; font-size: 11px; }
+      .pr-form-card .form-row { margin-bottom: 12px; }
+      .form-row.time[data-kind="sprint"] { grid-template-columns: 1fr; }
+      .form-row.time[data-kind="mid"] { grid-template-columns: 1fr 1fr; }
+      .form-row.date { grid-template-columns: 1fr; }
+      .submit-row { flex-direction: column; align-items: stretch; }
+      .submit-btn { width: 100%; }
+
+      /* Two tiles across, folded to the PR; an opened tile spans the row. */
+      .history-header { margin-bottom: 12px; }
+      #historyList { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+      #historyList.loading { display: block; }
+      #historyList > .empty-state { grid-column: 1 / -1; }
+      .event-section { margin: 0; }
+      .event-section.is-open { grid-column: 1 / -1; }
+      .event-section-head { padding: 16px; column-gap: 10px; }
+      /* sized for a half-width tile, so "HANG CLEAN  PR 155 lbs · 3×3" fits one line */
+      .event-section-name { font-size: 18px; }
+      .event-best .value { font-size: 17px; }
+      .records-group { display: block; }
+
+      .promo-list { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+      .promo-list > .loading, .promo-list > .empty-state { grid-column: 1 / -1; }
+    }
     @media (max-width: 420px) {
       nav .nav-left { font-size: 14px; }
       .page-title { font-size: clamp(40px, 18vw, 72px); }
@@ -1086,7 +1146,7 @@
     </div>
 
     <!-- SIGNED IN -->
-    <div id="signedInView" style="display:none; width: 100%; max-width: 900px;">
+    <div id="signedInView" style="display:none">
 
       <div class="user-strip">
         <div class="who">
@@ -1402,7 +1462,7 @@
       if (which === 'gallery' && openGalleryTab) openGalleryTab();
       if (which === 'waiver' && openWaiverTab) openWaiverTab();
     }
-    // Matches the RESPONSIVE breakpoint: bottom tab bar, collapsed records.
+    // Matches the RESPONSIVE breakpoint, where the tabs are a bottom bar.
     const mobileQuery = window.matchMedia('(max-width: 768px)');
     // On mobile the tabs are a fixed bottom bar, so switching from far down
     // one tab would land mid-way down the next; start each tab at the top.
@@ -1702,9 +1762,13 @@
       formMsg.textContent = '';
       formMsg.className = 'form-msg';
 
-      // Bring the form into view (it lives above the history).
-      document.querySelector('.pr-form-card')
-        .scrollIntoView({ behavior: 'smooth', block: 'start' });
+      // Bring the form into view (it lives above the history). On desktop
+      // it is pinned beside the list and already in view, so don't jump the
+      // page back to the top.
+      const formCard = document.querySelector('.pr-form-card');
+      if (getComputedStyle(formCard).position !== 'sticky') {
+        formCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
     }
 
     function cancelEdit() {
@@ -1799,11 +1863,11 @@
     let allRowsCache = [];
 
     // Which event sections are open, by event key, so a save or delete
-    // (which re-renders the list) doesn't fold everything back up. Events
-    // the member hasn't toggled follow the viewport: open on desktop,
-    // closed on mobile, where the PR on the head is usually all you need.
+    // (which re-renders the list) doesn't fold everything back up. Sections
+    // start folded: the PR on the head is usually all you need.
     const openSections = new Map();
-    const isSectionOpen = ev => openSections.has(ev) ? openSections.get(ev) : !mobileQuery.matches;
+    const isSectionOpen = ev => openSections.get(ev) === true;
+    const groupOf = ev => RUN_EVENTS.has(ev) ? 'SPRINT &amp; RUN' : LIFT_EVENTS.has(ev) ? 'LIFTS' : 'POWER';
     const CHEVRON = '<svg class="event-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>';
 
     function renderHistory(allRows) {
@@ -1822,9 +1886,15 @@
       historyList.className = '';
       historyList.innerHTML = '';
 
+      let lastGroup = null;
       EVENT_ORDER.forEach(ev => {
         const rows = grouped[ev];
         if (!rows.length) return;
+        // A label wherever the group changes (shown on the desktop board only).
+        if (groupOf(ev) !== lastGroup) {
+          lastGroup = groupOf(ev);
+          historyList.insertAdjacentHTML('beforeend', `<p class="records-group">${lastGroup}</p>`);
+        }
         // Sort: best first... actually keep chronological newest first, mark best.
         const sorted = rows.slice().sort((a, b) =>
           (b.achieved_on || '').localeCompare(a.achieved_on || '') ||

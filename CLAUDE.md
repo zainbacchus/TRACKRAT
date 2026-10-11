@@ -485,6 +485,16 @@ on mobile (still the page's `h1`); the user strip shows MEMBER DASHBOARD
 instead. Cards use the opaque `--card-bg` so the track lanes don't strike
 through text.
 
+At ≥1080px (the **DESKTOP** block) the content column widens to 1200px under a
+compact 64px title (Waiver and Gallery keep 900px), and the Records tab splits
+in two: LOG A PR on the left (470px, sticky, capped at the window height and
+scrollable inside so SAVE can't be stranded), YOUR RECORDS on the right as a
+two-across board of folded tiles under SPRINT & RUN / LIFTS / POWER labels
+(`.records-group`, desktop only); an opened tile spans the row. Partners
+cards go two across. `startEdit` skips its scroll-to-form when the form is
+sticky, so editing from far down the board doesn't jump the page. 769-1079px
+keeps the single-column layout.
+
 - **Personal Records** (default) — the PR tracker described below, wrapped in
   `#prPanel`.
 - **Partners** — `#promoPanel` (promotions under the hood). Lazy-loads on
@@ -617,9 +627,9 @@ The form has four modes shown conditionally based on the selected event:
 
 `YOUR RECORDS` sections are collapsible: the head is a button
 (`aria-expanded`) showing the event, the best's date and entry count, and the
-PR. Open by default on desktop, closed on mobile; toggles live in the
-`openSections` map so a save/delete re-render keeps them, and a save opens
-the saved event's section.
+PR. Folded by default at every width; toggles live in the `openSections`
+map so a save/delete re-render keeps them, and a save opens the saved
+event's section.
 
 The "current PR" badge per event is computed client-side (min seconds for
 runs, max pounds for lifts), so we don't have to maintain a "best" flag in
