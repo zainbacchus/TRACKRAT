@@ -430,27 +430,32 @@
     /* The head is a button that shows or hides the event's entries
        (aria-expanded). Open by default on desktop, closed on mobile, and
        remembered across re-renders (openSections in the script). */
+    /* Name and PR share the top row; the date line gets the full width
+       underneath, so a wide PR (a lift's "235 lbs · 1×2") can't squeeze it
+       into wrapping. The chevron spans both rows. */
     .event-section-head {
       width: 100%; padding: 20px 24px;
-      display: flex; align-items: center; gap: 12px;
+      display: grid; grid-template-columns: minmax(0, 1fr) auto auto;
+      grid-template-areas: "name best chev" "when when chev";
+      align-items: baseline; column-gap: 12px;
       background: none; border: none; color: inherit;
       font-family: var(--font); text-align: left; cursor: pointer;
     }
     .event-section.is-open .event-section-head { border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
     .event-section-head:focus-visible { outline: 2px solid var(--orange); outline-offset: -2px; }
-    .event-section-title { flex: 1; min-width: 0; }
     .event-section-name {
-      display: block;
+      grid-area: name;
       font-family: 'IBM Plex Mono', monospace; font-weight: 700; letter-spacing: -0.02em;
       font-size: clamp(17px, 2.1vw, 22px);
     }
     .event-section-when {
-      display: block; margin-top: 4px;
+      grid-area: when; margin-top: 4px;
       font-size: 11px; letter-spacing: 0.08em; opacity: 0.55;
     }
     .event-section-when span { white-space: nowrap; }
     .event-chev {
-      width: 16px; height: 16px; flex-shrink: 0; opacity: 0.55;
+      grid-area: chev; align-self: center;
+      width: 16px; height: 16px; opacity: 0.55;
       transition: transform 0.2s ease;
     }
     .event-section.is-open .event-chev { transform: rotate(180deg); }
@@ -459,7 +464,9 @@
       color: var(--orange);
     }
     .event-best .value { font-size: 18px; letter-spacing: -0.01em; margin-left: 8px; }
-    .event-best { white-space: nowrap; }
+    .event-best { grid-area: best; white-space: nowrap; }
+    /* A lift's sets×reps trails its weight a size down: the weight is the PR. */
+    .event-best .value-sets { font-size: 14px; opacity: 0.8; }
 
     /* Each PR entry = the row of metrics + an optional note line.
        Border + is-best tint live on the wrapper so a note inherits the
@@ -1733,13 +1740,16 @@
       return `${Number(s).toFixed(2)}s`;
     }
     function fmtPounds(lbs) { return `${Number(lbs)} lbs`; }
-    function fmtLift(r) {
+    // `split` wraps the sets×reps in .value-sets so the record head can set
+    // it a size below the weight.
+    function fmtLift(r, { split = false } = {}) {
       const w = Number(r.value_pounds);
       // Bodyweight pull-ups (weight = 0) read as "BW" instead of "0 lbs".
       const base = (r.event === 'pullups' && w === 0) ? 'BW' : `${w} lbs`;
       // Older rows may not have sets/reps; show plain weight then.
       if (r.sets != null && r.reps != null) {
-        return `${base} · ${r.sets}×${r.reps}`;
+        const setsReps = ` · ${r.sets}×${r.reps}`;
+        return split ? `${base}<span class="value-sets">${setsReps}</span>` : base + setsReps;
       }
       return base;
     }
@@ -1828,7 +1838,7 @@
         section.dataset.event = ev;
 
         const bestVal = best
-          ? (RUN_EVENTS.has(ev) ? fmtSeconds(best.value_seconds) : METRIC_SET.has(ev) ? fmtMetric(best) : fmtLift(best))
+          ? (RUN_EVENTS.has(ev) ? fmtSeconds(best.value_seconds) : METRIC_SET.has(ev) ? fmtMetric(best) : fmtLift(best, { split: true }))
           : '—';
         // Each part stays whole, so a narrow head wraps between them, never inside one.
         const count = `${sorted.length} ${sorted.length === 1 ? 'ENTRY' : 'ENTRIES'}`;
@@ -1836,10 +1846,8 @@
 
         section.innerHTML = `
           <button type="button" class="event-section-head" aria-expanded="${open}" aria-controls="entries-${ev}">
-            <span class="event-section-title">
-              <span class="event-section-name">${EVENT_LABELS[ev]}</span>
-              <span class="event-section-when">${when}</span>
-            </span>
+            <span class="event-section-name">${EVENT_LABELS[ev]}</span>
+            <span class="event-section-when">${when}</span>
             <span class="event-best">PR<span class="value">${bestVal}</span></span>
             ${CHEVRON}
           </button>
