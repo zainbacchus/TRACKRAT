@@ -59,6 +59,10 @@
       --lane-color: rgba(255, 255, 255, 0.12);
       --field-bg: rgba(255, 255, 255, 0.04);
       --field-border: rgba(255, 255, 255, 0.12);
+      /* Cards are opaque: 3% white over black, flattened, so a track lane
+         passing behind a card stops at its edge instead of striking through
+         the text. */
+      --card-bg: #080808;
       --field-border-hover: rgba(255, 77, 31, 0.5);
     }
 
@@ -173,7 +177,7 @@
     /* ---- SIGNED-OUT STATE ---- */
     .signin-card {
       width: 100%; max-width: 560px;
-      background: rgba(255, 255, 255, 0.03);
+      background: var(--card-bg);
       border: 1px solid rgba(255, 255, 255, 0.06);
       padding: 56px 40px; text-align: center;
       opacity: 0; transform: translateY(30px);
@@ -253,7 +257,7 @@
       width: 100%; max-width: 900px;
       display: flex; align-items: center; justify-content: space-between;
       padding: 16px 20px; margin-bottom: 32px;
-      background: rgba(255, 255, 255, 0.03);
+      background: var(--card-bg);
       border: 1px solid rgba(255, 255, 255, 0.06);
     }
     .user-strip .who { display: flex; align-items: center; gap: 12px; }
@@ -266,6 +270,10 @@
     }
     .user-strip .name { font-size: 13px; font-weight: 600; }
     .user-strip .email { font-size: 11px; opacity: 0.5; letter-spacing: 0.05em; }
+    .user-strip .strip-tag {
+      display: none; font-size: 10px; letter-spacing: 0.2em; font-weight: 600;
+      color: var(--orange); margin-top: 3px;
+    }
     .user-strip button {
       background: transparent; border: 1px solid var(--field-border);
       color: var(--white); padding: 8px 16px;
@@ -278,7 +286,7 @@
     /* ---- PR FORM ---- */
     .pr-form-card {
       width: 100%; max-width: 900px;
-      background: rgba(255, 255, 255, 0.03);
+      background: var(--card-bg);
       border: 1px solid rgba(255, 255, 255, 0.06);
       padding: 32px; margin-bottom: 48px;
     }
@@ -293,9 +301,19 @@
       color: var(--orange); margin-bottom: 24px;
     }
 
+    /* Chips are grouped by kind (SPRINT & RUN / LIFTS / POWER) so the picker
+       scans by type. Desktop lays each group out as a 4-up grid; at <=768px
+       each group becomes one sideways-scrolling row (see RESPONSIVE). */
     .event-grid {
-      display: grid; grid-template-columns: repeat(4, 1fr);
-      gap: 8px; margin-bottom: 24px;
+      display: flex; flex-direction: column; gap: 16px;
+      margin-bottom: 24px;
+    }
+    .chip-group-label {
+      font-size: 11px; letter-spacing: 0.2em; font-weight: 600;
+      opacity: 0.5; margin-bottom: 8px;
+    }
+    .chip-row {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;
     }
     .event-chip {
       background: var(--field-bg);
@@ -315,6 +333,12 @@
       display: grid; gap: 12px; margin-bottom: 16px;
     }
     .form-row.time { grid-template-columns: repeat(3, 1fr); }
+    /* A run shows only the boxes its distance needs (TIME_KIND in the
+       script): a sprint is SECONDS alone, a 400m or mile adds MINUTES, the
+       road races add HOURS. */
+    .form-row.time[data-kind="sprint"] .field-hours,
+    .form-row.time[data-kind="sprint"] .field-minutes,
+    .form-row.time[data-kind="mid"] .field-hours { display: none; }
     .form-row.weight { grid-template-columns: 2fr 1fr 1fr; }
     .form-row.date { grid-template-columns: repeat(3, 1fr); }
     .form-row.metric { grid-template-columns: 1fr; }
@@ -324,7 +348,7 @@
       display: flex; flex-direction: column; gap: 6px;
     }
     .field label {
-      font-size: 10px; letter-spacing: 0.2em;
+      font-size: 11px; letter-spacing: 0.2em;
       font-weight: 600; opacity: 0.5;
     }
     .field input, .field select, .field textarea {
@@ -352,6 +376,10 @@
     .field input:focus, .field select:focus, .field textarea:focus {
       outline: none; border-color: var(--orange);
     }
+    /* Native date control: dark picker chrome, and a fixed height because
+       iOS collapses an appearance:none date input and centres its text. */
+    .field input[type=date] { color-scheme: dark; min-height: 48px; }
+    .field input[type=date]::-webkit-date-and-time-value { text-align: left; }
     .field input::-webkit-outer-spin-button,
     .field input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
     .field input[type=number] { -moz-appearance: textfield; }
@@ -396,24 +424,42 @@
     .event-section {
       margin-bottom: 24px;
       border: 1px solid rgba(255, 255, 255, 0.06);
-      background: rgba(255, 255, 255, 0.02);
+      background: var(--card-bg);
     }
 
+    /* The head is a button that shows or hides the event's entries
+       (aria-expanded). Open by default on desktop, closed on mobile, and
+       remembered across re-renders (openSections in the script). */
     .event-section-head {
-      padding: 20px 24px;
-      display: flex; align-items: baseline; justify-content: space-between;
-      flex-wrap: wrap; gap: 8px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      width: 100%; padding: 20px 24px;
+      display: flex; align-items: center; gap: 12px;
+      background: none; border: none; color: inherit;
+      font-family: var(--font); text-align: left; cursor: pointer;
     }
+    .event-section.is-open .event-section-head { border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
+    .event-section-head:focus-visible { outline: 2px solid var(--orange); outline-offset: -2px; }
+    .event-section-title { flex: 1; min-width: 0; }
     .event-section-name {
+      display: block;
       font-family: 'IBM Plex Mono', monospace; font-weight: 700; letter-spacing: -0.02em;
       font-size: clamp(17px, 2.1vw, 22px);
     }
+    .event-section-when {
+      display: block; margin-top: 4px;
+      font-size: 11px; letter-spacing: 0.08em; opacity: 0.55;
+    }
+    .event-section-when span { white-space: nowrap; }
+    .event-chev {
+      width: 16px; height: 16px; flex-shrink: 0; opacity: 0.55;
+      transition: transform 0.2s ease;
+    }
+    .event-section.is-open .event-chev { transform: rotate(180deg); }
     .event-best {
       font-size: 12px; letter-spacing: 0.2em; font-weight: 600;
       color: var(--orange);
     }
     .event-best .value { font-size: 18px; letter-spacing: -0.01em; margin-left: 8px; }
+    .event-best { white-space: nowrap; }
 
     /* Each PR entry = the row of metrics + an optional note line.
        Border + is-best tint live on the wrapper so a note inherits the
@@ -648,6 +694,7 @@
     .dash-tab:hover { opacity: 0.85; }
     .dash-tab.is-active { opacity: 1; color: var(--orange); border-bottom-color: var(--orange); }
     .dash-tab:focus-visible { outline: 2px solid var(--orange); outline-offset: 2px; }
+    .dash-tab svg { display: none; }
 
     /* ---- WAIVER ---- */
     .waiver-banner {
@@ -726,7 +773,7 @@
     .promo-list { width: 100%; max-width: 900px; display: flex; flex-direction: column; gap: 16px; }
     .promo-card {
       display: flex; gap: 24px; align-items: flex-start;
-      background: rgba(255,255,255,0.03);
+      background: var(--card-bg);
       border: 1px solid rgba(255,255,255,0.06);
       padding: 24px;
     }
@@ -791,25 +838,59 @@
       nav .nav-center { display: none; }
       .menu-toggle { display: block; }
 
-      /* Tighter header on mobile so the tabs + content sit higher up. */
-      .page { padding: 84px 18px 56px; }
-      .page-header { margin-bottom: 26px; }
-      .page-title { font-size: clamp(48px, 16vw, 90px); }
+      /* The nav already carries the wordmark, so the giant page title only
+         pushed the form a screen down. It stays in the DOM as the page's h1,
+         visually hidden; the user strip carries the MEMBER DASHBOARD label.
+         z-index 20 lifts the page's stacking context above the footer's
+         (10), which would otherwise paint over the fixed tab bar inside it. */
+      .page { padding: 76px 18px 48px; z-index: 20; }
+      .page-header {
+        position: absolute; width: 1px; height: 1px; margin: 0;
+        overflow: hidden; clip-path: inset(50%); white-space: nowrap;
+      }
 
       .signin-card { padding: 40px 24px; }
 
-      .pr-form-card { padding: 24px 20px; }
-      .event-grid { grid-template-columns: repeat(2, 1fr); }
-      .form-row.time { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+      .pr-form-card { padding: 20px 16px; margin-bottom: 28px; }
+      .pr-form-card .hint { margin-bottom: 14px; }
+      /* One sideways-scrolling row per chip group, bled to the card's edges,
+         so the picker is three short rows instead of eight. The chip cut off
+         at the right edge says there is more; a fade backs it up and drops
+         once the row is scrolled to its end (.is-end, set by the script). */
+      .event-grid { gap: 12px; margin-bottom: 18px; }
+      .chip-row {
+        display: flex; gap: 8px;
+        overflow-x: auto; overscroll-behavior-x: contain;
+        scroll-snap-type: x proximity; scroll-padding: 0 16px;
+        margin: 0 -16px; padding: 0 16px;
+        scrollbar-width: none;
+        -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 32px), transparent);
+        mask-image: linear-gradient(to right, #000 calc(100% - 32px), transparent);
+      }
+      .chip-row::-webkit-scrollbar { display: none; }
+      .chip-row.is-end { -webkit-mask-image: none; mask-image: none; }
+      .chip-row .event-chip {
+        flex: 0 0 auto; white-space: nowrap; scroll-snap-align: start;
+        min-height: 44px; padding: 0 14px;
+      }
+      .form-row.time { gap: 8px; }
+      .form-row.time[data-kind="sprint"] { grid-template-columns: 1fr; }
+      .form-row.time[data-kind="mid"] { grid-template-columns: 1fr 1fr; }
       .form-row.weight { grid-template-columns: 2fr 1fr 1fr; gap: 8px; }
-      .form-row.date { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+      .form-row.date { grid-template-columns: 1fr; }
       .field input, .field select { font-size: 16px; padding: 10px 12px; }
       .field select { padding-right: 32px; }
 
-      .user-strip { flex-direction: row; padding: 14px 16px; }
-      .user-strip .email { display: none; }
+      /* The primary action is the widest, easiest target. */
+      .submit-row { flex-direction: column; align-items: stretch; }
+      .submit-btn, .cancel-btn { width: 100%; padding: 16px; }
 
-      .event-section-head { padding: 16px 18px; }
+      .user-strip { flex-direction: row; padding: 12px 14px; margin-bottom: 16px; }
+      .user-strip .email { display: none; }
+      .user-strip .strip-tag { display: block; }
+
+      .event-section { margin-bottom: 8px; }
+      .event-section-head { padding: 14px 16px; }
       /* Two-row layout on mobile: value on its own line, then
          date · best · actions on the next. Prevents the date from wrapping
          mid-string (e.g. "JUL 27,\n2025") when the value is long like
@@ -825,31 +906,36 @@
       .pr-row .pr-date { flex: 0 1 auto; order: 2; white-space: nowrap; }
       .pr-row .pr-best-tag { order: 3; margin-right: 0; }
       .pr-row .row-actions { order: 4; margin-left: auto; }
+      /* 44×44 touch targets (16px icon + 14px padding each side) */
+      .pr-row .edit-btn,
+      .pr-row .delete-btn { padding: 14px; }
       .pr-note { padding: 0 18px 12px; font-size: 12px; }
 
-      footer { padding: 32px 20px; flex-direction: column; gap: 8px; }
+      /* The extra bottom padding clears the fixed tab bar. */
+      footer { padding: 32px 20px calc(96px + env(safe-area-inset-bottom)); flex-direction: column; gap: 8px; }
 
-      /* Equal-width tabs = bigger tap targets, clearer two-way switch. */
-      /* Four tabs will not fit one 375px row at flex:1 (PERSONAL RECORDS
-         alone measures ~146px). A 2x2 grid keeps every label full and every
-         tap target big. The container's border-bottom is dropped because it
-         would cut the grid in half; each cell carries its own hairline so the
-         active-underline metaphor survives. */
+      /* The tabs become a fixed bottom bar: one row of four, in thumb reach
+         and always on screen. Four labels fit a 375px row once PERSONAL is
+         dropped (it reads RECORDS) and each sits under an icon. The active
+         marker moves to the top edge, the side facing the content. */
       .dash-tabs {
-        max-width: 100%;
-        gap: 0;
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        border-bottom: none;
-        margin-bottom: 24px;
+        position: fixed; left: 0; right: 0; bottom: 0; z-index: 90;
+        max-width: none; margin: 0; gap: 0;
+        display: grid; grid-template-columns: repeat(4, 1fr);
+        background: #0a0a0a; border-bottom: none;
+        border-top: 1px solid rgba(255, 255, 255, 0.12);
+        padding-bottom: env(safe-area-inset-bottom);
       }
       .dash-tab {
-        padding: 14px 6px;
-        letter-spacing: 0.1em;
-        text-align: center;
-        margin-bottom: 0;
-        border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+        display: flex; flex-direction: column; align-items: center; gap: 6px;
+        padding: 10px 2px 12px; margin: -1px 0 0;
+        font-size: 10px; letter-spacing: 0.12em; text-align: center;
+        border-bottom: none; border-top: 2px solid transparent;
       }
+      .dash-tab svg { display: block; width: 20px; height: 20px; }
+      .dash-tab.is-active { border-top-color: var(--orange); }
+      .dash-tab:focus-visible { outline-offset: -2px; }
+      .dash-tab .tab-long { display: none; }
       .waiver-banner { flex-direction: column; align-items: stretch; }
       .wb-cta { text-align: center; }
 
@@ -1001,6 +1087,7 @@
           <div>
             <div class="name" id="userName"></div>
             <div class="email" id="userEmail"></div>
+            <div class="strip-tag" aria-hidden="true">MEMBER DASHBOARD</div>
           </div>
         </div>
         <button id="signOutBtn">SIGN OUT</button>
@@ -1018,10 +1105,10 @@
       </div>
 
       <div class="dash-tabs" role="tablist" aria-label="Dashboard sections">
-        <button class="dash-tab is-active" id="prTab" role="tab" aria-selected="true" aria-controls="prPanel" type="button">PERSONAL RECORDS</button>
-        <button class="dash-tab" id="waiverTab" role="tab" aria-selected="false" aria-controls="waiverPanel" type="button">WAIVER</button>
-        <button class="dash-tab" id="promoTab" role="tab" aria-selected="false" aria-controls="promoPanel" type="button">PARTNERS</button>
-        <button class="dash-tab" id="galleryTab" role="tab" aria-selected="false" aria-controls="galleryPanel" type="button">GALLERY</button>
+        <button class="dash-tab is-active" id="prTab" role="tab" aria-selected="true" aria-controls="prPanel" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg><span class="tab-long">PERSONAL </span>RECORDS</button>
+        <button class="dash-tab" id="waiverTab" role="tab" aria-selected="false" aria-controls="waiverPanel" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2h9l5 5v15H6z"/><path d="M14 2v6h6M9 14h8M9 18h5"/></svg>WAIVER</button>
+        <button class="dash-tab" id="promoTab" role="tab" aria-selected="false" aria-controls="promoPanel" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12v10H4V12M2 7h20v5H2zM12 22V7M12 7H7.5a2.5 2.5 0 1 1 0-5C11 2 12 7 12 7zM12 7h4.5a2.5 2.5 0 1 0 0-5C13 2 12 7 12 7z"/></svg>PARTNERS</button>
+        <button class="dash-tab" id="galleryTab" role="tab" aria-selected="false" aria-controls="galleryPanel" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>GALLERY</button>
       </div>
 
       <!-- TAB PANEL: PERSONAL RECORDS -->
@@ -1031,31 +1118,46 @@
         <div class="hint">SELECT EVENT</div>
 
         <div class="event-grid" id="eventGrid">
-          <button type="button" class="event-chip" data-event="100m">100M</button>
-          <button type="button" class="event-chip" data-event="200m">200M</button>
-          <button type="button" class="event-chip" data-event="400m">400M</button>
-          <button type="button" class="event-chip" data-event="1mile">1 MILE</button>
-          <button type="button" class="event-chip" data-event="5K">5K</button>
-          <button type="button" class="event-chip" data-event="halfmarathon">HALF MARATHON</button>
-          <button type="button" class="event-chip" data-event="marathon">MARATHON</button>
-          <button type="button" class="event-chip" data-event="bench">BENCH</button>
-          <button type="button" class="event-chip" data-event="deadlift">DEADLIFT</button>
-          <button type="button" class="event-chip" data-event="squat">SQUAT</button>
-          <button type="button" class="event-chip" data-event="hangclean">HANG CLEAN</button>
-          <button type="button" class="event-chip" data-event="pullups">PULL UPS</button>
-          <button type="button" class="event-chip" data-event="verticaljump">VERTICAL JUMP</button>
-          <button type="button" class="event-chip" data-event="rsi">RSI</button>
-          <button type="button" class="event-chip" data-event="peakpower">PEAK POWER</button>
-          <button type="button" class="event-chip" data-event="groundcontact">GROUND CONTACT</button>
+          <div class="chip-group" role="group" aria-labelledby="cgRun">
+            <p class="chip-group-label" id="cgRun">SPRINT &amp; RUN</p>
+            <div class="chip-row">
+              <button type="button" class="event-chip" data-event="100m">100M</button>
+              <button type="button" class="event-chip" data-event="200m">200M</button>
+              <button type="button" class="event-chip" data-event="400m">400M</button>
+              <button type="button" class="event-chip" data-event="1mile">1 MILE</button>
+              <button type="button" class="event-chip" data-event="5K">5K</button>
+              <button type="button" class="event-chip" data-event="halfmarathon">HALF MARATHON</button>
+              <button type="button" class="event-chip" data-event="marathon">MARATHON</button>
+            </div>
+          </div>
+          <div class="chip-group" role="group" aria-labelledby="cgLift">
+            <p class="chip-group-label" id="cgLift">LIFTS</p>
+            <div class="chip-row">
+              <button type="button" class="event-chip" data-event="bench">BENCH</button>
+              <button type="button" class="event-chip" data-event="deadlift">DEADLIFT</button>
+              <button type="button" class="event-chip" data-event="squat">SQUAT</button>
+              <button type="button" class="event-chip" data-event="hangclean">HANG CLEAN</button>
+              <button type="button" class="event-chip" data-event="pullups">PULL UPS</button>
+            </div>
+          </div>
+          <div class="chip-group" role="group" aria-labelledby="cgPower">
+            <p class="chip-group-label" id="cgPower">POWER</p>
+            <div class="chip-row">
+              <button type="button" class="event-chip" data-event="verticaljump">VERTICAL JUMP</button>
+              <button type="button" class="event-chip" data-event="rsi">RSI</button>
+              <button type="button" class="event-chip" data-event="peakpower">PEAK POWER</button>
+              <button type="button" class="event-chip" data-event="groundcontact">GROUND CONTACT</button>
+            </div>
+          </div>
         </div>
 
         <!-- Time input (run events) -->
         <div class="form-row time" id="timeRow" style="display:none">
-          <div class="field">
+          <div class="field field-hours">
             <label for="inpHours">HOURS</label>
             <input id="inpHours" type="number" min="0" max="23" step="1" placeholder="0" inputmode="numeric" />
           </div>
-          <div class="field">
+          <div class="field field-minutes">
             <label for="inpMinutes">MINUTES</label>
             <input id="inpMinutes" type="number" min="0" max="59" step="1" placeholder="0" inputmode="numeric" />
           </div>
@@ -1089,19 +1191,12 @@
           </div>
         </div>
 
-        <!-- Date row -->
+        <!-- Date row: one native control (the iOS wheel / desktop calendar),
+             defaulting to today and capped at today. -->
         <div class="form-row date" id="dateRow" style="display:none">
           <div class="field">
-            <label for="inpMonth">MONTH</label>
-            <select id="inpMonth"></select>
-          </div>
-          <div class="field">
-            <label for="inpDay">DAY</label>
-            <select id="inpDay"></select>
-          </div>
-          <div class="field">
-            <label for="inpYear">YEAR</label>
-            <select id="inpYear"></select>
+            <label for="inpDate">DATE</label>
+            <input id="inpDate" type="date" />
           </div>
         </div>
 
@@ -1300,10 +1395,24 @@
       if (which === 'gallery' && openGalleryTab) openGalleryTab();
       if (which === 'waiver' && openWaiverTab) openWaiverTab();
     }
-    prTab.addEventListener('click', () => selectTab('pr'));
-    promoTab.addEventListener('click', () => selectTab('promo'));
-    galleryTab.addEventListener('click', () => selectTab('gallery'));
-    waiverTab.addEventListener('click', () => selectTab('waiver'));
+    // Matches the RESPONSIVE breakpoint: bottom tab bar, collapsed records.
+    const mobileQuery = window.matchMedia('(max-width: 768px)');
+    // On mobile the tabs are a fixed bottom bar, so switching from far down
+    // one tab would land mid-way down the next; start each tab at the top.
+    function tabClick(which) {
+      selectTab(which);
+      if (!mobileQuery.matches) return;
+      // A jump, not html's smooth scroll ({behavior:'instant'} throws in
+      // older Safari, so switch the property off for the one call).
+      const root = document.documentElement;
+      root.style.scrollBehavior = 'auto';
+      window.scrollTo(0, 0);
+      root.style.scrollBehavior = '';
+    }
+    prTab.addEventListener('click', () => tabClick('pr'));
+    promoTab.addEventListener('click', () => tabClick('promo'));
+    galleryTab.addEventListener('click', () => tabClick('gallery'));
+    waiverTab.addEventListener('click', () => tabClick('waiver'));
 
     // Deep links from the nav's CLUB dropdown: /dashboard#PARTNERS →
     // Partners, /dashboard#gallery → Gallery, anything else → Personal
@@ -1417,59 +1526,31 @@
       'verticaljump':'VERTICAL JUMP', 'rsi':'RSI',
       'peakpower':'PEAK POWER', 'groundcontact':'GROUND CONTACT'
     };
+    // Which time boxes a run shows: a sprint is SECONDS alone, a 400m or
+    // mile adds MINUTES, the road races add HOURS. startEdit widens the kind
+    // when a stored time needs more boxes (a 200m over a minute).
+    const TIME_KIND = {
+      '100m':'sprint', '200m':'sprint',
+      '400m':'mid', '1mile':'mid',
+      '5K':'long', 'halfmarathon':'long', 'marathon':'long'
+    };
     const EVENT_ORDER = [
       '100m','200m','400m','1mile','5K','halfmarathon','marathon',
       'bench','deadlift','squat','hangclean','pullups',
       'verticaljump','rsi','peakpower','groundcontact'
     ];
 
-    // ---- DATE PICKER POPULATION ----
-    const MONTHS = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
-    const monthSel = document.getElementById('inpMonth');
-    const daySel = document.getElementById('inpDay');
-    const yearSel = document.getElementById('inpYear');
-
-    function populateDatePicker() {
-      MONTHS.forEach((m, i) => {
-        const o = document.createElement('option');
-        o.value = String(i + 1).padStart(2, '0'); o.textContent = m;
-        monthSel.appendChild(o);
-      });
-      for (let d = 1; d <= 31; d++) {
-        const o = document.createElement('option');
-        o.value = String(d).padStart(2, '0'); o.textContent = String(d);
-        daySel.appendChild(o);
-      }
-      const thisYear = new Date().getFullYear();
-      for (let y = thisYear; y >= thisYear - 30; y--) {
-        const o = document.createElement('option');
-        o.value = String(y); o.textContent = String(y);
-        yearSel.appendChild(o);
-      }
-      const now = new Date();
-      monthSel.value = String(now.getMonth() + 1).padStart(2, '0');
-      daySel.value = String(now.getDate()).padStart(2, '0');
-      yearSel.value = String(now.getFullYear());
-      clampDaysToMonth();
-    }
-    // Keep the day list honest for the selected month/year (no Feb 31 —
-    // impossible dates used to surface as raw Postgres errors on save).
-    function clampDaysToMonth() {
-      const year = parseInt(yearSel.value, 10);
-      const month = parseInt(monthSel.value, 10);
-      const maxDay = new Date(year, month, 0).getDate();
-      [...daySel.options].forEach(o => {
-        o.hidden = parseInt(o.value, 10) > maxDay;
-        o.disabled = o.hidden;
-      });
-      if (parseInt(daySel.value, 10) > maxDay) {
-        daySel.value = String(maxDay).padStart(2, '0');
-      }
-    }
-    monthSel.addEventListener('change', clampDaysToMonth);
-    yearSel.addEventListener('change', clampDaysToMonth);
-
-    populateDatePicker();
+    // ---- DATE PICKER ----
+    // One native date input. The browser only produces real dates (no Feb
+    // 31), its value is already the YYYY-MM-DD that achieved_on takes, and
+    // min/max steer the picker; submit re-checks both, since typed input
+    // and iOS ignore them.
+    const dateInp = document.getElementById('inpDate');
+    const localISO = d =>
+      `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    dateInp.min = `${new Date().getFullYear() - 30}-01-01`;
+    dateInp.max = localISO(new Date());
+    dateInp.value = dateInp.max;
 
     // ---- FORM STATE ----
     let selectedEvent = null;
@@ -1491,6 +1572,7 @@
       });
       const metricRow = document.getElementById('metricRow');
       if (RUN_EVENTS.has(ev)) {
+        timeRow.dataset.kind = TIME_KIND[ev];
         timeRow.style.display = 'grid';
         weightRow.style.display = 'none';
         metricRow.style.display = 'none';
@@ -1522,11 +1604,25 @@
           pounds.placeholder = '225';
         }
       }
+      // Refresh the cap in case the page has been open since yesterday.
+      dateInp.max = localISO(new Date());
       dateRow.style.display = 'grid';
       notesRow.style.display = 'grid';
       submitBtn.disabled = isSaving;
       formMsg.textContent = '';
     }
+
+    // Mobile chip rows scroll sideways behind a right-edge fade; drop the
+    // fade once a row is at its end (or never overflowed), so the last
+    // chip isn't left looking cut off.
+    const chipRows = [...eventGrid.querySelectorAll('.chip-row')];
+    function syncChipFade(row) {
+      row.classList.toggle('is-end', row.scrollLeft + row.clientWidth >= row.scrollWidth - 2);
+    }
+    chipRows.forEach(row => row.addEventListener('scroll', () => syncChipFade(row), { passive: true }));
+    // Rows are 0-wide until the signed-in view and its tab are shown, so
+    // measure on resize, not just at load.
+    new ResizeObserver(() => chipRows.forEach(syncChipFade)).observe(eventGrid);
 
     eventGrid.addEventListener('click', e => {
       const chip = e.target.closest('.event-chip');
@@ -1556,16 +1652,18 @@
       showForEvent(r.event);
       setEventLock(true);
 
-      // Pre-fill date selects.
-      const [y, mo, d] = (r.achieved_on || '').split('-');
-      if (y && mo && d) {
-        // Set month/year first, re-clamp the day list for that month, THEN
-        // set the day — otherwise a previously-clamped list (e.g. Feb was
-        // selected) could leave the stored day hidden/disabled.
-        monthSel.value = mo;
-        yearSel.value = y;
-        clampDaysToMonth();
-        daySel.value = d;
+      // On mobile the chip may sit off-screen in its sideways row.
+      const chip = eventGrid.querySelector(`.event-chip[data-event="${r.event}"]`);
+      if (chip) {
+        const row = chip.parentElement;
+        const cr = chip.getBoundingClientRect(), rr = row.getBoundingClientRect();
+        row.scrollLeft += cr.left - rr.left - (rr.width - cr.width) / 2;
+      }
+
+      if (r.achieved_on) {
+        // A row older than the picker's floor keeps its date editable.
+        if (r.achieved_on < dateInp.min) dateInp.min = r.achieved_on;
+        dateInp.value = r.achieved_on;
       }
 
       // Pre-fill value inputs based on event kind.
@@ -1574,6 +1672,9 @@
         const h = Math.floor(total / 3600);
         const m = Math.floor((total % 3600) / 60);
         const s = total - h * 3600 - m * 60;
+        // Show every box the stored time needs, even past the event's usual kind.
+        if (h) timeRow.dataset.kind = 'long';
+        else if (m && timeRow.dataset.kind === 'sprint') timeRow.dataset.kind = 'mid';
         document.getElementById('inpHours').value = h ? String(h) : '';
         document.getElementById('inpMinutes').value = m ? String(m) : '';
         // Trim trailing zeros so 11.45 doesn't become "11.450".
@@ -1687,6 +1788,14 @@
     // without a second round-trip to Supabase.
     let allRowsCache = [];
 
+    // Which event sections are open, by event key, so a save or delete
+    // (which re-renders the list) doesn't fold everything back up. Events
+    // the member hasn't toggled follow the viewport: open on desktop,
+    // closed on mobile, where the PR on the head is usually all you need.
+    const openSections = new Map();
+    const isSectionOpen = ev => openSections.has(ev) ? openSections.get(ev) : !mobileQuery.matches;
+    const CHEVRON = '<svg class="event-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>';
+
     function renderHistory(allRows) {
       allRowsCache = allRows;
       const grouped = {};
@@ -1713,19 +1822,30 @@
         );
         const best = bestRow(sorted, ev);
 
+        const open = isSectionOpen(ev);
         const section = document.createElement('div');
-        section.className = 'event-section';
+        section.className = 'event-section' + (open ? ' is-open' : '');
+        section.dataset.event = ev;
 
         const bestVal = best
           ? (RUN_EVENTS.has(ev) ? fmtSeconds(best.value_seconds) : METRIC_SET.has(ev) ? fmtMetric(best) : fmtLift(best))
           : '—';
+        // Each part stays whole, so a narrow head wraps between them, never inside one.
+        const count = `${sorted.length} ${sorted.length === 1 ? 'ENTRY' : 'ENTRIES'}`;
+        const when = best ? `<span>${fmtDate(best.achieved_on)}</span> <span>· ${count}</span>` : `<span>${count}</span>`;
 
         section.innerHTML = `
-          <div class="event-section-head">
-            <span class="event-section-name">${EVENT_LABELS[ev]}</span>
+          <button type="button" class="event-section-head" aria-expanded="${open}" aria-controls="entries-${ev}">
+            <span class="event-section-title">
+              <span class="event-section-name">${EVENT_LABELS[ev]}</span>
+              <span class="event-section-when">${when}</span>
+            </span>
             <span class="event-best">PR<span class="value">${bestVal}</span></span>
-          </div>
+            ${CHEVRON}
+          </button>
+          <div class="event-entries" id="entries-${ev}"${open ? '' : ' hidden'}></div>
         `;
+        const entries = section.querySelector('.event-entries');
 
         sorted.forEach(r => {
           const isBest = best && r.id === best.id;
@@ -1762,7 +1882,7 @@
             </div>
             ${noteHtml}
           `;
-          section.appendChild(entry);
+          entries.appendChild(entry);
         });
 
         historyList.appendChild(section);
@@ -1770,6 +1890,16 @@
     }
 
     historyList.addEventListener('click', async e => {
+      const head = e.target.closest('.event-section-head');
+      if (head) {
+        const section = head.parentElement;
+        const open = !section.classList.contains('is-open');
+        openSections.set(section.dataset.event, open);
+        section.classList.toggle('is-open', open);
+        head.setAttribute('aria-expanded', String(open));
+        section.querySelector('.event-entries').hidden = !open;
+        return;
+      }
       const editBtn = e.target.closest('.edit-btn');
       if (editBtn) {
         const id = editBtn.dataset.id;
@@ -1840,7 +1970,7 @@
         const payload = {
           user_id: sess.session.user.id,
           event: selectedEvent,
-          achieved_on: `${yearSel.value}-${monthSel.value}-${daySel.value}`,
+          achieved_on: dateInp.value,
           value_seconds: null,
           value_pounds: null,
           value_metric: null,
@@ -1849,25 +1979,31 @@
           notes: noteRaw ? noteRaw.slice(0, 280) : null
         };
 
-        // The year select stops at the current year, but month/day can still
-        // point past today — reject future dates (select values are
-        // zero-padded, so ISO strings compare correctly).
-        const now = new Date();
-        const pad2 = n => String(n).padStart(2, '0');
-        const todayISO = `${now.getFullYear()}-${pad2(now.getMonth() + 1)}-${pad2(now.getDate())}`;
-        if (payload.achieved_on > todayISO) {
+        // An empty value is a cleared picker. Typed dates can still run past
+        // today or into a mistyped year, and min/max don't stop either
+        // (YYYY-MM-DD strings compare correctly, as does a 5-digit year).
+        if (!/^\d{4}-\d{2}-\d{2}$/.test(payload.achieved_on) || payload.achieved_on < dateInp.min) {
+          formMsg.textContent = 'Pick the date of your PR.';
+          formMsg.classList.add('error');
+          return;
+        }
+        if (payload.achieved_on > localISO(new Date())) {
           formMsg.textContent = "PR date can't be in the future.";
           formMsg.classList.add('error');
           return;
         }
 
         if (RUN_EVENTS.has(selectedEvent)) {
-          const h = parseFloat(document.getElementById('inpHours').value || '0');
-          const m = parseFloat(document.getElementById('inpMinutes').value || '0');
+          // Read only the boxes on screen: a hidden box can hold a value
+          // typed for another event before the chip changed.
+          const kind = timeRow.dataset.kind;
+          const h = kind === 'long' ? parseFloat(document.getElementById('inpHours').value || '0') : 0;
+          const m = kind !== 'sprint' ? parseFloat(document.getElementById('inpMinutes').value || '0') : 0;
           const s = parseFloat(document.getElementById('inpSeconds').value || '0');
           // The inputs carry min/max attributes, but browsers don't stop
-          // typed out-of-range values — enforce the same bounds here.
-          if (h < 0 || m < 0 || s < 0 || m > 59 || s >= 60) {
+          // typed out-of-range values, so enforce the same bounds here. A
+          // sprint has no MINUTES box, so its seconds may run past 59.
+          if (h < 0 || m < 0 || s < 0 || m > 59 || (kind !== 'sprint' && s >= 60)) {
             formMsg.textContent = 'Minutes and seconds must be 0–59, no negatives.';
             formMsg.classList.add('error');
             return;
@@ -1921,6 +2057,8 @@
         }
 
         const wasEditing = !!editingId;
+        // Open the saved event's records so the new entry is in view.
+        openSections.set(selectedEvent, true);
         cancelEdit();
         formMsg.textContent = wasEditing ? 'UPDATED.' : 'SAVED.';
         formMsg.classList.add('success');

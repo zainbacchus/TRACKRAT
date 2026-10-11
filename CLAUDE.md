@@ -474,10 +474,16 @@ CLUB dropdown deep-links via hashes handled by `applyTabHash()` (initial load
 `#PARTNERS` (legacy `#promotions` too) → Partners, `#gallery` → Gallery,
 `#waiver` / `#waivers` → Waiver, anything else → Personal Records.
 
-At ≤768px the four tabs become a **2×2 grid** rather than one `flex:1` row:
-`PERSONAL RECORDS` alone measures ~134px, so four across a 339px content
-column would truncate. The container's `border-bottom` moves onto each cell so
-the active-tab underline still reads.
+At ≤768px the same `.dash-tabs` buttons become a **fixed bottom tab bar**
+(one row of four, each with an icon; the `PERSONAL ` span is hidden so it reads
+RECORDS, which is what lets four fit 375px). Tapping a tab there also scrolls
+to the top. Two things hold it up: `.page` gets `z-index: 20` on mobile,
+because the footer (z 10, later in the DOM) would otherwise paint over the bar
+inside `.page`'s stacking context, and the footer carries extra bottom padding
+so its content clears the bar. The big TRACKRAT page header is visually hidden
+on mobile (still the page's `h1`); the user strip shows MEMBER DASHBOARD
+instead. Cards use the opaque `--card-bg` so the track lanes don't strike
+through text.
 
 - **Personal Records** (default) — the PR tracker described below, wrapped in
   `#prPanel`.
@@ -529,7 +535,7 @@ the `METRIC_EVENTS` object in dashboard.html — unit label, input step,
 placeholder, and BEST direction): `verticaljump` (in), `rsi` (unitless),
 `peakpower` (W), `groundcontact` (s, lower-is-better). To add another
 metric: one entry in `METRIC_EVENTS`, plus `EVENT_LABELS`/`EVENT_ORDER`,
-a chip button, and the SQL whitelist.
+a chip button in the POWER group, and the SQL whitelist.
 
 ### Data model
 
@@ -591,12 +597,29 @@ to the client is `service_role`, which bypasses RLS. We don't use it.
 5. CRUD calls go straight to `supabase.from('prs')…` — RLS handles
    authorization.
 
+The event chips are grouped (SPRINT & RUN / LIFTS / POWER): a 4-up grid
+per group on desktop, one sideways-scrolling `.chip-row` per group on mobile
+(right-edge fade, dropped via `.is-end` once the row is scrolled to its end).
+
 The form has four modes shown conditionally based on the selected event:
 
-- Run events → hours / minutes / seconds inputs → stored as total seconds.
+- Run events → time boxes by `TIME_KIND`: a sprint (100/200m) is SECONDS
+  alone, a 400m or mile adds MINUTES, 5K/half/marathon add HOURS → stored as
+  total seconds. Submit reads only the visible boxes (a hidden box can hold a
+  value typed for another event); a sprint's seconds may run past 59.
+  `startEdit` widens the kind when a stored time needs more boxes.
 - Lift events → pounds + sets + reps inputs.
-- Date picker → month / day / year selects (always shown).
+- Date → one native `<input type="date">` (always shown; defaults to today,
+  `max` today, `min` 30 years back). Its value is already the `achieved_on`
+  string; submit re-checks empty / below min / future, since typed input
+  and iOS ignore min/max.
 - Notes → optional textarea (always shown).
+
+`YOUR RECORDS` sections are collapsible: the head is a button
+(`aria-expanded`) showing the event, the best's date and entry count, and the
+PR. Open by default on desktop, closed on mobile; toggles live in the
+`openSections` map so a save/delete re-render keeps them, and a save opens
+the saved event's section.
 
 The "current PR" badge per event is computed client-side (min seconds for
 runs, max pounds for lifts), so we don't have to maintain a "best" flag in
@@ -679,8 +702,9 @@ Three places to keep in sync:
    constraints in Supabase (write a migration as `alter table ... drop
    constraint ... add constraint ...`).
 2. **`dashboard.html`** — add to `RUN_EVENTS` or `LIFT_EVENTS`, plus `EVENT_LABELS`
-   and `EVENT_ORDER`.
-3. **`dashboard.html`** — add a chip button to the `#eventGrid` markup.
+   and `EVENT_ORDER` (and `TIME_KIND` for a run).
+3. **`dashboard.html`** — add a chip button to the matching `.chip-group` in
+   the `#eventGrid` markup.
 
 ### Editing the PR dashboard
 
