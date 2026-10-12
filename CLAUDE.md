@@ -162,8 +162,9 @@ PR save on production before calling it done.
 
 Every public page ships with:
 
-- A specific `<title>` (e.g. `TRACKRAT — Austin Sprint Club`, `Schedule ·
-  TRACKRAT — Austin Sprint Club`).
+- A specific `<title>` (e.g. `TRACKRAT Sprint Club · Sprint & Speed Workouts
+  in Austin, TX`, `Schedule · TRACKRAT Sprint Club · Austin, TX`). Titles
+  separate with `·`, never an em dash.
 - A descriptive `meta name="description"`.
 - A `rel="canonical"` link pointing at the **`www.trackratsprint.club`** host.
 - Open Graph + Twitter Card meta tags pointing at the page's OG image —
