@@ -672,6 +672,49 @@ allow swapping event types during edit.
 **Notes are user input.** Use `escapeHtml()` before injecting into
 `innerHTML`. The helper is already defined in `dashboard.html`.
 
+## Copy & design rules (no AI tells)
+
+The site was swept on 2026-10-12 to remove patterns that read as generated
+copy or template design (commit b3b5b68). Don't reintroduce them. Applies to
+visible copy, `<title>`/meta/OG tags, JSON-LD strings, and `llms*.txt`.
+
+- **No em dashes** (—) anywhere a visitor or crawler reads text. Use commas,
+  periods, parentheses or the brand's `·`. Titles separate with `·`
+  (`Schedule · TRACKRAT Sprint Club · Austin, TX`). En dashes in time ranges
+  (`8:30 – 10:00 AM`) are fine.
+- **No eyebrows**: a small all-caps label sitting above a heading that
+  restates or decorates it ("SUNDAY" over "SUNDAY SPRINTS", "MEMBER
+  DASHBOARD" over "LOG IN", "CLUB PHOTOS" over a TRACKRAT wordmark). Fold the
+  information into the heading or the line below it instead. **No numbered
+  section labels** ("01 — THE NAME"); /brand's section names are plain (THE
+  NAME, CULTURE, COLOR) and DETAILS has only its heading.
+  Fine, and deliberate: form field labels, the dashboard's SPRINT & RUN /
+  LIFTS / POWER group labels (they name a group of controls), the taglines
+  under the TRACKRAT wordmark, and /offtrack's tape labels ("The diff",
+  "Get notified", "Iron sharpens iron"), which were reviewed and kept.
+- **"Not X, it's Y" contrasts are rationed.** The thesis appears on purpose
+  in a few places: "SPRINT CLUB > RUN CLUB" (hero taglines, /brand heading),
+  "We're a sprint club, not a run club." (the home about heading; the
+  llms.txt summaries say the same), and "The
+  bar isn't speed, it's effort." (the home about paragraph and /brand). Don't
+  add more instances, and don't write new "isn't X, it's Y", "not just X",
+  or "We're not X. We're not Y. But Z" sentences. State the claim.
+- **No stock openers or filler**: "Unlike your typical X", "high-caliber",
+  "world-class", "elevate", "unlock", "journey", "takes that same energy",
+  "whether you're X or Y". No colon reveals ("taught us something simple:",
+  "Two things:") and no closing aphorisms ("Going through something hard
+  together is the point."). Concrete specifics (times, the address, coffee
+  after) are what make this copy read human; prefer them.
+- **Arrows**: no decorative `→` on links or buttons that stay on the site
+  ("See the schedule", "SIGN IT NOW", "BACK TO THE TRACK"). `↗` stays on
+  links that leave the site or open a new tab (RSVP ↗, OPEN THE ALBUM ↗,
+  OPEN PDF ↗), because it tells you something. /brand's "trackrat →
+  TRACKRAT" lines show a correction and are content, not buttons. The
+  "SCROLL ↓" cues on the / and /invitational heroes are still there
+  (removing them needs a design pass); don't add new ones.
+- **Groups of three** ("professionally, personally and physically") are part
+  of the brand voice once per page. Don't stack them.
+
 ## Development Guidelines
 
 ### Local development
@@ -748,8 +791,10 @@ and no serverless functions: the whole site is static files. There is no
    ethos is intentional. If you reach for React/Vite/Tailwind, stop and
    reconsider.
 4. **Match the existing style.** Black background, orange accent, Fugaz One +
-   IBM Plex Mono, ALL-CAPS labels with letter-spacing on UI chrome, track
-   lanes for dashboard-style pages.
+   IBM Plex Mono, ALL-CAPS labels with letter-spacing on UI chrome (controls
+   and form labels, not eyebrows over headings), track lanes for
+   dashboard-style pages. Read **Copy & design rules** before writing any
+   copy: no em dashes, no eyebrows, no "not X, it's Y" padding.
 5. **Keep the nav in lockstep across all eight nav pages** (index, schedule,
    brand, podium, gallery, invitational, offtrack, dashboard). A change to nav
    markup, the Club/Events dropdowns/accordions, stagger delays, or the
