@@ -685,9 +685,12 @@ visible copy, `<title>`/meta/OG tags, JSON-LD strings, and `llms*.txt`.
 - **No eyebrows**: a small all-caps label sitting above a heading that
   restates or decorates it ("SUNDAY" over "SUNDAY SPRINTS", "MEMBER
   DASHBOARD" over "LOG IN", "CLUB PHOTOS" over a TRACKRAT wordmark). Fold the
-  information into the heading or the line below it instead. **No numbered
-  section labels** ("01 — THE NAME"); /brand's section names are plain (THE
-  NAME, CULTURE, COLOR) and DETAILS has only its heading.
+  information into the heading or the line below it instead. That includes
+  section-name labels: /brand had "01 — THE NAME" style labels, then plain
+  ones, and both were removed (2026-10-13). Its sections open on their
+  headings (TRACKRAT, SPRINT CLUB > RUN CLUB, SPRINT ORANGE, DETAILS); the
+  `#name` / `#culture` / `#color` / `#details` anchors are on the section
+  elements.
   Fine, and deliberate: form field labels, the dashboard's SPRINT & RUN /
   LIFTS / POWER group labels (they name a group of controls), the taglines
   under the TRACKRAT wordmark, and /offtrack's tape labels ("The diff",
