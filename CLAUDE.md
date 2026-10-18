@@ -20,8 +20,7 @@ Pages:
   start time, mirroring offtrack.html's Event). Since the meet ran
   (2026-10-18) the page is a results page. The full-screen poster hero is
   now a compact **masthead** (`<main class="mast">`: the lockup `<h1>` and
-  GREATNESS IS CALLING centred under it, left; date and TIMED BY ATX
-  TIMING right) so
+  GREATNESS IS CALLING centred under it, left; the date right) so
   the results are on the first screen. Then the generated **RESULTS**
   section: a **WINNERS** board (a column per event, MEN'S and WOMEN'S rows,
   the 4×400 co-ed spanning both, every cell styled the same so no team is
