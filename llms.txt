@@ -50,7 +50,7 @@ Also true of the club:
 - [Home](https://www.trackratsprint.club/): Landing page with about/FAQ content
 - [Schedule](https://www.trackratsprint.club/schedule): Weekly meet times, locations, .ics calendar download, Google Maps links
 - [Brand](https://www.trackratsprint.club/brand): Brand guide (voice, naming conventions, visual identity)
-- [Podium](https://www.trackratsprint.club/podium): Race results: every track meet TRACKRAT has raced as a team (e.g. Track Night Austin), the relay squads (4x100, 4x400) and the sprinters who ran them, and final placements (searchable, filterable by discipline)
+- [Podium](https://www.trackratsprint.club/podium): Relay results: every track meet where a TRACKRAT relay team raced (e.g. Track Night Austin), the relay squads (4x100, 4x400) and the sprinters who ran them, and final placements (searchable, filterable by discipline)
 - [2026 Invitational](https://www.trackratsprint.club/invitational): TRACKRAT's hosted community sprint meet: October 18, 2026, 9:00–11:00 AM at 4401 Tilley St, Austin, TX. Events: 60m, 100m, 200m, 400m, 4x100 relay and 4x400 relay. The meet has been run: the page now shows the winners and full results by race and heat, timed by ATX Timing (under the Events menu)
 - [OFFTRACK](https://www.trackratsprint.club/offtrack): Demo night in Austin presented by TRACKRAT (under the Events menu)
 - [Dashboard](https://www.trackratsprint.club/dashboard): Authenticated member dashboard: log PRs, view partner promotions, and reach the members-only club photo album (Google sign-in required; private per user; the album link is shown only to member-allowlisted emails)

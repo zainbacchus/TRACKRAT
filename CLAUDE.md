@@ -13,7 +13,7 @@ Pages:
 - `/` — landing (with about/FAQ content + structured data for SEO/AEO)
 - `/schedule` — weekly schedule with `.ics` calendar export
 - `/brand` — brand guide
-- `/podium` — competition results: meets TRACKRAT raced as a team, the relay squads, and placements (newest first; client-side search + discipline filter; static data array; grouped under the **Club** nav dropdown)
+- `/podium` — RELAY PODIUM: TRACKRAT relay-team results only (meets, the relay squads, and placements; the first filter row is labelled RELAY) (newest first; client-side search + discipline filter; static data array; grouped under the **Club** nav dropdown)
 - `/invitational` — 2026 Invitational event page: October 18, 2026 at
   4401 Tilley St (has Event JSON-LD with a date-only `startDate`; no RSVP
   yet — when it exists, add an `offers` block with the RSVP URL and a
@@ -126,8 +126,8 @@ TRACKRAT/
 ├── robots.txt              # Crawl rules (/dashboard handled by noindex meta, NOT Disallow)
 ├── sitemap.xml             # Public-page sitemap (excludes /dashboard + /gallery; includes /offtrack + /waiver)
 ├── llms.txt                # LLM-facing site description
-├── favicon.ico             # browser-tab + Google SERP icon (TR app icon; 16/32/48/64px frames)
-├── favicon.svg             # vector favicon (TR app icon; crisp at any size, modern browsers)
+├── favicon.ico             # browser-tab + Google SERP icon (plain Sprint Orange square; 16/32/48/64px frames)
+├── favicon.svg             # vector favicon (plain Sprint Orange square, modern browsers)
 ├── apple-touch-icon.png    # iOS home-screen icon (180×180, non-transparent)
 ├── icon-192.png            # PWA/Android home-screen icon (192×192)
 ├── icon-512.png            # PWA/Android icon + splash (512×512; also the icon master)
@@ -247,12 +247,14 @@ home screen" must resolve the icons.
   ignores it for the home screen** (falls back to a page screenshot
   without an `apple-touch-icon`), which is why the block below is
   required.
-- `favicon.svg` — vector tab icon for modern browsers (crisp at any
-  DPI). White TR reusing the outlined letterforms from
-  `trackrat-wordmark.svg` (subpaths 0–2 = T + R), scaled to match the
-  raster icons. No font dependency. Regenerate the raster set from
-  `icon-512.png`; the .ico is assembled with a small ICO writer
-  (PNG-in-ICO frames) since there's no ImageMagick.
+- `favicon.svg` — vector tab icon for modern browsers: one `#FF4D1F`
+  `<rect>`, nothing else.
+- **The favicon is a plain Sprint Orange square** (since 2026-10-18): no
+  letters, no logo, the same idea as /brand's AVATAR (a plain Sprint Orange
+  circle, "just the color"), squared because a tab icon is square. Both
+  favicon files are flat `#FF4D1F`; the .ico is written by Pillow
+  (`Image.new('RGB', (64, 64), '#FF4D1F').save('favicon.ico', sizes=[16, 32,
+  48, 64 squared])`).
 - `apple-touch-icon.png` (180×180) — iOS home screen. **Must be
   non-transparent** (iOS composites transparency to black and applies
   its own rounded-corner mask; design full-bleed and let iOS round).
@@ -260,8 +262,9 @@ home screen" must resolve the icons.
   home screen + install + splash. Icons are `purpose: "any maskable"`;
   the TR sits well inside the center safe zone so adaptive masks don't
   clip it. `theme_color`/`background_color` are `#000000`.
-- All icons are the **TR app icon (white TR, Fugaz One) on Sprint Orange**,
-  matching favicon.ico. It is the app icon and nothing else: there is no
+- The home-screen icons (`apple-touch-icon.png`, `icon-192/512.png`) are
+  still the **TR app icon (white TR, Fugaz One) on Sprint Orange**; only the
+  favicon went plain. It is the app icon and nothing else: there is no
   distributed monogram. TR/SC was retired as a mark, so do not reintroduce
   one. `icon-512.png` is the master; the 192 and 180
   are downscales. To regenerate: render `TR` in Fugaz One centered on a
