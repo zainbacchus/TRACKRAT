@@ -17,13 +17,20 @@ Pages:
 - `/invitational` — 2026 Invitational event page: October 18, 2026 at
   4401 Tilley St (has Event JSON-LD with a date-only `startDate`; no RSVP
   yet — when it exists, add an `offers` block with the RSVP URL and a
-  start time, mirroring offtrack.html's Event). Since the meet ran, a
-  **RESULTS** section sits above the ATHLETES start list (the hero's SCROLL
-  cue points at `#results`): a tab per year, and per race an OVERALL list
-  plus one list per heat when it ran more than one heat (DNS left out).
-  It is generated, never hand-edited: `trackrat-tools/gen-results.py
-  --fetch <year>` pulls a year from ATX Timing's public AthleticLIVE JSON
-  into `results/<year>.json` (names mapped onto the start list), and
+  start time, mirroring offtrack.html's Event). Since the meet ran
+  (2026-10-18) the page is a results page. The full-screen poster hero is
+  now a compact **masthead** (`<main class="mast">`: the lockup `<h1>` and
+  GREATNESS IS CALLING centred under it, left; date and TIMED BY ATX
+  TIMING right) so
+  the results are on the first screen. Then the generated **RESULTS**
+  section: a **WINNERS** board (a column per event, MEN'S and WOMEN'S rows,
+  the 4×400 co-ed spanning both, every cell styled the same so no team is
+  highlighted; a list in race order on phones), then **FULL RESULTS** (per
+  race an OVERALL list plus one per heat, DNS listed under each), with year
+  tabs switching both. The ATHLETES start list still follows. The results
+  are generated, never hand-edited: `trackrat-tools/gen-results.py --fetch
+  <year>` pulls a year from ATX Timing's public AthleticLIVE JSON into
+  `results/<year>.json` (names mapped onto the start list), and
   `gen-results.py` prints the section from every year on file; splice it
   from `<!-- RESULTS` through its `</section>`. A new year is one entry in
   its `MEETS` dict. Without JavaScript every list shows under a label.
@@ -722,8 +729,8 @@ visible copy, `<title>`/meta/OG tags, JSON-LD strings, and `llms*.txt`.
   links that leave the site or open a new tab (RSVP ↗, OPEN THE ALBUM ↗,
   OPEN PDF ↗), because it tells you something. /brand's "trackrat →
   TRACKRAT" lines show a correction and are content, not buttons. The
-  "SCROLL ↓" cues on the / and /invitational heroes are still there
-  (removing them needs a design pass); don't add new ones.
+  "SCROLL ↓" cue on the / hero is still there (removing it needs a design
+  pass); /invitational's went with its poster hero. Don't add new ones.
 - **Groups of three** ("professionally, personally and physically") are part
   of the brand voice once per page. Don't stack them.
 
