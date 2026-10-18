@@ -719,6 +719,7 @@
     <div class="podium-list" id="podiumStatic">
       <h2>TRACKRAT Sprint Club race results</h2>
       <ul>
+        <li><strong>TRACKRAT Invitational</strong>, October 18, 2026 · Marshall Middle School (Austin, TX): Co-ed 4×400 relay, 1st; Men's 4×100 relay, 3rd.</li>
         <li><strong>Track Night Austin</strong>, June 27, 2026 · Yellow Jacket Stadium: Women's 4×400 relay, 1st; Men's 4×400 relay, 2nd.</li>
         <li><strong>Spring Shakeout</strong>, April 29, 2026 · Southwestern University (Georgetown, TX): Men's 4×100 relay, 1st.</li>
         <li><strong>Rave Relays</strong>, November 8, 2025 · Ann Richards Stadium: Men's 4×400 relay, 2nd.</li>
@@ -828,22 +829,29 @@
     // Each result: { discipline, category (optional), place, athletes:[...] }.
     const MEETS = [
       {
+        meet: "TRACKRAT Invitational", date: "2026-10-18", venue: "Marshall Middle School",
+        results: [
+          { discipline: "4x400", category: "Co-ed", place: 1, athletes: ["Elif Yurtsever", "Isaiah Weekly", "Kristin Malone", "Myles Cooper"] },
+          { discipline: "4x100", category: "Men's", place: 3, athletes: ["Ankith Harathi", "Dean Hughes", "John Kim", "Rikin Tanna"] }
+        ]
+      },
+      {
         meet: "Track Night Austin", date: "2026-06-27", venue: "Yellow Jacket Stadium",
         results: [
           { discipline: "4x400", category: "Women's", place: 1, athletes: ["Davicia Weekly", "Georgia Fillmore", "Natalie Monroe", "Vanessa Bacorn"] },
-          { discipline: "4x400", category: "Men's",   place: 2, athletes: ["Bennie Jones", "Isiah Weekly", "Issac Nelson", "Myles Cooper"] }
+          { discipline: "4x400", category: "Men's",   place: 2, athletes: ["Bennie Jones", "Isaiah Weekly", "Issac Nelson", "Myles Cooper"] }
         ]
       },
       {
         meet: "Spring Shakeout", date: "2026-04-29", venue: "Southwestern University",
         results: [
-          { discipline: "4x100", category: "Men's", place: 1, athletes: ["David Perez", "Myles Cooper", "Isiah Weekly", "Isaac Kaufman"] }
+          { discipline: "4x100", category: "Men's", place: 1, athletes: ["David Perez", "Myles Cooper", "Isaiah Weekly", "Isaac Kaufman"] }
         ]
       },
       {
         meet: "Rave Relays", date: "2025-11-08", venue: "Ann Richards Stadium",
         results: [
-          { discipline: "4x400", category: "Men's", place: 2, athletes: ["Kaushik Sahoo", "Stephen McElwee", "Isiah Weekly", "Myles Cooper"] }
+          { discipline: "4x400", category: "Men's", place: 2, athletes: ["Kaushik Sahoo", "Stephen McElwee", "Isaiah Weekly", "Myles Cooper"] }
         ]
       }
     ];
@@ -971,6 +979,19 @@
         "position": 1,
         "item": {
           "@type": "SportsEvent",
+          "name": "TRACKRAT Invitational",
+          "sport": "Track and field",
+          "startDate": "2026-10-18",
+          "location": { "@type": "Place", "name": "Marshall Middle School", "address": { "@type": "PostalAddress", "streetAddress": "4401 Tilley St", "addressLocality": "Austin", "addressRegion": "TX", "addressCountry": "US" } },
+          "competitor": { "@id": "https://www.trackratsprint.club/#club" },
+          "description": "TRACKRAT Sprint Club results. Co-ed 4x400m relay: 1st place; Men's 4x100m relay: 3rd place."
+        }
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "item": {
+          "@type": "SportsEvent",
           "name": "Track Night Austin",
           "sport": "Track and field",
           "startDate": "2026-06-27",
@@ -981,7 +1002,7 @@
       },
       {
         "@type": "ListItem",
-        "position": 2,
+        "position": 3,
         "item": {
           "@type": "SportsEvent",
           "name": "Spring Shakeout",
@@ -994,7 +1015,7 @@
       },
       {
         "@type": "ListItem",
-        "position": 3,
+        "position": 4,
         "item": {
           "@type": "SportsEvent",
           "name": "Rave Relays",
