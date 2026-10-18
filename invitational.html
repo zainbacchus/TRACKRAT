@@ -273,40 +273,61 @@
     .mobile-accordion-panel a:hover { color: var(--orange); }
     body.menu-open { overflow: hidden; }
 
-    /* ---- MASTHEAD ----
-       Since the meet ran (2026-10-18) the hero is a page header rather than a
-       full-screen poster, so the WINNERS board is on the first screen. The
-       nav is absolutely positioned over the top of the page, hence the top
-       padding. Lockup and tagline left, the meet's facts right. */
-    .mast {
-      max-width: 1180px; margin: 0 auto; padding: 96px 40px 0;
-      display: flex; align-items: flex-end; justify-content: space-between; gap: 40px;
+    /* ---- HERO BAND ----
+       Since the meet ran (2026-10-18) the hero is a photo band rather than a
+       full-screen poster, so the WINNERS board is on the first screen. Three
+       race photos duotoned to Sprint Orange (greyscale, multiplied by the
+       orange) under the lockup and tagline, centred. The nav is absolutely
+       positioned over the top of the page, so the band starts below it, on
+       orange, where the black nav stays legible. */
+    .hero {
+      position: relative; margin-top: 72px; height: 380px;
+      background: var(--black); overflow: hidden;
+    }
+    .hero-strip {
+      position: absolute; inset: 0;
+      display: grid; grid-template-columns: 1.15fr 1fr 1fr; gap: 3px;
+    }
+    .hero-strip figure { position: relative; overflow: hidden; }
+    .hero-strip img {
+      width: 100%; height: 100%; object-fit: cover; display: block;
+      filter: grayscale(1) contrast(1.2) brightness(1.05);
+    }
+    .hero-strip figure::after {
+      content: ''; position: absolute; inset: 0;
+      background: var(--orange); mix-blend-mode: multiply;
+    }
+    /* Darker in the middle, where the type sits, so orange on photo reads. */
+    .hero-shade {
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 60% 75% at 50% 50%, rgba(0,0,0,0.62), rgba(0,0,0,0.18));
+    }
+    .hero-in {
+      position: absolute; inset: 0; padding: 0 20px;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      text-align: center; color: var(--orange);
     }
     /* Outlined artwork, inlined rather than used as <img src>: SVG-as-img can
        render blank on iOS Safari and this is the hero. Its own canvas is
        1123x941 but the ink is only 1100.9x478.3 at (13.4, 205.6), so the
        viewBox is re-cropped to the ink. One width drives it; aspect does the
        rest. Canonical copy: /lockup-tri26.svg (see the markup note below). */
-    h1 { line-height: 0; }
-    .lockup { width: 330px; max-width: 100%; height: auto; display: block; }
+    h1 { width: 100%; line-height: 0; }
+    .lockup { width: min(440px, 100%); height: auto; display: block; margin: 0 auto; }
     .sr-only {
       position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
       overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
     }
-    /* The id block is exactly the lockup's width so the tagline centres under
-       it. padding-left matches the letter-spacing the last glyph trails, which
+    /* padding-left matches the letter-spacing the last glyph trails, which
        keeps the tracked-out line optically centred. */
-    .mast-id { width: 330px; max-width: 100%; }
     .tagline {
-      font-size: 13px; font-weight: 700; letter-spacing: 0.3em; padding-left: 0.3em;
-      margin-top: 14px; text-align: center;
-    }
-    .mast-meta {
-      text-align: right; font-size: 12px; font-weight: 700;
-      letter-spacing: 0.18em; line-height: 2;
+      font-size: 14px; font-weight: 700; letter-spacing: 0.3em; padding-left: 0.3em;
+      margin-top: 16px;
     }
 
-    /* ---- START LIST (below the fold) ---- */
+    /* ---- RACE CARDS (.sl-*) ----
+       Written for the ATHLETES start list, which came off after the meet
+       (2026-10-18); the RESULTS race cards reuse them. */
     .startlist { max-width: 940px; margin: 0 auto; padding: 0 40px 120px; }
     .sl-title {
       font-family: 'Fugaz One', 'Arial Black', sans-serif;
@@ -449,11 +470,8 @@
        race an OVERALL list plus one list per heat when it ran more than one.
        Without JavaScript every list shows under its own label; the script at
        the bottom adds .rs-js, which turns on the tabs and hides the labels. */
-    .results { max-width: 1180px; margin: 0 auto; padding: 26px 40px 120px; }
-    .rs-top {
-      display: flex; align-items: baseline; justify-content: space-between; gap: 20px;
-      border-top: 3px solid var(--black); padding-top: 18px;
-    }
+    .results { max-width: 1180px; margin: 0 auto; padding: 34px 40px 120px; }
+    .rs-top { display: flex; align-items: baseline; justify-content: space-between; gap: 20px; }
     .rs-title {
       font-family: 'Fugaz One', 'Arial Black', sans-serif;
       font-size: 44px; letter-spacing: -0.02em; line-height: 1;
@@ -491,6 +509,15 @@
       font-size: clamp(22px, 2.8vw, 36px); line-height: 1; letter-spacing: -0.01em;
     }
     .bd-name { font-size: 13px; font-weight: 700; letter-spacing: 0.04em; line-height: 1.3; }
+    /* Every winner (time and name) and every event heading links to that
+       race in FULL RESULTS. Hover and keyboard focus fill the cell black,
+       the page's sign for something you can press. */
+    a.bd-cell, a.bd-h { color: inherit; }
+    a.bd-cell { transition: background-color 0.15s ease, color 0.15s ease; }
+    a.bd-cell:hover, a.bd-cell:focus-visible { background: var(--black); color: var(--orange); outline: none; }
+    a.bd-h:hover, a.bd-h:focus-visible { text-decoration: underline; text-underline-offset: 4px; outline: none; }
+    .rs-race { scroll-margin-top: 24px; }
+    @media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
     .results .sl-grid { margin-top: 30px; }
     @media (min-width: 1080px) {
       .results .sl-grid { grid-template-columns: repeat(3, 1fr); gap: 0 40px; }
@@ -666,10 +693,9 @@
       }
       .startlist { padding: 0 24px 96px; }
       .results { padding: 22px 20px 80px; }
-      .mast { display: block; padding: 84px 20px 0; }
-      .lockup, .mast-id { width: 230px; }
-      .tagline { font-size: 11px; letter-spacing: 0.28em; padding-left: 0.28em; }
-      .mast-meta { text-align: left; margin-top: 14px; font-size: 11px; letter-spacing: 0.14em; }
+      .hero { margin-top: 64px; height: 300px; }
+      .lockup { width: min(280px, 100%); }
+      .tagline { font-size: 11px; letter-spacing: 0.28em; padding-left: 0.28em; margin-top: 12px; }
       .rs-title { font-size: 34px; }
       .rs-full-title { margin-top: 48px; }
       .bd-grid { display: flex; flex-direction: column; margin-top: 12px; }
@@ -809,8 +835,14 @@
     <div class="mobile-menu-footer">TRACKRAT SPRINT CLUB</div>
   </div>
 
-  <main class="mast">
-    <div class="mast-id">
+  <main class="hero">
+    <div class="hero-strip" aria-hidden="true">
+      <figure><img src="/photos/invitational-2026-sprinter.webp" alt="" width="853" height="800" fetchpriority="high"></figure>
+      <figure><img src="/photos/invitational-2026-blocks.webp" alt="" width="853" height="800"></figure>
+      <figure><img src="/photos/invitational-2026-three.webp" alt="" width="853" height="800"></figure>
+    </div>
+    <div class="hero-shade"></div>
+    <div class="hero-in">
       <h1>
         <!-- Real text for crawlers; the artwork below carries the visuals.
              The two paths are inlined from /lockup-tri26.svg, which is the
@@ -824,9 +856,6 @@
         </svg>
       </h1>
       <p class="tagline">GREATNESS IS CALLING</p>
-    </div>
-    <div class="mast-meta">
-      <p>SUNDAY, OCTOBER 18, 2026</p>
     </div>
   </main>
 
@@ -844,29 +873,29 @@
       <p class="sl-team rs-label">2026</p>
       <div class="bd-grid" style="--cols:6">
         <div class="bd-h" aria-hidden="true"></div>
-        <div class="bd-h" aria-hidden="true">60M</div>
-        <div class="bd-h" aria-hidden="true">100M</div>
-        <div class="bd-h" aria-hidden="true">200M</div>
-        <div class="bd-h" aria-hidden="true">400M</div>
-        <div class="bd-h" aria-hidden="true">4&times;100</div>
-        <div class="bd-h" aria-hidden="true">4&times;400 CO-ED</div>
+        <a class="bd-h" href="#rs-2026-60m-men-s">60M</a>
+        <a class="bd-h" href="#rs-2026-100m-men-s">100M</a>
+        <a class="bd-h" href="#rs-2026-200m-men-s">200M</a>
+        <a class="bd-h" href="#rs-2026-400m-men-s">400M</a>
+        <a class="bd-h" href="#rs-2026-4x100-men-s">4&times;100</a>
+        <a class="bd-h" href="#rs-2026-4x400-co-ed">4&times;400 CO-ED</a>
         <div class="bd-row" aria-hidden="true">MEN&rsquo;S</div>
-        <div class="bd-cell" style="--o:0"><span class="bd-lab">60M MEN&rsquo;S</span><span class="bd-time">7.07</span><span class="bd-name">Ricardo Alvarez</span></div>
-        <div class="bd-cell" style="--o:2"><span class="bd-lab">100M MEN&rsquo;S</span><span class="bd-time">10.93</span><span class="bd-name">DJ Phillips</span></div>
-        <div class="bd-cell" style="--o:4"><span class="bd-lab">200M MEN&rsquo;S</span><span class="bd-time">22.11</span><span class="bd-name">DJ Phillips</span></div>
-        <div class="bd-cell" style="--o:6"><span class="bd-lab">400M MEN&rsquo;S</span><span class="bd-time">52.16</span><span class="bd-name">Devontae Ford</span></div>
-        <div class="bd-cell" style="--o:8"><span class="bd-lab">4&times;100 MEN&rsquo;S</span><span class="bd-time">45.81</span><span class="bd-name">ATC MEN</span></div>
-        <div class="bd-cell" style="--o:10;grid-column:7;grid-row:2 / span 2"><span class="bd-lab">4&times;400 CO-ED</span><span class="bd-time">3:53.08</span><span class="bd-name">TRACKRAT CO-ED</span></div>
+        <a class="bd-cell" href="#rs-2026-60m-men-s" style="--o:0"><span class="bd-lab">60M MEN&rsquo;S</span><span class="bd-time">7.07</span><span class="bd-name">Ricardo Alvarez</span></a>
+        <a class="bd-cell" href="#rs-2026-100m-men-s" style="--o:2"><span class="bd-lab">100M MEN&rsquo;S</span><span class="bd-time">10.93</span><span class="bd-name">DJ Phillips</span></a>
+        <a class="bd-cell" href="#rs-2026-200m-men-s" style="--o:4"><span class="bd-lab">200M MEN&rsquo;S</span><span class="bd-time">22.11</span><span class="bd-name">DJ Phillips</span></a>
+        <a class="bd-cell" href="#rs-2026-400m-men-s" style="--o:6"><span class="bd-lab">400M MEN&rsquo;S</span><span class="bd-time">52.16</span><span class="bd-name">Devontae Ford</span></a>
+        <a class="bd-cell" href="#rs-2026-4x100-men-s" style="--o:8"><span class="bd-lab">4&times;100 MEN&rsquo;S</span><span class="bd-time">45.81</span><span class="bd-name">ATC MEN</span></a>
+        <a class="bd-cell" href="#rs-2026-4x400-co-ed" style="--o:10;grid-column:7;grid-row:2 / span 2"><span class="bd-lab">4&times;400 CO-ED</span><span class="bd-time">3:53.08</span><span class="bd-name">TRACKRAT CO-ED</span></a>
         <div class="bd-row" aria-hidden="true">WOMEN&rsquo;S</div>
-        <div class="bd-cell" style="--o:1"><span class="bd-lab">60M WOMEN&rsquo;S</span><span class="bd-time">8.60</span><span class="bd-name">Ashley Fairley</span></div>
-        <div class="bd-cell" style="--o:3"><span class="bd-lab">100M WOMEN&rsquo;S</span><span class="bd-time">13.54</span><span class="bd-name">Elif Yurtsever</span></div>
-        <div class="bd-cell" style="--o:5"><span class="bd-lab">200M WOMEN&rsquo;S</span><span class="bd-time">26.25</span><span class="bd-name">Zoe Wright</span></div>
-        <div class="bd-cell" style="--o:7"><span class="bd-lab">400M WOMEN&rsquo;S</span><span class="bd-time">1:02.95</span><span class="bd-name">Lindsey Quebedeaux</span></div>
-        <div class="bd-cell" style="--o:9"><span class="bd-lab">4&times;100 WOMEN&rsquo;S</span><span class="bd-time">52.67</span><span class="bd-name">ATC WOMEN</span></div>
+        <a class="bd-cell" href="#rs-2026-60m-women-s" style="--o:1"><span class="bd-lab">60M WOMEN&rsquo;S</span><span class="bd-time">8.60</span><span class="bd-name">Ashley Fairley</span></a>
+        <a class="bd-cell" href="#rs-2026-100m-women-s" style="--o:3"><span class="bd-lab">100M WOMEN&rsquo;S</span><span class="bd-time">13.54</span><span class="bd-name">Elif Yurtsever</span></a>
+        <a class="bd-cell" href="#rs-2026-200m-women-s" style="--o:5"><span class="bd-lab">200M WOMEN&rsquo;S</span><span class="bd-time">26.25</span><span class="bd-name">Zoe Wright</span></a>
+        <a class="bd-cell" href="#rs-2026-400m-women-s" style="--o:7"><span class="bd-lab">400M WOMEN&rsquo;S</span><span class="bd-time">1:02.95</span><span class="bd-name">Lindsey Quebedeaux</span></a>
+        <a class="bd-cell" href="#rs-2026-4x100-women-s" style="--o:9"><span class="bd-lab">4&times;100 WOMEN&rsquo;S</span><span class="bd-time">52.67</span><span class="bd-name">ATC WOMEN</span></a>
       </div>
       <h2 class="rs-title rs-full-title">FULL RESULTS</h2>
       <div class="sl-grid">
-        <div class="sl-race rs-race">
+        <div class="sl-race rs-race" id="rs-2026-60m-men-s">
           <h3><span class="sl-name">60M MEN&rsquo;S</span></h3>
           <div class="rs-tabs" role="tablist" aria-label="60M MEN&rsquo;S results">
             <button type="button" role="tab" class="rs-tab" id="rs-2026-60m-men-s-overall-tab" aria-controls="rs-2026-60m-men-s-overall" aria-selected="true">OVERALL</button>
@@ -907,7 +936,7 @@
             <li class="rs-dns"><span class="rs-place"></span><span class="rs-name">Rikin Tanna</span><span class="rs-time">DNS</span></li>
           </ol>
         </div>
-        <div class="sl-race rs-race">
+        <div class="sl-race rs-race" id="rs-2026-60m-women-s">
           <h3><span class="sl-name">60M WOMEN&rsquo;S</span></h3>
           <div class="rs-tabs" role="tablist" aria-label="60M WOMEN&rsquo;S results">
             <button type="button" role="tab" class="rs-tab" id="rs-2026-60m-women-s-overall-tab" aria-controls="rs-2026-60m-women-s-overall" aria-selected="true">OVERALL</button>
@@ -942,7 +971,7 @@
             <li class="rs-dns"><span class="rs-place"></span><span class="rs-name">Monica Kirkpatrick</span><span class="rs-time">DNS</span></li>
           </ol>
         </div>
-        <div class="sl-race rs-race">
+        <div class="sl-race rs-race" id="rs-2026-100m-men-s">
           <h3><span class="sl-name">100M MEN&rsquo;S</span></h3>
           <div class="rs-tabs" role="tablist" aria-label="100M MEN&rsquo;S results">
             <button type="button" role="tab" class="rs-tab" id="rs-2026-100m-men-s-overall-tab" aria-controls="rs-2026-100m-men-s-overall" aria-selected="true">OVERALL</button>
@@ -985,7 +1014,7 @@
             <li class="rs-dns"><span class="rs-place"></span><span class="rs-name">Tony Byerly</span><span class="rs-time">DNS</span></li>
           </ol>
         </div>
-        <div class="sl-race rs-race">
+        <div class="sl-race rs-race" id="rs-2026-100m-women-s">
           <h3><span class="sl-name">100M WOMEN&rsquo;S</span></h3>
           <div class="rs-tabs" role="tablist" aria-label="100M WOMEN&rsquo;S results">
             <button type="button" role="tab" class="rs-tab" id="rs-2026-100m-women-s-overall-tab" aria-controls="rs-2026-100m-women-s-overall" aria-selected="true">OVERALL</button>
@@ -1026,7 +1055,7 @@
             <li class="rs-dns"><span class="rs-place"></span><span class="rs-name">Ashley Fairley</span><span class="rs-time">DNS</span></li>
           </ol>
         </div>
-        <div class="sl-race rs-race">
+        <div class="sl-race rs-race" id="rs-2026-200m-men-s">
           <h3><span class="sl-name">200M MEN&rsquo;S</span></h3>
           <div class="rs-tabs" role="tablist" aria-label="200M MEN&rsquo;S results">
             <button type="button" role="tab" class="rs-tab" id="rs-2026-200m-men-s-overall-tab" aria-controls="rs-2026-200m-men-s-overall" aria-selected="true">OVERALL</button>
@@ -1067,7 +1096,7 @@
             <li class="rs-dns"><span class="rs-place"></span><span class="rs-name">Andrew Gruninger</span><span class="rs-time">DNS</span></li>
           </ol>
         </div>
-        <div class="sl-race rs-race">
+        <div class="sl-race rs-race" id="rs-2026-200m-women-s">
           <h3><span class="sl-name">200M WOMEN&rsquo;S</span></h3>
           <div class="rs-tabs" role="tablist" aria-label="200M WOMEN&rsquo;S results">
             <button type="button" role="tab" class="rs-tab" id="rs-2026-200m-women-s-overall-tab" aria-controls="rs-2026-200m-women-s-overall" aria-selected="true">OVERALL</button>
@@ -1108,7 +1137,7 @@
             <li><span class="rs-place">6</span><span class="rs-name">Sarah Boyd</span><span class="rs-time">33.97</span></li>
           </ol>
         </div>
-        <div class="sl-race rs-race">
+        <div class="sl-race rs-race" id="rs-2026-400m-men-s">
           <h3><span class="sl-name">400M MEN&rsquo;S</span></h3>
           <div class="rs-tabs" role="tablist" aria-label="400M MEN&rsquo;S results">
             <button type="button" role="tab" class="rs-tab" id="rs-2026-400m-men-s-overall-tab" aria-controls="rs-2026-400m-men-s-overall" aria-selected="true">OVERALL</button>
@@ -1149,7 +1178,7 @@
             <li class="rs-dns"><span class="rs-place"></span><span class="rs-name">Bennie Dix</span><span class="rs-time">DNS</span></li>
           </ol>
         </div>
-        <div class="sl-race rs-race">
+        <div class="sl-race rs-race" id="rs-2026-400m-women-s">
           <h3><span class="sl-name">400M WOMEN&rsquo;S</span></h3>
           <ol class="rs-list">
             <li><span class="rs-place">1</span><span class="rs-name">Lindsey Quebedeaux</span><span class="rs-time">1:02.95</span></li>
@@ -1160,7 +1189,7 @@
             <li><span class="rs-place">6</span><span class="rs-name">Kelly Ferraro</span><span class="rs-time">1:17.84</span></li>
           </ol>
         </div>
-        <div class="sl-race rs-race">
+        <div class="sl-race rs-race" id="rs-2026-4x100-men-s">
           <h3><span class="sl-name">4&times;100 MEN&rsquo;S</span></h3>
           <ol class="rs-list rs-relay">
             <li><span class="rs-place">1</span><span class="rs-name">ATC MEN<span class="rs-legs">Derwood Kirby, Owen Sutherland, O’Shea Wilson, Paris Desean Odem</span></span><span class="rs-time">45.81</span></li>
@@ -1168,14 +1197,14 @@
             <li><span class="rs-place">3</span><span class="rs-name">TRACKRAT MEN<span class="rs-legs">Ankith Harathi, Dean Hughes, John Kim, Rikin Tanna</span></span><span class="rs-time">47.76</span></li>
           </ol>
         </div>
-        <div class="sl-race rs-race">
+        <div class="sl-race rs-race" id="rs-2026-4x100-women-s">
           <h3><span class="sl-name">4&times;100 WOMEN&rsquo;S</span></h3>
           <ol class="rs-list rs-relay">
             <li><span class="rs-place">1</span><span class="rs-name">ATC WOMEN<span class="rs-legs">Aliyah Hale, Ashley Fairley, Kennedy, Zoe Wright</span></span><span class="rs-time">52.67</span></li>
             <li><span class="rs-place">2</span><span class="rs-name">SHREVEPORT SPEED<span class="rs-legs">Lindsey Quebedeaux, Mandy Peña, Natalie Woodham, Ximena Ramos</span></span><span class="rs-time">53.51</span></li>
           </ol>
         </div>
-        <div class="sl-race rs-race">
+        <div class="sl-race rs-race" id="rs-2026-4x400-co-ed">
           <h3><span class="sl-name">4&times;400 CO-ED</span></h3>
           <ol class="rs-list rs-relay">
             <li><span class="rs-place">1</span><span class="rs-name">TRACKRAT CO-ED<span class="rs-legs">Elif Yurtsever, Isaiah Weekly, Kristin Malone, Myles Cooper</span></span><span class="rs-time">3:53.08</span></li>
@@ -1190,301 +1219,6 @@
     </div>
   </section>
 
-  <!-- START LIST. Generated from the Sweatpals export by
-       scratchpad/gen-startlist.py; re-run it and replace this whole
-       section when entries change, and update the timestamp with it.
-       Names and events ONLY: the export also carries emails and phone
-       numbers and this repo is public. -->
-  <section class="startlist" id="entries" aria-labelledby="entries-heading">
-    <h2 class="sl-title" id="entries-heading">ATHLETES</h2>
-    <p class="sl-note">LAST UPDATED OCT 18, 2026 AT 3:00 PM CT<span class="sl-live" aria-hidden="true"></span></p>
-    <p class="sl-note sl-note-sm">HEATS ARE FINALIZED.</p>
-    <div class="sl-grid">
-      <div class="sl-race">
-        <h3><span class="sl-name">60M MEN&rsquo;S</span><span class="sl-meta"><span class="sl-count">12 ATHLETES</span></span></h3>
-        <p class="sl-team">HEAT 1</p>
-        <ul>
-          <li>O’Shea Wilson</li>
-          <li>Tony Byerly</li>
-          <li>Sir Jonathan Sims</li>
-          <li>Ricardo Alvarez</li>
-          <li>Ethan M Capitano</li>
-          <li>Justin Gould</li>
-        </ul>
-        <p class="sl-team">HEAT 2</p>
-        <ul>
-          <li>Rikin Tanna</li>
-          <li>Brandon Jones</li>
-          <li>Matthew Bacchus</li>
-          <li>Ankith Harathi</li>
-          <li>Andrew Gruninger</li>
-          <li>Paris Desean Odem</li>
-        </ul>
-        <p class="sl-team">WAITLIST</p>
-        <ul>
-          <li>Jaeson Wilson</li>
-          <li>Bennie Dix</li>
-          <li>Richonne Gilliam</li>
-          <li>Jeremie Allen</li>
-        </ul>
-      </div>
-      <div class="sl-race">
-        <h3><span class="sl-name">60M WOMEN&rsquo;S</span><span class="sl-meta"><span class="sl-count">9 ATHLETES</span></span></h3>
-        <p class="sl-team">HEAT 1</p>
-        <ul>
-          <li>Natalie Woodham</li>
-          <li>Ximena Ramos</li>
-          <li>Bex Apostoli</li>
-          <li>Robyn Moss</li>
-          <li>Emily Knippa</li>
-        </ul>
-        <p class="sl-team">HEAT 2</p>
-        <ul>
-          <li>Kristy Harris</li>
-          <li>Monica Kirkpatrick</li>
-          <li>Megan Miller</li>
-          <li>Ashley Fairley</li>
-        </ul>
-      </div>
-      <div class="sl-race">
-        <h3><span class="sl-name">100M MEN&rsquo;S</span><span class="sl-meta"><span class="sl-count">12 ATHLETES</span></span></h3>
-        <p class="sl-team">HEAT 1</p>
-        <ul>
-          <li>Ethan M Capitano</li>
-          <li>Caleb Hulbin</li>
-          <li>DJ Phillips</li>
-          <li>Tyriq Valentine</li>
-          <li>Gavin Stafford</li>
-          <li>Andrew Gruninger</li>
-        </ul>
-        <p class="sl-team">HEAT 2</p>
-        <ul>
-          <li>Rathu Jammula</li>
-          <li>Rikin Tanna</li>
-          <li>Brandon Jones</li>
-          <li>Paris Desean Odem</li>
-          <li>Bryan Tran</li>
-          <li>Tony Byerly</li>
-        </ul>
-        <p class="sl-team">WAITLIST</p>
-        <ul>
-          <li>Jeremie Allen</li>
-          <li>Bennie Dix</li>
-          <li>Dennis Mitchell Jr</li>
-          <li>Dlandeon Driver</li>
-        </ul>
-      </div>
-      <div class="sl-race">
-        <h3><span class="sl-name">100M WOMEN&rsquo;S</span><span class="sl-meta"><span class="sl-count">12 ATHLETES</span></span></h3>
-        <p class="sl-team">HEAT 1</p>
-        <ul>
-          <li>Megan Miller</li>
-          <li>Emily Knippa</li>
-          <li>Kristy Harris</li>
-          <li>Sarah Boyd</li>
-          <li>Ximena Ramos</li>
-          <li>Elif Yurtsever</li>
-        </ul>
-        <p class="sl-team">HEAT 2</p>
-        <ul>
-          <li>Tori Hinojosa</li>
-          <li>Andrea Colunga</li>
-          <li>Ashley Fairley</li>
-          <li>Robyn Moss</li>
-          <li>Dayanara Colunga</li>
-          <li>Mandy Peña</li>
-        </ul>
-      </div>
-      <div class="sl-race">
-        <h3><span class="sl-name">200M MEN&rsquo;S</span><span class="sl-meta"><span class="sl-count">12 ATHLETES</span></span></h3>
-        <p class="sl-team">HEAT 1</p>
-        <ul>
-          <li>Tony Byerly</li>
-          <li>Tyriq Valentine</li>
-          <li>Myles Cooper</li>
-          <li>Caleb Hulbin</li>
-          <li>Brandon Jones</li>
-          <li>DJ Phillips</li>
-        </ul>
-        <p class="sl-team">HEAT 2</p>
-        <ul>
-          <li>Rathu Jammula</li>
-          <li>Dennis Mitchell Jr</li>
-          <li>Andrew Gruninger</li>
-          <li>Justin Gould</li>
-          <li>Sebastian Koran</li>
-          <li>Alex West</li>
-        </ul>
-        <p class="sl-team">WAITLIST</p>
-        <ul>
-          <li>Jeremie Allen</li>
-          <li>Zayden DeCelle</li>
-          <li>Bennie Dix</li>
-          <li>Dlandeon Driver</li>
-        </ul>
-      </div>
-      <div class="sl-race">
-        <h3><span class="sl-name">200M WOMEN&rsquo;S</span><span class="sl-meta"><span class="sl-count">11 ATHLETES</span></span></h3>
-        <p class="sl-team">HEAT 1</p>
-        <ul>
-          <li>Natalie Woodham</li>
-          <li>Mandy Peña</li>
-          <li>Ashley Fairley</li>
-          <li>Kristy Harris</li>
-          <li>Tori Hinojosa</li>
-          <li>Ximena Ramos</li>
-        </ul>
-        <p class="sl-team">HEAT 2</p>
-        <ul>
-          <li>Dayanara Colunga</li>
-          <li>Megan Miller</li>
-          <li>Zoe Wright</li>
-          <li>Andrea Colunga</li>
-          <li>Tylar Brinkley</li>
-        </ul>
-      </div>
-      <div class="sl-race">
-        <h3><span class="sl-name">400M MEN&rsquo;S</span><span class="sl-meta"><span class="sl-count">12 ATHLETES</span></span></h3>
-        <p class="sl-team">HEAT 1</p>
-        <ul>
-          <li>Devontae Ford</li>
-          <li>Otavio Pinheiro</li>
-          <li>Derwood Kirby</li>
-          <li>Michael Brown</li>
-          <li>Jayman Peterson</li>
-          <li>Lucas Manring</li>
-        </ul>
-        <p class="sl-team">HEAT 2</p>
-        <ul>
-          <li>Bennie Dix</li>
-          <li>Owen Sutherland</li>
-          <li>Bryan Tran</li>
-          <li>Alex West</li>
-          <li>Bradley Gardner</li>
-          <li>Nicolas Sawyer</li>
-        </ul>
-        <p class="sl-team">WAITLIST</p>
-        <ul>
-          <li>Zayden DeCelle</li>
-        </ul>
-      </div>
-      <div class="sl-race">
-        <h3><span class="sl-name">400M WOMEN&rsquo;S</span><span class="sl-meta"><span class="sl-count">9 ATHLETES</span></span></h3>
-        <p class="sl-team">HEAT 1</p>
-        <ul>
-          <li>Dayanara Colunga</li>
-          <li>Lindsey Quebedeaux</li>
-          <li>Kristin Malone</li>
-          <li>Andrea Colunga</li>
-        </ul>
-        <p class="sl-team">HEAT 2</p>
-        <ul>
-          <li>Kelly Ferraro</li>
-          <li>Sarah Boyd</li>
-          <li>Jaymie Ruskovich</li>
-          <li>Bex Apostoli</li>
-          <li>L. Morgan Kelley</li>
-        </ul>
-      </div>
-      <div class="sl-race">
-        <h3><span class="sl-name">4&times;100 MEN&rsquo;S</span><span class="sl-meta"><span class="sl-count">3 TEAMS</span></span></h3>
-        <p class="sl-team">TRACKRAT MEN</p>
-        <ul>
-          <li>Ankith Harathi</li>
-          <li>Dean Hughes</li>
-          <li>John Kim</li>
-          <li>Rikin Tanna</li>
-        </ul>
-        <p class="sl-team">STAMPEDE SPRINT CREW</p>
-        <ul>
-          <li>Isaac Kaufman</li>
-          <li>Matthew Bacchus</li>
-          <li>Richonne Gilliam</li>
-          <li>Sir Jonathan Sims</li>
-        </ul>
-        <p class="sl-team">ATC MEN</p>
-        <ul>
-          <li>Derwood Kirby</li>
-          <li>Owen Sutherland</li>
-          <li>O’Shea Wilson</li>
-          <li>Paris Desean Odem</li>
-        </ul>
-      </div>
-      <div class="sl-race">
-        <h3><span class="sl-name">4&times;100 WOMEN&rsquo;S</span><span class="sl-meta"><span class="sl-count">2 TEAMS</span></span></h3>
-        <p class="sl-team">SHREVEPORT SPEED</p>
-        <ul>
-          <li>Lindsey Quebedeaux</li>
-          <li>Mandy Peña</li>
-          <li>Natalie Woodham</li>
-          <li>Ximena Ramos</li>
-        </ul>
-        <p class="sl-team">ATC WOMEN</p>
-        <ul>
-          <li>Aliyah Hale</li>
-          <li>Ashley Fairley</li>
-          <li>Kennedy</li>
-          <li>Zoe Wright</li>
-        </ul>
-        <p class="sl-team">WAITLIST</p>
-        <ul>
-          <li>Emily Knippa <span class="sl-kind">INDIVIDUAL</span></li>
-          <li>Monica Kirkpatrick <span class="sl-kind">INDIVIDUAL</span></li>
-        </ul>
-      </div>
-      <div class="sl-race">
-        <h3><span class="sl-name">4&times;400 CO-ED</span><span class="sl-meta"><span class="sl-count">6 TEAMS</span></span></h3>
-        <p class="sl-team">SHREVEPORT SPEED</p>
-        <ul>
-          <li>Jayman Peterson</li>
-          <li>Lindsey Quebedeaux</li>
-          <li>Natalie Woodham</li>
-          <li>Ricardo Alvarez</li>
-        </ul>
-        <p class="sl-team">OXYGEN DEBT</p>
-        <ul>
-          <li>Dre Nuzum</li>
-          <li>Issac Nelson Jr</li>
-          <li>Jaymie Ruskovich</li>
-          <li>Zulema Nguyen</li>
-        </ul>
-        <p class="sl-team">REDLINE</p>
-        <ul>
-          <li>Brianna Volpe</li>
-          <li>Jorge Munoz</li>
-          <li>Katrina Von Arx</li>
-          <li>Lucas Manring</li>
-        </ul>
-        <p class="sl-team">TRACKRAT CO-ED</p>
-        <ul>
-          <li>Elif Yurtsever</li>
-          <li>Isaiah Weekly</li>
-          <li>Kristin Malone</li>
-          <li>Myles Cooper</li>
-        </ul>
-        <p class="sl-team">ATC CO-ED</p>
-        <ul>
-          <li>Alexis Bocanegra</li>
-          <li>Aliyah Hale</li>
-          <li>Dennis Mitchell Jr</li>
-          <li>Derwood Kirby</li>
-        </ul>
-        <p class="sl-team">FAST TWITCH</p>
-        <ul>
-          <li>Jeffery Martin</li>
-          <li>Justin Gould</li>
-          <li>Mandy Peña</li>
-          <li>Ximena Ramos</li>
-        </ul>
-        <p class="sl-team">WAITLIST</p>
-        <ul>
-          <li>Rathu Jammula <span class="sl-kind">INDIVIDUAL</span></li>
-          <li>Donavan Brown <span class="sl-kind">INDIVIDUAL</span></li>
-          <li>Owen Sutherland <span class="sl-kind">INDIVIDUAL</span></li>
-        </ul>
-      </div>
-    </div>
-  </section>
 
   <!-- WAITLIST SIGN-UP. One dialog serves every full race; the button that
        opened it carries the race in data-race. Rows go to the Supabase

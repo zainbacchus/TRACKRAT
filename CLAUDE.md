@@ -19,16 +19,24 @@ Pages:
   yet — when it exists, add an `offers` block with the RSVP URL and a
   start time, mirroring offtrack.html's Event). Since the meet ran
   (2026-10-18) the page is a results page. The full-screen poster hero is
-  now a compact **masthead** (`<main class="mast">`: the lockup `<h1>` and
-  GREATNESS IS CALLING centred under it, left; the date right) so
-  the results are on the first screen. Then the generated **RESULTS**
-  section: a **WINNERS** board (a column per event, MEN'S and WOMEN'S rows,
-  the 4×400 co-ed spanning both, every cell styled the same so no team is
-  highlighted; a list in race order on phones), then **FULL RESULTS** (per
-  race an OVERALL list plus one per heat, DNS listed under each), with year
-  tabs switching both. The ATHLETES start list still follows. The results
-  are generated, never hand-edited: `trackrat-tools/gen-results.py --fetch
-  <year>` pulls a year from ATX Timing's public AthleticLIVE JSON into
+  now a **photo band** (`<main class="hero">`): three race photos from
+  `/photos/` duotoned to Sprint Orange in CSS (greyscale x orange multiply),
+  with the lockup `<h1>` and GREATNESS IS CALLING centred over them, no date
+  or venue; it starts below the nav so the black nav stays on orange. Then
+  the generated **RESULTS** section: a **WINNERS** board (a column per
+  event, MEN'S and WOMEN'S rows, the 4×400 co-ed spanning both, every cell
+  styled the same so no team is highlighted; each winner and event heading
+  links to that race below; a list in race order on phones), then **FULL
+  RESULTS** (per race an OVERALL list plus one per heat, DNS listed under
+  each), with year tabs switching both. The ATHLETES start list was removed
+  after the meet, so `trackrat-tools`' start-list readers
+  (`update-heat-sheet.py`, `update-checkin-sheet.py`, `atx-timing-csv.py`,
+  `invitational-counts.py`, and `gen-results.py --fetch`) have nothing to
+  read until next year's list goes up; the `.sl-*` CSS stays because the
+  race cards use it. The waitlist dialog markup, CSS and script are still in
+  the file but inert (the script exits when no JOIN WAITLIST button exists).
+  The results are generated, never hand-edited: `trackrat-tools/gen-results.py
+  --fetch <year>` pulls a year from ATX Timing's public AthleticLIVE JSON into
   `results/<year>.json` (names mapped onto the start list), and
   `gen-results.py` prints the section from every year on file; splice it
   from `<!-- RESULTS` through its `</section>`. A new year is one entry in
@@ -105,6 +113,7 @@ TRACKRAT/
 ├── promos/                 # Partner logos for the Dashboard → Promotions tab
 ├── og.png                  # default 1200×630 Open Graph image
 ├── og-invitational.png     # /invitational OG image
+├── photos/                # race photos (WebP), e.g. the /invitational hero band
 ├── og-offtrack.png         # /offtrack OG image
 ├── trackrat-wordmark.svg   # wordmark, black (outlined paths, no font; /brand DETAILS kit)
 ├── trackrat-wordmark-white.svg   # wordmark, white
