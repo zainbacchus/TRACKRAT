@@ -17,7 +17,16 @@ Pages:
 - `/invitational` — 2026 Invitational event page: October 18, 2026 at
   4401 Tilley St (has Event JSON-LD with a date-only `startDate`; no RSVP
   yet — when it exists, add an `offers` block with the RSVP URL and a
-  start time, mirroring offtrack.html's Event)
+  start time, mirroring offtrack.html's Event). Since the meet ran, a
+  **RESULTS** section sits above the ATHLETES start list (the hero's SCROLL
+  cue points at `#results`): a tab per year, and per race an OVERALL list
+  plus one list per heat when it ran more than one heat (DNS left out).
+  It is generated, never hand-edited: `trackrat-tools/gen-results.py
+  --fetch <year>` pulls a year from ATX Timing's public AthleticLIVE JSON
+  into `results/<year>.json` (names mapped onto the start list), and
+  `gen-results.py` prints the section from every year on file; splice it
+  from `<!-- RESULTS` through its `</section>`. A new year is one entry in
+  its `MEETS` dict. Without JavaScript every list shows under a label.
 - `/offtrack` — OFFTRACK demo night, presented by TRACKRAT (grouped under the **Events** nav dropdown)
 - `/dashboard` — member dashboard (Google sign-in): a **Personal Records** tab
   (per-user PRs via Supabase), a **Waiver** tab (the member's signed waiver,
