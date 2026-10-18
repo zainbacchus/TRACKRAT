@@ -228,6 +228,10 @@ Sunday/Thursday (CDT is `-05:00`, CST is `-06:00`).
 
 The OG image is rendered in actual Fugaz One (black wordmark on Sprint
 Orange `#FF4D1F`, 1200×630, palette-optimized PNG).
+`og-invitational.png` follows the /invitational hero band instead (three
+race photos duotoned to Sprint Orange, the lockup and GREATNESS IS CALLING
+centred, 1200×630, 256-colour palette PNG); it is rendered by
+`trackrat-tools/og-invitational.py`.
 
 ### Favicon + home-screen icons
 
