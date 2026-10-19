@@ -22,7 +22,16 @@ Pages:
   now a **photo band** (`<main class="hero">`): three race photos from
   `/photos/` duotoned to Sprint Orange in CSS (greyscale x orange multiply),
   with the lockup `<h1>` and GREATNESS IS CALLING centred over them, no date
-  or venue; it starts below the nav so the black nav stays on orange. Then
+  or venue; it starts below the nav so the black nav stays on orange.
+  A **PHOTOS & VIDEO** button in the WINNERS heading row (emitted by
+  `gen-results.py`, `PHOTOS_BUTTON`) opens the **PHOTOS & VIDEO** modal (a
+  native `<dialog id="galleries">` in the page, hand-edited `<ul
+  class="gx-list">`): one `<li>` per photographer or videographer with
+  their name, "TAG @handle WHEN YOU SHARE" (linked to their Instagram; the
+  tag is their condition for sharing), and an OPEN PHOTOS ↗ or WATCH VIDEO
+  ↗ button. Up to three are planned. The hero photos are not a trigger (his
+  call). Without JS the button is a `#galleries` link and `:target` shows
+  the list in place. Then
   the generated **RESULTS** section: a **WINNERS** board (a column per
   event, MEN'S and WOMEN'S rows, the 4×400 co-ed spanning both, every cell
   styled the same so no team is highlighted; each winner and event heading
