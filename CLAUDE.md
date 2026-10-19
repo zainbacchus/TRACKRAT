@@ -24,8 +24,8 @@ Pages:
   with the lockup `<h1>` and GREATNESS IS CALLING centred over them, no date
   or venue; it starts below the nav so the black nav stays on orange.
   A **PHOTOS & VIDEO** button in the WINNERS heading row (emitted by
-  `gen-results.py`, `PHOTOS_BUTTON`) opens the **PHOTOS & VIDEO** modal (a
-  native `<dialog id="galleries">` in the page, hand-edited `<ul
+  `gen-results.py`, `PHOTOS_BUTTON`) opens the media modal (a
+  native `<dialog id="galleries">`, titled TRACKRAT INVITATIONAL MEDIA, in the page, hand-edited `<ul
   class="gx-list">`): one `<li>` per photographer or videographer with
   their name, "TAG @handle WHEN YOU SHARE" (linked to their Instagram; the
   tag is their condition for sharing), and an OPEN PHOTOS ↗ or WATCH VIDEO

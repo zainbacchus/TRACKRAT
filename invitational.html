@@ -715,6 +715,9 @@
     .wl-card.is-done .wl-done { display: block; }
     .wl-done p { font-size: 14px; font-weight: 500; line-height: 1.6; margin-top: 16px; }
 
+    @media (max-width: 359px) {
+      .rs-title { width: 100%; }
+    }
     @media (max-width: 420px) {
       .wl-card { padding: 22px 18px 24px; }
       .wl-title { font-size: 23px; }
@@ -738,11 +741,15 @@
       .startlist { padding: 0 24px 96px; }
       .results { padding: 22px 20px 80px; }
       .hero { margin-top: 64px; height: 300px; }
-      .rs-top { flex-wrap: wrap; }
-      .rs-photos { order: 3; width: 100%; margin: 16px 0 0; text-align: center; }
+      /* One row: WINNERS, then PHOTOS & VIDEO beside the 2026 tab. Fits down
+         to a 360px phone; narrower, WINNERS takes its own line and the
+         button stays next to the year. */
+      .rs-top { flex-wrap: wrap; align-items: center; gap: 10px; }
+      .rs-photos { margin-right: 10px; padding: 7px 8px; font-size: 10px; letter-spacing: 0.1em; }
+      .rs-year-tab { font-size: 13px; }
       .lockup { width: min(280px, 100%); }
       .tagline { font-size: 11px; letter-spacing: 0.28em; padding-left: 0.28em; margin-top: 12px; }
-      .rs-title { font-size: 34px; }
+      .rs-title { font-size: 28px; }
       .rs-full-title { margin-top: 48px; }
       .bd-grid { display: flex; flex-direction: column; margin-top: 12px; }
       .bd-h, .bd-row { display: none; }
@@ -911,10 +918,10 @@
   <dialog class="gx" id="galleries" aria-labelledby="gx-title">
     <div class="gx-in">
       <div class="gx-head">
-        <h2 class="gx-title" id="gx-title">PHOTOS &amp; VIDEO</h2>
+        <h2 class="gx-title" id="gx-title">TRACKRAT INVITATIONAL MEDIA</h2>
         <form method="dialog"><button class="gx-close" aria-label="Close">&times;</button></form>
       </div>
-      <p class="gx-intro">Sharing one? Tag the photographer.</p>
+      <p class="gx-intro">Sharing a photo or video? Tag the photographer.</p>
       <ul class="gx-list">
         <li class="gx-item">
           <p class="gx-name">LEEANN FUNK PHOTOGRAPHY</p>
