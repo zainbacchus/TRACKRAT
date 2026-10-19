@@ -25,7 +25,7 @@ Pages:
   or venue; it starts below the nav so the black nav stays on orange.
   A **PHOTOS & VIDEO** button in the WINNERS heading row (emitted by
   `gen-results.py`, `PHOTOS_BUTTON`) opens the media modal (a
-  native `<dialog id="galleries">`, titled TRACKRAT INVITATIONAL MEDIA, in the page, hand-edited `<ul
+  native `<dialog id="galleries">`, titled TRACKRAT INVITATIONAL (one line), in the page, hand-edited `<ul
   class="gx-list">`): one `<li>` per photographer or videographer with
   their name, "TAG @handle WHEN YOU SHARE" (linked to their Instagram; the
   tag is their condition for sharing), and an OPEN PHOTOS ↗ or WATCH VIDEO

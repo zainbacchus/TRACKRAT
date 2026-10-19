@@ -347,9 +347,10 @@
     .gx:target { display: block; position: static; margin: 32px auto; }
     .gx-in { padding: 26px 24px 28px; }
     .gx-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+    /* One line at every width: the size follows the viewport below ~480px. */
     .gx-title {
-      font-family: 'Fugaz One', 'Arial Black', sans-serif;
-      font-size: 27px; line-height: 1.02; letter-spacing: -0.02em;
+      font-family: 'Fugaz One', 'Arial Black', sans-serif; white-space: nowrap;
+      font-size: min(27px, 4.8vw); line-height: 1.02; letter-spacing: -0.02em;
     }
     .gx-close {
       flex: none; font-family: inherit; font-size: 20px; line-height: 1; cursor: pointer;
@@ -918,7 +919,7 @@
   <dialog class="gx" id="galleries" aria-labelledby="gx-title">
     <div class="gx-in">
       <div class="gx-head">
-        <h2 class="gx-title" id="gx-title">TRACKRAT INVITATIONAL MEDIA</h2>
+        <h2 class="gx-title" id="gx-title">TRACKRAT INVITATIONAL</h2>
         <form method="dialog"><button class="gx-close" aria-label="Close">&times;</button></form>
       </div>
       <p class="gx-intro">Sharing a photo or video? Tag the photographer.</p>
