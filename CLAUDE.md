@@ -163,7 +163,11 @@ status (a catch-all to index.html would make every typo a soft-404).
 Redirects: apex → `www.trackratsprint.club` (canonical host),
 `/2026-invitational` → `/invitational`, `/pr` + `/prs` → `/dashboard`,
 and `/gallery` → `/dashboard#gallery` (the gallery used to be its own
-page).
+page). Vercel matches paths case-sensitively, so `/INVITATIONAL` (as typed off
+the posters, which print the URL in caps) was a 404: every page's ALL-CAPS
+and Capitalised spelling now 301s to the lowercase route (add both when you
+add a page), and `404.html` retries any other mixed-case path in lowercase,
+keeping the query string.
 
 Headers: security baseline on `/(.*)`(HSTS, nosniff, `X-Frame-Options:
 DENY`, CSP `frame-ancestors 'none'; object-src 'none'; base-uri 'none'`,

@@ -127,6 +127,22 @@
     { "source": "/pr", "destination": "/dashboard", "permanent": true },
     { "source": "/prs", "destination": "/dashboard", "permanent": true },
     { "source": "/gallery", "destination": "/dashboard#gallery", "permanent": true },
-    { "source": "/waivers", "destination": "/waiver", "permanent": true }
+    { "source": "/waivers", "destination": "/waiver", "permanent": true },
+    { "source": "/INVITATIONAL", "destination": "/invitational", "permanent": true },
+    { "source": "/Invitational", "destination": "/invitational", "permanent": true },
+    { "source": "/PODIUM", "destination": "/podium", "permanent": true },
+    { "source": "/Podium", "destination": "/podium", "permanent": true },
+    { "source": "/SCHEDULE", "destination": "/schedule", "permanent": true },
+    { "source": "/Schedule", "destination": "/schedule", "permanent": true },
+    { "source": "/BRAND", "destination": "/brand", "permanent": true },
+    { "source": "/Brand", "destination": "/brand", "permanent": true },
+    { "source": "/OFFTRACK", "destination": "/offtrack", "permanent": true },
+    { "source": "/Offtrack", "destination": "/offtrack", "permanent": true },
+    { "source": "/DASHBOARD", "destination": "/dashboard", "permanent": true },
+    { "source": "/Dashboard", "destination": "/dashboard", "permanent": true },
+    { "source": "/WAIVER", "destination": "/waiver", "permanent": true },
+    { "source": "/Waiver", "destination": "/waiver", "permanent": true },
+    { "source": "/PROGRAMMING", "destination": "/programming", "permanent": true },
+    { "source": "/Programming", "destination": "/programming", "permanent": true }
   ]
 }
