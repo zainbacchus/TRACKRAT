@@ -23,7 +23,11 @@ Pages:
   `/photos/` duotoned to Sprint Orange in CSS (greyscale x orange multiply),
   with the lockup `<h1>` and GREATNESS IS CALLING centred over them, no date
   or venue; it starts below the nav so the black nav stays on orange.
-  A **PHOTOS & VIDEO** button in the WINNERS heading row (emitted by
+  The WINNERS heading row carries two stacked outlined buttons (emitted by
+  `gen-results.py`): **TRANSPARENCY REPORT ↗** (`REPORT_URL`, the PDF in
+  `/reports`, new tab; built by `trackrat-tools/transparency/build-report.py`,
+  which keeps the private ledger out of this repo) above **PHOTOS & VIDEO**.
+  The PHOTOS & VIDEO button (emitted by
   `gen-results.py`, `PHOTOS_BUTTON`) opens the media modal (a
   native `<dialog id="galleries">`, titled TRACKRAT INVITATIONAL (one line), in the page, hand-edited `<ul
   class="gx-list">`): one `<li>` per photographer or videographer with
@@ -123,6 +127,7 @@ TRACKRAT/
 ├── og.png                  # default 1200×630 Open Graph image
 ├── og-invitational.png     # /invitational OG image
 ├── photos/                # race photos (WebP), e.g. the /invitational hero band
+├── reports/               # published PDFs, e.g. the 2026 Invitational transparency report
 ├── og-offtrack.png         # /offtrack OG image
 ├── trackrat-wordmark.svg   # wordmark, black (outlined paths, no font; /brand DETAILS kit)
 ├── trackrat-wordmark-white.svg   # wordmark, white
