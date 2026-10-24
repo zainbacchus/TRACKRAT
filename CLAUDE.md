@@ -23,10 +23,11 @@ Pages:
   `/photos/` duotoned to Sprint Orange in CSS (greyscale x orange multiply),
   with the lockup `<h1>` and GREATNESS IS CALLING centred over them, no date
   or venue; it starts below the nav so the black nav stays on orange.
-  The WINNERS heading row carries two stacked outlined buttons (emitted by
-  `gen-results.py`): **TRANSPARENCY REPORT ↗** (`REPORT_URL`, the PDF in
-  `/reports`, new tab; built by `trackrat-tools/transparency/build-report.py`,
-  which keeps the private ledger out of this repo) above **PHOTOS & VIDEO**.
+  A row of two outlined buttons sits above the WINNERS heading on every
+  screen (emitted by `gen-results.py`; on a phone the pair fills the row):
+  **TRANSPARENCY REPORT ↗** (`REPORT_URL`, the PDF in `/reports`, new tab;
+  built by `trackrat-tools/transparency/build-report.py`, which keeps the
+  private ledger out of this repo), then **PHOTOS & VIDEO**.
   The PHOTOS & VIDEO button (emitted by
   `gen-results.py`, `PHOTOS_BUTTON`) opens the media modal (a
   native `<dialog id="galleries">`, titled TRACKRAT INVITATIONAL (one line), in the page, hand-edited `<ul

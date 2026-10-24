@@ -326,19 +326,17 @@
     }
 
     /* ---- GALLERIES ----
-       The PHOTOS & VIDEO button in the WINNERS row opens a modal listing every
+       The PHOTOS & VIDEO button above the WINNERS heading opens a modal listing every
        photographer and videographer: name, the handle to tag when sharing
        (their condition for sharing), and a button out to the gallery. A
        native <dialog>, so Esc, focus and the backdrop come from the browser;
        the script only opens it and closes it on a backdrop click. Without
        JavaScript the button is a #galleries link and :target shows the list
        in place. Styled to match the waitlist card. */
-    /* The WINNERS row's two outlined buttons, stacked: TRANSPARENCY REPORT
-       (the PDF in /reports, new tab) above PHOTOS & VIDEO. Same width. */
-    .rs-actions {
-      margin-left: auto; margin-right: 28px; align-self: center;
-      display: flex; flex-direction: column; gap: 8px;
-    }
+    /* Two outlined buttons in one row above the WINNERS heading, on every
+       screen: TRANSPARENCY REPORT (the PDF in /reports, new tab), then
+       PHOTOS & VIDEO. They wrap only on a phone too narrow for both. */
+    .rs-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 30px; }
     .rs-act {
       padding: 9px 14px; white-space: nowrap; text-align: center;
       border: 2px solid var(--black); font-size: 12px; font-weight: 700; letter-spacing: 0.18em;
@@ -746,12 +744,9 @@
       .startlist { padding: 0 24px 96px; }
       .results { padding: 22px 20px 80px; }
       .hero { margin-top: 64px; height: 300px; }
-      /* WINNERS on its own line; under it the two stacked buttons sit
-         beside the 2026 tab, right-aligned. */
-      .rs-top { flex-wrap: wrap; align-items: center; gap: 12px 10px; }
-      .rs-title { width: 100%; }
-      .rs-actions { margin-right: 10px; gap: 6px; }
-      .rs-act { padding: 7px 10px; font-size: 10px; letter-spacing: 0.1em; }
+      /* on a phone the pair fills the row, flush with the rules below */
+      .rs-actions { gap: 8px; margin-bottom: 22px; }
+      .rs-act { flex: 1 1 auto; padding: 8px 10px; font-size: 10px; letter-spacing: 0.1em; }
       .rs-year-tab { font-size: 13px; }
       .lockup { width: min(280px, 100%); }
       .tagline { font-size: 11px; letter-spacing: 0.28em; padding-left: 0.28em; margin-top: 12px; }
@@ -947,12 +942,12 @@
        (results/<year>.json, one file per year). Re-run it and replace
        this whole section; do not edit by hand. -->
   <section class="results" id="results" aria-labelledby="results-heading">
+    <div class="rs-actions">
+      <a class="rs-act rs-report" href="/reports/trackrat-invitational-2026-transparency-report.pdf" target="_blank" rel="noopener">TRANSPARENCY REPORT &#8599;</a>
+      <a class="rs-act rs-photos" href="#galleries" aria-haspopup="dialog">PHOTOS &amp; VIDEO</a>
+    </div>
     <div class="rs-top">
       <h2 class="rs-title" id="results-heading">WINNERS</h2>
-      <div class="rs-actions">
-        <a class="rs-act rs-report" href="/reports/trackrat-invitational-2026-transparency-report.pdf" target="_blank" rel="noopener">TRANSPARENCY REPORT &#8599;</a>
-        <a class="rs-act rs-photos" href="#galleries" aria-haspopup="dialog">PHOTOS &amp; VIDEO</a>
-      </div>
       <div class="rs-years" role="tablist" aria-label="Year">
         <button type="button" role="tab" class="rs-tab rs-year-tab" id="rs-2026-tab" aria-controls="rs-2026" aria-selected="true">2026</button>
       </div>
